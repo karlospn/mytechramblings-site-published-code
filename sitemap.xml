@@ -3,11 +3,27 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://karlospn.github.io/dotnetramblings/categories/</loc>
+    <loc>https://karlospn.github.io/dotnetramblings/posts/create-a-website-with-hugo-and-gh/</loc>
+    <lastmod>2020-06-21T18:28:38+02:00</lastmod>
   </url>
   
   <url>
     <loc>https://karlospn.github.io/dotnetramblings/</loc>
+    <lastmod>2020-06-21T18:28:38+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://karlospn.github.io/dotnetramblings/posts/</loc>
+    <lastmod>2020-06-21T18:28:38+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://karlospn.github.io/dotnetramblings/about/</loc>
+    <lastmod>2020-06-21T18:26:33+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://karlospn.github.io/dotnetramblings/categories/</loc>
   </url>
   
   <url>
