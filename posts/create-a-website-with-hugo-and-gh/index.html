@@ -131,7 +131,7 @@ What&rsquo;s Hugo? Hugo is another static HTML and CSS website generator, it is 
 
       
       
-        <span class="post-read-time">— 4 min read</span>
+        <span class="post-read-time">— 5 min read</span>
       
     </div>
 
@@ -158,7 +158,7 @@ That was exactly my thought! I wanted to build a blog to write about my rambling
 After doing a little bit of research about what options are available nowadays I found that Hugo could be a good fit.</p>
 <h1 id="whats-hugo">What&rsquo;s Hugo?</h1>
 <p>Hugo is another static HTML and CSS website generator, it is written in Golang and it relies on markdown files.<br>
-I liked how few steps you need to perform to have a blog ready to go.</p>
+I like how few steps you need to do to have a site ready to rock.</p>
 <p>You just need to:</p>
 <ul>
 <li>Create a new static site</li>
@@ -180,13 +180,14 @@ I liked how few steps you need to perform to have a blog ready to go.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">choco install hugo -confirm
 </code></pre></div><p>If you use another OS just check out the official docs about how to install it:<br>
 <a href="https://gohugo.io/getting-started/installing/">https://gohugo.io/getting-started/installing/</a></p>
-<p>After you install Hugo you can use it via command line, just type <!-- raw HTML omitted -->hugo -help<!-- raw HTML omitted --> to list all the options available.</p>
+<p>After you install Hugo you can use it via command line, just type <em>hugo -help</em> to list all the options available.</p>
 <h2 id="create-a-new-site">Create a new site</h2>
 <p>We are going to create a new Hugo site in a folder named <strong>dotnetramblings</strong>.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">hugo new site dotnetramblings
 </code></pre></div><h2 id="add-a-theme">Add a theme</h2>
-<p>Next step is to style our site. We choose an existing theme from the website: <a href="https://themes.gohugo.io/">https://themes.gohugo.io/</a><br>
-I pick the <strong>hello-friend</strong> theme and add it as a submodule in the themes folder.</p>
+<p>Next step is to style our site.<br>
+We choose an existing theme from the website: <a href="https://themes.gohugo.io/">https://themes.gohugo.io/</a> <br>
+I pick the <strong>hello-friend</strong> theme and add it into the project as a submodule. You need to add it in the themes folder</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cd dotnetramblings
 git submodule add https://github.com/panr/hugo-theme-hello-friend.git themes/hello-friend
 </code></pre></div><p>If you want you can see how your website currently looks by typing:</p>
@@ -194,15 +195,14 @@ git submodule add https://github.com/panr/hugo-theme-hello-friend.git themes/hel
 </code></pre></div><h2 id="create-a-github-repository-and-modify-the-configtoml-file">Create a GitHub repository and modify the config.toml file</h2>
 <p>Go to GitHub and create a new repository.<br>
 In my case I&rsquo;m going to create the repository <strong>dotnetramblings</strong>.</p>
-<p>Once the repository is created you <strong>HAVE</strong> to modify the config.toml file found on the root directory of your site. <br>
-You need to update the baseUrl property to point to your github page. Like this:</p>
+<p>Once the repository is created you <strong>HAVE</strong> to modify the config.toml file found on the root directory of your site. You need to update the baseUrl property to point to your github page. Like this:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml"><span style="color:#a6e22e">baseurl</span> = <span style="color:#e6db74">&#34;https://myuser.github.io/dotnetramblings/&#34;</span>
 </code></pre></div><h2 id="build-your-site">Build your site</h2>
 <p>After tweaking the theme we are going to build our site. We have to execute:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">hugo
-</code></pre></div><p>The output of the build will be in <strong>./public/</strong> directory. The public directory is what we are going to publish into GitHub.</p>
+</code></pre></div><p>The output of the build will be put in the <strong>./public/</strong> directory. The public directory is what we are going to publish into GitHub.</p>
 <h2 id="push-your-code-into-github">Push your code into GitHub</h2>
-<p>It&rsquo;s time to upload the contents of the public directory into our GitHub repository.</p>
+<p>It&rsquo;s time to upload the contents of the <strong>./public</strong> directory into the GitHub repository.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cd dotnetramblings/public
 git init
 git remote add origin https://github.com/myuser/dotnetramblings.git
@@ -234,7 +234,7 @@ git add .
 git commit -m <span style="color:#e6db74">&#34;Add site files&#34;</span>
 git push --set-upstream origin master
 
-</code></pre></div><p>The last step is building a GitHub Action.<br>
+</code></pre></div><p>The last step is to build a GitHub Action.<br>
 The github action is going to grab the content from the <strong>dotnetramblings_source</strong> repository, build it using Hugo and push the output into the <strong>dotnetramblings</strong> repository.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">
 <span style="color:#66d9ef">name</span>: hugo CI
@@ -270,7 +270,7 @@ The github action is going to grab the content from the <strong>dotnetramblings_
           <span style="color:#66d9ef">publish_dir</span>: ./public
 
 </code></pre></div><p>And we are good to go!<br>
-With less than 30 minutes we have a running website hosted in github pages and we are using a secondary github repository to automate the build and deploy of the source code.</p>
+With less than 30 minutes we have a running static website hosted in GitHub Pages and also we are using a secondary github repository to automate the build and deploy of the source code.</p>
 
     </div>
     
