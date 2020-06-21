@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>dotnet ramblings</title>
+    <title>github on dotnet ramblings</title>
     
     
     
-    <link>https://karlospn.github.io/dotnetramblings/</link>
-    <description>Recent content on dotnet ramblings</description>
+    <link>https://karlospn.github.io/dotnetramblings/tags/github/</link>
+    <description>Recent content in github on dotnet ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sun, 21 Jun 2020 18:28:38 +0200</lastBuildDate>
     
-	<atom:link href="https://karlospn.github.io/dotnetramblings/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://karlospn.github.io/dotnetramblings/tags/github/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -32,26 +32,6 @@
 That was exactly my thought! I wanted to build a blog to write about my ramblings and I didn&amp;rsquo;t want to spend long hours settings things up.
 After doing a little bit of research about what options are available nowadays I found that Hugo could be a good fit.
 What&amp;rsquo;s Hugo? Hugo is another static HTML and CSS website generator, it is written in Golang and it relies on markdown files.
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>About</title>
-      <link>https://karlospn.github.io/dotnetramblings/about/</link>
-      <pubDate>Sun, 21 Jun 2020 18:26:33 +0200</pubDate>
-      
-      <guid>https://karlospn.github.io/dotnetramblings/about/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          Hello! I&amp;rsquo;m a software engineer specialized and sometimes I like to write about some randoms things.
           
         
         </description>
