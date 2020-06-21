@@ -29,8 +29,8 @@
         
         
           Do you want to start a blog and don&amp;rsquo;t want to lose a lot of time setting everything up?
-That was exactly my thought! I wanted to build a blog to write about my ramblings and I didn&amp;rsquo;t want to spend long hours settings things up.
-After doing a little bit of research about what options are available nowadays I found that Hugo could be a good fit.
+That was exactly my thought! I wanted to build a blog to write about my ramblings, but I didn&amp;rsquo;t want to spend long hours settings things up.
+After doing a little of research about what options are available nowadays I found that Hugo could be a good fit.
 What&amp;rsquo;s Hugo? Hugo is another static HTML and CSS website generator, it is written in Golang and it relies on markdown files.
           
         

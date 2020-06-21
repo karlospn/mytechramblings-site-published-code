@@ -7,8 +7,8 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 <meta name="description" content="Do you want to start a blog and don&amp;rsquo;t want to lose a lot of time setting everything up?
-That was exactly my thought! I wanted to build a blog to write about my ramblings and I didn&amp;rsquo;t want to spend long hours settings things up.
-After doing a little bit of research about what options are available nowadays I found that Hugo could be a good fit.
+That was exactly my thought! I wanted to build a blog to write about my ramblings, but I didn&amp;rsquo;t want to spend long hours settings things up.
+After doing a little of research about what options are available nowadays I found that Hugo could be a good fit.
 What&amp;rsquo;s Hugo? Hugo is another static HTML and CSS website generator, it is written in Golang and it relies on markdown files."/>
 <meta name="keywords" content=""/>
 <meta name="robots" content="noodp"/>
@@ -31,16 +31,16 @@ What&amp;rsquo;s Hugo? Hugo is another static HTML and CSS website generator, it
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Create and host a blog with Hugo and GitHub Pages in less than 30 minutes"/>
 <meta name="twitter:description" content="Do you want to start a blog and don&rsquo;t want to lose a lot of time setting everything up?
-That was exactly my thought! I wanted to build a blog to write about my ramblings and I didn&rsquo;t want to spend long hours settings things up.
-After doing a little bit of research about what options are available nowadays I found that Hugo could be a good fit.
+That was exactly my thought! I wanted to build a blog to write about my ramblings, but I didn&rsquo;t want to spend long hours settings things up.
+After doing a little of research about what options are available nowadays I found that Hugo could be a good fit.
 What&rsquo;s Hugo? Hugo is another static HTML and CSS website generator, it is written in Golang and it relies on markdown files."/>
 
 
 
 <meta property="og:title" content="Create and host a blog with Hugo and GitHub Pages in less than 30 minutes" />
 <meta property="og:description" content="Do you want to start a blog and don&rsquo;t want to lose a lot of time setting everything up?
-That was exactly my thought! I wanted to build a blog to write about my ramblings and I didn&rsquo;t want to spend long hours settings things up.
-After doing a little bit of research about what options are available nowadays I found that Hugo could be a good fit.
+That was exactly my thought! I wanted to build a blog to write about my ramblings, but I didn&rsquo;t want to spend long hours settings things up.
+After doing a little of research about what options are available nowadays I found that Hugo could be a good fit.
 What&rsquo;s Hugo? Hugo is another static HTML and CSS website generator, it is written in Golang and it relies on markdown files." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://karlospn.github.io/dotnetramblings/posts/create-a-website-with-hugo-and-gh/" />
@@ -154,8 +154,8 @@ What&rsquo;s Hugo? Hugo is another static HTML and CSS website generator, it is 
     <div class="post-content">
       
       <p>Do you want to start a blog and don&rsquo;t want to lose a lot of time setting everything up?<br>
-That was exactly my thought! I wanted to build a blog to write about my ramblings and I didn&rsquo;t want to spend long hours settings things up.<br>
-After doing a little bit of research about what options are available nowadays I found that Hugo could be a good fit.</p>
+That was exactly my thought! I wanted to build a blog to write about my ramblings, but I didn&rsquo;t want to spend long hours settings things up.<br>
+After doing a little of research about what options are available nowadays I found that Hugo could be a good fit.</p>
 <h1 id="whats-hugo">What&rsquo;s Hugo?</h1>
 <p>Hugo is another static HTML and CSS website generator, it is written in Golang and it relies on markdown files.<br>
 I like how few steps you need to do to have a site ready to rock.</p>
@@ -168,7 +168,7 @@ I like how few steps you need to do to have a site ready to rock.</p>
 <li>Publish the content</li>
 </ul>
 <p>And that&rsquo;s it! You are ready to go!</p>
-<p>There are a lot of options for hosting an static website but I chose GitHub Pages because it is free, easy to work with and I already have an existing account.</p>
+<p>There are a lot of options for hosting a static website, but I chose GitHub Pages because it is free, easy to work with and I already have an existing account.</p>
 <h1 id="steps">Steps</h1>
 <p>After reading a little bit about how to set everything up I begin building my site.</p>
 <h2 id="install-hugo">Install Hugo</h2>
@@ -180,7 +180,7 @@ I like how few steps you need to do to have a site ready to rock.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">choco install hugo -confirm
 </code></pre></div><p>If you use another OS just check out the official docs about how to install it:<br>
 <a href="https://gohugo.io/getting-started/installing/">https://gohugo.io/getting-started/installing/</a></p>
-<p>After you install Hugo you can use it via command line, just type <em>hugo -help</em> to list all the options available.</p>
+<p>After you install Hugo, you can use it via the command line, just type <em>hugo -help</em> to list all the options available.</p>
 <h2 id="create-a-new-site">Create a new site</h2>
 <p>We are going to create a new Hugo site in a folder named <strong>dotnetramblings</strong>.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">hugo new site dotnetramblings
@@ -190,7 +190,7 @@ We choose an existing theme from the website: <a href="https://themes.gohugo.io/
 I pick the <strong>hello-friend</strong> theme and add it into the project as a submodule. You need to add it in the themes folder</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cd dotnetramblings
 git submodule add https://github.com/panr/hugo-theme-hello-friend.git themes/hello-friend
-</code></pre></div><p>If you want you can see how your website currently looks by typing:</p>
+</code></pre></div><p>You can see how your website currently looks by typing:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">hugo server -D
 </code></pre></div><h2 id="create-a-github-repository-and-modify-the-configtoml-file">Create a GitHub repository and modify the config.toml file</h2>
 <p>Go to GitHub and create a new repository.<br>
@@ -198,7 +198,7 @@ In my case I&rsquo;m going to create the repository <strong>dotnetramblings</str
 <p>Once the repository is created you <strong>HAVE</strong> to modify the config.toml file found on the root directory of your site. You need to update the baseUrl property to point to your github page. Like this:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml"><span style="color:#a6e22e">baseurl</span> = <span style="color:#e6db74">&#34;https://myuser.github.io/dotnetramblings/&#34;</span>
 </code></pre></div><h2 id="build-your-site">Build your site</h2>
-<p>After tweaking the theme we are going to build our site. We have to execute:</p>
+<p>After tweaking the theme, we are going to build our site. We have to execute:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">hugo
 </code></pre></div><p>The output of the build will be put in the <strong>./public/</strong> directory. The public directory is what we are going to publish into GitHub.</p>
 <h2 id="push-your-code-into-github">Push your code into GitHub</h2>
