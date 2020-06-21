@@ -2,6 +2,9 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>dotnet ramblings</title>
+    
+    
+    
     <link>https://karlospn.github.io/dotnetramblings/</link>
     <description>Recent content on dotnet ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
@@ -17,10 +20,21 @@
       <pubDate>Sun, 21 Jun 2020 18:28:38 +0200</pubDate>
       
       <guid>https://karlospn.github.io/dotnetramblings/posts/create-a-website-with-hugo-and-gh/</guid>
-      <description>Do you want to start a blog and don&amp;rsquo;t want to lose a lot of time setting it up?
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          Do you want to start a blog and don&amp;rsquo;t want to lose a lot of time setting it up?
 That was exactly my thought! I wanted to build a blog to write about my ramblings and I didn&amp;rsquo;t want to spend long hours settings things up.
 After doing a little bit of research about what options are available nowadays I found that Hugo could be a good fit.
-What&amp;rsquo;s Hugo? Hugo is another static HTML and CSS website generator, it is written in Golang and it relies on markdown files.</description>
+What&amp;rsquo;s Hugo? Hugo is another static HTML and CSS website generator, it is written in Golang and it relies on markdown files.
+          
+        
+        </description>
     </item>
     
     <item>
@@ -29,7 +43,18 @@ What&amp;rsquo;s Hugo? Hugo is another static HTML and CSS website generator, it
       <pubDate>Sun, 21 Jun 2020 18:26:33 +0200</pubDate>
       
       <guid>https://karlospn.github.io/dotnetramblings/about/</guid>
-      <description>Hello! I&amp;rsquo;m a software engineer specialized and sometimes I like to write about some randoms things.</description>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          Hello! I&amp;rsquo;m a software engineer specialized and sometimes I like to write about some randoms things.
+          
+        
+        </description>
     </item>
     
   </channel>
