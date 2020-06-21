@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>dotnet ramblings</title>
+    <title>my tech ramblings</title>
     
     
     
     <link>https://www.mytechramblings.com/</link>
-    <description>Recent content on dotnet ramblings</description>
+    <description>Recent content on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sun, 21 Jun 2020 18:28:38 +0200</lastBuildDate>

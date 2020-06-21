@@ -13,11 +13,6 @@
   </url>
   
   <url>
-    <loc>https://www.mytechramblings.com/</loc>
-    <lastmod>2020-06-21T18:28:38+02:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://www.mytechramblings.com/tags/github/</loc>
     <lastmod>2020-06-21T18:28:38+02:00</lastmod>
   </url>
@@ -29,6 +24,11 @@
   
   <url>
     <loc>https://www.mytechramblings.com/tags/hugo/</loc>
+    <lastmod>2020-06-21T18:28:38+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/</loc>
     <lastmod>2020-06-21T18:28:38+02:00</lastmod>
   </url>
   
