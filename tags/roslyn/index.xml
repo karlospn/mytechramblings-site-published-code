@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on my tech ramblings</title>
+    <title>roslyn on my tech ramblings</title>
     
     
     
-    <link>https://www.mytechramblings.com/posts/</link>
-    <description>Recent content in Posts on my tech ramblings</description>
+    <link>https://www.mytechramblings.com/tags/roslyn/</link>
+    <description>Recent content in roslyn on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 24 Jun 2020 15:25:42 +0200</lastBuildDate>
     
-	<atom:link href="https://www.mytechramblings.com/posts/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://www.mytechramblings.com/tags/roslyn/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -31,29 +31,6 @@
           In these past few years Microsoft has kept a steady flow of new .NET Core versions: .NETCore 1.0, 1.1, 2.0, 2.1, 2.2 and so on and so forth.
 If you have hundreds of applications in your company it&amp;rsquo;s almost impossible to keep them updated to the most recent version of the framework, so most probably you&amp;rsquo;re going to end up having multiple versions running at the same time.
 When trying to choose which versions are you going to support in your company a factor to consider is that only a few of those versions are long-time support (LTS).
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>Create and host a blog with Hugo and GitHub Pages in less than 30 minutes</title>
-      <link>https://www.mytechramblings.com/posts/create-a-website-with-hugo-and-gh/</link>
-      <pubDate>Sun, 21 Jun 2020 18:28:38 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/posts/create-a-website-with-hugo-and-gh/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          Do you want to start a blog and don&amp;rsquo;t want to lose a lot of time setting everything up?
-That was exactly my thought! I wanted to build a blog to write about my ramblings, but I didn&amp;rsquo;t want to spend long hours settings things up.
-After doing a little of research about what options are available nowadays I found that Hugo could be a good fit.
-What&amp;rsquo;s Hugo? Hugo is a static HTML and CSS website generator, it is written in Golang and it relies on markdown files and I like how few steps you need to do to have a site ready to rock.
           
         
         </description>
