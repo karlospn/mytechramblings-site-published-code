@@ -300,7 +300,7 @@ Source: <a href="https://msdn.microsoft.com/en-us/library/system.runtime.version
 </blockquote>
 <p>The attribute has the following format &ldquo;.NETCoreApp,Version=vX.Y&rdquo;, where X.Y is the framework version.<br>
 For example, on a .NET Core 3.1 console application the value will be:
-<em><strong>System.Runtime.Versioning.TargetFrameworkAttribute(&quot;.NETCoreApp,Version=v3.1&rdquo;, FrameworkDisplayName = &ldquo;&quot;)</strong></em></p>
+<em><strong>System.Runtime.Versioning.TargetFrameworkAttribute (&quot;.NETCoreApp,Version=v3.1&rdquo;, FrameworkDisplayName = &ldquo;&quot;)</strong></em></p>
 <p>2 - For every version we are allowing to use we build the pattern .NETCoreApp,Version=vX.Y. In our case we are building 2 patterns: .NETCoreApp,Version=v2.1 and .NETCoreApp,Version=v3.1 patterns.</p>
 <p>3 - Check if the attribute value matches any of our patterns and if it doesn&rsquo;t, raise an error.</p>
 <p>Let&rsquo;s test the analyzer. When we install the analyzer in a .NET Core 2.2 application we get the following error:</p>
@@ -308,7 +308,7 @@ For example, on a .NET Core 3.1 console application the value will be:
 <p>When we install the analyzer in a .NET Core 2.0 app:</p>
 <p><img src="/img/roslyn-framework-error-netcore20.png" alt="Framework .Net Core 2.0 error"></p>
 <p>When we install the analyzer in a .NET4.6.2 app:</p>
-<p><img src="/img/roslyn-framework-error-net462.png" alt="Framework .Net Framewrok 4.6.2 error"></p>
+<p><img src="/img/roslyn-framework-error-net46.png" alt="Framework .Net Framewrok 4.6.2 error"></p>
 <p>In our Roslyn Analyzer we are looking for the <strong>TargetFrameworkAttribute</strong> attribute and only raising an error if the  <strong>.NETCoreApp,Version=vX.Y</strong> value does not match, but we could apply the same principle if we wanted to enforce that only a specific .NET Framework version or .NET Standard version is used.<br>
 In those cases instead of looking for the value <strong>.NETCoreApp,Version=vX.Y</strong> we could search for the value <strong>.NETFramework,Version=vX.Y</strong> or <strong>.NETStandard,Version=vX.Y</strong></p>
 
