@@ -6,8 +6,8 @@
     
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<meta name="description" content="In these past few years Microsoft has kept a steady flow of new .NET Core versions: .NETCore 1.0, 1.1, 2.0, 2.1, 2.2 and so on and so forth.
-If you have hundreds of applications in your company it&amp;rsquo;s almost impossible to keep them updated to the most recent version of the framework, so most probably you&amp;rsquo;re going to end up having multiple versions running at the same time.
+<meta name="description" content="In these past few years Microsoft has kept a steady flow of new .NET Core versions: .NET Core 1.0, 1.1, 2.0, 2.1, 2.2 and so on and so forth.
+If you have hundreds of applications in your company, it&amp;rsquo;s almost impossible to keep them updated to the most recent version of the framework, so most probably you&amp;rsquo;re going to end up having multiple versions running at the same time.
 When trying to choose which versions are you going to support in your company a factor to consider is that only a few of those versions are long-time support (LTS)."/>
 <meta name="keywords" content=""/>
 <meta name="robots" content="noodp"/>
@@ -29,15 +29,15 @@ When trying to choose which versions are you going to support in your company a 
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Enforce the use of a specific .NET Core version using Roslyn"/>
-<meta name="twitter:description" content="In these past few years Microsoft has kept a steady flow of new .NET Core versions: .NETCore 1.0, 1.1, 2.0, 2.1, 2.2 and so on and so forth.
-If you have hundreds of applications in your company it&rsquo;s almost impossible to keep them updated to the most recent version of the framework, so most probably you&rsquo;re going to end up having multiple versions running at the same time.
+<meta name="twitter:description" content="In these past few years Microsoft has kept a steady flow of new .NET Core versions: .NET Core 1.0, 1.1, 2.0, 2.1, 2.2 and so on and so forth.
+If you have hundreds of applications in your company, it&rsquo;s almost impossible to keep them updated to the most recent version of the framework, so most probably you&rsquo;re going to end up having multiple versions running at the same time.
 When trying to choose which versions are you going to support in your company a factor to consider is that only a few of those versions are long-time support (LTS)."/>
 
 
 
 <meta property="og:title" content="Enforce the use of a specific .NET Core version using Roslyn" />
-<meta property="og:description" content="In these past few years Microsoft has kept a steady flow of new .NET Core versions: .NETCore 1.0, 1.1, 2.0, 2.1, 2.2 and so on and so forth.
-If you have hundreds of applications in your company it&rsquo;s almost impossible to keep them updated to the most recent version of the framework, so most probably you&rsquo;re going to end up having multiple versions running at the same time.
+<meta property="og:description" content="In these past few years Microsoft has kept a steady flow of new .NET Core versions: .NET Core 1.0, 1.1, 2.0, 2.1, 2.2 and so on and so forth.
+If you have hundreds of applications in your company, it&rsquo;s almost impossible to keep them updated to the most recent version of the framework, so most probably you&rsquo;re going to end up having multiple versions running at the same time.
 When trying to choose which versions are you going to support in your company a factor to consider is that only a few of those versions are long-time support (LTS)." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://www.mytechramblings.com/posts/enforce-your-dotnet-apps-framework-version-using-roslyn-analyzers/" />
@@ -154,9 +154,9 @@ When trying to choose which versions are you going to support in your company a 
 
     <div class="post-content">
       
-      <p>In these past few years Microsoft has kept a steady flow of new .NET Core versions: .NETCore 1.0, 1.1, 2.0, 2.1, 2.2 and so on and so forth.</p>
-<p>If you have hundreds of applications in your company it&rsquo;s almost impossible to keep them updated to the most recent version of the framework, so most probably you&rsquo;re going to end up having multiple versions running at the same time.</p>
-<p>When trying to choose which versions are you going to support in your company a factor to consider is that only a few of those versions are long-time support (LTS). But what does it means exactly?  It means that only a few versions are supported for three years after the initial release.</p>
+      <p>In these past few years Microsoft has kept a steady flow of new .NET Core versions: .NET Core 1.0, 1.1, 2.0, 2.1, 2.2 and so on and so forth.</p>
+<p>If you have hundreds of applications in your company, it&rsquo;s almost impossible to keep them updated to the most recent version of the framework, so most probably you&rsquo;re going to end up having multiple versions running at the same time.</p>
+<p>When trying to choose which versions are you going to support in your company a factor to consider is that only a few of those versions are long-time support (LTS). But what does it mean exactly?  It means that only a few versions are supported for three years after the initial release.</p>
 <blockquote>
 <p>If you want to know more about the .NET Core support policy click here: <a href="https://dotnet.microsoft.com/platform/support/policy/dotnet-core">.NET Core official support</a></p>
 </blockquote>
@@ -207,11 +207,11 @@ When trying to choose which versions are you going to support in your company a 
 </tr>
 </tbody>
 </table>
-<p>So imagine you are working in a company and you have to create a new .NET Core application and your company is mainly working with NET Core 2, maybe you should ask yourself, what version do I use? .NET Core 2.1 is a LTS release, should I use that version or should I use .NET Core 2.2 because it&rsquo;s the newest one?</p>
-<p>The same question can be arised when moving to .NET Core 3, should I migrate my old .NET Core 1.0 to .NET Core 3.0 or .NET Core 3.1? That one is easier to respond because in that case the LTS version is also the newer one and every developer loves to use the latest tech possible.</p>
+<p>So imagine you are working in a company, and you have to create a new .NET Core application and your company is mainly working with NET Core 2, maybe you should ask yourself, what version do I use? .NET Core 2.1 is a LTS release, should I use that version or should I use .NET Core 2.2 because it&rsquo;s the newest one?</p>
+<p>The same question can be arisen when moving to .NET Core 3, should I migrate my old .NET Core 1.0 to .NET Core 3.0 or .NET Core 3.1? That one is easier to respond because in that case the LTS version is also the newer one and every developer loves to use the latest tech possible.</p>
 <p>Another possible scenario is that maybe my company only uses .NET Core 2 and I should prevent that anybody uses .NET Core 3.x because I&rsquo;m not sure if it&rsquo;s going to work as expected on production. And also I should not allow anyone to create applications targeting .NET Core 1.0 and .NET Core 1.1 because the support ended a year ago.</p>
 <p>At the end of the day we could ask ourselves, how can I enforce that everyone on my team is using the correct framework version when they need to create a new application?<br>
-An easy solution to avoid having these kind of questions and to avoid people using a  framework version that could potentially be problematic when it ran on production
+An easy solution to avoid having these kinds of questions and to avoid people using a  framework version that could potentially be problematic when it ran on production
 is to create our own <strong>Roslyn Analyzer</strong>.</p>
 <blockquote>
 <p>For those unaware:</p>
@@ -221,9 +221,9 @@ is to create our own <strong>Roslyn Analyzer</strong>.</p>
 <li>Roslyn code analyzers can be installed per-project via a NuGet package.</li>
 </ul>
 </blockquote>
-<p>One thing I always advise people is that if they have some time to spare they should try to build their own roslyn analyzers containing their own code rules, pack them in a nuget and enforce that every application they create have the nuget installed.<br>
+<p>One thing I always advise people is that if they have some time to spare they should try to build their own Roslyn analyzers containing their own code rules, pack them in a nuget and enforce that every application they create have the nuget installed.<br>
 That&rsquo;s an easy way to reassure that every application enforces your own company coding rules.</p>
-<p>Well, anyways, I could keep rambling about Roslyn for a long time, but let&rsquo;s focus on building a roslyn analyzer that validates the framework version of our application.</p>
+<p>Well, anyways, I could keep rambling about Roslyn for a long time, but let&rsquo;s focus on building a Roslyn analyzer that validates the framework version of our application.</p>
 <p>The C# code would be something like this:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis;
 <span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis.Diagnostics;
