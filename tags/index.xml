@@ -9,7 +9,7 @@
     <description>Recent content in Tags on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 24 Jun 2020 15:25:42 +0200</lastBuildDate>
+    <lastBuildDate>Sat, 04 Jul 2020 17:30:06 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/index.xml" rel="self" type="application/rss+xml" />
     
@@ -17,9 +17,129 @@
     <item>
       <title>.NET</title>
       <link>https://www.mytechramblings.com/tags/.net/</link>
-      <pubDate>Wed, 24 Jun 2020 15:25:42 +0200</pubDate>
+      <pubDate>Sat, 04 Jul 2020 17:30:06 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/.net/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>appservices</title>
+      <link>https://www.mytechramblings.com/tags/appservices/</link>
+      <pubDate>Sat, 04 Jul 2020 17:30:06 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/appservices/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>azure</title>
+      <link>https://www.mytechramblings.com/tags/azure/</link>
+      <pubDate>Sat, 04 Jul 2020 17:30:06 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/azure/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>csharp</title>
+      <link>https://www.mytechramblings.com/tags/csharp/</link>
+      <pubDate>Sat, 04 Jul 2020 17:30:06 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/csharp/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>dotnet</title>
+      <link>https://www.mytechramblings.com/tags/dotnet/</link>
+      <pubDate>Sat, 04 Jul 2020 17:30:06 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/dotnet/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>legacy</title>
+      <link>https://www.mytechramblings.com/tags/legacy/</link>
+      <pubDate>Sat, 04 Jul 2020 17:30:06 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/legacy/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>wcf</title>
+      <link>https://www.mytechramblings.com/tags/wcf/</link>
+      <pubDate>Sat, 04 Jul 2020 17:30:06 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/wcf/</guid>
       <description>
         
           
@@ -60,46 +180,6 @@
       <pubDate>Wed, 24 Jun 2020 15:25:42 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/analyzers/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>csharp</title>
-      <link>https://www.mytechramblings.com/tags/csharp/</link>
-      <pubDate>Wed, 24 Jun 2020 15:25:42 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/csharp/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>dotnet</title>
-      <link>https://www.mytechramblings.com/tags/dotnet/</link>
-      <pubDate>Wed, 24 Jun 2020 15:25:42 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/dotnet/</guid>
       <description>
         
           

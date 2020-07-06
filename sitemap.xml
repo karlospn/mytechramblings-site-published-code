@@ -4,7 +4,57 @@
   
   <url>
     <loc>https://www.mytechramblings.com/tags/.net/</loc>
-    <lastmod>2020-06-24T15:25:42+02:00</lastmod>
+    <lastmod>2020-07-04T17:30:06+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/tags/appservices/</loc>
+    <lastmod>2020-07-04T17:30:06+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/tags/azure/</loc>
+    <lastmod>2020-07-04T17:30:06+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/tags/csharp/</loc>
+    <lastmod>2020-07-04T17:30:06+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/tags/dotnet/</loc>
+    <lastmod>2020-07-04T17:30:06+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/tags/legacy/</loc>
+    <lastmod>2020-07-04T17:30:06+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/</loc>
+    <lastmod>2020-07-04T17:30:06+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/posts/</loc>
+    <lastmod>2020-07-04T17:30:06+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/tags/</loc>
+    <lastmod>2020-07-04T17:30:06+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/tags/wcf/</loc>
+    <lastmod>2020-07-04T17:30:06+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/posts/how-to-add-healthchecks-to-wcf-apps/</loc>
+    <lastmod>2020-07-04T17:30:06+02:00</lastmod>
   </url>
   
   <url>
@@ -18,37 +68,12 @@
   </url>
   
   <url>
-    <loc>https://www.mytechramblings.com/tags/csharp/</loc>
-    <lastmod>2020-06-24T15:25:42+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://www.mytechramblings.com/tags/dotnet/</loc>
-    <lastmod>2020-06-24T15:25:42+02:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://www.mytechramblings.com/posts/enforce-your-dotnet-apps-framework-version-using-roslyn-analyzers/</loc>
     <lastmod>2020-06-24T15:25:42+02:00</lastmod>
   </url>
   
   <url>
-    <loc>https://www.mytechramblings.com/</loc>
-    <lastmod>2020-06-24T15:25:42+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://www.mytechramblings.com/posts/</loc>
-    <lastmod>2020-06-24T15:25:42+02:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://www.mytechramblings.com/tags/roslyn/</loc>
-    <lastmod>2020-06-24T15:25:42+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://www.mytechramblings.com/tags/</loc>
     <lastmod>2020-06-24T15:25:42+02:00</lastmod>
   </url>
   

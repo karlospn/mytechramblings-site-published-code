@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>appservices on my tech ramblings</title>
+    
+    
+    
+    <link>https://www.mytechramblings.com/tags/appservices/</link>
+    <description>Recent content in appservices on my tech ramblings</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 04 Jul 2020 17:30:06 +0200</lastBuildDate>
+    
+	<atom:link href="https://www.mytechramblings.com/tags/appservices/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Why and how you should add a healthcheck endpoint to your Wcf legacy applications</title>
+      <link>https://www.mytechramblings.com/posts/how-to-add-healthchecks-to-wcf-apps/</link>
+      <pubDate>Sat, 04 Jul 2020 17:30:06 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/how-to-add-healthchecks-to-wcf-apps/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          Nowadays no one on his right mind is going to create a WCF from scratch. It really makes no sense to do it. It&amp;rsquo;s a deprecated technology, it does not work with .NET Core, only works on Windows OS and personally I found the configuration confusing as hell, every time I need to modify an existing one I have to spend a good amount of time trying to figure out what everything means.
+          
+        
+        </description>
+    </item>
+    
+  </channel>
+</rss>

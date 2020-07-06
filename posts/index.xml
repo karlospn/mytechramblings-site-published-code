@@ -9,10 +9,30 @@
     <description>Recent content in Posts on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 24 Jun 2020 15:25:42 +0200</lastBuildDate>
+    <lastBuildDate>Sat, 04 Jul 2020 17:30:06 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Why and how you should add a healthcheck endpoint to your Wcf legacy applications</title>
+      <link>https://www.mytechramblings.com/posts/how-to-add-healthchecks-to-wcf-apps/</link>
+      <pubDate>Sat, 04 Jul 2020 17:30:06 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/how-to-add-healthchecks-to-wcf-apps/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          Nowadays no one on his right mind is going to create a WCF from scratch. It really makes no sense to do it. It&amp;rsquo;s a deprecated technology, it does not work with .NET Core, only works on Windows OS and personally I found the configuration confusing as hell, every time I need to modify an existing one I have to spend a good amount of time trying to figure out what everything means.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>Enforce the use of a specific .NET Core version using Roslyn</title>
