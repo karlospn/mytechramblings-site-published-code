@@ -7,10 +7,8 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 <meta name="description" content="Let&amp;rsquo;s go for a quick post this time.
-You are trying to create a Docker image from an app, that application is using some custom Nugets.
-Those Nugets are hosted in your private Azure DevOps Feed.
-I&amp;rsquo;m pretty confident that some of these errors are going to sound pretty familiar to you when you try to build the image:
-/src/MyConsoleApplication.csproj : error NU1101: Unable to find package MyOwn.EmailService. No packages exist with this id in source(s): nuget."/>
+Imagine you&amp;rsquo;re trying to create a Docker image from an application and it is using some custom nugets. Those custom nugets are hosted in your private Azure DevOps Feed. And when you try to build the image you get one of the following errors:
+/src/MyConsoleApplication.csproj : error NU1101: Unable to find package MyOwn.EmailService. No packages exist with this id in source(s): nuget.org Failed to restore /src/MyConsoleApplication."/>
 <meta name="keywords" content=""/>
 <meta name="robots" content="noodp"/>
 <link rel="canonical" href="https://www.mytechramblings.com/posts/how-to-use-a-private-nuget-feed-with-docker/" />
@@ -32,23 +30,19 @@ I&amp;rsquo;m pretty confident that some of these errors are going to sound pret
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="How to Restore a Nuget from an Azure DevOps Private Feed within Docker"/>
 <meta name="twitter:description" content="Let&rsquo;s go for a quick post this time.
-You are trying to create a Docker image from an app, that application is using some custom Nugets.
-Those Nugets are hosted in your private Azure DevOps Feed.
-I&rsquo;m pretty confident that some of these errors are going to sound pretty familiar to you when you try to build the image:
-/src/MyConsoleApplication.csproj : error NU1101: Unable to find package MyOwn.EmailService. No packages exist with this id in source(s): nuget."/>
+Imagine you&rsquo;re trying to create a Docker image from an application and it is using some custom nugets. Those custom nugets are hosted in your private Azure DevOps Feed. And when you try to build the image you get one of the following errors:
+/src/MyConsoleApplication.csproj : error NU1101: Unable to find package MyOwn.EmailService. No packages exist with this id in source(s): nuget.org Failed to restore /src/MyConsoleApplication."/>
 
 
 
 <meta property="og:title" content="How to Restore a Nuget from an Azure DevOps Private Feed within Docker" />
 <meta property="og:description" content="Let&rsquo;s go for a quick post this time.
-You are trying to create a Docker image from an app, that application is using some custom Nugets.
-Those Nugets are hosted in your private Azure DevOps Feed.
-I&rsquo;m pretty confident that some of these errors are going to sound pretty familiar to you when you try to build the image:
-/src/MyConsoleApplication.csproj : error NU1101: Unable to find package MyOwn.EmailService. No packages exist with this id in source(s): nuget." />
+Imagine you&rsquo;re trying to create a Docker image from an application and it is using some custom nugets. Those custom nugets are hosted in your private Azure DevOps Feed. And when you try to build the image you get one of the following errors:
+/src/MyConsoleApplication.csproj : error NU1101: Unable to find package MyOwn.EmailService. No packages exist with this id in source(s): nuget.org Failed to restore /src/MyConsoleApplication." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://www.mytechramblings.com/posts/how-to-use-a-private-nuget-feed-with-docker/" />
-<meta property="article:published_time" content="2020-07-14T18:12:41+02:00" />
-<meta property="article:modified_time" content="2020-07-14T18:12:41+02:00" /><meta property="og:site_name" content="my tech ramblings" />
+<meta property="article:published_time" content="2020-07-14T19:12:41+02:00" />
+<meta property="article:modified_time" content="2020-07-14T19:12:41+02:00" /><meta property="og:site_name" content="my tech ramblings" />
 
 
 
@@ -159,9 +153,8 @@ I&rsquo;m pretty confident that some of these errors are going to sound pretty f
     <div class="post-content">
       
       <p>Let&rsquo;s go for a quick post this time.</p>
-<p>You are trying to create a Docker image from an app, that application is using some custom Nugets.<br>
-Those Nugets are hosted in your private Azure DevOps Feed.<br>
-I&rsquo;m pretty confident that some of these errors are going to sound pretty familiar to you when you try to build the image:</p>
+<p>Imagine you&rsquo;re trying to create a Docker image from an application and it is using some custom nugets. Those custom nugets are hosted in your private Azure DevOps Feed.
+And when you try to build the image you get one of the following errors:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">/src/MyConsoleApplication.csproj : error NU1101: Unable to find package MyOwn.EmailService. No packages exist with this id in source<span style="color:#f92672">(</span>s<span style="color:#f92672">)</span>: nuget.org
   Failed to restore /src/MyConsoleApplication.csproj <span style="color:#f92672">(</span>in 2.37 sec<span style="color:#f92672">)</span>.
 </code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">C:<span style="color:#ae81ff">\P</span>rogram Files<span style="color:#ae81ff">\d</span>otnet<span style="color:#ae81ff">\s</span>dk<span style="color:#ae81ff">\3</span>.1.301<span style="color:#ae81ff">\N</span>uGet.targets<span style="color:#f92672">(</span>128,5<span style="color:#f92672">)</span>: error : Unable to load the service index <span style="color:#66d9ef">for</span> source https://pkgs.dev.azure.com/cpn/_packaging/my-very-private-feed/nuget/v3/index.json. <span style="color:#f92672">[</span>C:<span style="color:#ae81ff">\s</span>rc<span style="color:#ae81ff">\M</span>yConsoleApplication.csproj<span style="color:#f92672">]</span>
@@ -172,10 +165,11 @@ I&rsquo;m pretty confident that some of these errors are going to sound pretty f
 <li>Place a NuGet.Config file inside your application and use it when creating the image.</li>
 <li>Use the Azure Artifacts Credentials Provider</li>
 </ul>
-<p>The first option is the older one and used to be the way to do it.
+<p>The first option is the older one and used to be the way to do it.<br>
 The second one is the most recent one and in my opinion a better way to do it.</p>
-<p>Let&rsquo;s show somes examples, but first of all let&rsquo;s set everything up.</p>
-<p>1- I create a private Azure DevOps Feed:</p>
+<p>I&rsquo;m going to show you how you can fix it using both Linux and Windows Containers. But first I&rsquo;m going to set everything up on the Azure Devops end.</p>
+<p>I did the following steps on my Azure DevOps account:</p>
+<p>1- Create a private Azure DevOps Feed named <em><strong>&ldquo;my-very-private-feed&rdquo;</strong></em></p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#75715e">&lt;?xml version=&#34;1.0&#34; encoding=&#34;utf-8&#34;?&gt;</span>
 <span style="color:#f92672">&lt;configuration&gt;</span>
   <span style="color:#f92672">&lt;packageSources&gt;</span>
@@ -184,8 +178,8 @@ The second one is the most recent one and in my opinion a better way to do it.</
   <span style="color:#f92672">&lt;/packageSources&gt;</span>
 <span style="color:#f92672">&lt;/configuration&gt;</span>
 
-</code></pre></div><p>2- I pushed a custom Nuget named <strong>&ldquo;MyOwn.EmailService&rdquo;</strong> into my private Azure DevOps Feed.</p>
-<p>3- I created a .NETCore 3.1 console app that is using the nuget <strong>&ldquo;MyOwn.EmailService&rdquo;</strong></p>
+</code></pre></div><p>2- Push a custom Nuget named <em><strong>&ldquo;MyOwn.EmailService&rdquo;</strong></em> into my the Azure DevOps feed.</p>
+<p>3- Create a .NETCore 3.1 console app that uses the <em><strong>&ldquo;MyOwn.EmailService&rdquo;</strong></em> nuget</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">
 <span style="color:#f92672">&lt;Project</span> <span style="color:#a6e22e">Sdk=</span><span style="color:#e6db74">&#34;Microsoft.NET.Sdk&#34;</span><span style="color:#f92672">&gt;</span>
 
@@ -200,7 +194,7 @@ The second one is the most recent one and in my opinion a better way to do it.</
 
 <span style="color:#f92672">&lt;/Project&gt;</span>
 
-</code></pre></div><p>4 - I built a DockerFile</p>
+</code></pre></div><p>4 - Create a DockerFile for the app</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-docker" data-lang="docker"><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> mcr.microsoft.com/dotnet/core/runtime:3.1-buster-slim AS base</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">WORKDIR</span><span style="color:#e6db74"> /app</span><span style="color:#960050;background-color:#1e0010">
@@ -222,7 +216,8 @@ The second one is the most recent one and in my opinion a better way to do it.</
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> --from<span style="color:#f92672">=</span>publish /app/publish .<span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">ENTRYPOINT</span> [<span style="color:#e6db74">&#34;dotnet&#34;</span>, <span style="color:#e6db74">&#34;MyConsoleApplication.dll&#34;</span>]<span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010">
-</span></code></pre></div><p>And when I try to built the image it fails miserably with a 401 error. Let&rsquo;s fix it.</p>
+</span></code></pre></div><p>And when everything is set it up if I try to built the image it fails miserably with a 401 error&hellip; <br>
+Let&rsquo;s see how to fix it.</p>
 <h2 id="scenario-1--using-a-nugetconfig">Scenario 1 : Using a NuGet.Config</h2>
 <hr>
 <p>Create a NuGet.Config and place it within the app.<br>
@@ -265,13 +260,13 @@ You also need to create a PAT <em>(Personal Access Token)</em> to authenticate a
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> --from<span style="color:#f92672">=</span>publish /app/publish .<span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">ENTRYPOINT</span> [<span style="color:#e6db74">&#34;dotnet&#34;</span>, <span style="color:#e6db74">&#34;MyConsoleApplication.dll&#34;</span>]<span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010">
-</span></code></pre></div><p>And it works flawlessly.</p>
+</span></code></pre></div><p>And it everything works flawlessly.</p>
 <h2 id="scenario-2-using-the-artifacts-credential-provider">Scenario 2: Using the Artifacts Credential Provider</h2>
 <hr>
 <p>The Azure Artifacts Credentials provider is an executable that eases the acquisition of credentials needed to restore NuGet packages.<br>
 You can read more about it <a href="https://github.com/microsoft/artifacts-credprovider">here</a></p>
 <p>In that scenario we are going to use a bash script to install the credential provider, and also we are going to specify some environment variables for the provider to work.</p>
-<p>We need to specify:</p>
+<p>We need the following variables:</p>
 <ul>
 <li>NUGET_CREDENTIALPROVIDER_SESSIONTOKENCACHE_ENABLED: Controls whether or not the session token is saved to disk. If false, the Credential Provider will prompt for auth every time.</li>
 <li>VSS_NUGET_EXTERNAL_FEED_ENDPOINTS: A JSON that contains an array of service endpoints, usernames and access tokens.
@@ -314,7 +309,7 @@ The provider authenticates against all the providers found inside the array, so 
 Let&rsquo;s try to replicate the same scenarios but these time using Windows Containers.</p>
 <h3 id="scenario-1--using-the-nugetconfig-with-a-nanoserver-image">Scenario 1 : Using the Nuget.Config with a nanoserver image</h3>
 <hr>
-<p>The only difference is that I&rsquo;m using a windows nanoserver image instead of a linux image.</p>
+<p>The only difference with the Linux scenario is that I&rsquo;m using a windows nanoserver image</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-docker" data-lang="docker"><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> mcr.microsoft.com/dotnet/core/runtime:3.1-nanoserver-1903 AS base</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">WORKDIR</span><span style="color:#e6db74"> /app</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010">
@@ -339,9 +334,9 @@ Let&rsquo;s try to replicate the same scenarios but these time using Windows Con
 </span></code></pre></div><p>It works without any hitch.</p>
 <h3 id="scenario-2-using-the-artifacts-credential-provider-1">Scenario 2: Using the Artifacts Credential Provider</h3>
 <p>That scenario is the real pain!</p>
-<p>We are running on windows containers so we cannot use the bash script to install the provider, instead of using the bash script we are going to use another script written in Powershell.<br>
+<p>We are running on windows containers, so we cannot use the bash script to install the provider, instead of using the bash script we are going to use another script written in Powershell.<br>
 That&rsquo;s not a problem at all because the nanoserver image comes with Powershell Core already installed.</p>
-<p>The problem is that the credential provider installer doesn&rsquo;t play nice with the nanoserver image. The solution is to install the credentials provider in a <strong>windows server core</strong> image and copy the output into the nanoserver image&hellip;</p>
+<p>The real problem is that the credential provider installer doesn&rsquo;t play nice with the nanoserver image. The solution is to install the credentials provider in a <strong>windows server core</strong> image and copy the folder where the credential provider is installed into the nanoserver image.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-docker" data-lang="docker"><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># escape=`</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010">
@@ -382,8 +377,9 @@ That&rsquo;s not a problem at all because the nanoserver image comes with Powers
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> --from<span style="color:#f92672">=</span>publish /app/publish .<span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">ENTRYPOINT</span> [<span style="color:#e6db74">&#34;dotnet&#34;</span>, <span style="color:#e6db74">&#34;MyConsoleApplication.dll&#34;</span>]<span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010">
-</span></code></pre></div><p>At the end of the day, it doesn&rsquo;t matter if you&rsquo;re working with windows or linux containers you can use both scenarios indiscriminately.<br>
-I personally prefer to use the Credential Provider instead of the Nuget.Config because it one less file to manage in my repository.</p>
+</span></code></pre></div><p>At the end of the day, it doesn&rsquo;t matter if you&rsquo;re working with windows or linux containers you can use both solutions indiscriminately.<br>
+Using the credentials provider solution with Windows container is more painful because of these weird bug, but I&rsquo;m pretty confident that Microsoft is going to fix it in a near future.<br>
+I used during many years the NuGet.Config solution but nowadays I prefer to use the Credential Provider because it one less file to manage in my repository.</p>
 
     </div>
     

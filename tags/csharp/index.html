@@ -35,7 +35,7 @@
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://www.mytechramblings.com/tags/csharp/" />
-<meta property="og:updated_time" content="2020-07-14T18:12:41+02:00" /><meta property="og:site_name" content="my tech ramblings" />
+<meta property="og:updated_time" content="2020-07-14T19:12:41+02:00" /><meta property="og:site_name" content="my tech ramblings" />
 
 
 
@@ -144,10 +144,8 @@
         
           
             Let’s go for a quick post this time.
-You are trying to create a Docker image from an app, that application is using some custom Nugets.
-Those Nugets are hosted in your private Azure DevOps Feed.
-I’m pretty confident that some of these errors are going to sound pretty familiar to you when you try to build the image:
-/src/MyConsoleApplication.csproj : error NU1101: Unable to find package MyOwn.EmailService. No packages exist with this id in source(s): nuget.
+Imagine you’re trying to create a Docker image from an application and it is using some custom nugets. Those custom nugets are hosted in your private Azure DevOps Feed. And when you try to build the image you get one of the following errors:
+/src/MyConsoleApplication.csproj : error NU1101: Unable to find package MyOwn.EmailService. No packages exist with this id in source(s): nuget.org Failed to restore /src/MyConsoleApplication.
           
         
       </div>
