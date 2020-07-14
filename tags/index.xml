@@ -9,10 +9,110 @@
     <description>Recent content in Tags on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 04 Jul 2020 17:30:06 +0200</lastBuildDate>
+    <lastBuildDate>Tue, 14 Jul 2020 18:12:41 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>containers</title>
+      <link>https://www.mytechramblings.com/tags/containers/</link>
+      <pubDate>Tue, 14 Jul 2020 18:12:41 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/containers/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>csharp</title>
+      <link>https://www.mytechramblings.com/tags/csharp/</link>
+      <pubDate>Tue, 14 Jul 2020 18:12:41 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/csharp/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>docker</title>
+      <link>https://www.mytechramblings.com/tags/docker/</link>
+      <pubDate>Tue, 14 Jul 2020 18:12:41 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/docker/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>nuget</title>
+      <link>https://www.mytechramblings.com/tags/nuget/</link>
+      <pubDate>Tue, 14 Jul 2020 18:12:41 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/nuget/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>windows</title>
+      <link>https://www.mytechramblings.com/tags/windows/</link>
+      <pubDate>Tue, 14 Jul 2020 18:12:41 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/windows/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>.NET</title>
@@ -60,26 +160,6 @@
       <pubDate>Sat, 04 Jul 2020 17:30:06 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/azure/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>csharp</title>
-      <link>https://www.mytechramblings.com/tags/csharp/</link>
-      <pubDate>Sat, 04 Jul 2020 17:30:06 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/csharp/</guid>
       <description>
         
           
