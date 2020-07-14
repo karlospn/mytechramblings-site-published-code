@@ -15,7 +15,7 @@
     
     
     <item>
-      <title>How to Restore a Nuget from an Azure DevOps Private Feed within Docker</title>
+      <title>How to restore nuget packages from an Azure DevOps Private Feed when building a Docker image</title>
       <link>https://www.mytechramblings.com/posts/how-to-use-a-private-nuget-feed-with-docker/</link>
       <pubDate>Tue, 14 Jul 2020 19:12:41 +0200</pubDate>
       
