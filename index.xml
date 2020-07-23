@@ -9,10 +9,31 @@
     <description>Recent content on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 14 Jul 2020 19:12:41 +0200</lastBuildDate>
+    <lastBuildDate>Tue, 21 Jul 2020 21:22:44 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Trying to automate Azure Active Directory App Registration process using Terraform</title>
+      <link>https://www.mytechramblings.com/posts/automate-azure-ad-app-registration-using-terraform/</link>
+      <pubDate>Tue, 21 Jul 2020 21:22:44 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/automate-azure-ad-app-registration-using-terraform/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          Today I want to try to use Terraform to automate the app registration process in Azure Active Directory.
+If you want to secure an application Azure Active Directory is a really good option, but I don&amp;rsquo;t want to configure my application on AAD manually, what I really want is to add a step in my CI / CD pipeline that does that for me, and for that purpose Terraform might be a good option.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>How to restore nuget packages from an Azure DevOps Private Feed when building a Docker image</title>

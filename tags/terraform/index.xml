@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>azure on my tech ramblings</title>
+    <title>terraform on my tech ramblings</title>
     
     
     
-    <link>https://www.mytechramblings.com/tags/azure/</link>
-    <description>Recent content in azure on my tech ramblings</description>
+    <link>https://www.mytechramblings.com/tags/terraform/</link>
+    <description>Recent content in terraform on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 21 Jul 2020 21:22:44 +0200</lastBuildDate>
     
-	<atom:link href="https://www.mytechramblings.com/tags/azure/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://www.mytechramblings.com/tags/terraform/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -30,26 +30,6 @@
         
           Today I want to try to use Terraform to automate the app registration process in Azure Active Directory.
 If you want to secure an application Azure Active Directory is a really good option, but I don&amp;rsquo;t want to configure my application on AAD manually, what I really want is to add a step in my CI / CD pipeline that does that for me, and for that purpose Terraform might be a good option.
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>Why and how you should add a healthcheck endpoint to your Wcf legacy applications</title>
-      <link>https://www.mytechramblings.com/posts/how-to-add-healthchecks-to-wcf-apps/</link>
-      <pubDate>Sat, 04 Jul 2020 17:30:06 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/posts/how-to-add-healthchecks-to-wcf-apps/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          Nowadays no one on his right mind is going to create a WCF from scratch. It really makes no sense to do it. It&amp;rsquo;s a deprecated technology, it does not work with .NET Core, only works on Windows OS and personally I found the configuration confusing as hell, every time I need to modify an existing one I have to spend a good amount of time trying to figure out what everything means.
           
         
         </description>

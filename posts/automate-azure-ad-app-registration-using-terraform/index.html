@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>Trying to automate Azure Active Directory App Registration process using Terraform :: my tech ramblings — A blog for writing about my techie ramblings</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Today I want to try to use Terraform to automate the app registration process in Azure Active Directory.
+If you want to secure an application Azure Active Directory is a really good option, but I don&amp;rsquo;t want to configure my application on AAD manually, what I really want is to add a step in my CI / CD pipeline that does that for me, and for that purpose Terraform might be a good option."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://www.mytechramblings.com/posts/automate-azure-ad-app-registration-using-terraform/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/assets/style.css">
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.mytechramblings.com/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://www.mytechramblings.com/img/favicon.png">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Trying to automate Azure Active Directory App Registration process using Terraform"/>
+<meta name="twitter:description" content="Today I want to try to use Terraform to automate the app registration process in Azure Active Directory.
+If you want to secure an application Azure Active Directory is a really good option, but I don&rsquo;t want to configure my application on AAD manually, what I really want is to add a step in my CI / CD pipeline that does that for me, and for that purpose Terraform might be a good option."/>
+
+
+
+<meta property="og:title" content="Trying to automate Azure Active Directory App Registration process using Terraform" />
+<meta property="og:description" content="Today I want to try to use Terraform to automate the app registration process in Azure Active Directory.
+If you want to secure an application Azure Active Directory is a really good option, but I don&rsquo;t want to configure my application on AAD manually, what I really want is to add a step in my CI / CD pipeline that does that for me, and for that purpose Terraform might be a good option." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.mytechramblings.com/posts/automate-azure-ad-app-registration-using-terraform/" />
+<meta property="article:published_time" content="2020-07-21T21:22:44+02:00" />
+<meta property="article:modified_time" content="2020-07-21T21:22:44+02:00" /><meta property="og:site_name" content="my tech ramblings" />
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://www.mytechramblings.com/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">my tech ramblings</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/automate-azure-ad-app-registration-using-terraform/">Trying to automate Azure Active Directory App Registration process using Terraform</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2020-07-21
+        </span>
+
+        
+          
+        
+      
+
+      
+      
+        <span class="post-read-time">— 8 min read</span>
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          #<a href="https://www.mytechramblings.com/tags/azure/">azure</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/terraform/">terraform</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/aad/">AAD</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <p>Today I want to try to use Terraform to automate the app registration process in Azure Active Directory.</p>
+<p>If you want to secure an application Azure Active Directory is a really good option, but I don&rsquo;t want to configure my application on AAD manually, what I really want is to add a step in my CI / CD pipeline that does that for me, and for that purpose Terraform might be a good option.</p>
+<p>Terraform already has an official Azure Active Directory provider written by Microsoft itself (<a href="https://www.terraform.io/docs/providers/azuread/index.html),">https://www.terraform.io/docs/providers/azuread/index.html),</a> so in today&rsquo;s post I&rsquo;m going to focus on trying it out.</p>
+<p>I&rsquo;m going to build a pretty common and straightforward scenario using the Terraform provider. The scenario is the following one:</p>
+<ul>
+<li>
+<p><strong>Payment API</strong>: That&rsquo;s going to be our resource server.</p>
+<ul>
+<li>It exposes 2 scopes : <strong>payment.write</strong> and <strong>payment.read</strong></li>
+<li>It has 2 application roles: <strong>Reader</strong> and <strong>Admin</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>Booking API</strong>:</p>
+<ul>
+<li>Consumes the Payment API using a Client Credentials flow.
+<ul>
+<li>Obtains an access_token from the AAD token endpoint and uses it to attain access to the Payment API.</li>
+</ul>
+</li>
+<li>It has the Payment API Reader Role assigned.</li>
+</ul>
+</li>
+<li>
+<p><strong>FrontEnd SPA</strong>:</p>
+<ul>
+<li>It&rsquo;s a <em>&ldquo;Single Page Application&rdquo;</em> written in some crazy Javascript framework.
+<ul>
+<li>Uses an implicit flow to obtain an access_token and id_token and uses the access_token to attain access to the Payment API.</li>
+</ul>
+</li>
+<li>The FrontEnd SPA app has permission only to ask for the payment.read scope.</li>
+</ul>
+</li>
+<li>
+<p><strong>Users</strong>:</p>
+<ul>
+<li>I have created  <strong>2 users</strong> in my AAD: <strong>John</strong> and <strong>Jane</strong>
+<ul>
+<li>Jane has assigned a Reader role in the Payment API app</li>
+<li>John has assigned an Admin role in the Payment API app</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Let&rsquo;s start building it, I need to register 3 apps. But first of all I need to configure the azuread provider.</p>
+<h2 id="step-1-configure-the-azure-ad-provider">Step 1: Configure the Azure AD provider</h2>
+<hr>
+<p>The first step is to configure the AzureAD Provider.<br>
+To authenticate against my AAD I&rsquo;m going to create a new Application and a Service Principal and use its client id and a client secret.<br>
+There are other options available to authenticate against the AAD using the provider, you can read it here :https://www.terraform.io/docs/providers/azuread/guides/service_principal_client_secret.html</p>
+<p>Basically what I&rsquo;m going to do is create a <em>&ldquo;master app&rdquo;</em> in my AAD, a &ldquo;master app&rdquo; is nothing more than an app with permissions to create another apps. Here is a detailed walkthrough about how to do it: <a href="https://www.terraform.io/docs/providers/azuread/guides/service_principal_configuration.html">https://www.terraform.io/docs/providers/azuread/guides/service_principal_configuration.html</a></p>
+<p>The first weird thing that you&rsquo;re going to find while creating the &ldquo;master app&rdquo; is the fact that the provider uses the <strong>Legacy Azure Active Directory API (Azure Active Directory Graph)</strong> instead of the newer MS Graph API.<br>
+That&rsquo;s a bad sign to begin with, it means that all the most recent features probably are not doable with the provider.<br>
+But let&rsquo;s going forward, that&rsquo;s the final look after registering in my AAD the master app and giving it the proper permissions:</p>
+<p><img src="/img/tf-aad-master-app.png" alt="master-app-config"></p>
+<p>Now we can configure the Terraform provider using the master app client_id and client_secret.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">
+provider <span style="color:#e6db74">&#34;azuread&#34;</span> {
+
+  client_id         = <span style="color:#e6db74">&#34;ba4d0620-0522-4ada-b0b6-0cdd8cfaeae7&#34;</span>
+  client_secret     = <span style="color:#e6db74">&#34;my_secret_goes_here&#34;</span>
+  tenant_id         = <span style="color:#e6db74">&#34;my_tenant_goes_here&#34;</span>
+  subscription_id   = <span style="color:#e6db74">&#34;my_subscription_id_goes_here&#34;</span>
+}
+
+</code></pre></div><h2 id="step-2-register-the-payment-api">Step 2: Register the payment API</h2>
+<hr>
+<p>Next step is to create the payment API using Terraform.
+The payment API has the following configuration:</p>
+<ul>
+<li>It exposes 2 scopes : payment.write and payment.read.</li>
+<li>It has 2 application roles: Reader and Writer.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">
+resource <span style="color:#e6db74">&#34;azuread_application&#34;</span> <span style="color:#e6db74">&#34;payments_api&#34;</span> {
+    name                       = <span style="color:#e6db74">&#34;payments_api&#34;</span>
+    available_to_other_tenants = <span style="color:#66d9ef">false</span>
+    oauth2_allow_implicit_flow = <span style="color:#66d9ef">false</span>
+    type                       = <span style="color:#e6db74">&#34;webapp/api&#34;</span>
+    identifier_uris            = [<span style="color:#e6db74">&#34;api://payment&#34;</span>]
+
+  
+    oauth2_permissions {
+        admin_consent_description  = <span style="color:#e6db74">&#34;Allow the application to access the commit payment methods&#34;</span>
+        admin_consent_display_name = <span style="color:#e6db74">&#34;payment.write&#34;</span>
+        is_enabled                 = <span style="color:#66d9ef">true</span>
+        type                       = <span style="color:#e6db74">&#34;Admin&#34;</span>
+        value                      = <span style="color:#e6db74">&#34;payment.write&#34;</span>
+    }
+
+    oauth2_permissions {
+        admin_consent_description  = <span style="color:#e6db74">&#34;Allow the application to access the read payment methods&#34;</span>
+        admin_consent_display_name = <span style="color:#e6db74">&#34;payment.read&#34;</span>
+        is_enabled                 = <span style="color:#66d9ef">true</span>
+        type                       = <span style="color:#e6db74">&#34;User&#34;</span>
+        value                      = <span style="color:#e6db74">&#34;payment.read&#34;</span>
+        user_consent_description  = <span style="color:#e6db74">&#34;Allow the application to access the read payment methods&#34;</span>
+        user_consent_display_name = <span style="color:#e6db74">&#34;payment.read&#34;</span>    
+    }
+
+    app_role {
+        allowed_member_types = [
+        <span style="color:#e6db74">&#34;User&#34;</span>,
+        <span style="color:#e6db74">&#34;Application&#34;</span>,
+        ]
+        description  = <span style="color:#e6db74">&#34;Can read and make payments&#34;</span>
+        display_name = <span style="color:#e6db74">&#34;Admin&#34;</span>
+        is_enabled   = <span style="color:#66d9ef">true</span>
+        value        = <span style="color:#e6db74">&#34;Admin&#34;</span>
+    }
+
+    app_role {
+        allowed_member_types = [
+        <span style="color:#e6db74">&#34;User&#34;</span>,
+        <span style="color:#e6db74">&#34;Application&#34;</span>,
+        ]
+
+        description  = <span style="color:#e6db74">&#34;Can only read payments&#34;</span>
+        display_name = <span style="color:#e6db74">&#34;Reader&#34;</span>
+        is_enabled   = <span style="color:#66d9ef">true</span>
+        value        = <span style="color:#e6db74">&#34;Reader&#34;</span>
+    } 
+}
+
+resource <span style="color:#e6db74">&#34;azuread_service_principal&#34;</span> <span style="color:#e6db74">&#34;payment_sp&#34;</span> {
+  application_id               = azuread_application.payments_api.application_id
+  app_role_assignment_required = <span style="color:#66d9ef">false</span>
+  tags = [ <span style="color:#e6db74">&#34;payment&#34;</span>, <span style="color:#e6db74">&#34;api&#34;</span>]
+}
+
+</code></pre></div><p>It&rsquo;s a pretty straightforward config file but I have encountered some issues while building it.</p>
+<p>The first issue:</p>
+<p>I can create the application roles but <strong>there is NO way to assign users or groups to those roles</strong>.<br>
+I can go into the  <em>&ldquo;Enterprise applications&rdquo;</em> blade in the Azure Active Directory Portal, select my payment app and  assign users and groups manually, but that&rsquo;s a bummer&hellip;</p>
+<p>Poking around Github (<a href="https://github.com/terraform-providers/terraform-provider-azuread">https://github.com/terraform-providers/terraform-provider-azuread</a>) I found that it&rsquo;s an already know issue  ( <a href="https://github.com/terraform-providers/terraform-provider-azuread/issues/230">https://github.com/terraform-providers/terraform-provider-azuread/issues/230</a>) and it seems that the issue is because the provider is using the legacy AAD api&hellip;</p>
+<p>The other issue I found is that not all the Manifest attributes are present.<br>
+For example, I like to change the <em>&ldquo;accessTokenAcceptedVersion&rdquo;</em> attribute so the token endpoint only generates tokens in the V2 format <em>(I will talk about that nonsensical behaviour in a future post&hellip;)</em> but I cannot do it with the provider, I have to change it manually again&hellip;</p>
+<h2 id="step-3-register-the-booking-api">Step 3: Register the Booking API</h2>
+<hr>
+<p>The Booking API has the following configuration:</p>
+<ul>
+<li>Consumes the Payment API using a Client Credentials flow.
+<ul>
+<li>Obtains an access_token from AAD and uses it to attain access to the Payment API.</li>
+</ul>
+</li>
+<li>The Booking API has the Payment API Reader Role assigned.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">
+resource <span style="color:#e6db74">&#34;azuread_application&#34;</span> <span style="color:#e6db74">&#34;booking_api&#34;</span> {
+    name                       = <span style="color:#e6db74">&#34;booking_api&#34;</span>
+    available_to_other_tenants = <span style="color:#66d9ef">false</span>
+    oauth2_allow_implicit_flow = <span style="color:#66d9ef">false</span>
+    type                       = <span style="color:#e6db74">&#34;webapp/api&#34;</span>
+    identifier_uris            = [<span style="color:#e6db74">&#34;api://booking&#34;</span>]
+
+    required_resource_access {
+        resource_app_id = azuread_application.payments_api.application_id
+        resource_access {
+            id   = tolist(azuread_application.payments_api.app_role)[<span style="color:#ae81ff">0</span>].id
+            type = <span style="color:#e6db74">&#34;Role&#34;</span>
+        }
+    }
+}
+
+
+resource <span style="color:#e6db74">&#34;azuread_service_principal&#34;</span> <span style="color:#e6db74">&#34;booking_sp&#34;</span> {
+  application_id               = azuread_application.booking_api.application_id
+  app_role_assignment_required = <span style="color:#66d9ef">false</span>
+  tags = [ <span style="color:#e6db74">&#34;payment&#34;</span>, <span style="color:#e6db74">&#34;api&#34;</span>]
+}
+
+resource <span style="color:#e6db74">&#34;azuread_application_password&#34;</span> <span style="color:#e6db74">&#34;booking_api_pwd&#34;</span> {
+  application_object_id = azuread_application.booking_api.id
+  description           = <span style="color:#e6db74">&#34;My managed password&#34;</span>
+  value                 = <span style="color:#e6db74">&#34;VT=uSgbTanZhyz@%nL9Hpd+Tfay_MRV#&#34;</span>
+  end_date              = <span style="color:#e6db74">&#34;2099-01-01T01:02:03Z&#34;</span>
+}
+
+</code></pre></div><p>Apart from creating the application I&rsquo;m also creating a client secret to test the client credentials flow. Nonetheless there is another issue I found in the process.<br>
+The issue is that I cannot grant consent to use the role in an automatically way, so I need to do it manually&hellip;</p>
+<p><img src="/img/aad-api-grant-admin-consent.png" alt="booking-app-grant-admin-consent"></p>
+<p>After doing that, let&rsquo;s test it and see if it works. I&rsquo;m going to request an access token using the Booking API client id and client secret.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">
+curl -X POST <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  https://login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/oauth2/v2.0/token <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  -H <span style="color:#e6db74">&#39;Cache-Control: no-cache&#39;</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  -H <span style="color:#e6db74">&#39;Content-Type: application/x-www-form-urlencoded&#39;</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  -d <span style="color:#e6db74">&#39;grant_type=client_credentials&amp;client_id=5cd49945-086c-4605-9f86-00fe08134dab&amp;client_secret=VT%3DuSgbTanZhyz%40%25nL9Hpd%2BTfay_MRV%23&amp;scope=api%3A%2F%2Fpayment%2F.default&#39;</span>
+
+</code></pre></div><p>And it returns an access_token with the following attributes:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#f92672">&#34;aud&#34;</span>: <span style="color:#e6db74">&#34;api://payment&#34;</span>,
+  <span style="color:#f92672">&#34;iss&#34;</span>: <span style="color:#e6db74">&#34;https://sts.windows.net/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/&#34;</span>,
+  <span style="color:#f92672">&#34;iat&#34;</span>: <span style="color:#ae81ff">1595422827</span>,
+  <span style="color:#f92672">&#34;nbf&#34;</span>: <span style="color:#ae81ff">1595422827</span>,
+  <span style="color:#f92672">&#34;exp&#34;</span>: <span style="color:#ae81ff">1595426727</span>,
+  <span style="color:#f92672">&#34;aio&#34;</span>: <span style="color:#e6db74">&#34;E2BgYGAtTs258t5NtmeuveDN2979AA==&#34;</span>,
+  <span style="color:#f92672">&#34;appid&#34;</span>: <span style="color:#e6db74">&#34;5cd49945-086c-4605-9f86-00fe08134dab&#34;</span>,
+  <span style="color:#f92672">&#34;appidacr&#34;</span>: <span style="color:#e6db74">&#34;1&#34;</span>,
+  <span style="color:#f92672">&#34;idp&#34;</span>: <span style="color:#e6db74">&#34;https://sts.windows.net/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/&#34;</span>,
+  <span style="color:#f92672">&#34;oid&#34;</span>: <span style="color:#e6db74">&#34;3b78fe9b-7641-4a73-9b0c-bd05383a27bc&#34;</span>,
+  <span style="color:#f92672">&#34;rh&#34;</span>: <span style="color:#e6db74">&#34;0.AR8A4nEGijA6ME2cua1wm5x0SkWZ1FxsCAVGn4YA_ggTTasfALk.&#34;</span>,
+  <span style="color:#f92672">&#34;roles&#34;</span>: [
+    <span style="color:#e6db74">&#34;Reader&#34;</span>
+  ],
+  <span style="color:#f92672">&#34;sub&#34;</span>: <span style="color:#e6db74">&#34;3b78fe9b-7641-4a73-9b0c-bd05383a27bc&#34;</span>,
+  <span style="color:#f92672">&#34;tid&#34;</span>: <span style="color:#e6db74">&#34;8a0671e2-3a30-4d30-9cb9-ad709b9c744a&#34;</span>,
+  <span style="color:#f92672">&#34;uti&#34;</span>: <span style="color:#e6db74">&#34;41oex9rUzU28oibY_D0hAA&#34;</span>,
+  <span style="color:#f92672">&#34;ver&#34;</span>: <span style="color:#e6db74">&#34;1.0&#34;</span>
+}
+</code></pre></div><p>So far so good, the issuer and the audience are both correct and it also contains the Reader application Role.</p>
+<h2 id="step-4-register-the-frontend-spa">Step 4: Register the FrontEnd SPA</h2>
+<hr>
+<p>The FrontEnd SPA has the following configuration:</p>
+<ul>
+<li>It&rsquo;s a public <em>&ldquo;Single Page Application&rdquo;</em> written in Angular. Uses an implicit flow to obtain an access_token and a id_token and uses the access_token to attain access to the Payment API</li>
+<li>The FrontEnd SPA app has permission only to ask for the payment.read
+scope</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">
+resource <span style="color:#e6db74">&#34;azuread_application&#34;</span> <span style="color:#e6db74">&#34;frontend_spa&#34;</span> {
+    name                       = <span style="color:#e6db74">&#34;frontend_spa&#34;</span>
+    available_to_other_tenants = <span style="color:#66d9ef">false</span>
+    oauth2_allow_implicit_flow = <span style="color:#66d9ef">true</span>
+    type                       = <span style="color:#e6db74">&#34;webapp/api&#34;</span>
+    reply_urls                 = [<span style="color:#e6db74">&#34;http://localhost:4200&#34;</span>]
+    logout_url                 = <span style="color:#e6db74">&#34;https://localhost:4200/logout&#34;</span>
+    public_client              = <span style="color:#66d9ef">true</span>
+
+    required_resource_access {
+        resource_app_id = azuread_application.payments_api.application_id
+        resource_access {
+            id   = tolist(azuread_application.payments_api.oauth2_permissions)[<span style="color:#ae81ff">1</span>].id
+            type = <span style="color:#e6db74">&#34;Scope&#34;</span>
+        }
+    }
+}
+
+
+resource <span style="color:#e6db74">&#34;azuread_service_principal&#34;</span> <span style="color:#e6db74">&#34;frontend_spa&#34;</span> {
+  application_id               = azuread_application.frontend_spa.application_id
+  app_role_assignment_required = <span style="color:#66d9ef">false</span>
+  tags = [ <span style="color:#e6db74">&#34;frontend&#34;</span>, <span style="color:#e6db74">&#34;spa&#34;</span>]
+}
+</code></pre></div><p>I have found the same problem that I mention in the step 3: I cannot grant admin content to use the payment API scopes in a programmatic way.</p>
+<p><img src="/img/aad-spa-grant-admin-consent.png" alt="frontend-spa-grant-admin-consent"></p>
+<p>And there is another issue that bugs me, the issue is that if you&rsquo;re using the Azure Portal to register an SPA you can specify that the application type is &ldquo;SPA&rdquo; and use the grant type auth code flow with PKCE, but that option is missing here, so I&rsquo;m forced to use and implicit flow.<br>
+It seems that someone else opened an issue about it in Github (<a href="https://github.com/terraform-providers/terraform-provider-azuread/issues/286">https://github.com/terraform-providers/terraform-provider-azuread/issues/286</a>)</p>
+<p>But anyway, let&rsquo;s test it.</p>
+<p>I&rsquo;m going to begin an implicit flow and login into the AAD as <strong>Jane</strong>.<br>
+Remember from the step 2 that I have <strong>manually</strong> assigned a Reader role in the Payment API to Jane.<br>
+The fastest way to begin an implicit flow is by building the URI by myself.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">
+https://login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/oauth2/v2.0/authorize
+  ?client_id<span style="color:#f92672">=</span>c6b731f2-785b-4206-974a-db8d34eb4397
+  &amp;redirect_uri<span style="color:#f92672">=</span>https%3A%2F%2Foidcdebugger.com%2Fdebug
+  &amp;scope<span style="color:#f92672">=</span>api%3A%2F%2Fpayment%2Fpayment.read%20openid
+  &amp;response_type<span style="color:#f92672">=</span>token%20id_token
+  &amp;response_mode<span style="color:#f92672">=</span>form_post
+  &amp;nonce<span style="color:#f92672">=</span>iaiqs1h3pa
+
+</code></pre></div><p>And it returns an access_token with the following attributes:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+   <span style="color:#f92672">&#34;aud&#34;</span>: <span style="color:#e6db74">&#34;api://payment&#34;</span>,
+   <span style="color:#f92672">&#34;iss&#34;</span>: <span style="color:#e6db74">&#34;https://sts.windows.net/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/&#34;</span>,
+   <span style="color:#f92672">&#34;iat&#34;</span>: <span style="color:#ae81ff">1595425611</span>,
+   <span style="color:#f92672">&#34;nbf&#34;</span>: <span style="color:#ae81ff">1595425611</span>,
+   <span style="color:#f92672">&#34;exp&#34;</span>: <span style="color:#ae81ff">1595429511</span>,
+   <span style="color:#f92672">&#34;acr&#34;</span>: <span style="color:#e6db74">&#34;1&#34;</span>,
+   <span style="color:#f92672">&#34;aio&#34;</span>: <span style="color:#e6db74">&#34;ATQAy/8QAAAAOe3HCSYBGo663Mt+8XSEK/yY+P8Ao4qLGurtTMz5S9VtG7FBYdfpCiPb3qP59gHO&#34;</span>,
+   <span style="color:#f92672">&#34;amr&#34;</span>: [
+      <span style="color:#e6db74">&#34;pwd&#34;</span>
+   ],
+   <span style="color:#f92672">&#34;appid&#34;</span>: <span style="color:#e6db74">&#34;c6b731f2-785b-4206-974a-db8d34eb4397&#34;</span>,
+   <span style="color:#f92672">&#34;appidacr&#34;</span>: <span style="color:#e6db74">&#34;0&#34;</span>,
+   <span style="color:#f92672">&#34;given_name&#34;</span>: <span style="color:#e6db74">&#34;doe&#34;</span>,
+   <span style="color:#f92672">&#34;ipaddr&#34;</span>: <span style="color:#e6db74">&#34;00.00.000.0&#34;</span>,
+   <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;jane&#34;</span>,
+   <span style="color:#f92672">&#34;oid&#34;</span>: <span style="color:#e6db74">&#34;0a92ffc5-9551-47a0-baf0-7f3352eac015&#34;</span>,
+   <span style="color:#f92672">&#34;rh&#34;</span>: <span style="color:#e6db74">&#34;0.AR8A4nEGijA6ME2cua1wm5x0SvIxt8ZbeAZCl0rbjTTrQ5cfAAc.&#34;</span>,
+   <span style="color:#f92672">&#34;roles&#34;</span>: [
+      <span style="color:#e6db74">&#34;Reader&#34;</span>
+   ],
+   <span style="color:#f92672">&#34;scp&#34;</span>: <span style="color:#e6db74">&#34;payment.read&#34;</span>,
+   <span style="color:#f92672">&#34;sub&#34;</span>: <span style="color:#e6db74">&#34;ODPx3tnkeekXKN1Olvx8pD5e5PcXJMCg0LoaHz3F14g&#34;</span>,
+   <span style="color:#f92672">&#34;tid&#34;</span>: <span style="color:#e6db74">&#34;8a0671e2-3a30-4d30-9cb9-ad709b9c744a&#34;</span>,
+   <span style="color:#f92672">&#34;unique_name&#34;</span>: <span style="color:#e6db74">&#34;jane@cpnoutlook.onmicrosoft.com&#34;</span>,
+   <span style="color:#f92672">&#34;upn&#34;</span>: <span style="color:#e6db74">&#34;jane@cpnoutlook.onmicrosoft.com&#34;</span>,
+   <span style="color:#f92672">&#34;uti&#34;</span>: <span style="color:#e6db74">&#34;wYVNdVa5Bk6FE7iZjNkjAA&#34;</span>,
+   <span style="color:#f92672">&#34;ver&#34;</span>: <span style="color:#e6db74">&#34;1.0&#34;</span>
+}
+</code></pre></div><p>Everything looks alright: issuer, audience, scopes, upn, roles.</p>
+<h2 id="conclusion">Conclusion</h2>
+<hr>
+<p>I tried to build a pretty common scenario and as you can see it&rsquo;s pretty straightforward to register an app on AAD using Terraform. If you already have a knowledge about how AAD works it&rsquo;s going to be easy work switching to Terraform.<br>
+But be aware that some features are missing, just tinkering with the provider for a very brief period of time I have already found some missing features:</p>
+<ul>
+<li>You cannot assign users or groups into an app</li>
+<li>You cannot grant admin consent programatically</li>
+<li>It&rsquo;s missing the grant type auth code flow with PKCE</li>
+</ul>
+<p>Those issues can be resolved using Powershell or the AZ CLI and building some kind of script that fills in those missing steps, but I don&rsquo;t want to manage both files.</p>
+<p>I&rsquo;m also surprised that the provider is using the Legacy Azure Active Directory API (Azure Active Directory Graph) instead of the newer MS Graph API, that raises some doubts about the adoption of the new features that are only possible using the newer Graph API, so be aware of it.</p>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://www.mytechramblings.com/posts/how-to-use-a-private-nuget-feed-with-docker/">
+                  <span class="button__text">How to restore nuget packages from an Azure DevOps Private Feed when building a Docker image</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2020 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>Theme created by <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://www.mytechramblings.com/assets/main.js"></script>
+<script src="https://www.mytechramblings.com/assets/prism.js"></script>
+
+      
+    </div>
+
+    
+      
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-170300931-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+    
+  </body>
+</html>

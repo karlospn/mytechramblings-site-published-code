@@ -3,6 +3,41 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://www.mytechramblings.com/tags/aad/</loc>
+    <lastmod>2020-07-21T21:22:44+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/tags/azure/</loc>
+    <lastmod>2020-07-21T21:22:44+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/</loc>
+    <lastmod>2020-07-21T21:22:44+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/posts/</loc>
+    <lastmod>2020-07-21T21:22:44+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/tags/</loc>
+    <lastmod>2020-07-21T21:22:44+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/tags/terraform/</loc>
+    <lastmod>2020-07-21T21:22:44+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/posts/automate-azure-ad-app-registration-using-terraform/</loc>
+    <lastmod>2020-07-21T21:22:44+02:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://www.mytechramblings.com/tags/containers/</loc>
     <lastmod>2020-07-14T19:12:41+02:00</lastmod>
   </url>
@@ -23,22 +58,7 @@
   </url>
   
   <url>
-    <loc>https://www.mytechramblings.com/</loc>
-    <lastmod>2020-07-14T19:12:41+02:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://www.mytechramblings.com/tags/nuget/</loc>
-    <lastmod>2020-07-14T19:12:41+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://www.mytechramblings.com/posts/</loc>
-    <lastmod>2020-07-14T19:12:41+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://www.mytechramblings.com/tags/</loc>
     <lastmod>2020-07-14T19:12:41+02:00</lastmod>
   </url>
   
@@ -54,11 +74,6 @@
   
   <url>
     <loc>https://www.mytechramblings.com/tags/appservices/</loc>
-    <lastmod>2020-07-04T17:30:06+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://www.mytechramblings.com/tags/azure/</loc>
     <lastmod>2020-07-04T17:30:06+02:00</lastmod>
   </url>
   
