@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>A practical example of GitOps using Azure DevOps, Azure ACR, Helm, Flux and Kubernetes :: my tech ramblings — A blog for writing about my techie ramblings</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="GitOps is a term introduced by WeaveWorks a few years ago (https://www.weave.works/blog/gitops-operations-by-pull-request)
+GitOps is a way of implementing Continuous Deployment. The core idea of GitOps is having a Git repository that always contains declarative descriptions of the infrastructure currently desired in the production environment and an automated process to make the production environment match the described state in the repository.
+If you want to deploy a new application or update an existing one, you only need to update the repository - the automated process handles everything else."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://www.mytechramblings.com/posts/gitops-with-azure-devops-helm-acr-flux-and-k8s/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/assets/style.css">
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.mytechramblings.com/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://www.mytechramblings.com/img/favicon.png">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="A practical example of GitOps using Azure DevOps, Azure ACR, Helm, Flux and Kubernetes"/>
+<meta name="twitter:description" content="GitOps is a term introduced by WeaveWorks a few years ago (https://www.weave.works/blog/gitops-operations-by-pull-request)
+GitOps is a way of implementing Continuous Deployment. The core idea of GitOps is having a Git repository that always contains declarative descriptions of the infrastructure currently desired in the production environment and an automated process to make the production environment match the described state in the repository.
+If you want to deploy a new application or update an existing one, you only need to update the repository - the automated process handles everything else."/>
+
+
+
+<meta property="og:title" content="A practical example of GitOps using Azure DevOps, Azure ACR, Helm, Flux and Kubernetes" />
+<meta property="og:description" content="GitOps is a term introduced by WeaveWorks a few years ago (https://www.weave.works/blog/gitops-operations-by-pull-request)
+GitOps is a way of implementing Continuous Deployment. The core idea of GitOps is having a Git repository that always contains declarative descriptions of the infrastructure currently desired in the production environment and an automated process to make the production environment match the described state in the repository.
+If you want to deploy a new application or update an existing one, you only need to update the repository - the automated process handles everything else." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.mytechramblings.com/posts/gitops-with-azure-devops-helm-acr-flux-and-k8s/" />
+<meta property="article:published_time" content="2020-07-29T22:10:21+02:00" />
+<meta property="article:modified_time" content="2020-07-29T22:10:21+02:00" /><meta property="og:site_name" content="my tech ramblings" />
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://www.mytechramblings.com/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">my tech ramblings</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/gitops-with-azure-devops-helm-acr-flux-and-k8s/">A practical example of GitOps using Azure DevOps, Azure ACR, Helm, Flux and Kubernetes</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2020-07-29
+        </span>
+
+        
+          
+        
+      
+
+      
+      
+        <span class="post-read-time">— 10 min read</span>
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          #<a href="https://www.mytechramblings.com/tags/azure/">azure</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/acr/">acr</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/kubernetes/">kubernetes</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/gitops/">gitops</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/helm/">helm</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <p>GitOps is a term introduced by WeaveWorks a few years ago (<a href="https://www.weave.works/blog/gitops-operations-by-pull-request">https://www.weave.works/blog/gitops-operations-by-pull-request</a>)</p>
+<p>GitOps is a way of implementing Continuous Deployment. The core idea of GitOps is having a Git repository that always contains declarative descriptions of the infrastructure currently desired in the production environment and an automated process to make the production environment match the described state in the repository.<br>
+If you want to deploy a new application or update an existing one, you only need to update the repository - the automated process handles everything else.</p>
+<p>In these post I want to build a practical example of GitOps, it&rsquo;s not going to be a production-ready example but nonetheless it&rsquo;s going to be an interesting proof of concept, so let&rsquo;s try it.</p>
+<h2 id="components">Components</h2>
+<hr>
+<p>I&rsquo;m going to use the following components:</p>
+<ul>
+<li><strong>Azure DevOps</strong> as my VCS (version control system)</li>
+<li><strong>Azure ACR</strong> as my container registry and also as my helm chart repository.</li>
+<li><strong>Kubernetes</strong> on-premise for hosting the applications.</li>
+<li><strong>Helm</strong> to manage the application kubernetes files.</li>
+<li><strong>Flux</strong> and <strong>Helm-Operator</strong> to deploy the applications in an automatic way into the cluster.</li>
+</ul>
+<p>That&rsquo;s a diagram of how the components are going to interact.</p>
+<p><img src="/img/gitops-ci.png" alt="diagram"></p>
+<p>Let me explain a little bit about how the workflow works:</p>
+<p>1- The <strong>developer</strong> creates a new application an pushes the source code into an Azure DevOps repository.</p>
+<p>2- The <strong>code pushed</strong> triggers an Azure Pipeline that creates a container image and a Helm chart and pushes everything into an existing Azure Container Registry.</p>
+<p>3- The <strong>DevOps Team</strong> has a <strong>centralized repository</strong> where they maintain a declarative description of all the components deployed into the Kubernetes cluster.</p>
+<p>4- The <strong>DevOps Team</strong> pushes a new file into the <strong>centralized repository</strong>, that file contains the description of the new application that the <strong>developer</strong> has created on <strong>step 1</strong>.<br>
+<strong>Flux</strong> is keeping watch for changes in the centralized repository and when it sees a new file, it picks it up and deploys the new application using the Helm chart that we created in <strong>step 2.</strong></p>
+<p><em>**In my example I&rsquo;m using 2 different actors: a developer and a devops team, but there are tons of viable combinations possible, for example:</em> <br>
+<em>You might not need two actors, it could be the same actor that does all the steps by himself. Or maybe you want even more actors because somebody needs to test and validate the image after being pushed into ACR.</em></p>
+<p>Anyways, let&rsquo;s begin building the workflow.</p>
+<h2 id="step-0---initial-setup">Step 0 - Initial setup</h2>
+<hr>
+<p>1- On my Azure DevOps account I&rsquo;m just going to create:</p>
+<ul>
+<li>An Azure Service connection with permissions to push and pulll images from ACR.</li>
+<li>An Azure DevOps Git repository named <em><strong>&ldquo;AppA&rdquo;</strong></em>:
+<ul>
+<li>That&rsquo;s where the <strong>application source code</strong> is going to be.</li>
+</ul>
+</li>
+<li>An Azure DevOps Git repository named <em><strong>&ldquo;Manifests&rdquo;</strong></em>:
+<ul>
+<li>That&rsquo;s the <strong>centralized repository</strong> that Flux is going to monitor.</li>
+</ul>
+</li>
+</ul>
+<p>2 - On my Azure subscription I&rsquo;m going to create an Azure Container Registry called &ldquo;<em><strong>acrgitopsdev</strong></em>&rdquo;</p>
+<h2 id="step-1---creating-an-application">Step 1 - Creating an application</h2>
+<hr>
+<p>It&rsquo;s going to be a .NET Core 3.1 WebAPI.  The application per se it&rsquo;s not important, and that&rsquo;s why I&rsquo;m not going to explain how to build it. But there are a couple of things I want to remark:</p>
+<ul>
+<li>The app needs to have a <em>DockerFile</em>, because I&rsquo;m using Kubernetes and Kubernetes likes containers&hellip;</li>
+<li>The app also needs to have a <em>/chart</em> folder. That folder is going to contain all the Kubernetes definition files that the application needs.</li>
+</ul>
+<p>An example of the application structure would be something like this:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">.
+│   .gitignore
+│   azure-pipelines.yml
+│   README.md
+│
+└───AppA.WebApi
+    │   .dockerignore
+    │   AppA.WebApi.csproj
+    │   AppA.WebApi.sln
+    │   appsettings.Development.json
+    │   appsettings.json
+    │   Dockerfile
+    │   Dockerfile.develop
+    │   Program.cs
+    │   Startup.cs
+    │   WeatherForecast.cs
+    │
+    ├───chart
+    │   │   .helmignore
+    │   │   Chart.yaml
+    │   │   values.yaml
+    │   │
+    │   └───templates
+    │           deployment.yaml
+    │           ingress.yaml
+    │           secrets.yaml
+    │           service.yaml
+    │           _helpers.tpl
+    │
+    ├───Controllers
+    │       WeatherForecastController.cs
+    │
+    └───Properties
+            launchSettings.json
+
+</code></pre></div><p>As I pointed out the app contains a Dockerfile and also a <em>/chart</em> folder.</p>
+<p>After seeing that you could argue that maybe I should not place the Kubernetes files / Chart files within the application code and maybe I should place it directly in the centralized repository, and that&rsquo;s totally legit, but I prefer to have the application code and the application kubernetes definitions all in the same place.</p>
+<h2 id="step-2---building-an-azure-pipeline">Step 2 - Building an Azure Pipeline</h2>
+<hr>
+<p>We&rsquo;re going to build an Azure Pipeline that is going to do those 4 steps:</p>
+<ul>
+<li>Build the docker image</li>
+<li>Push the docker image into an existing ACR</li>
+<li>Package the helm chart</li>
+<li>Push the helm chart into an existing ACR</li>
+</ul>
+<p>That&rsquo;s the pipeline:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-YAML" data-lang="YAML"><span style="color:#66d9ef">trigger</span>:
+- master
+
+<span style="color:#66d9ef">resources</span>:
+- <span style="color:#66d9ef">repo</span>: self
+
+<span style="color:#66d9ef">variables</span>:
+  <span style="color:#66d9ef">HELM_EXPERIMENTAL_OCI</span>: <span style="color:#ae81ff">1</span>
+  <span style="color:#66d9ef">registryName</span>: <span style="color:#e6db74">&#39;acrgitopsdev&#39;</span>
+  <span style="color:#66d9ef">imageName</span>: <span style="color:#e6db74">&#39;appawebapi&#39;</span>
+  <span style="color:#66d9ef">BuildId</span>: <span style="color:#e6db74">&#39;$(Build.BuildId)&#39;</span>
+  <span style="color:#66d9ef">tag</span>: <span style="color:#e6db74">&#39;$(Build.BuildId)&#39;</span>
+
+<span style="color:#66d9ef">steps</span>:
+- <span style="color:#66d9ef">task</span>: AzureCLI@<span style="color:#ae81ff">2</span>
+  <span style="color:#66d9ef">inputs</span>:
+    <span style="color:#66d9ef">azureSubscription</span>: <span style="color:#e6db74">&#39;azure-dev-subscription&#39;</span>
+    <span style="color:#66d9ef">scriptType</span>: <span style="color:#e6db74">&#39;bash&#39;</span>
+    <span style="color:#66d9ef">scriptLocation</span>: <span style="color:#e6db74">&#39;inlineScript&#39;</span>
+    <span style="color:#66d9ef">inlineScript</span>: <span style="color:#e6db74">&#39;az acr login --name $(registryName)&#39;</span>
+    
+- <span style="color:#66d9ef">task</span>: AzureCLI@<span style="color:#ae81ff">2</span>
+  <span style="color:#66d9ef">inputs</span>:
+    <span style="color:#66d9ef">azureSubscription</span>: <span style="color:#e6db74">&#39;azure-dev-subscription&#39;</span>
+    <span style="color:#66d9ef">scriptType</span>: <span style="color:#e6db74">&#39;bash&#39;</span>
+    <span style="color:#66d9ef">scriptLocation</span>: <span style="color:#e6db74">&#39;inlineScript&#39;</span>
+    <span style="color:#66d9ef">inlineScript</span>: <span style="color:#e6db74">&#39;az acr build --image $(imageName):$(BuildId) --registry $(registryName) --file Dockerfile .&#39;</span>
+    <span style="color:#66d9ef">useGlobalConfig</span>: <span style="color:#66d9ef">true</span>
+    <span style="color:#66d9ef">workingDirectory</span>: <span style="color:#e6db74">&#39;$(Build.SourcesDirectory)/AppA.WebApi&#39;</span>
+
+- <span style="color:#66d9ef">task</span>: HelmInstaller@<span style="color:#ae81ff">1</span>
+  <span style="color:#66d9ef">inputs</span>:
+    <span style="color:#66d9ef">helmVersionToInstall</span>: <span style="color:#e6db74">&#39;latest&#39;</span>
+
+- <span style="color:#66d9ef">task</span>: replacetokens@<span style="color:#ae81ff">3</span>
+  <span style="color:#66d9ef">inputs</span>:
+    <span style="color:#66d9ef">targetFiles</span>: <span style="color:#e6db74">&#39;**/*.yaml&#39;</span>
+    <span style="color:#66d9ef">encoding</span>: <span style="color:#e6db74">&#39;auto&#39;</span>
+    <span style="color:#66d9ef">writeBOM</span>: <span style="color:#66d9ef">true</span>
+    <span style="color:#66d9ef">actionOnMissing</span>: <span style="color:#e6db74">&#39;warn&#39;</span>
+    <span style="color:#66d9ef">keepToken</span>: <span style="color:#66d9ef">false</span>
+    <span style="color:#66d9ef">tokenPrefix</span>: <span style="color:#e6db74">&#39;#{&#39;</span>
+    <span style="color:#66d9ef">tokenSuffix</span>: <span style="color:#e6db74">&#39;}#&#39;</span>
+    <span style="color:#66d9ef">useLegacyPattern</span>: <span style="color:#66d9ef">false</span>
+    <span style="color:#66d9ef">enableTelemetry</span>: <span style="color:#66d9ef">true</span>
+       
+- <span style="color:#66d9ef">task</span>: Bash@<span style="color:#ae81ff">3</span>
+  <span style="color:#66d9ef">inputs</span>:
+    <span style="color:#66d9ef">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+    <span style="color:#66d9ef">script</span>: <span style="color:#e6db74">|
+</span><span style="color:#e6db74">      helm package --destination $(Build.ArtifactStagingDirectory)/ --version $(BuildId).0.0 ./chart/ </span>
+    <span style="color:#66d9ef">workingDirectory</span>: <span style="color:#e6db74">&#39;$(Build.SourcesDirectory)/AppA.WebApi&#39;</span>
+
+- <span style="color:#66d9ef">task</span>: AzureCLI@<span style="color:#ae81ff">2</span>
+  <span style="color:#66d9ef">inputs</span>:
+    <span style="color:#66d9ef">azureSubscription</span>: <span style="color:#e6db74">&#39;azure-dev-subscription&#39;</span>
+    <span style="color:#66d9ef">scriptType</span>: <span style="color:#e6db74">&#39;bash&#39;</span>
+    <span style="color:#66d9ef">scriptLocation</span>: <span style="color:#e6db74">&#39;inlineScript&#39;</span>
+    <span style="color:#66d9ef">inlineScript</span>: <span style="color:#e6db74">&#39;az acr helm push -n $(registryName) $(Build.ArtifactStagingDirectory)/*.tgz&#39;</span>
+    <span style="color:#66d9ef">useGlobalConfig</span>: <span style="color:#66d9ef">true</span>
+
+</code></pre></div><p>Helm 3 needs the environment variable &ldquo;HELM_EXPERIMENTAL_OCI: 1&rdquo; defined or it won&rsquo;t work, so just put it there&hellip;</p>
+<p>I&rsquo;m using the Azure Pipeline <strong>BuildId</strong> to tag the docker image and also to set the Helm Chart version.<br>
+That&rsquo;s a simple Helm versioning strategy, using a 1-1 versioning just keeps the chart version in sync with the application. That approach makes version bumping very easy (you bump everything up) and also allows you to quickly track what application version is deployed on your cluster (same as chart version).<br>
+If you&rsquo;re interested in helm versioning strategies you can read it more here: <a href="https://codefresh.io/docs/docs/new-helm/helm-best-practices/">https://codefresh.io/docs/docs/new-helm/helm-best-practices/</a></p>
+<p>Let me detail a little bit what are the steps that I&rsquo;m doing inside the pipeline:</p>
+<ul>
+<li>Login into ACR.</li>
+<li>Build and push the image into ACR. I&rsquo;m doing both things with just a single command: <em>az acr build</em>.</li>
+<li>Install Helm 3.</li>
+<li>Replace tokens.</li>
+<li>Create the Helm Chart from the <em>/chart</em> folder using the Helm CLI.</li>
+<li>Push the Helm Chart into ACR using the AZ CLI.</li>
+</ul>
+<blockquote>
+<p><em>Why I&rsquo;m using the Replace Tokens task in my pipeline?</em> (<a href="https://marketplace.visualstudio.com/items?itemName=qetza.replacetokens">https://marketplace.visualstudio.com/items?itemName=qetza.replacetokens</a>)<br>
+That&rsquo;s because in the Kubernetes Deployment YAML file I defined the image i&rsquo;m using like this:</p>
+</blockquote>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">    <span style="color:#66d9ef">containers</span>:
+    - <span style="color:#66d9ef">name</span>: {{ .Chart.Name }}
+        <span style="color:#66d9ef">image</span>: <span style="color:#e6db74">&#34;{{ .Values.image.repository }}:#{tag}#&#34;</span> 
+</code></pre></div><blockquote>
+<p>As I previously said I&rsquo;m using the Azure Pipelines <strong>BuildId</strong> as my image tag and I only know the value <strong>after the pipeline has started</strong>, so I&rsquo;m using the replace tokens task to replace the <em>#{tag}#</em> placeholder with the BuildId while the Azure Pipeline is running.</p>
+</blockquote>
+<h2 id="step-3---installing-flux-and-the-helm-operator">Step 3 - Installing Flux and the Helm Operator</h2>
+<hr>
+<p>What is Flux? Flux is a tool that automatically ensures that the state of your Kubernetes cluster matches the configuration you’ve supplied in Git. It uses an operator in the cluster to trigger deployments inside Kubernetes, which means that you don’t need a separate continuous delivery tool.</p>
+<p>What is the Helm Operator?  The Helm Operator is a Kubernetes operator, allowing one to declaratively manage Helm chart releases. Combined with Flux this can be utilized to automate helm charts releases in a GitOps manner.</p>
+<p>You can read more about Flux and the Helm Operator here: <a href="https://docs.fluxcd.io/en/1.20.0/">https://docs.fluxcd.io/en/1.20.0/</a></p>
+<p>That&rsquo;s how it works:</p>
+<p><img src="/img/fluxcd-helm-operator-diagram.png" alt="flux-helm-diagram"></p>
+<p>I&rsquo;m going to enumerate the steps required to install both Flux and the Helm Operator into the Kubernetes cluster.</p>
+<p>1 - Create the Flux namespace:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl create ns flux
+</code></pre></div><p>2 - Add the Flux repository</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">helm repo add fluxcd https://charts.fluxcd.io
+</code></pre></div><p>3 - Apply the Helm Operator CRD</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/fluxcd/helm-operator/master/deploy/crds.yaml
+</code></pre></div><p>4 - Install Flux</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">helm upgrade -i flux fluxcd/flux --set git.url<span style="color:#f92672">=</span>git@ssh.dev.azure.com:v3/cpn/Provisioning/Manifests  --set registry.acr.enabled<span style="color:#f92672">=</span>true --namespace flux
+</code></pre></div><ul>
+<li>
+<p>The <strong>git.url</strong> attribute needs to be the <strong>Azure DevOps Repository URL</strong> that we want Flux to monitor. Flux is going to connect to the Git repo through <strong>SSH</strong>.</p>
+</li>
+<li>
+<p>The <strong>registry.acr.enabled</strong> attribute is needed because we are using ACR as our image registry.</p>
+</li>
+</ul>
+<p>5 - Giving Flux read and write access to the Azure DevOps repository</p>
+<p>In the previous step we told Flux which Azure DevOps git repository should monitor. Now we need to give Flux access to the git repository.<br>
+This is pretty straight-forward as Flux generates a SSH key at startup.</p>
+<p>To get the SSH public key generated by Flux you need to run:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl -n flux logs deployment/flux | grep identity.pub | cut -d <span style="color:#e6db74">&#39;&#34;&#39;</span> -f2
+</code></pre></div><p>And in order to sync Flux with your Git repository you need to add the key as an SSH public key in your Azure DevOps account settings.</p>
+<p><img src="/img/flux-ados-ssh.png" alt="Azure DevOps flux SSH key"></p>
+<p>6 - Install the Flux Operator</p>
+<p>That step is the most problematic one, that&rsquo;s because there are some authentication problems between the Flux Operator and ACR.</p>
+<p>I&rsquo;m not the only one facing the same problem, so I have stolen the solution found here:
+<a href="https://gaunacode.com/configuring-flux-to-use-helm-charts-from-azure-container-registry">https://gaunacode.com/configuring-flux-to-use-helm-charts-from-azure-container-registry</a></p>
+<p>Basically when we install the Helm-Operator we have to provide the following attributes:</p>
+<ul>
+<li>The ACR name.</li>
+<li>The client id of a service principal that has at least AcrPull rights to your ACR.</li>
+<li>The client secret of that service principal.</li>
+<li>The url of your ACR Helm endpoint. It must end with a slash.</li>
+</ul>
+<p>So the command is going to be something like:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">helm upgrade -i helm-operator fluxcd/helm-operator --set git.ssh.secretName<span style="color:#f92672">=</span>flux-git-deploy --set helm.versions<span style="color:#f92672">=</span>v3 --namespace flux --set configureRepositories.enable<span style="color:#f92672">=</span>true --set configureRepositories.repositories<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span>.name<span style="color:#f92672">=</span>acrgitopsdev,configureRepositories.repositories<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span>.url<span style="color:#f92672">=</span>https://acrgitopsdev.azurecr.io/helm/v1/repo,configureRepositories.repositories<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span>.username<span style="color:#f92672">=</span>put-your-sp-id-here,configureRepositories.repositories<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span>.password<span style="color:#f92672">=</span>put-your-sp-password-here
+</code></pre></div><blockquote>
+<p>You can do all those steps manually or create an Azure Pipelines to orchestrate all those commands.<br>
+To be honest, it&rsquo;s really easy to build the pipeline once you know all the commands you need to execute, so i&rsquo;m not going to waste time doing it.</p>
+</blockquote>
+<h2 id="step-4---creating-the-application-config-file">Step 4 - Creating the application config file</h2>
+<hr>
+<p>The last step is to create the application config file, push it into the &ldquo;<strong>Manifests</strong>&rdquo; repository and see if Flux is capable of deploying our application in our Kubernetes cluster.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">
+<span style="color:#66d9ef">apiVersion</span>: helm.fluxcd.io/v1
+<span style="color:#66d9ef">kind</span>: HelmRelease
+<span style="color:#66d9ef">metadata</span>:
+  <span style="color:#66d9ef">name</span>: appa
+<span style="color:#66d9ef">spec</span>:
+  <span style="color:#66d9ef">chart</span>:
+    <span style="color:#66d9ef">repository</span>: https://acrgitopsdev.azurecr.io/helm/v1/repo/
+    <span style="color:#66d9ef">name</span>: appawebapi
+    <span style="color:#66d9ef">version</span>: <span style="color:#ae81ff">158.0.0</span>
+  <span style="color:#66d9ef">values</span>:
+    <span style="color:#66d9ef">imagePullSecrets</span>:
+      - <span style="color:#66d9ef">name</span>: acr-gitdevops
+
+</code></pre></div><p>The only thing you need to specify in the  file is the Chart repository URL, the Chart name and the Chart version to deploy.<br>
+There are more options available when creating the config file, if you&rsquo;re interested you can read about it here: <a href="https://docs.fluxcd.io/projects/helm-operator/en/1.0.0-rc9/references/helmrelease-custom-resource.html">https://docs.fluxcd.io/projects/helm-operator/en/1.0.0-rc9/references/helmrelease-custom-resource.html</a></p>
+<p>In my case I need to define a secret and that&rsquo;s because Kubernetes uses an image pull secret to store information needed to authenticate to the container registry. <strong>If you&rsquo;re using AKS you don&rsquo;t need to do it.</strong><br>
+If you want to read more about it: <a href="https://docs.microsoft.com/es-es/azure/container-registry/container-registry-auth-kubernetes">https://docs.microsoft.com/es-es/azure/container-registry/container-registry-auth-kubernetes</a></p>
+<p>And that&rsquo;s it, we are done! Flux has deployed the app into our cluster.<br>
+Let&rsquo;s test it a little bit. If we change the chart version and commit the file again:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">
+<span style="color:#66d9ef">apiVersion</span>: helm.fluxcd.io/v1
+<span style="color:#66d9ef">kind</span>: HelmRelease
+<span style="color:#66d9ef">metadata</span>:
+  <span style="color:#66d9ef">name</span>: appa
+<span style="color:#66d9ef">spec</span>:
+  <span style="color:#66d9ef">chart</span>:
+    <span style="color:#66d9ef">repository</span>: https://acrgitopsdev.azurecr.io/helm/v1/repo/
+    <span style="color:#66d9ef">name</span>: appawebapi
+    <span style="color:#66d9ef">version</span>: <span style="color:#ae81ff">160.0.0</span>
+  <span style="color:#66d9ef">values</span>:
+    <span style="color:#66d9ef">imagePullSecrets</span>:
+      - <span style="color:#66d9ef">name</span>: acr-gitdevops
+
+</code></pre></div><p>Flux automatically picks the change (with a 5 minutes delay) and replaces the application with the old version with the new one.</p>
+<p>Next we create a new application and push a new config file into the centralized repository, like this:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">
+<span style="color:#66d9ef">apiVersion</span>: helm.fluxcd.io/v1
+<span style="color:#66d9ef">kind</span>: HelmRelease
+<span style="color:#66d9ef">metadata</span>:
+  <span style="color:#66d9ef">name</span>: appb
+<span style="color:#66d9ef">spec</span>:
+  <span style="color:#66d9ef">chart</span>:
+    <span style="color:#66d9ef">repository</span>: https://acrgitopsdev.azurecr.io/helm/v1/repo/
+    <span style="color:#66d9ef">name</span>: appbwebapi
+    <span style="color:#66d9ef">version</span>: <span style="color:#ae81ff">164.0.0</span>
+  <span style="color:#66d9ef">values</span>:
+    <span style="color:#66d9ef">imagePullSecrets</span>:
+      - <span style="color:#66d9ef">name</span>: acr-gitdevops
+</code></pre></div><p>Flux automatically picks the change (with a 5 minutes delay) and deploy the new application.</p>
+<p>So overall our process is working quite well, any new or modified config file we push inside our centralized repository it is going to be reflected in the Kubernetes cluster.</p>
+<h2 id="conclusion">Conclusion</h2>
+<hr>
+<p>There are a lot of cool features that you can do with Flux that I haven&rsquo;t tested yet, for example you can configure Flux to update the config files by itself when you push a new version of the application into ACR.</p>
+<p>Keep in mind that not only the application files should go into that centralized repository. <strong>Everything</strong> you deploy inside the cluster should be put it there.  <br>
+For example, if you&rsquo;re deploying a fluentd daemonset or an nginx ingress controller just put the files in there at let Flux deploy it for you. Also if you don&rsquo;t want to use Helm Charts to deploy you can deploy plain kubernetes files and use tools like <strong>Kustomize</strong>. <br>
+The main point I&rsquo;m trying to make here is that if you want to use a GitOps approach the centralized repository needs be the <strong>single source of truth</strong> for all the code that goes into the cluster.</p>
+<p>Also take that example with a grain of salt, it is nothing more than a proof of concept I wanted to build. It&rsquo;s not a production ready GitOps process.</p>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://www.mytechramblings.com/posts/automate-azure-ad-app-registration-using-terraform/">
+                  <span class="button__text">Trying to automate Azure Active Directory App Registration process using Terraform</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2020 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>Theme created by <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://www.mytechramblings.com/assets/main.js"></script>
+<script src="https://www.mytechramblings.com/assets/prism.js"></script>
+
+      
+    </div>
+
+    
+      
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-170300931-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+    
+  </body>
+</html>

@@ -9,10 +9,32 @@
     <description>Recent content in azure on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 21 Jul 2020 21:22:44 +0200</lastBuildDate>
+    <lastBuildDate>Wed, 29 Jul 2020 22:10:21 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/azure/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>A practical example of GitOps using Azure DevOps, Azure ACR, Helm, Flux and Kubernetes</title>
+      <link>https://www.mytechramblings.com/posts/gitops-with-azure-devops-helm-acr-flux-and-k8s/</link>
+      <pubDate>Wed, 29 Jul 2020 22:10:21 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/gitops-with-azure-devops-helm-acr-flux-and-k8s/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          GitOps is a term introduced by WeaveWorks a few years ago (https://www.weave.works/blog/gitops-operations-by-pull-request)
+GitOps is a way of implementing Continuous Deployment. The core idea of GitOps is having a Git repository that always contains declarative descriptions of the infrastructure currently desired in the production environment and an automated process to make the production environment match the described state in the repository.
+If you want to deploy a new application or update an existing one, you only need to update the repository - the automated process handles everything else.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>Trying to automate Azure Active Directory App Registration process using Terraform</title>

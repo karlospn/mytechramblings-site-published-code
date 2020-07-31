@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>helm on my tech ramblings</title>
+    
+    
+    
+    <link>https://www.mytechramblings.com/tags/helm/</link>
+    <description>Recent content in helm on my tech ramblings</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 29 Jul 2020 22:10:21 +0200</lastBuildDate>
+    
+	<atom:link href="https://www.mytechramblings.com/tags/helm/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>A practical example of GitOps using Azure DevOps, Azure ACR, Helm, Flux and Kubernetes</title>
+      <link>https://www.mytechramblings.com/posts/gitops-with-azure-devops-helm-acr-flux-and-k8s/</link>
+      <pubDate>Wed, 29 Jul 2020 22:10:21 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/gitops-with-azure-devops-helm-acr-flux-and-k8s/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          GitOps is a term introduced by WeaveWorks a few years ago (https://www.weave.works/blog/gitops-operations-by-pull-request)
+GitOps is a way of implementing Continuous Deployment. The core idea of GitOps is having a Git repository that always contains declarative descriptions of the infrastructure currently desired in the production environment and an automated process to make the production environment match the described state in the repository.
+If you want to deploy a new application or update an existing one, you only need to update the repository - the automated process handles everything else.
+          
+        
+        </description>
+    </item>
+    
+  </channel>
+</rss>
