@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     
-      <title>A practical example of GitOps using Azure DevOps, Azure ACR, Helm, Flux and Kubernetes :: my tech ramblings — A blog for writing about my techie ramblings</title>
+      <title>A practical example of GitOps using Azure DevOps, Azure Container Registry, Helm, Flux and Kubernetes :: my tech ramblings — A blog for writing about my techie ramblings</title>
     
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
@@ -28,14 +28,14 @@ If you want to deploy a new application or update an existing one, you only need
 
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="A practical example of GitOps using Azure DevOps, Azure ACR, Helm, Flux and Kubernetes"/>
+<meta name="twitter:title" content="A practical example of GitOps using Azure DevOps, Azure Container Registry, Helm, Flux and Kubernetes"/>
 <meta name="twitter:description" content="GitOps is a term introduced by WeaveWorks a few years ago (https://www.weave.works/blog/gitops-operations-by-pull-request)
 GitOps is a way of implementing Continuous Deployment. The core idea of GitOps is having a Git repository that always contains declarative descriptions of the infrastructure currently desired in the production environment and an automated process to make the production environment match the described state in the repository.
 If you want to deploy a new application or update an existing one, you only need to update the repository - the automated process handles everything else."/>
 
 
 
-<meta property="og:title" content="A practical example of GitOps using Azure DevOps, Azure ACR, Helm, Flux and Kubernetes" />
+<meta property="og:title" content="A practical example of GitOps using Azure DevOps, Azure Container Registry, Helm, Flux and Kubernetes" />
 <meta property="og:description" content="GitOps is a term introduced by WeaveWorks a few years ago (https://www.weave.works/blog/gitops-operations-by-pull-request)
 GitOps is a way of implementing Continuous Deployment. The core idea of GitOps is having a Git repository that always contains declarative descriptions of the infrastructure currently desired in the production environment and an automated process to make the production environment match the described state in the repository.
 If you want to deploy a new application or update an existing one, you only need to update the repository - the automated process handles everything else." />
@@ -114,7 +114,7 @@ If you want to deploy a new application or update an existing one, you only need
   
 
   <div class="post">
-    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/gitops-with-azure-devops-helm-acr-flux-and-k8s/">A practical example of GitOps using Azure DevOps, Azure ACR, Helm, Flux and Kubernetes</a></h1>
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/gitops-with-azure-devops-helm-acr-flux-and-k8s/">A practical example of GitOps using Azure DevOps, Azure Container Registry, Helm, Flux and Kubernetes</a></h1>
     <div class="post-meta">
       
         <span class="post-date">
@@ -161,7 +161,7 @@ If you want to deploy a new application or update an existing one, you only need
 <p>I&rsquo;m going to use the following components:</p>
 <ul>
 <li><strong>Azure DevOps</strong> as my VCS (version control system)</li>
-<li><strong>Azure ACR</strong> as my container registry and also as my helm chart repository.</li>
+<li><strong>Azure Container Registry</strong> as my container registry and also as my helm chart repository.</li>
 <li><strong>Kubernetes</strong> on-premise for hosting the applications.</li>
 <li><strong>Helm</strong> to manage the application kubernetes files.</li>
 <li><strong>Flux</strong> and <strong>Helm-Operator</strong> to deploy the applications in an automatic way into the cluster.</li>
