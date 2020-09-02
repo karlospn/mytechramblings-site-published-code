@@ -9,10 +9,32 @@
     <description>Recent content in nuget on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 14 Jul 2020 19:12:41 +0200</lastBuildDate>
+    <lastBuildDate>Wed, 02 Sep 2020 10:01:20 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/nuget/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>How to centrally manage NuGet package versions within your solution</title>
+      <link>https://www.mytechramblings.com/posts/centrally-manage-nuget-versions/</link>
+      <pubDate>Wed, 02 Sep 2020 10:01:20 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/centrally-manage-nuget-versions/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          A pretty common scenario in complex .NET applications is having them splitted in multiple csharp projects inside a single solution, even with the proliferation of microservices is pretty common seeing the client and the business logic decoupled in multiple projects inside a single solution.
+And that behaviour is even more common if you&amp;rsquo;re using some kind of software architecture like &amp;ldquo;Domain Driven Design&amp;rdquo;, &amp;ldquo;Hexagonal Architecture&amp;rdquo; or &amp;ldquo;Clean Architecture&amp;rdquo;.
+A common problem that usually appears when the number of projects begins to pile up inside a single solution is mantaining consistency between nuget versions, and quite some times you end up with every project using a different version of the same package.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>How to restore nuget packages from an Azure DevOps Private Feed when building a Docker image</title>

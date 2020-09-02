@@ -3,6 +3,46 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://www.mytechramblings.com/tags/.net/</loc>
+    <lastmod>2020-09-02T10:01:20+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/tags/csharp/</loc>
+    <lastmod>2020-09-02T10:01:20+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/tags/dotnet/</loc>
+    <lastmod>2020-09-02T10:01:20+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/posts/centrally-manage-nuget-versions/</loc>
+    <lastmod>2020-09-02T10:01:20+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/</loc>
+    <lastmod>2020-09-02T10:01:20+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/tags/nuget/</loc>
+    <lastmod>2020-09-02T10:01:20+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/posts/</loc>
+    <lastmod>2020-09-02T10:01:20+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/tags/</loc>
+    <lastmod>2020-09-02T10:01:20+02:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://www.mytechramblings.com/posts/gitops-with-azure-devops-helm-acr-flux-and-k8s/</loc>
     <lastmod>2020-07-29T22:10:21+02:00</lastmod>
   </url>
@@ -33,21 +73,6 @@
   </url>
   
   <url>
-    <loc>https://www.mytechramblings.com/</loc>
-    <lastmod>2020-07-29T22:10:21+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://www.mytechramblings.com/posts/</loc>
-    <lastmod>2020-07-29T22:10:21+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://www.mytechramblings.com/tags/</loc>
-    <lastmod>2020-07-29T22:10:21+02:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://www.mytechramblings.com/tags/aad/</loc>
     <lastmod>2020-07-21T21:22:44+02:00</lastmod>
   </url>
@@ -68,11 +93,6 @@
   </url>
   
   <url>
-    <loc>https://www.mytechramblings.com/tags/csharp/</loc>
-    <lastmod>2020-07-14T19:12:41+02:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://www.mytechramblings.com/tags/docker/</loc>
     <lastmod>2020-07-14T19:12:41+02:00</lastmod>
   </url>
@@ -83,27 +103,12 @@
   </url>
   
   <url>
-    <loc>https://www.mytechramblings.com/tags/nuget/</loc>
-    <lastmod>2020-07-14T19:12:41+02:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://www.mytechramblings.com/tags/windows/</loc>
     <lastmod>2020-07-14T19:12:41+02:00</lastmod>
   </url>
   
   <url>
-    <loc>https://www.mytechramblings.com/tags/.net/</loc>
-    <lastmod>2020-07-04T17:30:06+02:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://www.mytechramblings.com/tags/appservices/</loc>
-    <lastmod>2020-07-04T17:30:06+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://www.mytechramblings.com/tags/dotnet/</loc>
     <lastmod>2020-07-04T17:30:06+02:00</lastmod>
   </url>
   

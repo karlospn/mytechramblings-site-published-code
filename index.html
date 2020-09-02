@@ -36,7 +36,7 @@
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://www.mytechramblings.com/" />
-<meta property="og:updated_time" content="2020-07-29T22:10:21+02:00" /><meta property="og:site_name" content="my tech ramblings" />
+<meta property="og:updated_time" content="2020-09-02T10:01:20+02:00" /><meta property="og:site_name" content="my tech ramblings" />
 
 
 
@@ -115,6 +115,52 @@
   
 
   <div class="posts">
+    
+    <div class="post on-list">
+      <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/centrally-manage-nuget-versions/">How to centrally manage NuGet package versions within your solution</a></h1>
+      <div class="post-meta">
+        
+          <span class="post-date">
+            2020-09-02
+          </span>
+
+          
+        
+        
+        
+          <span class="post-read-time">— 7 min read</span>
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+            #<a href="https://www.mytechramblings.com/tags/csharp/">csharp</a>&nbsp;
+          
+            #<a href="https://www.mytechramblings.com/tags/dotnet/">dotnet</a>&nbsp;
+          
+            #<a href="https://www.mytechramblings.com/tags/.net/">.NET</a>&nbsp;
+          
+            #<a href="https://www.mytechramblings.com/tags/nuget/">nuget</a>&nbsp;
+          
+        </span>
+      
+
+      
+
+      <div class="post-content">
+        
+          
+            A pretty common scenario in complex .NET applications is having them splitted in multiple csharp projects inside a single solution, even with the proliferation of microservices is pretty common seeing the client and the business logic decoupled in multiple projects inside a single solution.
+And that behaviour is even more common if you’re using some kind of software architecture like “Domain Driven Design”, “Hexagonal Architecture” or “Clean Architecture”.
+A common problem that usually appears when the number of projects begins to pile up inside a single solution is mantaining consistency between nuget versions, and quite some times you end up with every project using a different version of the same package.
+          
+        
+      </div>
+      
+        <div><a class="read-more button" href="/posts/centrally-manage-nuget-versions/">Read more →</a></div>
+      
+    </div>
     
     <div class="post on-list">
       <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/gitops-with-azure-devops-helm-acr-flux-and-k8s/">A practical example of GitOps using Azure DevOps, Azure Container Registry, Helm, Flux and Kubernetes</a></h1>
@@ -302,56 +348,6 @@ Imagine you’re trying to create a Docker image from an application and it is u
       </div>
       
         <div><a class="read-more button" href="/posts/how-to-add-healthchecks-to-wcf-apps/">Read more →</a></div>
-      
-    </div>
-    
-    <div class="post on-list">
-      <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/enforce-your-dotnet-apps-framework-version-using-roslyn-analyzers/">Enforce the use of a specific .NET Core version using Roslyn</a></h1>
-      <div class="post-meta">
-        
-          <span class="post-date">
-            2020-06-24
-          </span>
-
-          
-        
-        
-        
-          <span class="post-read-time">— 5 min read</span>
-        
-      </div>
-
-      
-        <span class="post-tags">
-          
-            #<a href="https://www.mytechramblings.com/tags/dotnet/">dotnet</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/.net/">.NET</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/roslyn/">roslyn</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/analyzers/">analyzers</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/csharp/">csharp</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/.netcore/">.NETCore</a>&nbsp;
-          
-        </span>
-      
-
-      
-
-      <div class="post-content">
-        
-          
-            In these past few years Microsoft has kept a steady flow of new .NET Core versions: .NET Core 1.0, 1.1, 2.0, 2.1, 2.2 and so on and so forth.
-If you have hundreds of applications in your company, it’s almost impossible to keep them updated to the most recent version of the framework, so most probably you’re going to end up having multiple versions running at the same time.
-When trying to choose which versions are you going to support in your company a factor to consider is that only a few of those versions are long-time support (LTS).
-          
-        
-      </div>
-      
-        <div><a class="read-more button" href="/posts/enforce-your-dotnet-apps-framework-version-using-roslyn-analyzers/">Read more →</a></div>
       
     </div>
     
