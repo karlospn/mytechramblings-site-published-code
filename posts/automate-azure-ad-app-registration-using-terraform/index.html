@@ -204,12 +204,12 @@ But let&rsquo;s going forward, that&rsquo;s the final look after registering in 
 <p><img src="/img/tf-aad-master-app.png" alt="master-app-config"></p>
 <p>Now we can configure the Terraform provider using the master app client_id and client_secret.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">
-provider <span style="color:#e6db74">&#34;azuread&#34;</span> {
+<span style="color:#ae81ff">provider &#34;azuread&#34; {</span>
 
-  client_id         = <span style="color:#e6db74">&#34;ba4d0620-0522-4ada-b0b6-0cdd8cfaeae7&#34;</span>
-  client_secret     = <span style="color:#e6db74">&#34;my_secret_goes_here&#34;</span>
-  tenant_id         = <span style="color:#e6db74">&#34;my_tenant_goes_here&#34;</span>
-  subscription_id   = <span style="color:#e6db74">&#34;my_subscription_id_goes_here&#34;</span>
+  <span style="color:#ae81ff">client_id         = &#34;ba4d0620-0522-4ada-b0b6-0cdd8cfaeae7&#34;</span>
+  <span style="color:#ae81ff">client_secret     = &#34;my_secret_goes_here&#34;</span>
+  <span style="color:#ae81ff">tenant_id         = &#34;my_tenant_goes_here&#34;</span>
+  <span style="color:#ae81ff">subscription_id   = &#34;my_subscription_id_goes_here&#34;</span>
 }
 
 </code></pre></div><h2 id="step-2-register-the-payment-api">Step 2: Register the payment API</h2>
@@ -221,60 +221,60 @@ The payment API has the following configuration:</p>
 <li>It has 2 application roles: Reader and Writer.</li>
 </ul>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">
-resource <span style="color:#e6db74">&#34;azuread_application&#34;</span> <span style="color:#e6db74">&#34;payments_api&#34;</span> {
-    name                       = <span style="color:#e6db74">&#34;payments_api&#34;</span>
-    available_to_other_tenants = <span style="color:#66d9ef">false</span>
-    oauth2_allow_implicit_flow = <span style="color:#66d9ef">false</span>
-    type                       = <span style="color:#e6db74">&#34;webapp/api&#34;</span>
-    identifier_uris            = [<span style="color:#e6db74">&#34;api://payment&#34;</span>]
+<span style="color:#ae81ff">resource &#34;azuread_application&#34; &#34;payments_api&#34; {</span>
+    <span style="color:#ae81ff">name                       = &#34;payments_api&#34;</span>
+    <span style="color:#ae81ff">available_to_other_tenants = false</span>
+    <span style="color:#ae81ff">oauth2_allow_implicit_flow = false</span>
+    <span style="color:#ae81ff">type                       = &#34;webapp/api&#34;</span>
+    <span style="color:#ae81ff">identifier_uris            = [&#34;api://payment&#34;]</span>
 
   
-    oauth2_permissions {
-        admin_consent_description  = <span style="color:#e6db74">&#34;Allow the application to access the commit payment methods&#34;</span>
-        admin_consent_display_name = <span style="color:#e6db74">&#34;payment.write&#34;</span>
-        is_enabled                 = <span style="color:#66d9ef">true</span>
-        type                       = <span style="color:#e6db74">&#34;Admin&#34;</span>
-        value                      = <span style="color:#e6db74">&#34;payment.write&#34;</span>
+    <span style="color:#ae81ff">oauth2_permissions {</span>
+        <span style="color:#ae81ff">admin_consent_description  = &#34;Allow the application to access the commit payment methods&#34;</span>
+        <span style="color:#ae81ff">admin_consent_display_name = &#34;payment.write&#34;</span>
+        <span style="color:#ae81ff">is_enabled                 = true</span>
+        <span style="color:#ae81ff">type                       = &#34;Admin&#34;</span>
+        <span style="color:#ae81ff">value                      = &#34;payment.write&#34;</span>
     }
 
-    oauth2_permissions {
-        admin_consent_description  = <span style="color:#e6db74">&#34;Allow the application to access the read payment methods&#34;</span>
-        admin_consent_display_name = <span style="color:#e6db74">&#34;payment.read&#34;</span>
-        is_enabled                 = <span style="color:#66d9ef">true</span>
-        type                       = <span style="color:#e6db74">&#34;User&#34;</span>
-        value                      = <span style="color:#e6db74">&#34;payment.read&#34;</span>
-        user_consent_description  = <span style="color:#e6db74">&#34;Allow the application to access the read payment methods&#34;</span>
-        user_consent_display_name = <span style="color:#e6db74">&#34;payment.read&#34;</span>    
+    <span style="color:#ae81ff">oauth2_permissions {</span>
+        <span style="color:#ae81ff">admin_consent_description  = &#34;Allow the application to access the read payment methods&#34;</span>
+        <span style="color:#ae81ff">admin_consent_display_name = &#34;payment.read&#34;</span>
+        <span style="color:#ae81ff">is_enabled                 = true</span>
+        <span style="color:#ae81ff">type                       = &#34;User&#34;</span>
+        <span style="color:#ae81ff">value                      = &#34;payment.read&#34;</span>
+        <span style="color:#ae81ff">user_consent_description  = &#34;Allow the application to access the read payment methods&#34;</span>
+        <span style="color:#ae81ff">user_consent_display_name = &#34;payment.read&#34;    </span>
     }
 
-    app_role {
-        allowed_member_types = [
+    <span style="color:#ae81ff">app_role {</span>
+        <span style="color:#ae81ff">allowed_member_types = [</span>
         <span style="color:#e6db74">&#34;User&#34;</span>,
         <span style="color:#e6db74">&#34;Application&#34;</span>,
         ]
-        description  = <span style="color:#e6db74">&#34;Can read and make payments&#34;</span>
-        display_name = <span style="color:#e6db74">&#34;Admin&#34;</span>
-        is_enabled   = <span style="color:#66d9ef">true</span>
-        value        = <span style="color:#e6db74">&#34;Admin&#34;</span>
+        <span style="color:#ae81ff">description  = &#34;Can read and make payments&#34;</span>
+        <span style="color:#ae81ff">display_name = &#34;Admin&#34;</span>
+        <span style="color:#ae81ff">is_enabled   = true</span>
+        <span style="color:#ae81ff">value        = &#34;Admin&#34;</span>
     }
 
-    app_role {
-        allowed_member_types = [
+    <span style="color:#ae81ff">app_role {</span>
+        <span style="color:#ae81ff">allowed_member_types = [</span>
         <span style="color:#e6db74">&#34;User&#34;</span>,
         <span style="color:#e6db74">&#34;Application&#34;</span>,
         ]
 
-        description  = <span style="color:#e6db74">&#34;Can only read payments&#34;</span>
-        display_name = <span style="color:#e6db74">&#34;Reader&#34;</span>
-        is_enabled   = <span style="color:#66d9ef">true</span>
-        value        = <span style="color:#e6db74">&#34;Reader&#34;</span>
+        <span style="color:#ae81ff">description  = &#34;Can only read payments&#34;</span>
+        <span style="color:#ae81ff">display_name = &#34;Reader&#34;</span>
+        <span style="color:#ae81ff">is_enabled   = true</span>
+        <span style="color:#ae81ff">value        = &#34;Reader&#34;</span>
     } 
 }
 
-resource <span style="color:#e6db74">&#34;azuread_service_principal&#34;</span> <span style="color:#e6db74">&#34;payment_sp&#34;</span> {
-  application_id               = azuread_application.payments_api.application_id
-  app_role_assignment_required = <span style="color:#66d9ef">false</span>
-  tags = [ <span style="color:#e6db74">&#34;payment&#34;</span>, <span style="color:#e6db74">&#34;api&#34;</span>]
+<span style="color:#ae81ff">resource &#34;azuread_service_principal&#34; &#34;payment_sp&#34; {</span>
+  <span style="color:#ae81ff">application_id               = azuread_application.payments_api.application_id</span>
+  <span style="color:#ae81ff">app_role_assignment_required = false</span>
+  <span style="color:#ae81ff">tags = [ &#34;payment&#34;, &#34;api&#34;]</span>
 }
 
 </code></pre></div><p>It&rsquo;s a pretty straightforward config file but I have encountered some issues while building it.</p>
@@ -296,34 +296,34 @@ For example, I like to change the <em>&ldquo;accessTokenAcceptedVersion&rdquo;</
 <li>The Booking API has the Payment API Reader Role assigned.</li>
 </ul>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">
-resource <span style="color:#e6db74">&#34;azuread_application&#34;</span> <span style="color:#e6db74">&#34;booking_api&#34;</span> {
-    name                       = <span style="color:#e6db74">&#34;booking_api&#34;</span>
-    available_to_other_tenants = <span style="color:#66d9ef">false</span>
-    oauth2_allow_implicit_flow = <span style="color:#66d9ef">false</span>
-    type                       = <span style="color:#e6db74">&#34;webapp/api&#34;</span>
-    identifier_uris            = [<span style="color:#e6db74">&#34;api://booking&#34;</span>]
+<span style="color:#ae81ff">resource &#34;azuread_application&#34; &#34;booking_api&#34; {</span>
+    <span style="color:#ae81ff">name                       = &#34;booking_api&#34;</span>
+    <span style="color:#ae81ff">available_to_other_tenants = false</span>
+    <span style="color:#ae81ff">oauth2_allow_implicit_flow = false</span>
+    <span style="color:#ae81ff">type                       = &#34;webapp/api&#34;</span>
+    <span style="color:#ae81ff">identifier_uris            = [&#34;api://booking&#34;]</span>
 
-    required_resource_access {
-        resource_app_id = azuread_application.payments_api.application_id
-        resource_access {
-            id   = tolist(azuread_application.payments_api.app_role)[<span style="color:#ae81ff">0</span>].id
-            type = <span style="color:#e6db74">&#34;Role&#34;</span>
+    <span style="color:#ae81ff">required_resource_access {</span>
+        <span style="color:#ae81ff">resource_app_id = azuread_application.payments_api.application_id</span>
+        <span style="color:#ae81ff">resource_access {</span>
+            <span style="color:#ae81ff">id   = tolist(azuread_application.payments_api.app_role)[0].id</span>
+            <span style="color:#ae81ff">type = &#34;Role&#34;</span>
         }
     }
 }
 
 
-resource <span style="color:#e6db74">&#34;azuread_service_principal&#34;</span> <span style="color:#e6db74">&#34;booking_sp&#34;</span> {
-  application_id               = azuread_application.booking_api.application_id
-  app_role_assignment_required = <span style="color:#66d9ef">false</span>
-  tags = [ <span style="color:#e6db74">&#34;payment&#34;</span>, <span style="color:#e6db74">&#34;api&#34;</span>]
+<span style="color:#ae81ff">resource &#34;azuread_service_principal&#34; &#34;booking_sp&#34; {</span>
+  <span style="color:#ae81ff">application_id               = azuread_application.booking_api.application_id</span>
+  <span style="color:#ae81ff">app_role_assignment_required = false</span>
+  <span style="color:#ae81ff">tags = [ &#34;payment&#34;, &#34;api&#34;]</span>
 }
 
-resource <span style="color:#e6db74">&#34;azuread_application_password&#34;</span> <span style="color:#e6db74">&#34;booking_api_pwd&#34;</span> {
-  application_object_id = azuread_application.booking_api.id
-  description           = <span style="color:#e6db74">&#34;My managed password&#34;</span>
-  value                 = <span style="color:#e6db74">&#34;VT=uSgbTanZhyz@%nL9Hpd+Tfay_MRV#&#34;</span>
-  end_date              = <span style="color:#e6db74">&#34;2099-01-01T01:02:03Z&#34;</span>
+<span style="color:#ae81ff">resource &#34;azuread_application_password&#34; &#34;booking_api_pwd&#34; {</span>
+  <span style="color:#ae81ff">application_object_id = azuread_application.booking_api.id</span>
+  <span style="color:#ae81ff">description           = &#34;My managed password&#34;</span>
+  <span style="color:#ae81ff">value                 = &#34;VT=uSgbTanZhyz@%nL9Hpd+Tfay_MRV#&#34;</span>
+  <span style="color:#ae81ff">end_date              = &#34;2099-01-01T01:02:03Z&#34;</span>
 }
 
 </code></pre></div><p>Apart from creating the application I&rsquo;m also creating a client secret to test the client credentials flow. Nonetheless there is another issue I found in the process.<br>
@@ -368,29 +368,29 @@ curl -X POST <span style="color:#ae81ff">\
 scope</li>
 </ul>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">
-resource <span style="color:#e6db74">&#34;azuread_application&#34;</span> <span style="color:#e6db74">&#34;frontend_spa&#34;</span> {
-    name                       = <span style="color:#e6db74">&#34;frontend_spa&#34;</span>
-    available_to_other_tenants = <span style="color:#66d9ef">false</span>
-    oauth2_allow_implicit_flow = <span style="color:#66d9ef">true</span>
-    type                       = <span style="color:#e6db74">&#34;webapp/api&#34;</span>
-    reply_urls                 = [<span style="color:#e6db74">&#34;http://localhost:4200&#34;</span>]
-    logout_url                 = <span style="color:#e6db74">&#34;https://localhost:4200/logout&#34;</span>
-    public_client              = <span style="color:#66d9ef">true</span>
+<span style="color:#ae81ff">resource &#34;azuread_application&#34; &#34;frontend_spa&#34; {</span>
+    <span style="color:#ae81ff">name                       = &#34;frontend_spa&#34;</span>
+    <span style="color:#ae81ff">available_to_other_tenants = false</span>
+    <span style="color:#ae81ff">oauth2_allow_implicit_flow = true</span>
+    <span style="color:#ae81ff">type                       = &#34;webapp/api&#34;</span>
+    <span style="color:#ae81ff">reply_urls                 = [&#34;http://localhost:4200&#34;]</span>
+    <span style="color:#ae81ff">logout_url                 = &#34;https://localhost:4200/logout&#34;</span>
+    <span style="color:#ae81ff">public_client              = true</span>
 
-    required_resource_access {
-        resource_app_id = azuread_application.payments_api.application_id
-        resource_access {
-            id   = tolist(azuread_application.payments_api.oauth2_permissions)[<span style="color:#ae81ff">1</span>].id
-            type = <span style="color:#e6db74">&#34;Scope&#34;</span>
+    <span style="color:#ae81ff">required_resource_access {</span>
+        <span style="color:#ae81ff">resource_app_id = azuread_application.payments_api.application_id</span>
+        <span style="color:#ae81ff">resource_access {</span>
+            <span style="color:#ae81ff">id   = tolist(azuread_application.payments_api.oauth2_permissions)[1].id</span>
+            <span style="color:#ae81ff">type = &#34;Scope&#34;</span>
         }
     }
 }
 
 
-resource <span style="color:#e6db74">&#34;azuread_service_principal&#34;</span> <span style="color:#e6db74">&#34;frontend_spa&#34;</span> {
-  application_id               = azuread_application.frontend_spa.application_id
-  app_role_assignment_required = <span style="color:#66d9ef">false</span>
-  tags = [ <span style="color:#e6db74">&#34;frontend&#34;</span>, <span style="color:#e6db74">&#34;spa&#34;</span>]
+<span style="color:#ae81ff">resource &#34;azuread_service_principal&#34; &#34;frontend_spa&#34; {</span>
+  <span style="color:#ae81ff">application_id               = azuread_application.frontend_spa.application_id</span>
+  <span style="color:#ae81ff">app_role_assignment_required = false</span>
+  <span style="color:#ae81ff">tags = [ &#34;frontend&#34;, &#34;spa&#34;]</span>
 }
 </code></pre></div><p>I have found the same problem that I mention in the step 3: I cannot grant admin content to use the payment API scopes in a programmatic way.</p>
 <p><img src="/img/aad-spa-grant-admin-consent.png" alt="frontend-spa-grant-admin-consent"></p>

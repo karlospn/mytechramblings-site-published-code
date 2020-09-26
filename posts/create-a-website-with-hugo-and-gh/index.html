@@ -237,37 +237,37 @@ git push --set-upstream origin master
 </code></pre></div><p>The last step is to build a GitHub Action.<br>
 The GitHub Action is going to grab the content from the <strong>dotnetramblings_source</strong> repository, build it using Hugo and push the output into the <strong>dotnetramblings</strong> repository.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">
-<span style="color:#66d9ef">name</span>: hugo CI
+<span style="color:#f92672">name</span>: <span style="color:#ae81ff">hugo CI</span>
 
-<span style="color:#66d9ef">on</span>:
-  <span style="color:#66d9ef">push</span>:
-    <span style="color:#66d9ef">branches</span>: [ master ]
+<span style="color:#f92672">on</span>:
+  <span style="color:#f92672">push</span>:
+    <span style="color:#f92672">branches</span>: [ <span style="color:#ae81ff">master ]</span>
 
-<span style="color:#66d9ef">jobs</span>:
-  <span style="color:#66d9ef">build</span>:
-    <span style="color:#66d9ef">runs-on</span>: ubuntu-latest
+<span style="color:#f92672">jobs</span>:
+  <span style="color:#f92672">build</span>:
+    <span style="color:#f92672">runs-on</span>: <span style="color:#ae81ff">ubuntu-latest</span>
 
-    <span style="color:#66d9ef">steps</span>:
-      - <span style="color:#66d9ef">uses</span>: actions/checkout@v2
-        <span style="color:#66d9ef">with</span>:
-          <span style="color:#66d9ef">submodules</span>: <span style="color:#66d9ef">true</span> 
-          <span style="color:#66d9ef">fetch-depth</span>: <span style="color:#ae81ff">1</span>   
+    <span style="color:#f92672">steps</span>:
+      - <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">actions/checkout@v2</span>
+        <span style="color:#f92672">with</span>:
+          <span style="color:#f92672">submodules</span>: <span style="color:#66d9ef">true</span> 
+          <span style="color:#f92672">fetch-depth</span>: <span style="color:#ae81ff">1</span>   
 
-      - <span style="color:#66d9ef">name</span>: Setup Hugo
-        <span style="color:#66d9ef">uses</span>: peaceiris/actions-hugo@v2
-        <span style="color:#66d9ef">with</span>:
-          <span style="color:#66d9ef">hugo-version</span>: <span style="color:#e6db74">&#39;latest&#39;</span>
+      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Setup Hugo</span>
+        <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">peaceiris/actions-hugo@v2</span>
+        <span style="color:#f92672">with</span>:
+          <span style="color:#f92672">hugo-version</span>: <span style="color:#e6db74">&#39;latest&#39;</span>
 
-      - <span style="color:#66d9ef">name</span>: Build
-        <span style="color:#66d9ef">run</span>: hugo
+      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Build</span>
+        <span style="color:#f92672">run</span>: <span style="color:#ae81ff">hugo</span>
 
-      - <span style="color:#66d9ef">name</span>: Deploy
-        <span style="color:#66d9ef">uses</span>: peaceiris/actions-gh-pages@v3
-        <span style="color:#66d9ef">with</span>:
-          <span style="color:#66d9ef">personal_token</span>: ${{ secrets.PERSONAL_TOKEN }}
-          <span style="color:#66d9ef">external_repository</span>: myuser/dotnetramblings
-          <span style="color:#66d9ef">publish_branch</span>: master
-          <span style="color:#66d9ef">publish_dir</span>: ./public
+      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Deploy</span>
+        <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">peaceiris/actions-gh-pages@v3</span>
+        <span style="color:#f92672">with</span>:
+          <span style="color:#f92672">personal_token</span>: <span style="color:#ae81ff">${{ secrets.PERSONAL_TOKEN }}</span>
+          <span style="color:#f92672">external_repository</span>: <span style="color:#ae81ff">myuser/dotnetramblings</span>
+          <span style="color:#f92672">publish_branch</span>: <span style="color:#ae81ff">master</span>
+          <span style="color:#f92672">publish_dir</span>: <span style="color:#ae81ff">./public</span>
 
 </code></pre></div><p>And we are good to go! With less than 30 minutes we have achieved:</p>
 <ul>

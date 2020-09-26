@@ -249,68 +249,68 @@ If you want to deploy a new application or update an existing one, you only need
 <li>Push the helm chart into an existing ACR</li>
 </ul>
 <p>That&rsquo;s the pipeline:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-YAML" data-lang="YAML"><span style="color:#66d9ef">trigger</span>:
-- master
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-YAML" data-lang="YAML"><span style="color:#f92672">trigger</span>:
+- <span style="color:#ae81ff">master</span>
 
-<span style="color:#66d9ef">resources</span>:
-- <span style="color:#66d9ef">repo</span>: self
+<span style="color:#f92672">resources</span>:
+- <span style="color:#f92672">repo</span>: <span style="color:#ae81ff">self</span>
 
-<span style="color:#66d9ef">variables</span>:
-  <span style="color:#66d9ef">HELM_EXPERIMENTAL_OCI</span>: <span style="color:#ae81ff">1</span>
-  <span style="color:#66d9ef">registryName</span>: <span style="color:#e6db74">&#39;acrgitopsdev&#39;</span>
-  <span style="color:#66d9ef">imageName</span>: <span style="color:#e6db74">&#39;appawebapi&#39;</span>
-  <span style="color:#66d9ef">BuildId</span>: <span style="color:#e6db74">&#39;$(Build.BuildId)&#39;</span>
-  <span style="color:#66d9ef">tag</span>: <span style="color:#e6db74">&#39;$(Build.BuildId)&#39;</span>
+<span style="color:#f92672">variables</span>:
+  <span style="color:#f92672">HELM_EXPERIMENTAL_OCI</span>: <span style="color:#ae81ff">1</span>
+  <span style="color:#f92672">registryName</span>: <span style="color:#e6db74">&#39;acrgitopsdev&#39;</span>
+  <span style="color:#f92672">imageName</span>: <span style="color:#e6db74">&#39;appawebapi&#39;</span>
+  <span style="color:#f92672">BuildId</span>: <span style="color:#e6db74">&#39;$(Build.BuildId)&#39;</span>
+  <span style="color:#f92672">tag</span>: <span style="color:#e6db74">&#39;$(Build.BuildId)&#39;</span>
 
-<span style="color:#66d9ef">steps</span>:
-- <span style="color:#66d9ef">task</span>: AzureCLI@<span style="color:#ae81ff">2</span>
-  <span style="color:#66d9ef">inputs</span>:
-    <span style="color:#66d9ef">azureSubscription</span>: <span style="color:#e6db74">&#39;azure-dev-subscription&#39;</span>
-    <span style="color:#66d9ef">scriptType</span>: <span style="color:#e6db74">&#39;bash&#39;</span>
-    <span style="color:#66d9ef">scriptLocation</span>: <span style="color:#e6db74">&#39;inlineScript&#39;</span>
-    <span style="color:#66d9ef">inlineScript</span>: <span style="color:#e6db74">&#39;az acr login --name $(registryName)&#39;</span>
+<span style="color:#f92672">steps</span>:
+- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AzureCLI@2</span>
+  <span style="color:#f92672">inputs</span>:
+    <span style="color:#f92672">azureSubscription</span>: <span style="color:#e6db74">&#39;azure-dev-subscription&#39;</span>
+    <span style="color:#f92672">scriptType</span>: <span style="color:#e6db74">&#39;bash&#39;</span>
+    <span style="color:#f92672">scriptLocation</span>: <span style="color:#e6db74">&#39;inlineScript&#39;</span>
+    <span style="color:#f92672">inlineScript</span>: <span style="color:#e6db74">&#39;az acr login --name $(registryName)&#39;</span>
     
-- <span style="color:#66d9ef">task</span>: AzureCLI@<span style="color:#ae81ff">2</span>
-  <span style="color:#66d9ef">inputs</span>:
-    <span style="color:#66d9ef">azureSubscription</span>: <span style="color:#e6db74">&#39;azure-dev-subscription&#39;</span>
-    <span style="color:#66d9ef">scriptType</span>: <span style="color:#e6db74">&#39;bash&#39;</span>
-    <span style="color:#66d9ef">scriptLocation</span>: <span style="color:#e6db74">&#39;inlineScript&#39;</span>
-    <span style="color:#66d9ef">inlineScript</span>: <span style="color:#e6db74">&#39;az acr build --image $(imageName):$(BuildId) --registry $(registryName) --file Dockerfile .&#39;</span>
-    <span style="color:#66d9ef">useGlobalConfig</span>: <span style="color:#66d9ef">true</span>
-    <span style="color:#66d9ef">workingDirectory</span>: <span style="color:#e6db74">&#39;$(Build.SourcesDirectory)/AppA.WebApi&#39;</span>
+- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AzureCLI@2</span>
+  <span style="color:#f92672">inputs</span>:
+    <span style="color:#f92672">azureSubscription</span>: <span style="color:#e6db74">&#39;azure-dev-subscription&#39;</span>
+    <span style="color:#f92672">scriptType</span>: <span style="color:#e6db74">&#39;bash&#39;</span>
+    <span style="color:#f92672">scriptLocation</span>: <span style="color:#e6db74">&#39;inlineScript&#39;</span>
+    <span style="color:#f92672">inlineScript</span>: <span style="color:#e6db74">&#39;az acr build --image $(imageName):$(BuildId) --registry $(registryName) --file Dockerfile .&#39;</span>
+    <span style="color:#f92672">useGlobalConfig</span>: <span style="color:#66d9ef">true</span>
+    <span style="color:#f92672">workingDirectory</span>: <span style="color:#e6db74">&#39;$(Build.SourcesDirectory)/AppA.WebApi&#39;</span>
 
-- <span style="color:#66d9ef">task</span>: HelmInstaller@<span style="color:#ae81ff">1</span>
-  <span style="color:#66d9ef">inputs</span>:
-    <span style="color:#66d9ef">helmVersionToInstall</span>: <span style="color:#e6db74">&#39;latest&#39;</span>
+- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">HelmInstaller@1</span>
+  <span style="color:#f92672">inputs</span>:
+    <span style="color:#f92672">helmVersionToInstall</span>: <span style="color:#e6db74">&#39;latest&#39;</span>
 
-- <span style="color:#66d9ef">task</span>: replacetokens@<span style="color:#ae81ff">3</span>
-  <span style="color:#66d9ef">inputs</span>:
-    <span style="color:#66d9ef">targetFiles</span>: <span style="color:#e6db74">&#39;**/*.yaml&#39;</span>
-    <span style="color:#66d9ef">encoding</span>: <span style="color:#e6db74">&#39;auto&#39;</span>
-    <span style="color:#66d9ef">writeBOM</span>: <span style="color:#66d9ef">true</span>
-    <span style="color:#66d9ef">actionOnMissing</span>: <span style="color:#e6db74">&#39;warn&#39;</span>
-    <span style="color:#66d9ef">keepToken</span>: <span style="color:#66d9ef">false</span>
-    <span style="color:#66d9ef">tokenPrefix</span>: <span style="color:#e6db74">&#39;#{&#39;</span>
-    <span style="color:#66d9ef">tokenSuffix</span>: <span style="color:#e6db74">&#39;}#&#39;</span>
-    <span style="color:#66d9ef">useLegacyPattern</span>: <span style="color:#66d9ef">false</span>
-    <span style="color:#66d9ef">enableTelemetry</span>: <span style="color:#66d9ef">true</span>
+- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">replacetokens@3</span>
+  <span style="color:#f92672">inputs</span>:
+    <span style="color:#f92672">targetFiles</span>: <span style="color:#e6db74">&#39;**/*.yaml&#39;</span>
+    <span style="color:#f92672">encoding</span>: <span style="color:#e6db74">&#39;auto&#39;</span>
+    <span style="color:#f92672">writeBOM</span>: <span style="color:#66d9ef">true</span>
+    <span style="color:#f92672">actionOnMissing</span>: <span style="color:#e6db74">&#39;warn&#39;</span>
+    <span style="color:#f92672">keepToken</span>: <span style="color:#66d9ef">false</span>
+    <span style="color:#f92672">tokenPrefix</span>: <span style="color:#e6db74">&#39;#{&#39;</span>
+    <span style="color:#f92672">tokenSuffix</span>: <span style="color:#e6db74">&#39;}#&#39;</span>
+    <span style="color:#f92672">useLegacyPattern</span>: <span style="color:#66d9ef">false</span>
+    <span style="color:#f92672">enableTelemetry</span>: <span style="color:#66d9ef">true</span>
        
-- <span style="color:#66d9ef">task</span>: Bash@<span style="color:#ae81ff">3</span>
-  <span style="color:#66d9ef">inputs</span>:
-    <span style="color:#66d9ef">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
-    <span style="color:#66d9ef">script</span>: <span style="color:#e6db74">|
-</span><span style="color:#e6db74">      helm package --destination $(Build.ArtifactStagingDirectory)/ --version $(BuildId).0.0 ./chart/ </span>
-    <span style="color:#66d9ef">workingDirectory</span>: <span style="color:#e6db74">&#39;$(Build.SourcesDirectory)/AppA.WebApi&#39;</span>
-
-- <span style="color:#66d9ef">task</span>: AzureCLI@<span style="color:#ae81ff">2</span>
-  <span style="color:#66d9ef">inputs</span>:
-    <span style="color:#66d9ef">azureSubscription</span>: <span style="color:#e6db74">&#39;azure-dev-subscription&#39;</span>
-    <span style="color:#66d9ef">scriptType</span>: <span style="color:#e6db74">&#39;bash&#39;</span>
-    <span style="color:#66d9ef">scriptLocation</span>: <span style="color:#e6db74">&#39;inlineScript&#39;</span>
-    <span style="color:#66d9ef">inlineScript</span>: <span style="color:#e6db74">&#39;az acr helm push -n $(registryName) $(Build.ArtifactStagingDirectory)/*.tgz&#39;</span>
-    <span style="color:#66d9ef">useGlobalConfig</span>: <span style="color:#66d9ef">true</span>
-
-</code></pre></div><p>Helm 3 needs the environment variable &ldquo;HELM_EXPERIMENTAL_OCI: 1&rdquo; defined or it won&rsquo;t work, so just put it there&hellip;</p>
+- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
+  <span style="color:#f92672">inputs</span>:
+    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+    <span style="color:#f92672">script</span>: <span style="color:#e6db74">|
+</span><span style="color:#e6db74">      helm package --destination $(Build.ArtifactStagingDirectory)/ --version $(BuildId).0.0 ./chart/ 
+</span><span style="color:#e6db74">    workingDirectory: &#39;$(Build.SourcesDirectory)/AppA.WebApi&#39;
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">- task: AzureCLI@2
+</span><span style="color:#e6db74">  inputs:
+</span><span style="color:#e6db74">    azureSubscription: &#39;azure-dev-subscription&#39;
+</span><span style="color:#e6db74">    scriptType: &#39;bash&#39;
+</span><span style="color:#e6db74">    scriptLocation: &#39;inlineScript&#39;
+</span><span style="color:#e6db74">    inlineScript: &#39;az acr helm push -n $(registryName) $(Build.ArtifactStagingDirectory)/*.tgz&#39;
+</span><span style="color:#e6db74">    useGlobalConfig: true
+</span><span style="color:#e6db74">
+</span></code></pre></div><p>Helm 3 needs the environment variable &ldquo;HELM_EXPERIMENTAL_OCI: 1&rdquo; defined or it won&rsquo;t work, so just put it there&hellip;</p>
 <p>I&rsquo;m using the Azure Pipeline <strong>BuildId</strong> to tag the docker image and also to set the Helm Chart version.<br>
 That&rsquo;s a simple Helm versioning strategy, using a 1-1 versioning just keeps the chart version in sync with the application. That approach makes version bumping very easy (you bump everything up) and also allows you to quickly track what application version is deployed on your cluster (same as chart version).<br>
 If you&rsquo;re interested in helm versioning strategies you can read it more here: <a href="https://codefresh.io/docs/docs/new-helm/helm-best-practices/">https://codefresh.io/docs/docs/new-helm/helm-best-practices/</a></p>
@@ -327,9 +327,9 @@ If you&rsquo;re interested in helm versioning strategies you can read it more he
 <p><em>Why I&rsquo;m using the Replace Tokens task in my pipeline?</em> (<a href="https://marketplace.visualstudio.com/items?itemName=qetza.replacetokens">https://marketplace.visualstudio.com/items?itemName=qetza.replacetokens</a>)<br>
 That&rsquo;s because in the Kubernetes Deployment YAML file I defined the image i&rsquo;m using like this:</p>
 </blockquote>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">    <span style="color:#66d9ef">containers</span>:
-    - <span style="color:#66d9ef">name</span>: {{ .Chart.Name }}
-        <span style="color:#66d9ef">image</span>: <span style="color:#e6db74">&#34;{{ .Values.image.repository }}:#{tag}#&#34;</span> 
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">    <span style="color:#f92672">containers</span>:
+    - <span style="color:#f92672">name</span>: {{ <span style="color:#ae81ff">.Chart.Name }}</span>
+        <span style="color:#f92672">image</span>: <span style="color:#e6db74">&#34;{{ .Values.image.repository }}:#{tag}#&#34;</span> 
 </code></pre></div><blockquote>
 <p>As I previously said I&rsquo;m using the Azure Pipelines <strong>BuildId</strong> as my image tag and I only know the value <strong>after the pipeline has started</strong>, so I&rsquo;m using the replace tokens task to replace the <em>#{tag}#</em> placeholder with the BuildId while the Azure Pipeline is running.</p>
 </blockquote>
@@ -385,18 +385,18 @@ To be honest, it&rsquo;s really easy to build the pipeline once you know all the
 <hr>
 <p>The last step is to create the application config file, push it into the &ldquo;<strong>Manifests</strong>&rdquo; repository and see if Flux is capable of deploying our application in our Kubernetes cluster.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">
-<span style="color:#66d9ef">apiVersion</span>: helm.fluxcd.io/v1
-<span style="color:#66d9ef">kind</span>: HelmRelease
-<span style="color:#66d9ef">metadata</span>:
-  <span style="color:#66d9ef">name</span>: appa
-<span style="color:#66d9ef">spec</span>:
-  <span style="color:#66d9ef">chart</span>:
-    <span style="color:#66d9ef">repository</span>: https://acrgitopsdev.azurecr.io/helm/v1/repo/
-    <span style="color:#66d9ef">name</span>: appawebapi
-    <span style="color:#66d9ef">version</span>: <span style="color:#ae81ff">158.0.0</span>
-  <span style="color:#66d9ef">values</span>:
-    <span style="color:#66d9ef">imagePullSecrets</span>:
-      - <span style="color:#66d9ef">name</span>: acr-gitdevops
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">helm.fluxcd.io/v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">HelmRelease</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">appa</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">chart</span>:
+    <span style="color:#f92672">repository</span>: <span style="color:#ae81ff">https://acrgitopsdev.azurecr.io/helm/v1/repo/</span>
+    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">appawebapi</span>
+    <span style="color:#f92672">version</span>: <span style="color:#ae81ff">158.0.0</span>
+  <span style="color:#f92672">values</span>:
+    <span style="color:#f92672">imagePullSecrets</span>:
+      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">acr-gitdevops</span>
 
 </code></pre></div><p>The only thing you need to specify in the  file is the Chart repository URL, the Chart name and the Chart version to deploy.<br>
 There are more options available when creating the config file, if you&rsquo;re interested you can read about it here: <a href="https://docs.fluxcd.io/projects/helm-operator/en/1.0.0-rc9/references/helmrelease-custom-resource.html">https://docs.fluxcd.io/projects/helm-operator/en/1.0.0-rc9/references/helmrelease-custom-resource.html</a></p>
@@ -405,34 +405,34 @@ If you want to read more about it: <a href="https://docs.microsoft.com/es-es/azu
 <p>And that&rsquo;s it, we are done! Flux has deployed the app into our cluster.<br>
 Let&rsquo;s test it a little bit. If we change the chart version and commit the file again:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">
-<span style="color:#66d9ef">apiVersion</span>: helm.fluxcd.io/v1
-<span style="color:#66d9ef">kind</span>: HelmRelease
-<span style="color:#66d9ef">metadata</span>:
-  <span style="color:#66d9ef">name</span>: appa
-<span style="color:#66d9ef">spec</span>:
-  <span style="color:#66d9ef">chart</span>:
-    <span style="color:#66d9ef">repository</span>: https://acrgitopsdev.azurecr.io/helm/v1/repo/
-    <span style="color:#66d9ef">name</span>: appawebapi
-    <span style="color:#66d9ef">version</span>: <span style="color:#ae81ff">160.0.0</span>
-  <span style="color:#66d9ef">values</span>:
-    <span style="color:#66d9ef">imagePullSecrets</span>:
-      - <span style="color:#66d9ef">name</span>: acr-gitdevops
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">helm.fluxcd.io/v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">HelmRelease</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">appa</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">chart</span>:
+    <span style="color:#f92672">repository</span>: <span style="color:#ae81ff">https://acrgitopsdev.azurecr.io/helm/v1/repo/</span>
+    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">appawebapi</span>
+    <span style="color:#f92672">version</span>: <span style="color:#ae81ff">160.0.0</span>
+  <span style="color:#f92672">values</span>:
+    <span style="color:#f92672">imagePullSecrets</span>:
+      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">acr-gitdevops</span>
 
 </code></pre></div><p>Flux automatically picks the change (with a 5 minutes delay) and replaces the application with the old version with the new one.</p>
 <p>Next we create a new application and push a new config file into the centralized repository, like this:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">
-<span style="color:#66d9ef">apiVersion</span>: helm.fluxcd.io/v1
-<span style="color:#66d9ef">kind</span>: HelmRelease
-<span style="color:#66d9ef">metadata</span>:
-  <span style="color:#66d9ef">name</span>: appb
-<span style="color:#66d9ef">spec</span>:
-  <span style="color:#66d9ef">chart</span>:
-    <span style="color:#66d9ef">repository</span>: https://acrgitopsdev.azurecr.io/helm/v1/repo/
-    <span style="color:#66d9ef">name</span>: appbwebapi
-    <span style="color:#66d9ef">version</span>: <span style="color:#ae81ff">164.0.0</span>
-  <span style="color:#66d9ef">values</span>:
-    <span style="color:#66d9ef">imagePullSecrets</span>:
-      - <span style="color:#66d9ef">name</span>: acr-gitdevops
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">helm.fluxcd.io/v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">HelmRelease</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">appb</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">chart</span>:
+    <span style="color:#f92672">repository</span>: <span style="color:#ae81ff">https://acrgitopsdev.azurecr.io/helm/v1/repo/</span>
+    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">appbwebapi</span>
+    <span style="color:#f92672">version</span>: <span style="color:#ae81ff">164.0.0</span>
+  <span style="color:#f92672">values</span>:
+    <span style="color:#f92672">imagePullSecrets</span>:
+      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">acr-gitdevops</span>
 </code></pre></div><p>Flux automatically picks the change (with a 5 minutes delay) and deploy the new application.</p>
 <p>So overall our process is working quite well, any new or modified config file we push inside our centralized repository it is going to be reflected in the Kubernetes cluster.</p>
 <h2 id="conclusion">Conclusion</h2>
