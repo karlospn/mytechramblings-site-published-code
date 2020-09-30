@@ -3,6 +3,46 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://www.mytechramblings.com/tags/aws/</loc>
+    <lastmod>2020-09-30T10:02:21+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/tags/azure/</loc>
+    <lastmod>2020-09-30T10:02:21+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/tags/cdk/</loc>
+    <lastmod>2020-09-30T10:02:21+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/tags/devops/</loc>
+    <lastmod>2020-09-30T10:02:21+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/</loc>
+    <lastmod>2020-09-30T10:02:21+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/posts/</loc>
+    <lastmod>2020-09-30T10:02:21+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/posts/provisioning-aws-resources-using-cdk-azure-devops/</loc>
+    <lastmod>2020-09-30T10:02:21+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/tags/</loc>
+    <lastmod>2020-09-30T10:02:21+02:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://www.mytechramblings.com/tags/.net/</loc>
     <lastmod>2020-09-02T10:01:20+02:00</lastmod>
   </url>
@@ -23,22 +63,7 @@
   </url>
   
   <url>
-    <loc>https://www.mytechramblings.com/</loc>
-    <lastmod>2020-09-02T10:01:20+02:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://www.mytechramblings.com/tags/nuget/</loc>
-    <lastmod>2020-09-02T10:01:20+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://www.mytechramblings.com/posts/</loc>
-    <lastmod>2020-09-02T10:01:20+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://www.mytechramblings.com/tags/</loc>
     <lastmod>2020-09-02T10:01:20+02:00</lastmod>
   </url>
   
@@ -49,11 +74,6 @@
   
   <url>
     <loc>https://www.mytechramblings.com/tags/acr/</loc>
-    <lastmod>2020-07-29T22:10:21+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://www.mytechramblings.com/tags/azure/</loc>
     <lastmod>2020-07-29T22:10:21+02:00</lastmod>
   </url>
   

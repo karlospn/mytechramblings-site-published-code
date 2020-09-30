@@ -9,10 +9,30 @@
     <description>Recent content on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 02 Sep 2020 10:01:20 +0200</lastBuildDate>
+    <lastBuildDate>Wed, 30 Sep 2020 10:02:21 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Provisioning resources on AWS using AWS CDK and Azure DevOps Pipelines</title>
+      <link>https://www.mytechramblings.com/posts/provisioning-aws-resources-using-cdk-azure-devops/</link>
+      <pubDate>Wed, 30 Sep 2020 10:02:21 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/provisioning-aws-resources-using-cdk-azure-devops/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          Introduction First of all let me tell you that I&amp;rsquo;m huge proponent of Terraform as a framework for defining infrastructure in code. One of the things that I like most about Terraform is that not only every major cloud provider (AWS, Azure, GCP) offers their own provider but each day more and more companies are starting to offer their own Terraform providers, and those are great news because with Terraform I can create almost any cloud infrastructure that I want and also a huge array of varied resources such as: VMware vSphere Virtual Machines, RabbitMq Queues, Grafana dashboards amongst many many others.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>How to centrally manage NuGet package versions within your solution</title>
