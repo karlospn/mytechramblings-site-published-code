@@ -298,19 +298,19 @@ If you want to deploy a new application or update an existing one, you only need
 - <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
   <span style="color:#f92672">inputs</span>:
     <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
-    <span style="color:#f92672">script</span>: <span style="color:#e6db74">|
-</span><span style="color:#e6db74">      helm package --destination $(Build.ArtifactStagingDirectory)/ --version $(BuildId).0.0 ./chart/ 
-</span><span style="color:#e6db74">    workingDirectory: &#39;$(Build.SourcesDirectory)/AppA.WebApi&#39;
-</span><span style="color:#e6db74">
-</span><span style="color:#e6db74">- task: AzureCLI@2
-</span><span style="color:#e6db74">  inputs:
-</span><span style="color:#e6db74">    azureSubscription: &#39;azure-dev-subscription&#39;
-</span><span style="color:#e6db74">    scriptType: &#39;bash&#39;
-</span><span style="color:#e6db74">    scriptLocation: &#39;inlineScript&#39;
-</span><span style="color:#e6db74">    inlineScript: &#39;az acr helm push -n $(registryName) $(Build.ArtifactStagingDirectory)/*.tgz&#39;
-</span><span style="color:#e6db74">    useGlobalConfig: true
-</span><span style="color:#e6db74">
-</span></code></pre></div><p>Helm 3 needs the environment variable &ldquo;HELM_EXPERIMENTAL_OCI: 1&rdquo; defined or it won&rsquo;t work, so just put it there&hellip;</p>
+    <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
+</span><span style="color:#e6db74">      </span>      <span style="color:#ae81ff">helm package --destination $(Build.ArtifactStagingDirectory)/ --version $(BuildId).0.0 ./chart/ </span>
+    <span style="color:#f92672">workingDirectory</span>: <span style="color:#e6db74">&#39;$(Build.SourcesDirectory)/AppA.WebApi&#39;</span>
+
+- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AzureCLI@2</span>
+  <span style="color:#f92672">inputs</span>:
+    <span style="color:#f92672">azureSubscription</span>: <span style="color:#e6db74">&#39;azure-dev-subscription&#39;</span>
+    <span style="color:#f92672">scriptType</span>: <span style="color:#e6db74">&#39;bash&#39;</span>
+    <span style="color:#f92672">scriptLocation</span>: <span style="color:#e6db74">&#39;inlineScript&#39;</span>
+    <span style="color:#f92672">inlineScript</span>: <span style="color:#e6db74">&#39;az acr helm push -n $(registryName) $(Build.ArtifactStagingDirectory)/*.tgz&#39;</span>
+    <span style="color:#f92672">useGlobalConfig</span>: <span style="color:#66d9ef">true</span>
+
+</code></pre></div><p>Helm 3 needs the environment variable &ldquo;HELM_EXPERIMENTAL_OCI: 1&rdquo; defined or it won&rsquo;t work, so just put it there&hellip;</p>
 <p>I&rsquo;m using the Azure Pipeline <strong>BuildId</strong> to tag the docker image and also to set the Helm Chart version.<br>
 That&rsquo;s a simple Helm versioning strategy, using a 1-1 versioning just keeps the chart version in sync with the application. That approach makes version bumping very easy (you bump everything up) and also allows you to quickly track what application version is deployed on your cluster (same as chart version).<br>
 If you&rsquo;re interested in helm versioning strategies you can read it more here: <a href="https://codefresh.io/docs/docs/new-helm/helm-best-practices/">https://codefresh.io/docs/docs/new-helm/helm-best-practices/</a></p>
