@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>aad on my tech ramblings</title>
+    <title>adal on my tech ramblings</title>
     
     
     
-    <link>https://www.mytechramblings.com/tags/aad/</link>
-    <description>Recent content in aad on my tech ramblings</description>
+    <link>https://www.mytechramblings.com/tags/adal/</link>
+    <description>Recent content in adal on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 14 Oct 2020 10:00:50 +0200</lastBuildDate>
     
-	<atom:link href="https://www.mytechramblings.com/tags/aad/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://www.mytechramblings.com/tags/adal/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -30,27 +30,6 @@
         
           These past years I worked with a few companies that uses Azure Active Directory to perform authentication and authorization on their line-of-business (LOB) applications and from time to time I get questions about how to register apps on AAD.
 Those questions are always pretty similar and most of the time the problem lies in some misconception, so I thought it might be a good idea to try to answer some of them and at the same time write them down in this post.
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>Trying to automate Azure Active Directory App Registration process using Terraform</title>
-      <link>https://www.mytechramblings.com/posts/automate-azure-ad-app-registration-using-terraform/</link>
-      <pubDate>Tue, 21 Jul 2020 21:22:44 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/posts/automate-azure-ad-app-registration-using-terraform/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          Today I want to try to use Terraform to automate the app registration process in Azure Active Directory.
-If you want to secure an application Azure Active Directory is a really good option, but I don&amp;rsquo;t want to configure my application on AAD manually, what I really want is to add a step in my CI / CD pipeline that does that for me, and for that purpose Terraform might be a good option.
           
         
         </description>

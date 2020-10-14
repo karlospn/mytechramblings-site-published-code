@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>Answering some basic questions about registering applications on Azure Active Directory :: my tech ramblings — A blog for writing about my techie ramblings</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="These past years I worked with a few companies that uses Azure Active Directory to perform authentication and authorization on their line-of-business (LOB) applications and from time to time I get questions about how to register apps on AAD.
+Those questions are always pretty similar and most of the time the problem lies in some misconception, so I thought it might be a good idea to try to answer some of them and at the same time write them down in this post."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://www.mytechramblings.com/posts/answering-basic-questions-about-aad-app-registrations/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/assets/style.css">
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.mytechramblings.com/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://www.mytechramblings.com/img/favicon.png">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Answering some basic questions about registering applications on Azure Active Directory"/>
+<meta name="twitter:description" content="These past years I worked with a few companies that uses Azure Active Directory to perform authentication and authorization on their line-of-business (LOB) applications and from time to time I get questions about how to register apps on AAD.
+Those questions are always pretty similar and most of the time the problem lies in some misconception, so I thought it might be a good idea to try to answer some of them and at the same time write them down in this post."/>
+
+
+
+<meta property="og:title" content="Answering some basic questions about registering applications on Azure Active Directory" />
+<meta property="og:description" content="These past years I worked with a few companies that uses Azure Active Directory to perform authentication and authorization on their line-of-business (LOB) applications and from time to time I get questions about how to register apps on AAD.
+Those questions are always pretty similar and most of the time the problem lies in some misconception, so I thought it might be a good idea to try to answer some of them and at the same time write them down in this post." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.mytechramblings.com/posts/answering-basic-questions-about-aad-app-registrations/" />
+<meta property="article:published_time" content="2020-10-14T10:00:50+02:00" />
+<meta property="article:modified_time" content="2020-10-14T10:00:50+02:00" /><meta property="og:site_name" content="my tech ramblings" />
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://www.mytechramblings.com/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">my tech ramblings</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/answering-basic-questions-about-aad-app-registrations/">Answering some basic questions about registering applications on Azure Active Directory</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2020-10-14
+        </span>
+
+        
+          
+        
+      
+
+      
+      
+        <span class="post-read-time">— 13 min read</span>
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          #<a href="https://www.mytechramblings.com/tags/azure/">azure</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/aad/">aad</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/msal/">msal</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/adal/">adal</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <p>These past years I worked with a few companies that uses Azure Active Directory to perform authentication and authorization on their line-of-business (LOB) applications and from time to time I get questions about how to register apps on AAD.<br>
+Those questions are always pretty similar and most of the time the problem lies in some misconception, so I thought it might be a good idea to try to answer some of them and at the same time write them down in this post.        <br>
+Most of the questions I&rsquo;m going to answer are about some pretty basic stuff so if you&rsquo;re an <em>&ldquo;AAD veteran&rdquo;</em> this post is probably not for you.</p>
+<p>Maybe in the near future I&rsquo;ll try to update this post with more questions or maybe I write another post with another batch of qüestions.<br>
+Without further ado, I&rsquo;m going to start with a first batch of 10 questions.</p>
+<h1 id="q1-whats-the-difference-between-app-registrations-and-enterprise-applications">Q1: What&rsquo;s the difference between &ldquo;App Registrations&rdquo; and &ldquo;Enterprise Applications&rdquo;?</h1>
+<p>If you have developed a new application and you want to integrate it with AAD you need to register it in the <strong>App Registrations</strong> section.    <br>
+Registering an app establishes a trust relationship between the application and the identity provider, it doesn&rsquo;t matter if it&rsquo;s a client application like a web or mobile app or it&rsquo;s an API that backs a client app.</p>
+<p>Some people might get confused between the <strong>Enterprise Applications</strong> section and the <strong>App Registrations</strong> section and that&rsquo;s because when you create an app in the <strong>App Registrations</strong> section another one with the same name is also created as an <strong>Enterprise Application</strong> in your AAD.</p>
+<p>In <strong>App Registrations</strong> you are defining how your application is going to behave across all tenants, meanwhile in the <strong>Enterprise Applications</strong> section what it gets created is an instantiation of your application for that specific tenant (Service Principal).</p>
+<p>You can think that the <strong>App Registration</strong> step is like creating the definition of how you want your application to behave and in the <strong>Enterprise Applications</strong> section you&rsquo;re seeing the instantiation of that definition for that specific tenant.</p>
+<p>Also in the <strong>Enterprise Application</strong> section you can find applications published by other companies that can be used within your organization. For example, if you want to federate AWS and manage SSO within your organization, you can integrate it from the <strong>Enterprise Applications</strong> section.</p>
+<p>If you&rsquo;re registering a new app on AAD I&rsquo;m pretty confident that almost all your time is going to be spent on the <strong>App Registrations</strong> section, that&rsquo;s where you&rsquo;re going to define the app branding, how the authentication is going to work, which permissions your application is going to expose and which permissions is going to consume, what claims you want to add in your tokens and how the service will issue tokens.<br>
+Meanwhile on the <strong>Enterprise Applications</strong> section you are going to configure who can access the application and under which conditions.</p>
+<blockquote>
+<p>I tried to explain it using my own words, but I think that the best explanation possible to this qüestion lies right here:  <a href="https://docs.microsoft.com/en-us/azure/active-directory/develop/app-objects-and-service-principals">https://docs.microsoft.com/en-us/azure/active-directory/develop/app-objects-and-service-principals</a></p>
+</blockquote>
+<h1 id="q2-whats-the-difference-between-approles-and-scopes-and-how-can-i-add-a-new-scope--approle-in-my-application">Q2: What&rsquo;s the difference between AppRoles and Scopes? And how can I add a new Scope / AppRole in my application?</h1>
+<p>When talking about <strong>scopes</strong> on AAD we&rsquo;re refering to the collection of permissions that an API (resource) exposes to client apps.<br>
+These permission scopes need to be granted to client apps via consent grant.</p>
+<blockquote>
+<p>If you take a look at the application manifest the scopes are being called called &ldquo;oauth2permissions&rdquo;,</p>
+</blockquote>
+<p><img src="/img/scopes-ouath2permissions.png" alt="manifest-oauth2permissions"></p>
+<p>You can add new scopes to an app from the &ldquo;Expose API&rdquo; section</p>
+<p><img src="/img/add-scopes.png" alt="add-scopes"></p>
+<p>If your app needs to consume another app already registered on AAD it can request which scopes it needs from the &ldquo;API permissions&rdquo; section</p>
+<p><img src="/img/api-permissions.png" alt="api-permissions"></p>
+<p>When talking about <strong>appRoles</strong> we should first talk about RBAC. Role-based access control or RBAC is a popular mechanism to enforce authorization in applications. When using RBAC, an administrator grants permissions to roles, and not to individual users or groups. The administrator can then assign roles to different users and groups to control who has access to what content and functionality. <br>
+AppRoles are the collection of roles that an app may declare. These roles can be assigned to users, groups, or service principals.</p>
+<p>If you need to add a need AppRole onto your app you need to add it directly into the app manifest, <strong>there is not a UI for it</strong>.</p>
+<p><img src="/img/aad-approles-manifest.png" alt="approles-manifest"></p>
+<p>If you want to assign users or groups onto an AppRole you need to do it from the &ldquo;Enterprise Application&rdquo; blade. You can&rsquo;t do it from the &ldquo;App Registration&rdquo; blade.</p>
+<p><img src="/img/aad-add-users-to-app.png" alt="add-users-to-app"></p>
+<h1 id="q3-whats-the-difference-between-delegated-permissions-and-application-permissions">Q3: What&rsquo;s the difference between delegated permissions and application permissions?</h1>
+<p><strong>Delegated permissions</strong> are used when you want to authenticate to a WebAPI or other services with the currently logged-on user.<br>
+This involves a physical user and a user interface.</p>
+<p><strong>Application permission</strong> are used when there is no user present. Mostly used for API to API calls. This is also used for background and daemon services.<br>
+Unlike delegated permissions, application permissions, however, uses the app id and secret to login and always has the given permissions of the application.</p>
+<h1 id="q4-can-i-add-a-delegated-permission-and-also-an-application-permission-in-my-application">Q4: Can I add a delegated permission and also an application permission in my application?</h1>
+<p>Absolutely. &ldquo;Application Permissions&rdquo; and &ldquo;Delegated Permissions&rdquo; are completely independent of one another. <br>
+For example,  your application might have a section that requires user interaction and needs that a user is logged-in and another section that is being accesed programmatically by another application.</p>
+<p>Here are a couple of tidbits when working with delegated and application permissions:</p>
+<ul>
+<li>In application permissions the &ldquo;scp&rdquo; claim is not present in the access token. You need to use the &ldquo;roles&rdquo; attribute.
+Meanwhile for delegated permissions if the user logged has a role assigned the token will contains both claims: &ldquo;scp&rdquo; and &ldquo;roles&rdquo;.</li>
+<li>If your working with the Graph API you might need different permissions depending if you&rsquo;re using delegated or application permissions. Take a quick look into the Microsoft documentation before assuming that the same permissions will work in both scenarios. For example: <a href="https://docs.microsoft.com/en-us/graph/api/drive-get?view=graph-rest-beta&amp;tabs=http">https://docs.microsoft.com/en-us/graph/api/drive-get?view=graph-rest-beta&amp;tabs=http</a></li>
+</ul>
+<h1 id="q5-my-application-needs-permission-to-call-microsoft-graph-api-what-i-need-to-do">Q5: My application needs permission to call Microsoft Graph API, what I need to do?</h1>
+<p>That&rsquo;s probably one of the simplest things to do on App Registrations.<br>
+Just register your application and after that navigate to the &ldquo;API permissions&rdquo; section, select &ldquo;Add permission&rdquo; &gt; &ldquo;Microsoft Graph&rdquo; &gt; select between delegated or application permissions &gt;  select which permissions you need from the Microsoft Graph API.</p>
+<p>But be careful and don&rsquo;t get confused between the &ldquo;Microsoft Graph (<a href="https://graph.microsoft.com/)%22">https://graph.microsoft.com/)&quot;</a> Api and the &ldquo;Azure Active Directory Graph&rdquo; Api (<a href="https://graph.windows.net/)">https://graph.windows.net/)</a>. <br>
+The AAD Graph is the old version and is currently deprecated, you should always use the Microsoft Graph API.</p>
+<h1 id="q6-whats-the-use-of-the-default-scope">Q6: What&rsquo;s the use of the .default scope?</h1>
+<p>The .default scope is a built-in scope for every application and it refers to the static list of permissions configured on the application registration.
+If we request an access token using the .default scope our users will be asked to consent to all of the configured permissions present on our Azure AD App Registration for that specific resource and in return they will get an access token containing all the permissions present.</p>
+<p>Let&rsquo;s see a couple of quick examples:</p>
+<ul>
+<li>
+<h2 id="example-1">Example 1</h2>
+</li>
+</ul>
+<p>I have register an app with the following permissions:</p>
+<p><img src="/img/default-scope-permissions-1.png" alt="default-scope-permissions-1"></p>
+<p>And if I request an access token using the .default scope</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#a6e22e">https</span><span style="color:#f92672">:</span><span style="color:#75715e">//login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/oauth2/v2.0/authorize
+</span><span style="color:#75715e"></span><span style="color:#f92672">?</span><span style="color:#a6e22e">client_id</span><span style="color:#f92672">=</span><span style="color:#ae81ff">5833</span><span style="color:#a6e22e">d6c7</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span><span style="color:#a6e22e">ba5</span><span style="color:#f92672">-</span><span style="color:#ae81ff">4184</span><span style="color:#f92672">-</span><span style="color:#ae81ff">9</span><span style="color:#a6e22e">b14</span><span style="color:#f92672">-</span><span style="color:#ae81ff">050</span><span style="color:#a6e22e">a6b5ed212</span>
+<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">redirect_uri</span><span style="color:#f92672">=</span><span style="color:#a6e22e">https</span><span style="color:#f92672">:</span><span style="color:#75715e">//oidcdebugger.com/debug
+</span><span style="color:#75715e"></span><span style="color:#f92672">&amp;</span><span style="color:#a6e22e">scope</span><span style="color:#f92672">=</span><span style="color:#a6e22e">https</span><span style="color:#f92672">:</span><span style="color:#75715e">//graph.microsoft.com/.default
+</span><span style="color:#75715e"></span><span style="color:#f92672">&amp;</span><span style="color:#a6e22e">response_type</span><span style="color:#f92672">=</span><span style="color:#a6e22e">token</span>
+<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">response_mode</span><span style="color:#f92672">=</span><span style="color:#a6e22e">form_post</span>
+<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">nonce</span><span style="color:#f92672">=</span><span style="color:#a6e22e">yj8o2c250eq</span>
+</code></pre></div><p>I get an access token containing all the scopes that where present on the permissions section</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">{
+   ...
+   <span style="color:#e6db74">&#34;scp&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;AccessReview.Read.All Agreement.Read.All Calendars.Read Device.Read.All profile openid email&#34;</span>,
+   ...
+}
+
+</code></pre></div><ul>
+<li>
+<h2 id="example-2">Example 2:</h2>
+</li>
+</ul>
+<p>The payment app exposes these 3 scopes:</p>
+<p><img src="/img/default-scope-permissions-2.png" alt="default-scope-permissions-2"></p>
+<p>The Booking app has the following permissions for the payment app:</p>
+<p><img src="/img/default-scope-permissions-3.png" alt="default-scope-permissions-3"></p>
+<p>If I request an access token using the .default scope</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#a6e22e">https</span><span style="color:#f92672">:</span><span style="color:#75715e">//login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/oauth2/v2.0/authorize
+</span><span style="color:#75715e"></span><span style="color:#f92672">?</span><span style="color:#a6e22e">client_id</span><span style="color:#f92672">=</span><span style="color:#a6e22e">c3b8b95f</span><span style="color:#f92672">-</span><span style="color:#ae81ff">922</span><span style="color:#a6e22e">b</span><span style="color:#f92672">-</span><span style="color:#ae81ff">4384</span><span style="color:#f92672">-</span><span style="color:#ae81ff">8</span><span style="color:#a6e22e">ab2</span><span style="color:#f92672">-</span><span style="color:#a6e22e">a1215a9fc295</span>
+<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">redirect_uri</span><span style="color:#f92672">=</span><span style="color:#a6e22e">https</span><span style="color:#f92672">:</span><span style="color:#75715e">//oidcdebugger.com/debug
+</span><span style="color:#75715e"></span><span style="color:#f92672">&amp;</span><span style="color:#a6e22e">scope</span><span style="color:#f92672">=</span><span style="color:#a6e22e">api</span><span style="color:#f92672">:</span><span style="color:#75715e">//payment/.default
+</span><span style="color:#75715e"></span><span style="color:#f92672">&amp;</span><span style="color:#a6e22e">response_type</span><span style="color:#f92672">=</span><span style="color:#a6e22e">token</span>
+<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">response_mode</span><span style="color:#f92672">=</span><span style="color:#a6e22e">form_post</span>
+<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">nonce</span><span style="color:#f92672">=</span><span style="color:#a6e22e">wq2vzi24b5</span>
+</code></pre></div><p>I get an access token containing all the scopes for the payment api that where present on the permissions section</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">{
+   ...
+   <span style="color:#e6db74">&#34;scp&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;payment.read payment.write&#34;</span>,
+   ...
+}
+</code></pre></div><blockquote>
+<p>You can find a more flesh out explanation to this question right here: <a href="https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-permissions-and-consent">https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-permissions-and-consent</a></p>
+</blockquote>
+<h1 id="q7-i-have-built-a-webapi-using-csharp-and-i-want-to-add-authentication-and-authorization-using-aad-what-library-should-i-use-adalnet-msalnet-or-microsoftidentityweb">Q7: I have built a WebApi using csharp and I want to add authentication and authorization using AAD. What library should I use? ADAL.NET, MSAL.NET or Microsoft.Identity.Web?</h1>
+<p>The question between ADAL.NET and MSAL.NET is a pretty common question and to make things worse now we have another new library&hellip;</p>
+<p>The main difference between ADAL and MSAL is that ADAL.NET integrates with the Azure AD for developers (v1.0) endpoint, where MSAL.NET integrates with the Microsoft identity platform (v2.0) endpoint.</p>
+<p><img src="/img/adal-vs-msal.png" alt="adal-vs-msal"></p>
+<p>If you can choose between ADAL.NET and MSAL.NET just use MSAL.NET.</p>
+<p>MSAL.NET is the newer version of Microsoft authentication libraries and it will allow you to acquire tokens for users signing-in to your application with Azure AD, Microsoft accounts or Azure AD B2C.</p>
+<p>If you have an old app lying around that is using the AAD for authentication probably is using the ADAL.NET library, but if you&rsquo;re creating a new application right now it doesn&rsquo;t make sense to use ADAL.NET.</p>
+<p>But what about Microsoft.Identity.Web?</p>
+<blockquote>
+<p>Microsoft Identity Web provides the glue between the ASP.NET Core middleware and MSAL .NET to bring a clearer, more robust developer experience, which also leverages the power of the Microsoft identity platform (formerly Azure AD v2.0 endpoint), and leverages OpenId Connect middleware, which means developers can develop applications which allow several identity providers, including integration with Azure AD B2C.</p>
+</blockquote>
+<p><img src="/img/microsoft-web-identity-fits.png" alt="microsoft-web-identity-fits"></p>
+<p>That&rsquo;s how Microsoft describes this new library.</p>
+<p>Microsoft.Identity.Web is the most recent library for authentication (version 1.0.0 was released 15 days ago) and from my standpoint it seems that with this library Microsoft is trying to simplify the multiple steps you needed to perform in your application when using MSAL.NET.  <br>
+Nonetheless if you want to use the library there is catch: <strong>it only works with .NET Core 3.1 and .NET 5</strong></p>
+<p>If you want to know more about this library, go here: <a href="https://github.com/AzureAD/microsoft-identity-web/wiki">https://github.com/AzureAD/microsoft-identity-web/wiki</a></p>
+<p>Just to make it easy:</p>
+<ul>
+<li>ADAL.NET is obsolete, do not use it. If you find and old application using ADAL.NET you should try to migrate it to MSAL.NET, there is even a page explaining with detail how to do it: <a href="https://docs.microsoft.com/es-es/azure/active-directory/develop/msal-net-migration">https://docs.microsoft.com/es-es/azure/active-directory/develop/msal-net-migration</a></li>
+<li>If you&rsquo;re working with .NET Core 3.1 and you don&rsquo;t mind using a super recent library use Microsoft.Web.Identity.<br>
+But if you plan to install the library in your app and forget about it, that might not be a good fit for you. The library is so recent that probably is going to bump some versions pretty quick. In fact version 1.1.0 is already out.</li>
+<li>For everything else just use MSAL.NET</li>
+</ul>
+<h1 id="q8-i-have-a-spa-single-page-application-that-makes-a-call-to-a-protected-webapi-this-protected-api-needs-to-call-another-protected-webapi-what-authentication-protocol-flow-should-i-use">Q8: I have a SPA (Single Page Application) that makes a call to a protected WebAPI, this protected API needs to call another protected WebAPI. What authentication protocol flow should I use?</h1>
+<p>In this case you need to use the OAuth 2.0 On-Behalf-Of flow (OBO Flow).<br>
+The idea is to propagate the delegated user identity and permissions through the request chain.
+The SPA has to make authenticated requests to the WebApi and also the middle-tier API need to make authenticated requests to the downstream services.</p>
+<p>Let me try to build a quick example to see how the OBO Flow works. I&rsquo;m going to build the following example:</p>
+<p><img src="/img/obo-flow.png" alt="obo-flow"></p>
+<p>1 - The SPA signs a user using MSAL.js and in response acquires an access token for the WebApi 1.<br>
+2 - The SPA calls the WebApi 1 passing the access token.<br>
+3 - The WebApi 1 authorizes the caller and uses the access token that has received to request another access token for WebApi 2.<br>
+4 - WebApi 1 uses the new access token that has acquired to call WebApi 2.</p>
+<p>For that example I&rsquo;m going to use the <strong>Microsoft.Identity.Web</strong> library</p>
+<ul>
+<li>If you want to take a look at the code, it&rsquo;s on my GitHub: <a href="https://github.com/karlospn/testing-obo-flow-with-microsoft-identity-web-library">https://github.com/karlospn/testing-obo-flow-with-microsoft-identity-web-library</a></li>
+</ul>
+<p>Let me comment the most interesting parts of the demo:</p>
+<ul>
+<li>On the WebApi 1 project:</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> Microsoft.Identity.Web;
+
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Startup</span>
+{
+   <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
+   {
+      services.AddMicrosoftIdentityWebApiAuthentication(Configuration)
+            .EnableTokenAcquisitionToCallDownstreamApi()
+            .AddDownstreamWebApi(<span style="color:#e6db74">&#34;WebApi2&#34;</span>, Configuration.GetSection(<span style="color:#e6db74">&#34;WebApi2&#34;</span>))
+            .AddInMemoryTokenCaches();
+
+      services.AddControllers();
+   }
+}
+
+</code></pre></div><p>WebApi 1 needs to acquire a token for the downstream API (WebApi 2). You specify it by adding the <em>.EnableTokenAcquisitionToCallDownstreamApi()</em> line after <em>.AddMicrosoftIdentityWebApi(Configuration)</em>.<br>
+You can call the downstream API without adding the extension <em>.AddDownstreamWebApi()</em> but it&rsquo;s really useful because now I can directly inject an <em>IDownstreamWebApi</em> service in my controller and use it to call the WebApi 2 app without the need to build an HttpClient.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">
+</span><span style="color:#a6e22e">[ApiController]</span>
+<span style="color:#a6e22e">[Authorize]</span>
+<span style="color:#a6e22e">[Route(&#34;api/invoke&#34;)]</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">InvokeController</span> : ControllerBase
+{
+
+   <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger&lt;InvokeController&gt; _logger;
+   <span style="color:#66d9ef">private</span> IDownstreamWebApi _downstreamWebApi;
+
+   <span style="color:#66d9ef">public</span> InvokeController(ILogger&lt;InvokeController&gt; logger, 
+      IDownstreamWebApi downstreamWebApi)
+   {
+      _logger = logger;
+      _downstreamWebApi = downstreamWebApi;
+   }
+<span style="color:#a6e22e">
+</span><span style="color:#a6e22e">   [HttpGet]</span>
+   <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;ActionResult&gt; Get()
+   {
+      _logger.LogInformation(<span style="color:#e6db74">&#34;Trying to call a downstream Api&#34;</span>);
+      <span style="color:#66d9ef">var</span> <span style="color:#66d9ef">value</span> = <span style="color:#66d9ef">await</span> _downstreamWebApi.CallWebApiForUserAsync(
+            <span style="color:#e6db74">&#34;WebApi2&#34;</span>,
+            options =&gt;
+            {
+               options.HttpMethod = HttpMethod.Get;
+               options.RelativePath = <span style="color:#e6db74">&#34;api/downstream&#34;</span>;
+            });
+
+            <span style="color:#66d9ef">return</span> Ok(<span style="color:#66d9ef">value</span>);
+        }
+    }
+
+</code></pre></div><ul>
+<li>On the WebApi 2 project:</li>
+</ul>
+<p>We simply need to add <em>.AddMicrosoftIdentityWebApiAuthentication()</em> on the <em>Startup.cs</em>.<br>
+This method enables your WebAPI to be protected using the Microsoft identity platform. This includes validating the token in all scenarios (single- and multi-tenant applications).</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
+{
+   services.AddMicrosoftIdentityWebApiAuthentication(Configuration);
+   services.AddControllers();
+}
+</code></pre></div><h1 id="q9-can-i-define-custom-scopes-and-have-them-returned-when-using-the-client-credential-flow-in-azure-ad">Q9: Can I define custom scopes and have them returned when using the client credential flow in Azure AD?</h1>
+<p>No, you can&rsquo;t.
+What you can do is define appRoles and have them returned via the client credential flow. Also you need to specify the .default scope in a client credentials flow, you cannot specify a concrete scope.</p>
+<p>Just like this:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#a6e22e">curl</span> <span style="color:#f92672">-</span><span style="color:#a6e22e">X</span> <span style="color:#a6e22e">POST</span> <span style="color:#a6e22e">https</span><span style="color:#f92672">:</span><span style="color:#75715e">//login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/oauth2/v2.0/token 
+</span><span style="color:#75715e"></span><span style="color:#f92672">-</span><span style="color:#a6e22e">H</span> <span style="color:#e6db74">&#39;Cache-Control: no-cache&#39;</span> 
+<span style="color:#f92672">-</span><span style="color:#a6e22e">H</span> <span style="color:#e6db74">&#39;Content-Type: application/x-www-form-urlencoded&#39;</span> 
+<span style="color:#f92672">-</span><span style="color:#a6e22e">d</span> <span style="color:#e6db74">&#39;grant_type=client_credentials&amp;client_id=c3b8b9 5f-922b-4384-8ab2-a1215a9fc295&amp;client_secret=e-M2va9la3O1pl~x1HPQNVXKSrK-a9_iRK&amp;scope=api://payment/.default&#39;</span>
+</code></pre></div><h1 id="q10-i-have-registered-2-apps-on-my-aad-and-im-having-some-trouble-validating-the-issuer-attribute-from-the-access-tokens-the-value-of-the-issuer-attribute-in-an-access-token-issued-for-the-app1-is-loginmicrosoftonlinecom-and-the-value-of-the-issuer-attribute-in-an-access-token-issued-for-the-app2-is-stswindowsnet-whats-happening">Q10: I have registered 2 apps on my AAD and I&rsquo;m having some trouble validating the issuer attribute from the access tokens. The value of the issuer attribute in an access token issued for the app1 is &ldquo;login.microsoftonline.com&rdquo; and the value of the issuer attribute in an access token issued for the app2 is &ldquo;sts.windows.net&rdquo;. What&rsquo;s happening?</h1>
+<p>Imagine that you are building a protected WebApi and you want to validate the access tokens. <br>
+Two of the attributes you could validate are the &ldquo;Issuer&rdquo; and the &ldquo;Audience&rdquo;.<br>
+The issuer attribute (iss) identifies the security token service (STS) that constructs and returns the token and also the Azure AD tenant in which the user was authenticated.<br>
+The audience attribute (aud) identifies the intended recipient of the token.</p>
+<p>But you need to know that the issuer and the audience attributes have <strong>different values</strong> depending if the access token is issued by the Azure Active Directory V1 endpoint or the Azure Active Directory V2 endpoint.</p>
+<p>And probably the first thing that comes into your mind after reading up to this point:</p>
+<ul>
+<li><em>&ldquo;Nowadays no one is using the AAD V1 endpoint anymore, why should I care about it?&quot;</em></li>
+</ul>
+<p>But here comes the catch: <strong>The AAD V2 endpoint is capable of issuing tokens in V1 and V2 format. And by default is issuing tokens in V1 format.</strong></p>
+<p>The parameter that allows you to switch between tokens formats is called <strong>&ldquo;accessTokenAcceptedVersion&rdquo;</strong> and you can find it in the application manifest (<a href="https://docs.microsoft.com/es-es/azure/active-directory/develop/reference-app-manifest">https://docs.microsoft.com/es-es/azure/active-directory/develop/reference-app-manifest</a>)<br>
+The possible values for accesstokenAcceptedVersion are 1, 2, or null. If the value is null, this parameter defaults to 1, which corresponds to the v1.0 endpoint.</p>
+<p><img src="/img/aad-accesstokenacceptedversion-attribute.png" alt="aad-accesstokenacceptedversion-attribute"></p>
+<p>A common issue I&rsquo;m seeing around in a few places is people thinking that they can validate exactly the same way all the access token issued from the V2 endpoint.<br>
+You&rsquo;re going to run in some troubles if you&rsquo;re try to validate the issuer and the audience from an access token <strong>issued</strong> by the AAD V2 endpoint but in the <strong>V1</strong> format.</p>
+<ul>
+<li>Let me show you what I&rsquo;m trying to explain with an example:</li>
+</ul>
+<p>Here&rsquo;s an access token that has been issued when the attribute &ldquo;accesstokenAcceptedVersion&rdquo; is set to <strong>null</strong> or <strong>1</strong>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">{
+   <span style="color:#e6db74">&#34;aud&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;api://42216d82-c01b-45c6-8bcf-511d472900b1&#34;</span>,
+   <span style="color:#e6db74">&#34;iss&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;https://sts.windows.net/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/&#34;</span>,
+   <span style="color:#e6db74">&#34;iat&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1602591474</span>,
+   <span style="color:#e6db74">&#34;nbf&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1602591474</span>,
+   <span style="color:#e6db74">&#34;exp&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1602595374</span>,
+   <span style="color:#e6db74">&#34;acr&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;1&#34;</span>,
+   <span style="color:#e6db74">&#34;aio&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;AVQAq/8RAAAA2p8+WYcyz9UuytxuBb6mjh6aVBnvgFIZgPeLy3qshHe2H6ffBuyTZ7KLLnG125Tpc9qtO9fvGy2hAVQKa4c1qoe1VcYYWlu+V43D3m5Q5OI=&#34;</span>,
+   <span style="color:#e6db74">&#34;amr&#34;</span><span style="color:#f92672">:</span> [
+      <span style="color:#e6db74">&#34;pwd&#34;</span>
+   ],
+   <span style="color:#e6db74">&#34;appid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;42216d82-c01b-45c6-8bcf-511d472900b1&#34;</span>,
+   <span style="color:#e6db74">&#34;appidacr&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;0&#34;</span>,
+   <span style="color:#e6db74">&#34;email&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;cpn@outlook.com&#34;</span>,
+   <span style="color:#e6db74">&#34;family_name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;p&#34;</span>,
+   <span style="color:#e6db74">&#34;given_name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;c&#34;</span>,
+   <span style="color:#e6db74">&#34;idp&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;live.com&#34;</span>,
+   <span style="color:#e6db74">&#34;ipaddr&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;10.10.10.10&#34;</span>,
+   <span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;cpn&#34;</span>,
+   <span style="color:#e6db74">&#34;oid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;221f4ba1-8bf4-4083-bd22-ba078fd56580&#34;</span>,
+   <span style="color:#e6db74">&#34;rh&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;0.AR8A4nEGijA6ME2cua1wm5x0SoJtIUIbwMZFi89RHUcpALEfALk.&#34;</span>,
+   <span style="color:#e6db74">&#34;scp&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;api1.read&#34;</span>,
+   <span style="color:#e6db74">&#34;sub&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;LFctpniExhuoNWlwh52C_SRnQN4Z74hkUZu1AhceU6s&#34;</span>,
+   <span style="color:#e6db74">&#34;tid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;8a0671e2-3a30-4d30-9cb9-ad709b9c744a&#34;</span>,
+   <span style="color:#e6db74">&#34;unique_name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;live.com#cpn@outlook.com&#34;</span>,
+   <span style="color:#e6db74">&#34;uti&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;hx1a4jDUAkyucKxfwaE-AA&#34;</span>,
+   <span style="color:#e6db74">&#34;ver&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;1.0&#34;</span>
+}
+</code></pre></div><p>And here&rsquo;s an access token that has been issued when the attribute &ldquo;accesstokenAcceptedVersion&rdquo; is set to <strong>2</strong>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">{
+   <span style="color:#e6db74">&#34;aud&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;42216d82-c01b-45c6-8bcf-511d472900b1&#34;</span>,
+   <span style="color:#e6db74">&#34;iss&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;https://login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/v2.0&#34;</span>,
+   <span style="color:#e6db74">&#34;iat&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1602594547</span>,
+   <span style="color:#e6db74">&#34;nbf&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1602594547</span>,
+   <span style="color:#e6db74">&#34;exp&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1602598447</span>,
+   <span style="color:#e6db74">&#34;aio&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;AWQAm/8RAAAACGs+Od0VxVRWvsNt4b463+iPnuLt0uHgEKFB+Zh6BCIp4RooCkDrxdnGKIp+ku+QahSYbBTHCXnOzk+gO6rj4DIpWdsMSULPmyBdBJKpHzhqdpX8Xcmexa9axdA3CRj7&#34;</span>,
+   <span style="color:#e6db74">&#34;azp&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;42216d82-c01b-45c6-8bcf-511d472900b1&#34;</span>,
+   <span style="color:#e6db74">&#34;azpacr&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;0&#34;</span>,
+   <span style="color:#e6db74">&#34;idp&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;live.com&#34;</span>,
+   <span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;cpn&#34;</span>,
+   <span style="color:#e6db74">&#34;oid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;221f4ba1-8bf4-4083-bd22-ba078fd56580&#34;</span>,
+   <span style="color:#e6db74">&#34;preferred_username&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;cpn@outlook.com&#34;</span>,
+   <span style="color:#e6db74">&#34;rh&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;0.AR8A4nEGijA6ME2cua1wm5x0SoJtIUIbwMZFi89RHUcpALEfALk.&#34;</span>,
+   <span style="color:#e6db74">&#34;scp&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;api1.read&#34;</span>,
+   <span style="color:#e6db74">&#34;sub&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;LFctpniExhuoNWlwh52C_SRnQN4Z74hkUZu1AhceU6s&#34;</span>,
+   <span style="color:#e6db74">&#34;tid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;8a0671e2-3a30-4d30-9cb9-ad709b9c744a&#34;</span>,
+   <span style="color:#e6db74">&#34;uti&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;uAv96bNnUkqogjeo0nFuAA&#34;</span>,
+   <span style="color:#e6db74">&#34;ver&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2.0&#34;</span>
+}
+</code></pre></div><p>As you can see both the issuer and the audience values are completely different, so be mindful if you do some kind of token validations like this one:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">app.UseWindowsAzureActiveDirectoryBearerAuthentication(
+   <span style="color:#66d9ef">new</span> WindowsAzureActiveDirectoryBearerAuthenticationOptions
+   {
+         Audience = <span style="color:#e6db74">&#34;https://sts.windows.net/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/&#34;</span>
+   });
+</code></pre></div><p>Because it only would work if the attribute &ldquo;accessTokenAcceptedVersion&rdquo; is set to 1 or null.</p>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://www.mytechramblings.com/posts/provisioning-aws-resources-using-cdk-azure-devops/">
+                  <span class="button__text">Provisioning resources on AWS using AWS CDK and Azure DevOps Pipelines</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2020 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>Theme created by <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://www.mytechramblings.com/assets/main.js"></script>
+<script src="https://www.mytechramblings.com/assets/prism.js"></script>
+
+      
+    </div>
+
+    
+      
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-170300931-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+    
+  </body>
+</html>

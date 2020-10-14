@@ -3,12 +3,47 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://www.mytechramblings.com/tags/aws/</loc>
-    <lastmod>2020-09-30T10:02:21+02:00</lastmod>
+    <loc>https://www.mytechramblings.com/tags/aad/</loc>
+    <lastmod>2020-10-14T10:00:50+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/tags/adal/</loc>
+    <lastmod>2020-10-14T10:00:50+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/posts/answering-basic-questions-about-aad-app-registrations/</loc>
+    <lastmod>2020-10-14T10:00:50+02:00</lastmod>
   </url>
   
   <url>
     <loc>https://www.mytechramblings.com/tags/azure/</loc>
+    <lastmod>2020-10-14T10:00:50+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/tags/msal/</loc>
+    <lastmod>2020-10-14T10:00:50+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/</loc>
+    <lastmod>2020-10-14T10:00:50+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/posts/</loc>
+    <lastmod>2020-10-14T10:00:50+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/tags/</loc>
+    <lastmod>2020-10-14T10:00:50+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/tags/aws/</loc>
     <lastmod>2020-09-30T10:02:21+02:00</lastmod>
   </url>
   
@@ -23,22 +58,7 @@
   </url>
   
   <url>
-    <loc>https://www.mytechramblings.com/</loc>
-    <lastmod>2020-09-30T10:02:21+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://www.mytechramblings.com/posts/</loc>
-    <lastmod>2020-09-30T10:02:21+02:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://www.mytechramblings.com/posts/provisioning-aws-resources-using-cdk-azure-devops/</loc>
-    <lastmod>2020-09-30T10:02:21+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://www.mytechramblings.com/tags/</loc>
     <lastmod>2020-09-30T10:02:21+02:00</lastmod>
   </url>
   
@@ -90,11 +110,6 @@
   <url>
     <loc>https://www.mytechramblings.com/tags/kubernetes/</loc>
     <lastmod>2020-07-29T22:10:21+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://www.mytechramblings.com/tags/aad/</loc>
-    <lastmod>2020-07-21T21:22:44+02:00</lastmod>
   </url>
   
   <url>
