@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>containers on my tech ramblings</title>
+    <title>ecs on my tech ramblings</title>
     
     
     
-    <link>https://www.mytechramblings.com/tags/containers/</link>
-    <description>Recent content in containers on my tech ramblings</description>
+    <link>https://www.mytechramblings.com/tags/ecs/</link>
+    <description>Recent content in ecs on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 10 Nov 2020 10:10:18 +0100</lastBuildDate>
     
-	<atom:link href="https://www.mytechramblings.com/tags/containers/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://www.mytechramblings.com/tags/ecs/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -31,28 +31,6 @@
           These past couple of weeks I&amp;rsquo;ve been tinkering with AWS ECS Fargate and after losing some time tackling different approaches I thought it might be useful to write down what I ended up building.
 My goal was trying to build an AWS ECS Fargate cluster and deploy apps on it using Azure DevOps Pipelines and I had 3 clear objectives I wanted to achieve.
  All the infrastructure in AWS must be created using IaC (infrastructure-as-code) and must be created using an Azure DevOps pipeline.
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>How to restore nuget packages from an Azure DevOps Private Feed when building a Docker image</title>
-      <link>https://www.mytechramblings.com/posts/how-to-use-a-private-nuget-feed-with-docker/</link>
-      <pubDate>Tue, 14 Jul 2020 19:12:41 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/posts/how-to-use-a-private-nuget-feed-with-docker/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          Let&amp;rsquo;s go for a quick post this time.
-Imagine you&amp;rsquo;re trying to create a Docker image from an application and it is using some custom nugets. Those custom nugets are hosted in your private Azure DevOps Feed. And when you try to build the image you get one of the following errors:
-/src/MyConsoleApplication.csproj : error NU1101: Unable to find package MyOwn.EmailService. No packages exist with this id in source(s): nuget.org Failed to restore /src/MyConsoleApplication.
           
         
         </description>

@@ -9,10 +9,32 @@
     <description>Recent content in aws on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 30 Sep 2020 10:02:21 +0200</lastBuildDate>
+    <lastBuildDate>Tue, 10 Nov 2020 10:10:18 +0100</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/aws/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>An opinionated approach about how to create an AWS ECS Fargate cluster and deploy apps on it using Azure DevOps Pipelines</title>
+      <link>https://www.mytechramblings.com/posts/create-an-ecs-cluster-and-deploy-apps-using-azure-devops/</link>
+      <pubDate>Tue, 10 Nov 2020 10:10:18 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/create-an-ecs-cluster-and-deploy-apps-using-azure-devops/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          These past couple of weeks I&amp;rsquo;ve been tinkering with AWS ECS Fargate and after losing some time tackling different approaches I thought it might be useful to write down what I ended up building.
+My goal was trying to build an AWS ECS Fargate cluster and deploy apps on it using Azure DevOps Pipelines and I had 3 clear objectives I wanted to achieve.
+ All the infrastructure in AWS must be created using IaC (infrastructure-as-code) and must be created using an Azure DevOps pipeline.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>Provisioning resources on AWS using AWS CDK and Azure DevOps Pipelines</title>

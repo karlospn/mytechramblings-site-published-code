@@ -9,10 +9,150 @@
     <description>Recent content in Tags on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 14 Oct 2020 10:00:50 +0200</lastBuildDate>
+    <lastBuildDate>Tue, 10 Nov 2020 10:10:18 +0100</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>aws</title>
+      <link>https://www.mytechramblings.com/tags/aws/</link>
+      <pubDate>Tue, 10 Nov 2020 10:10:18 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/aws/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>azure</title>
+      <link>https://www.mytechramblings.com/tags/azure/</link>
+      <pubDate>Tue, 10 Nov 2020 10:10:18 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/azure/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>cdk</title>
+      <link>https://www.mytechramblings.com/tags/cdk/</link>
+      <pubDate>Tue, 10 Nov 2020 10:10:18 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/cdk/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>containers</title>
+      <link>https://www.mytechramblings.com/tags/containers/</link>
+      <pubDate>Tue, 10 Nov 2020 10:10:18 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/containers/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>devops</title>
+      <link>https://www.mytechramblings.com/tags/devops/</link>
+      <pubDate>Tue, 10 Nov 2020 10:10:18 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/devops/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>ecr</title>
+      <link>https://www.mytechramblings.com/tags/ecr/</link>
+      <pubDate>Tue, 10 Nov 2020 10:10:18 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/ecr/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>ecs</title>
+      <link>https://www.mytechramblings.com/tags/ecs/</link>
+      <pubDate>Tue, 10 Nov 2020 10:10:18 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/ecs/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>aad</title>
@@ -55,91 +195,11 @@
     </item>
     
     <item>
-      <title>azure</title>
-      <link>https://www.mytechramblings.com/tags/azure/</link>
-      <pubDate>Wed, 14 Oct 2020 10:00:50 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/azure/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
       <title>msal</title>
       <link>https://www.mytechramblings.com/tags/msal/</link>
       <pubDate>Wed, 14 Oct 2020 10:00:50 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/msal/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>aws</title>
-      <link>https://www.mytechramblings.com/tags/aws/</link>
-      <pubDate>Wed, 30 Sep 2020 10:02:21 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/aws/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>cdk</title>
-      <link>https://www.mytechramblings.com/tags/cdk/</link>
-      <pubDate>Wed, 30 Sep 2020 10:02:21 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/cdk/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>devops</title>
-      <link>https://www.mytechramblings.com/tags/devops/</link>
-      <pubDate>Wed, 30 Sep 2020 10:02:21 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/devops/</guid>
       <description>
         
           
@@ -320,26 +380,6 @@
       <pubDate>Tue, 21 Jul 2020 21:22:44 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/terraform/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>containers</title>
-      <link>https://www.mytechramblings.com/tags/containers/</link>
-      <pubDate>Tue, 14 Jul 2020 19:12:41 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/containers/</guid>
       <description>
         
           

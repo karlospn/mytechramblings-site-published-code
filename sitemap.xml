@@ -3,6 +3,61 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://www.mytechramblings.com/posts/create-an-ecs-cluster-and-deploy-apps-using-azure-devops/</loc>
+    <lastmod>2020-11-10T10:10:18+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/tags/aws/</loc>
+    <lastmod>2020-11-10T10:10:18+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/tags/azure/</loc>
+    <lastmod>2020-11-10T10:10:18+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/tags/cdk/</loc>
+    <lastmod>2020-11-10T10:10:18+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/tags/containers/</loc>
+    <lastmod>2020-11-10T10:10:18+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/tags/devops/</loc>
+    <lastmod>2020-11-10T10:10:18+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/tags/ecr/</loc>
+    <lastmod>2020-11-10T10:10:18+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/tags/ecs/</loc>
+    <lastmod>2020-11-10T10:10:18+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/</loc>
+    <lastmod>2020-11-10T10:10:18+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/posts/</loc>
+    <lastmod>2020-11-10T10:10:18+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.mytechramblings.com/tags/</loc>
+    <lastmod>2020-11-10T10:10:18+01:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://www.mytechramblings.com/tags/aad/</loc>
     <lastmod>2020-10-14T10:00:50+02:00</lastmod>
   </url>
@@ -18,43 +73,8 @@
   </url>
   
   <url>
-    <loc>https://www.mytechramblings.com/tags/azure/</loc>
-    <lastmod>2020-10-14T10:00:50+02:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://www.mytechramblings.com/tags/msal/</loc>
     <lastmod>2020-10-14T10:00:50+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://www.mytechramblings.com/</loc>
-    <lastmod>2020-10-14T10:00:50+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://www.mytechramblings.com/posts/</loc>
-    <lastmod>2020-10-14T10:00:50+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://www.mytechramblings.com/tags/</loc>
-    <lastmod>2020-10-14T10:00:50+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://www.mytechramblings.com/tags/aws/</loc>
-    <lastmod>2020-09-30T10:02:21+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://www.mytechramblings.com/tags/cdk/</loc>
-    <lastmod>2020-09-30T10:02:21+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://www.mytechramblings.com/tags/devops/</loc>
-    <lastmod>2020-09-30T10:02:21+02:00</lastmod>
   </url>
   
   <url>
@@ -120,11 +140,6 @@
   <url>
     <loc>https://www.mytechramblings.com/posts/automate-azure-ad-app-registration-using-terraform/</loc>
     <lastmod>2020-07-21T21:22:44+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://www.mytechramblings.com/tags/containers/</loc>
-    <lastmod>2020-07-14T19:12:41+02:00</lastmod>
   </url>
   
   <url>
