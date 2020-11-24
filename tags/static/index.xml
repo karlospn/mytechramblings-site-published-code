@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>static on my tech ramblings</title>
+    
+    
+    
+    <link>https://www.mytechramblings.com/tags/static/</link>
+    <description>Recent content in static on my tech ramblings</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 24 Nov 2020 10:04:40 +0100</lastBuildDate>
+    
+	<atom:link href="https://www.mytechramblings.com/tags/static/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Testing out Azure Static Web Apps service. Let&#39;s try to deploy this blog into an static web app</title>
+      <link>https://www.mytechramblings.com/posts/moving-this-blog-to-azure-static-webapps/</link>
+      <pubDate>Tue, 24 Nov 2020 10:04:40 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/moving-this-blog-to-azure-static-webapps/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          If you only care about the end result, I upload the final result in this GitHub repository: github-link
+This repository contains the entire blog source code.
+In the &amp;quot;/infrastructure&amp;quot; folder you can find an ARM template that is used to create the static web app.
+In the /.github/workflows folder you can find a couple of github actions:
+ The infrastructure.yml file is a github action that creates the resources on Azure.
+          
+        
+        </description>
+    </item>
+    
+  </channel>
+</rss>

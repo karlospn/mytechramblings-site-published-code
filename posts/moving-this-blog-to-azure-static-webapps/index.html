@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>Testing out Azure Static Web Apps service. Let&#39;s try to deploy this blog into an static web app :: my tech ramblings — A blog for writing about my techie ramblings</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="If you only care about the end result, I upload the final result in this GitHub repository: github-link
+This repository contains the entire blog source code.
+In the &amp;quot;/infrastructure&amp;quot; folder you can find an ARM template that is used to create the static web app.
+In the /.github/workflows folder you can find a couple of github actions:
+ The infrastructure.yml file is a github action that creates the resources on Azure."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://www.mytechramblings.com/posts/moving-this-blog-to-azure-static-webapps/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/assets/style.css">
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.mytechramblings.com/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://www.mytechramblings.com/img/favicon.png">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Testing out Azure Static Web Apps service. Let&#39;s try to deploy this blog into an static web app"/>
+<meta name="twitter:description" content="If you only care about the end result, I upload the final result in this GitHub repository: github-link
+This repository contains the entire blog source code.
+In the &quot;/infrastructure&quot; folder you can find an ARM template that is used to create the static web app.
+In the /.github/workflows folder you can find a couple of github actions:
+ The infrastructure.yml file is a github action that creates the resources on Azure."/>
+
+
+
+<meta property="og:title" content="Testing out Azure Static Web Apps service. Let&#39;s try to deploy this blog into an static web app" />
+<meta property="og:description" content="If you only care about the end result, I upload the final result in this GitHub repository: github-link
+This repository contains the entire blog source code.
+In the &quot;/infrastructure&quot; folder you can find an ARM template that is used to create the static web app.
+In the /.github/workflows folder you can find a couple of github actions:
+ The infrastructure.yml file is a github action that creates the resources on Azure." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.mytechramblings.com/posts/moving-this-blog-to-azure-static-webapps/" />
+<meta property="article:published_time" content="2020-11-24T10:04:40+01:00" />
+<meta property="article:modified_time" content="2020-11-24T10:04:40+01:00" /><meta property="og:site_name" content="my tech ramblings" />
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://www.mytechramblings.com/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">my tech ramblings</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/moving-this-blog-to-azure-static-webapps/">Testing out Azure Static Web Apps service. Let&rsquo;s try to deploy this blog into an static web app</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2020-11-24
+        </span>
+
+        
+          
+        
+      
+
+      
+      
+        <span class="post-read-time">— 8 min read</span>
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          #<a href="https://www.mytechramblings.com/tags/azure/">azure</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/static/">static</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/webapps/">webapps</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/github/">github</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/action/">action</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <blockquote>
+<p>If you only care about the end result, I upload the final result in this GitHub repository: <strong><a href="https://github.com/karlospn/blog-azure-static-webapp">github-link</a></strong><br>
+This repository contains the entire blog source code.<br>
+In the <strong><em>&quot;/infrastructure&quot;</em></strong> folder you can find an ARM template that is used to create the static web app.<br>
+In the <strong>/.github/workflows</strong> folder you can find a couple of github actions:</p>
+<ul>
+<li>The <strong>infrastructure.yml</strong> file is a github action that creates the resources on Azure.</li>
+<li>The <strong>app-deployment.yml</strong> file is a gitHub action that deploys the blog.</li>
+</ul>
+</blockquote>
+<p>I been wanting to try Azure Static Web Apps for quite some time and I thought that instead of deploying some dummy static site I could use my blog as a test subject.
+This blog it&rsquo;s just a bunch of static files, so it should be quite easy to deploy into an Azure Static Web App.<br>
+Right now it uses <strong>Hugo</strong> as a static site framework and <strong>GitHub Pages</strong> to host it.
+The current workflow looks like this:</p>
+<p><img src="/img/hugo-blog-workflow.png" alt="current-workflow"></p>
+<ul>
+<li>A GitHub repository hosts the source code.</li>
+<li>When the code is pushed to master a <strong>github action</strong> builds the source code and pushes the artifact onto another GitHub repository.</li>
+<li>The second GitHub repository is configured as a github page repository and has a custom domain associated.</li>
+</ul>
+<p>As you can see it&rsquo;s a super straight-forward CI/CD process: I write a new post, I push it to master and it gets published. No need for anything more complicated. <br>
+So I&rsquo;m hoping to maintain that simplicity when I move it to Azure Static Web App.</p>
+<p>I have 3 things in mind that I want to test:</p>
+<ul>
+<li><strong>Goal 1</strong>: Use Azure DevOps as my VCS (Version control system) instead of GitHub.</li>
+<li><strong>Goal 2</strong>: Use an infrastructure-as-code (IaC) approach when creating the resources on Azure.</li>
+<li><strong>Goal 3</strong>: Maintain the CI/CD simplicity that I have right now on GitHub.</li>
+</ul>
+<h2 id="goal-1-moving-the-blog-source-code-to-azure-devops">Goal 1. Moving the blog source code to Azure DevOps</h2>
+<p>I would like to move the blog source code from GitHub to Azure DevOps because that&rsquo;s where I&rsquo;m hosting nowadays all my private projects. But it seems that you can&rsquo;t do that.</p>
+<ul>
+<li><strong>Azure Static WebApps doesn&rsquo;t support Azure DevOps</strong> nowadays.</li>
+<li>The <strong>only VCS supported right now is GitHub</strong>, you can&rsquo;t use Azure DevOps or GitLab or any other VCS.</li>
+</ul>
+<p>After poking around a little bit, it seems that they are working on supporting Azure DevOps in a near future: <a href="https://github.com/Azure/static-web-apps/issues/5">https://github.com/Azure/static-web-apps/issues/5</a></p>
+<p>So, I guess my blog is staying on GitHub for now.</p>
+<h2 id="goal-2-create-the-azure-static-web-app-blog-using-iac">Goal 2. Create the Azure Static Web App blog using IaC</h2>
+<p>For a project as simple as this I could create the web app directly on the Azure portal, but let&rsquo;s try to follow some good DevOps practices and provision all the resources using IaC.</p>
+<p>My de facto tool for IaC is <strong>Terraform</strong>, but it doesn&rsquo;t support Azure Static WebApps right now. It seems that they&rsquo;re also working on it: <a href="https://github.com/terraform-providers/terraform-provider-azurerm/pull/7150">https://github.com/terraform-providers/terraform-provider-azurerm/pull/7150</a> <br>
+<strong>Pulumi</strong> also doesn&rsquo;t support it, so it seems that my best option right now is using an <strong>ARM template</strong>.</p>
+<p>Here&rsquo;s the ARM template I have built:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+    <span style="color:#f92672">&#34;$schema&#34;</span>: <span style="color:#e6db74">&#34;https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#&#34;</span>,
+    <span style="color:#f92672">&#34;contentVersion&#34;</span>: <span style="color:#e6db74">&#34;1.0.0.0&#34;</span>,
+    <span style="color:#f92672">&#34;parameters&#34;</span>: {
+        <span style="color:#f92672">&#34;name&#34;</span>: {
+            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
+        },
+        <span style="color:#f92672">&#34;location&#34;</span>: {
+            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
+        },
+        <span style="color:#f92672">&#34;sku&#34;</span>: {
+            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
+        },
+        <span style="color:#f92672">&#34;skucode&#34;</span>: {
+            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
+        },
+        <span style="color:#f92672">&#34;repositoryUrl&#34;</span>: {
+            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
+        },
+        <span style="color:#f92672">&#34;branch&#34;</span>: {
+            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
+        },
+        <span style="color:#f92672">&#34;repositoryToken&#34;</span>: {
+            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;securestring&#34;</span>
+        },
+        <span style="color:#f92672">&#34;appLocation&#34;</span>: {
+            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
+        },
+        <span style="color:#f92672">&#34;apiLocation&#34;</span>: {
+            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
+        },
+        <span style="color:#f92672">&#34;appArtifactLocation&#34;</span>: {
+            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
+        },
+        <span style="color:#f92672">&#34;resourceTags&#34;</span>: {
+            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;object&#34;</span>
+        }
+    },
+    <span style="color:#f92672">&#34;resources&#34;</span>: [
+        {
+            <span style="color:#f92672">&#34;apiVersion&#34;</span>: <span style="color:#e6db74">&#34;2019-12-01-preview&#34;</span>,
+            <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;name&#39;)]&#34;</span>,
+            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;Microsoft.Web/staticSites&#34;</span>,
+            <span style="color:#f92672">&#34;location&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;location&#39;)]&#34;</span>,
+            <span style="color:#f92672">&#34;tags&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;resourceTags&#39;)]&#34;</span>,
+            <span style="color:#f92672">&#34;properties&#34;</span>: {
+                <span style="color:#f92672">&#34;repositoryUrl&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;repositoryUrl&#39;)]&#34;</span>,
+                <span style="color:#f92672">&#34;branch&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;branch&#39;)]&#34;</span>,
+                <span style="color:#f92672">&#34;repositoryToken&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;repositoryToken&#39;)]&#34;</span>,
+                <span style="color:#f92672">&#34;buildProperties&#34;</span>: {
+                    <span style="color:#f92672">&#34;appLocation&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;appLocation&#39;)]&#34;</span>,
+                    <span style="color:#f92672">&#34;apiLocation&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;apiLocation&#39;)]&#34;</span>,
+                    <span style="color:#f92672">&#34;appArtifactLocation&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;appArtifactLocation&#39;)]&#34;</span>
+                }
+            },
+            <span style="color:#f92672">&#34;sku&#34;</span>: {
+                <span style="color:#f92672">&#34;Tier&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;sku&#39;)]&#34;</span>,
+                <span style="color:#f92672">&#34;Name&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;skuCode&#39;)]&#34;</span>
+            }
+        }
+    ]
+}
+</code></pre></div><p>And I&rsquo;m also using a parameters file:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+    <span style="color:#f92672">&#34;$schema&#34;</span>: <span style="color:#e6db74">&#34;https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#&#34;</span>,
+    <span style="color:#f92672">&#34;contentVersion&#34;</span>: <span style="color:#e6db74">&#34;1.0.0.0&#34;</span>,
+    <span style="color:#f92672">&#34;parameters&#34;</span>: {
+        <span style="color:#f92672">&#34;name&#34;</span>: {
+            <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;mytechramblings-blog&#34;</span>
+        },
+        <span style="color:#f92672">&#34;location&#34;</span>: {
+            <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;westeurope&#34;</span>
+        },
+        <span style="color:#f92672">&#34;sku&#34;</span>: {
+            <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;Free&#34;</span>
+        },
+        <span style="color:#f92672">&#34;skucode&#34;</span>: {
+            <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;Free&#34;</span>
+        },
+        <span style="color:#f92672">&#34;repositoryUrl&#34;</span>: {
+            <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;https://github.com/karlospn/blog-azure-static-webapp&#34;</span>
+        },
+        <span style="color:#f92672">&#34;branch&#34;</span>: {
+            <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;master&#34;</span>
+        },
+        <span style="color:#f92672">&#34;repositoryToken&#34;</span>: {
+            <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span> 
+        },
+        <span style="color:#f92672">&#34;appLocation&#34;</span>: {
+            <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;/&#34;</span>
+        },
+        <span style="color:#f92672">&#34;apiLocation&#34;</span>: {
+            <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span>
+        },
+        <span style="color:#f92672">&#34;appArtifactLocation&#34;</span>: {
+            <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;public&#34;</span>
+        },
+        <span style="color:#f92672">&#34;resourceTags&#34;</span>: {
+            <span style="color:#f92672">&#34;value&#34;</span>: {
+                <span style="color:#f92672">&#34;Environment&#34;</span>: <span style="color:#e6db74">&#34;Development&#34;</span>,
+                <span style="color:#f92672">&#34;Project&#34;</span>: <span style="color:#e6db74">&#34;personal-blog&#34;</span>,
+                <span style="color:#f92672">&#34;ApplicationName&#34;</span>: <span style="color:#e6db74">&#34;mytechramblings-blog&#34;</span>
+            }
+        }
+    }
+}
+</code></pre></div><p>It&rsquo;s a pretty simple ARM template, there is only a couple of things worth mentioning:</p>
+<ul>
+<li>The <strong>&ldquo;repositoryToken&rdquo;</strong> parameter must contain a GitHub PAT with admin/write access to the repository and the ability to interact with workflows. <br>
+Right now I&rsquo;m leaving it as a empty string in the parameters file, and I will inject the correct value during the deployment pipeline.</li>
+<li>I&rsquo;m also leaving the <strong>apiLocation</strong> parameter empty, you only need to include an api location if your project uses an Azure Function.</li>
+</ul>
+<h2 id="goal-3-building-the-cicd-pipeline">Goal 3: Building the CI/CD pipeline</h2>
+<p>Not a big fan of what they have built here, and that&rsquo;s mainly because:</p>
+<ul>
+<li><strong>An entire CI/CD pipeline is automatically created for you when you create your web app.</strong></li>
+</ul>
+<p>After provisioning a new web app if you take a look into your github repository you&rsquo;re going to find out that a <strong>github action has been added</strong>. And that action <strong>already ran once</strong>.</p>
+<p>If you only wanted to create the resources on Azure and deploy the app later you&rsquo;re out of luck, the service is going to deploy the code for you.
+I find that behaviour a little weird, and the worst thing is that I didn&rsquo;t find a way to turn that feature off.</p>
+<p>So without doing absolutely nothing you have a working CI/CD pipeline already built on your GitHub repository. That doesn&rsquo;t sound so bad, right? I don&rsquo;t like it, I want to build the pipeline myself and do whatever I want..</p>
+<p>That behaviour trumps my original idea of having a single pipeline that does everything: creates the  infrastructure on Azure, compiles the blog code and finally deploys the artifact into the web app.<br>
+If you try to do that you&rsquo;re going to end up with 2 pipelines that are doing exactly the same: the one that you created and the one that the service has created for you.</p>
+<p>So instead of having a single pipeline I guess I should have two of them:</p>
+<ul>
+<li>
+<p>The first pipeline will create the infrastructure using the ARM template. It will have a manual trigger.</p>
+</li>
+<li>
+<p>For the second pipeline I&rsquo;m going to use the pipeline that the service has created automatically for me.</p>
+</li>
+</ul>
+<p>The resulting workflow will be something like that:</p>
+<ul>
+<li>There is a manual pipeline that creates the resources on Azure.</li>
+<li>When the web app  service itself it will create for me another pipeline that I can use to deploy the blog.</li>
+<li>And from now on I can use the auto-generated pipeline for later deployments.</li>
+</ul>
+<p>Let me show you the github actions:</p>
+<ul>
+<li><strong>This action creates the Azure static web app using an ARM template</strong></li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">Create Azure Static WebApps resources</span>
+<span style="color:#f92672">on</span>:
+  <span style="color:#f92672">workflow_dispatch</span>:
+  
+<span style="color:#f92672">env</span>:
+  <span style="color:#f92672">resourceGroupName</span>: <span style="color:#e6db74">&#39;rg-blog-dev-001&#39;</span>
+  <span style="color:#f92672">resourceGroupRegion</span>: <span style="color:#e6db74">&#39;westeurope&#39;</span>   
+<span style="color:#f92672">jobs</span>:
+  <span style="color:#f92672">build-and-deploy</span>:
+    <span style="color:#f92672">runs-on</span>: <span style="color:#ae81ff">ubuntu-latest</span>
+    <span style="color:#f92672">steps</span>:
+    - <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">actions/checkout@master</span>
+    - <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">azure/login@v1</span>
+      <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Azure Login</span>
+      <span style="color:#f92672">with</span>:
+        <span style="color:#f92672">creds</span>: <span style="color:#ae81ff">${{ secrets.AZURE_CREDENTIALS }}</span>
+    - <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">Azure/cli@v1.0.0</span>
+      <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Create resource Group </span>
+      <span style="color:#f92672">with</span>:  
+        <span style="color:#f92672">inlineScript</span>: |<span style="color:#e6db74">
+</span><span style="color:#e6db74">          </span>          <span style="color:#ae81ff">az group create -l ${{ env.resourceGroupRegion }} -n ${{ env.resourceGroupName }}</span>
+    - <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">azure/arm-deploy@v1</span>
+      <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Deploy ARM Template</span>
+      <span style="color:#f92672">with</span>:
+        <span style="color:#f92672">subscriptionId</span>: <span style="color:#ae81ff">${{ secrets.AZURE_SUBSCRIPTION_ID }}</span>
+        <span style="color:#f92672">resourceGroupName</span>: <span style="color:#ae81ff">${{ env.resourceGroupName }}</span>
+        <span style="color:#f92672">template</span>: <span style="color:#ae81ff">./infrastructure/azuredeploy.json</span>
+        <span style="color:#f92672">parameters</span>: <span style="color:#ae81ff">./infrastructure/azuredeploy.parameters.json repositoryToken=${{ secrets.PAT_FOR_AZURE_STATIC_WEBAPPS }}</span>
+        <span style="color:#f92672">deploymentName</span>: <span style="color:#ae81ff">mytechramblings-deployment</span>
+</code></pre></div><ul>
+<li><strong>This action builds and deploy the blog</strong>. <br>
+I did not build this action it was auto-generated and commited on my repository by the service itself.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">Azure Static Web Apps CI/CD</span>
+
+<span style="color:#f92672">on</span>:
+  <span style="color:#f92672">push</span>:
+    <span style="color:#f92672">branches</span>:
+      - <span style="color:#ae81ff">master</span>
+    <span style="color:#f92672">paths-ignore</span>: 
+      - <span style="color:#e6db74">&#39;.github/**&#39;</span>
+      - <span style="color:#e6db74">&#39;infrastructure/**&#39;</span>
+  <span style="color:#f92672">pull_request</span>:
+    <span style="color:#f92672">types</span>: [<span style="color:#ae81ff">opened, synchronize, reopened, closed]</span>
+    <span style="color:#f92672">branches</span>:
+      - <span style="color:#ae81ff">master</span>
+
+<span style="color:#f92672">jobs</span>:
+  <span style="color:#f92672">build_and_deploy_job</span>:
+    <span style="color:#f92672">if</span>: <span style="color:#ae81ff">github.event_name == &#39;push&#39; || (github.event_name == &#39;pull_request&#39; &amp;&amp; github.event.action != &#39;closed&#39;)</span>
+    <span style="color:#f92672">runs-on</span>: <span style="color:#ae81ff">ubuntu-latest</span>
+    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Build and Deploy Job</span>
+    <span style="color:#f92672">steps</span>:
+      - <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">actions/checkout@v2</span>
+        <span style="color:#f92672">with</span>:
+          <span style="color:#f92672">submodules</span>: <span style="color:#66d9ef">true</span>
+      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Build And Deploy</span>
+        <span style="color:#f92672">id</span>: <span style="color:#ae81ff">builddeploy</span>
+        <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">Azure/static-web-apps-deploy@v0.0.1-preview</span>
+        <span style="color:#f92672">with</span>:
+          <span style="color:#f92672">azure_static_web_apps_api_token</span>: <span style="color:#ae81ff">${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PURPLE_FOREST_03D78C803 }}</span>
+          <span style="color:#f92672">repo_token</span>: <span style="color:#ae81ff">${{ secrets.GITHUB_TOKEN }}</span> <span style="color:#75715e"># Used for Github integrations (i.e. PR comments)</span>
+          <span style="color:#f92672">action</span>: <span style="color:#e6db74">&#34;upload&#34;</span>
+          <span style="color:#75715e">###### Repository/Build Configurations - These values can be configured to match you app requirements. ######</span>
+          <span style="color:#75715e"># For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig</span>
+          <span style="color:#f92672">app_location</span>: <span style="color:#e6db74">&#34;/&#34;</span> <span style="color:#75715e"># App source code path</span>
+          <span style="color:#f92672">api_location</span>: <span style="color:#e6db74">&#34;api&#34;</span> <span style="color:#75715e"># Api source code path - optional</span>
+          <span style="color:#f92672">output_location</span>: <span style="color:#e6db74">&#34;public&#34;</span> <span style="color:#75715e"># Built app content directory - optional</span>
+          <span style="color:#75715e">###### End of Repository/Build Configurations ######</span>
+
+  <span style="color:#f92672">close_pull_request_job</span>:
+    <span style="color:#f92672">if</span>: <span style="color:#ae81ff">github.event_name == &#39;pull_request&#39; &amp;&amp; github.event.action == &#39;closed&#39;</span>
+    <span style="color:#f92672">runs-on</span>: <span style="color:#ae81ff">ubuntu-latest</span>
+    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Close Pull Request Job</span>
+    <span style="color:#f92672">steps</span>:
+      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Close Pull Request</span>
+        <span style="color:#f92672">id</span>: <span style="color:#ae81ff">closepullrequest</span>
+        <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">Azure/static-web-apps-deploy@v0.0.1-preview</span>
+        <span style="color:#f92672">with</span>:
+          <span style="color:#f92672">azure_static_web_apps_api_token</span>: <span style="color:#ae81ff">${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PURPLE_FOREST_03D78C803 }}</span>
+          <span style="color:#f92672">action</span>: <span style="color:#e6db74">&#34;close&#34;</span>
+</code></pre></div><p>After executing both pipelines the blog is finally up and running on an static web app.</p>
+<p>The last step is to add my custom domain in the web app, you can do it either from the Azure portal or using the Azure CLI:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">az staticwebapp hostname set -n mytechramblings-blog --hostname www.mytechramblings.com
+</code></pre></div><h2 id="final-thoughts">Final thoughts</h2>
+<p>My impressions after tinkering a little bit with Azure Static WebApps is that it&rsquo;s still lacking a little bit in some departments.</p>
+<p>I&rsquo;m getting the impression that the service is trying a little too hard to automate things for me, it&rsquo;s a nice feature that it creates a fully functional CI/CD pipeline for me, but I want the ability to turn that feature off and do whatever I want to deploy the code.<br>
+Also the support for Azure DevOps is a must. GitHub is great and all, but seems a weird decision to support only GitHub when a huge chunk of .NET shops are using Azure DevOps.</p>
+<p>At the end of the day take everything I said here with a grain of salt. The service is still in preview, so it could perfectly be that in a couple a months they have fixed everything I have mentioned here.</p>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://www.mytechramblings.com/posts/create-an-ecs-cluster-and-deploy-apps-using-azure-devops/">
+                  <span class="button__text">An opinionated approach about how to create an AWS ECS Fargate cluster and deploy apps on it using Azure DevOps Pipelines</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2020 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>Theme created by <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://www.mytechramblings.com/assets/main.js"></script>
+<script src="https://www.mytechramblings.com/assets/prism.js"></script>
+
+      
+    </div>
+
+    
+      
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-170300931-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+    
+  </body>
+</html>
