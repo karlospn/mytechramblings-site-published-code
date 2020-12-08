@@ -9,7 +9,7 @@
   
   <url>
     <loc>https://www.mytechramblings.com/tags/azure/</loc>
-    <lastmod>2020-11-24T10:04:40+01:00</lastmod>
+    <lastmod>2020-12-08T00:00:00+00:00</lastmod>
   </url>
   
   <url>
@@ -19,12 +19,12 @@
   
   <url>
     <loc>https://www.mytechramblings.com/</loc>
-    <lastmod>2020-11-24T10:04:40+01:00</lastmod>
+    <lastmod>2020-12-08T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://www.mytechramblings.com/posts/</loc>
-    <lastmod>2020-11-24T10:04:40+01:00</lastmod>
+    <lastmod>2020-12-08T00:00:00+00:00</lastmod>
   </url>
   
   <url>
@@ -34,7 +34,7 @@
   
   <url>
     <loc>https://www.mytechramblings.com/tags/</loc>
-    <lastmod>2020-11-24T10:04:40+01:00</lastmod>
+    <lastmod>2020-12-08T00:00:00+00:00</lastmod>
   </url>
   
   <url>
@@ -84,7 +84,7 @@
   
   <url>
     <loc>https://www.mytechramblings.com/tags/aad/</loc>
-    <lastmod>2020-10-14T10:00:50+02:00</lastmod>
+    <lastmod>2020-12-08T00:00:00+00:00</lastmod>
   </url>
   
   <url>
@@ -158,13 +158,18 @@
   </url>
   
   <url>
+    <loc>https://www.mytechramblings.com/tags/graph/</loc>
+    <lastmod>2020-12-08T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://www.mytechramblings.com/tags/terraform/</loc>
-    <lastmod>2020-07-21T21:22:44+02:00</lastmod>
+    <lastmod>2020-12-08T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://www.mytechramblings.com/posts/automate-azure-ad-app-registration-using-terraform/</loc>
-    <lastmod>2020-07-21T21:22:44+02:00</lastmod>
+    <lastmod>2020-12-08T00:00:00+00:00</lastmod>
   </url>
   
   <url>

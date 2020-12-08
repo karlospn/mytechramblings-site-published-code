@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>terraform on my tech ramblings</title>
+    <title>graph on my tech ramblings</title>
     
     
     
-    <link>https://www.mytechramblings.com/tags/terraform/</link>
-    <description>Recent content in terraform on my tech ramblings</description>
+    <link>https://www.mytechramblings.com/tags/graph/</link>
+    <description>Recent content in graph on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 21 Jul 2020 21:22:44 +0200</lastBuildDate>
     
-	<atom:link href="https://www.mytechramblings.com/tags/terraform/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://www.mytechramblings.com/tags/graph/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>

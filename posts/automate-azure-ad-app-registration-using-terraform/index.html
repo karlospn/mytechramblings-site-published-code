@@ -6,8 +6,10 @@
     
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<meta name="description" content="Today I want to try to use Terraform to automate the app registration process in Azure Active Directory.
-If you want to secure an application Azure Active Directory is a really good option, but I don&amp;rsquo;t want to configure my application on AAD manually, what I really want is to add a step in my CI / CD pipeline that does that for me, and for that purpose Terraform might be a good option."/>
+<meta name="description" content="&amp;gt; Updated content:
+I wrote the original post almost 6 months ago and since then the AAD Terraform provider has been updated several times.
+When I wrote the post I used the version 0.11 and right now the provider is on version 1.1.1, that&amp;rsquo;s a considerable version bump so some people asked me if I could update this post.
+Without further ado let&amp;rsquo;s rebuild this example using the 1.1.1 version."/>
 <meta name="keywords" content=""/>
 <meta name="robots" content="noodp"/>
 <link rel="canonical" href="https://www.mytechramblings.com/posts/automate-azure-ad-app-registration-using-terraform/" />
@@ -28,18 +30,22 @@ If you want to secure an application Azure Active Directory is a really good opt
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Trying to automate Azure Active Directory App Registration process using Terraform"/>
-<meta name="twitter:description" content="Today I want to try to use Terraform to automate the app registration process in Azure Active Directory.
-If you want to secure an application Azure Active Directory is a really good option, but I don&rsquo;t want to configure my application on AAD manually, what I really want is to add a step in my CI / CD pipeline that does that for me, and for that purpose Terraform might be a good option."/>
+<meta name="twitter:description" content="&gt; Updated content:
+I wrote the original post almost 6 months ago and since then the AAD Terraform provider has been updated several times.
+When I wrote the post I used the version 0.11 and right now the provider is on version 1.1.1, that&rsquo;s a considerable version bump so some people asked me if I could update this post.
+Without further ado let&rsquo;s rebuild this example using the 1.1.1 version."/>
 
 
 
 <meta property="og:title" content="Trying to automate Azure Active Directory App Registration process using Terraform" />
-<meta property="og:description" content="Today I want to try to use Terraform to automate the app registration process in Azure Active Directory.
-If you want to secure an application Azure Active Directory is a really good option, but I don&rsquo;t want to configure my application on AAD manually, what I really want is to add a step in my CI / CD pipeline that does that for me, and for that purpose Terraform might be a good option." />
+<meta property="og:description" content="&gt; Updated content:
+I wrote the original post almost 6 months ago and since then the AAD Terraform provider has been updated several times.
+When I wrote the post I used the version 0.11 and right now the provider is on version 1.1.1, that&rsquo;s a considerable version bump so some people asked me if I could update this post.
+Without further ado let&rsquo;s rebuild this example using the 1.1.1 version." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://www.mytechramblings.com/posts/automate-azure-ad-app-registration-using-terraform/" />
 <meta property="article:published_time" content="2020-07-21T21:22:44+02:00" />
-<meta property="article:modified_time" content="2020-07-21T21:22:44+02:00" /><meta property="og:site_name" content="my tech ramblings" />
+<meta property="article:modified_time" content="2020-12-08T00:00:00+00:00" /><meta property="og:site_name" content="my tech ramblings" />
 
 
 
@@ -123,6 +129,12 @@ If you want to secure an application Azure Active Directory is a really good opt
             
 
 
+  
+    <span class="post-moddate">
+      (Modified: 2020-12-08)
+    </span>
+  
+
 
           
         
@@ -130,7 +142,7 @@ If you want to secure an application Azure Active Directory is a really good opt
 
       
       
-        <span class="post-read-time">— 8 min read</span>
+        <span class="post-read-time">— 10 min read</span>
       
     </div>
 
@@ -143,6 +155,8 @@ If you want to secure an application Azure Active Directory is a really good opt
         
           #<a href="https://www.mytechramblings.com/tags/aad/">AAD</a>&nbsp;
         
+          #<a href="https://www.mytechramblings.com/tags/graph/">graph</a>&nbsp;
+        
       </span>
     
 
@@ -150,7 +164,13 @@ If you want to secure an application Azure Active Directory is a really good opt
 
     <div class="post-content">
       
-      <p>Today I want to try to use Terraform to automate the app registration process in Azure Active Directory.</p>
+      <blockquote>
+<p><strong>&gt; Updated content:</strong><br>
+I wrote the original post almost 6 months ago and since then the AAD Terraform provider has been updated several times.<br>
+When I wrote the post I used the version 0.11 and right now the provider is on version 1.1.1, that&rsquo;s a considerable version bump so some people asked me if I could update this post.<br>
+Without further ado <strong>let&rsquo;s rebuild this example using the 1.1.1 version</strong>.</p>
+</blockquote>
+<p>Today I want to try to use Terraform to automate the app registration process in Azure Active Directory.</p>
 <p>If you want to secure an application Azure Active Directory is a really good option, but I don&rsquo;t want to configure my application on AAD manually, what I really want is to add a step in my CI / CD pipeline that does that for me, and for that purpose Terraform might be a good option.</p>
 <p>Terraform already has an official Azure Active Directory provider written by Microsoft itself (<a href="https://www.terraform.io/docs/providers/azuread/index.html),">https://www.terraform.io/docs/providers/azuread/index.html),</a> so in today&rsquo;s post I&rsquo;m going to focus on trying it out.</p>
 <p>I&rsquo;m going to build a pretty common and straightforward scenario using the Terraform provider. The scenario is the following one:</p>
@@ -200,9 +220,9 @@ If you want to secure an application Azure Active Directory is a really good opt
 <h2 id="step-1-configure-the-azure-ad-provider">Step 1: Configure the Azure AD provider</h2>
 <hr>
 <p>The first step is to configure the AzureAD Provider.<br>
-To authenticate against my AAD I&rsquo;m going to create a new Application and a Service Principal and use its client id and a client secret.<br>
-There are other options available to authenticate against the AAD using the provider, you can read it here :https://www.terraform.io/docs/providers/azuread/guides/service_principal_client_secret.html</p>
-<p>Basically what I&rsquo;m going to do is create a <em>&ldquo;master app&rdquo;</em> in my AAD, a &ldquo;master app&rdquo; is nothing more than an app with permissions to create another apps. Here is a detailed walkthrough about how to do it: <a href="https://www.terraform.io/docs/providers/azuread/guides/service_principal_configuration.html">https://www.terraform.io/docs/providers/azuread/guides/service_principal_configuration.html</a></p>
+To authenticate against my AAD I&rsquo;m going to create a new Application and a Service Principal with a client secret.<br>
+There are other options available to authenticate against the AAD using the provider, you can read it here: <a href="https://www.terraform.io/docs/providers/azuread/guides/service_principal_client_secret.html">https://www.terraform.io/docs/providers/azuread/guides/service_principal_client_secret.html</a></p>
+<p>Basically what I&rsquo;m going to do is create a <em>&ldquo;master app&rdquo;</em> in my AAD, a <em>&ldquo;master app&rdquo;</em> is nothing more than an app with permissions to create another apps. Here is a detailed walkthrough about how to do it: <a href="https://www.terraform.io/docs/providers/azuread/guides/service_principal_configuration.html">https://www.terraform.io/docs/providers/azuread/guides/service_principal_configuration.html</a></p>
 <p>The first weird thing that you&rsquo;re going to find while creating the &ldquo;master app&rdquo; is the fact that the provider uses the <strong>Legacy Azure Active Directory API (Azure Active Directory Graph)</strong> instead of the newer MS Graph API.<br>
 That&rsquo;s a bad sign to begin with, it means that all the most recent features probably are not doable with the provider.<br>
 But let&rsquo;s going forward, that&rsquo;s the final look after registering in my AAD the master app and giving it the proper permissions:</p>
@@ -210,11 +230,10 @@ But let&rsquo;s going forward, that&rsquo;s the final look after registering in 
 <p>Now we can configure the Terraform provider using the master app client_id and client_secret.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">
 <span style="color:#ae81ff">provider &#34;azuread&#34; {</span>
-
+  <span style="color:#ae81ff">version           = &#34;=1.1.1&#34;</span>
   <span style="color:#ae81ff">client_id         = &#34;ba4d0620-0522-4ada-b0b6-0cdd8cfaeae7&#34;</span>
   <span style="color:#ae81ff">client_secret     = &#34;my_secret_goes_here&#34;</span>
   <span style="color:#ae81ff">tenant_id         = &#34;my_tenant_goes_here&#34;</span>
-  <span style="color:#ae81ff">subscription_id   = &#34;my_subscription_id_goes_here&#34;</span>
 }
 
 </code></pre></div><h2 id="step-2-register-the-payment-api">Step 2: Register the payment API</h2>
@@ -225,55 +244,52 @@ The payment API has the following configuration:</p>
 <li>It exposes 2 scopes : payment.write and payment.read.</li>
 <li>It has 2 application roles: Reader and Writer.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">
-<span style="color:#ae81ff">resource &#34;azuread_application&#34; &#34;payments_api&#34; {</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">resource &#34;azuread_application&#34; &#34;payments_api&#34; {</span>
     <span style="color:#ae81ff">name                       = &#34;payments_api&#34;</span>
     <span style="color:#ae81ff">available_to_other_tenants = false</span>
     <span style="color:#ae81ff">oauth2_allow_implicit_flow = false</span>
     <span style="color:#ae81ff">type                       = &#34;webapp/api&#34;</span>
     <span style="color:#ae81ff">identifier_uris            = [&#34;api://payment&#34;]</span>
+}
 
-  
-    <span style="color:#ae81ff">oauth2_permissions {</span>
-        <span style="color:#ae81ff">admin_consent_description  = &#34;Allow the application to access the commit payment methods&#34;</span>
-        <span style="color:#ae81ff">admin_consent_display_name = &#34;payment.write&#34;</span>
-        <span style="color:#ae81ff">is_enabled                 = true</span>
-        <span style="color:#ae81ff">type                       = &#34;Admin&#34;</span>
-        <span style="color:#ae81ff">value                      = &#34;payment.write&#34;</span>
-    }
+<span style="color:#ae81ff">resource &#34;azuread_application_oauth2_permission&#34; &#34;payment_apis_payment_write_scope&#34; {</span>
+  <span style="color:#ae81ff">application_object_id      = azuread_application.payments_api.id</span>
+  <span style="color:#ae81ff">admin_consent_description  = &#34;Allow the application to access the commit payment methods&#34;</span>
+  <span style="color:#ae81ff">admin_consent_display_name = &#34;payment.write&#34;</span>
+  <span style="color:#ae81ff">is_enabled                 = true</span>
+  <span style="color:#ae81ff">type                       = &#34;Admin&#34;</span>
+  <span style="color:#ae81ff">value                      = &#34;payment.write&#34;</span>
+  <span style="color:#ae81ff">user_consent_description  = &#34;Allow the application to access the commit payment methods&#34;</span>
+  <span style="color:#ae81ff">user_consent_display_name  = &#34;payment.write&#34;</span>
+}
 
-    <span style="color:#ae81ff">oauth2_permissions {</span>
-        <span style="color:#ae81ff">admin_consent_description  = &#34;Allow the application to access the read payment methods&#34;</span>
-        <span style="color:#ae81ff">admin_consent_display_name = &#34;payment.read&#34;</span>
-        <span style="color:#ae81ff">is_enabled                 = true</span>
-        <span style="color:#ae81ff">type                       = &#34;User&#34;</span>
-        <span style="color:#ae81ff">value                      = &#34;payment.read&#34;</span>
-        <span style="color:#ae81ff">user_consent_description  = &#34;Allow the application to access the read payment methods&#34;</span>
-        <span style="color:#ae81ff">user_consent_display_name = &#34;payment.read&#34;    </span>
-    }
+<span style="color:#ae81ff">resource &#34;azuread_application_oauth2_permission&#34; &#34;payment_apis_payment_read_scope&#34; {</span>
+  <span style="color:#ae81ff">application_object_id      = azuread_application.payments_api.id</span>
+  <span style="color:#ae81ff">admin_consent_description  = &#34;Allow the application to access the read payment methods&#34;</span>
+  <span style="color:#ae81ff">admin_consent_display_name = &#34;payment.read&#34;</span>
+  <span style="color:#ae81ff">is_enabled                 = true</span>
+  <span style="color:#ae81ff">type                       = &#34;User&#34;</span>
+  <span style="color:#ae81ff">value                      = &#34;payment.read&#34;</span>
+  <span style="color:#ae81ff">user_consent_description  = &#34;Allow the application to access the read payment methods&#34;</span>
+  <span style="color:#ae81ff">user_consent_display_name = &#34;payment.read&#34;    </span>
+}
 
-    <span style="color:#ae81ff">app_role {</span>
-        <span style="color:#ae81ff">allowed_member_types = [</span>
-        <span style="color:#e6db74">&#34;User&#34;</span>,
-        <span style="color:#e6db74">&#34;Application&#34;</span>,
-        ]
-        <span style="color:#ae81ff">description  = &#34;Can read and make payments&#34;</span>
-        <span style="color:#ae81ff">display_name = &#34;Admin&#34;</span>
-        <span style="color:#ae81ff">is_enabled   = true</span>
-        <span style="color:#ae81ff">value        = &#34;Admin&#34;</span>
-    }
+<span style="color:#ae81ff">resource &#34;azuread_application_app_role&#34; &#34;payments_api_admin_approle&#34; {</span>
+  <span style="color:#ae81ff">application_object_id = azuread_application.payments_api.id</span>
+  <span style="color:#ae81ff">allowed_member_types  = [&#34;User&#34;, &#34;Application&#34;]</span>
+  <span style="color:#ae81ff">description           = &#34;Can read and make payments&#34;</span>
+  <span style="color:#ae81ff">display_name          = &#34;Admin&#34;</span>
+  <span style="color:#ae81ff">is_enabled            = true</span>
+  <span style="color:#ae81ff">value                 = &#34;Admin&#34;</span>
+}
 
-    <span style="color:#ae81ff">app_role {</span>
-        <span style="color:#ae81ff">allowed_member_types = [</span>
-        <span style="color:#e6db74">&#34;User&#34;</span>,
-        <span style="color:#e6db74">&#34;Application&#34;</span>,
-        ]
-
-        <span style="color:#ae81ff">description  = &#34;Can only read payments&#34;</span>
-        <span style="color:#ae81ff">display_name = &#34;Reader&#34;</span>
-        <span style="color:#ae81ff">is_enabled   = true</span>
-        <span style="color:#ae81ff">value        = &#34;Reader&#34;</span>
-    } 
+<span style="color:#ae81ff">resource &#34;azuread_application_app_role&#34; &#34;payments_api_reader_approle&#34; {</span>
+  <span style="color:#ae81ff">application_object_id = azuread_application.payments_api.id</span>
+  <span style="color:#ae81ff">allowed_member_types  = [&#34;User&#34;, &#34;Application&#34;]</span>
+  <span style="color:#ae81ff">description           = &#34;Can only read payments&#34;</span>
+  <span style="color:#ae81ff">display_name          = &#34;Reader&#34;</span>
+  <span style="color:#ae81ff">is_enabled            = true</span>
+  <span style="color:#ae81ff">value                 = &#34;Reader&#34;</span>
 }
 
 <span style="color:#ae81ff">resource &#34;azuread_service_principal&#34; &#34;payment_sp&#34; {</span>
@@ -281,14 +297,22 @@ The payment API has the following configuration:</p>
   <span style="color:#ae81ff">app_role_assignment_required = false</span>
   <span style="color:#ae81ff">tags = [ &#34;payment&#34;, &#34;api&#34;]</span>
 }
-
 </code></pre></div><p>It&rsquo;s a pretty straightforward config file but I have encountered some issues while building it.</p>
 <p>The first issue:</p>
-<p>I can create the application roles but <strong>there is NO way to assign users or groups to those roles</strong>.<br>
-I can go into the  <em>&ldquo;Enterprise applications&rdquo;</em> blade in the Azure Active Directory Portal, select my payment app and  assign users and groups manually, but that&rsquo;s a bummer&hellip;</p>
-<p>Poking around Github (<a href="https://github.com/terraform-providers/terraform-provider-azuread">https://github.com/terraform-providers/terraform-provider-azuread</a>) I found that it&rsquo;s an already know issue  ( <a href="https://github.com/terraform-providers/terraform-provider-azuread/issues/230">https://github.com/terraform-providers/terraform-provider-azuread/issues/230</a>) and it seems that the issue is because the provider is using the legacy AAD api&hellip;</p>
-<p>The other issue I found is that not all the Manifest attributes are present.<br>
-For example, I like to change the <em>&ldquo;accessTokenAcceptedVersion&rdquo;</em> attribute so the token endpoint only generates tokens in the V2 format <em>(I will talk about that nonsensical behaviour in a future post&hellip;)</em> but I cannot do it with the provider, I have to change it manually again&hellip;</p>
+<ul>
+<li>I can create the application roles but <strong>there is NO way to assign users or groups to those roles</strong>.</li>
+</ul>
+<p>Poking around their Github (<a href="https://github.com/terraform-providers/terraform-provider-azuread">https://github.com/terraform-providers/terraform-provider-azuread</a>) I found that it&rsquo;s an already known issue ( <a href="https://github.com/terraform-providers/terraform-provider-azuread/issues/230">https://github.com/terraform-providers/terraform-provider-azuread/issues/230</a>) and it seems that the issue is because the provider is using the legacy AAD api and the user/group role assignments can only be accomplished through the Microsoft Graph API.</p>
+<blockquote>
+<p>Exists some workarounds like using the <strong>shell-provider</strong> or the <strong>local-exec provider</strong> to assign users to a role. <br>
+There is an example on this page: <a href="https://github.com/terraform-providers/terraform-provider-azuread/issues/164">https://github.com/terraform-providers/terraform-provider-azuread/issues/164</a></p>
+</blockquote>
+<p>Or you can do it manually&hellip; go into the  <em>&ldquo;enterprise applications&rdquo;</em> blade in the portal, select the payment app and assign users and groups.</p>
+<p>The second issue I found is:</p>
+<ul>
+<li>Not all the manifest attributes are present.</li>
+</ul>
+<p>For example, I like to change the <em>&ldquo;accessTokenAcceptedVersion&rdquo;</em> attribute so the token endpoint only generates tokens in the V2 format <em>(I will talk about that nonsensical behaviour in a future post&hellip;)</em> but I cannot do it with the provider, I have to change it manually again..</p>
 <h2 id="step-3-register-the-booking-api">Step 3: Register the Booking API</h2>
 <hr>
 <p>The Booking API has the following configuration:</p>
@@ -300,8 +324,7 @@ For example, I like to change the <em>&ldquo;accessTokenAcceptedVersion&rdquo;</
 </li>
 <li>The Booking API has the Payment API Reader Role assigned.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">
-<span style="color:#ae81ff">resource &#34;azuread_application&#34; &#34;booking_api&#34; {</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">resource &#34;azuread_application&#34; &#34;booking_api&#34; {</span>
     <span style="color:#ae81ff">name                       = &#34;booking_api&#34;</span>
     <span style="color:#ae81ff">available_to_other_tenants = false</span>
     <span style="color:#ae81ff">oauth2_allow_implicit_flow = false</span>
@@ -311,12 +334,11 @@ For example, I like to change the <em>&ldquo;accessTokenAcceptedVersion&rdquo;</
     <span style="color:#ae81ff">required_resource_access {</span>
         <span style="color:#ae81ff">resource_app_id = azuread_application.payments_api.application_id</span>
         <span style="color:#ae81ff">resource_access {</span>
-            <span style="color:#ae81ff">id   = tolist(azuread_application.payments_api.app_role)[0].id</span>
+            <span style="color:#ae81ff">id   = azuread_application_app_role.payments_api_reader_approle.role_id</span>
             <span style="color:#ae81ff">type = &#34;Role&#34;</span>
         }
     }
 }
-
 
 <span style="color:#ae81ff">resource &#34;azuread_service_principal&#34; &#34;booking_sp&#34; {</span>
   <span style="color:#ae81ff">application_id               = azuread_application.booking_api.application_id</span>
@@ -330,9 +352,8 @@ For example, I like to change the <em>&ldquo;accessTokenAcceptedVersion&rdquo;</
   <span style="color:#ae81ff">value                 = &#34;VT=uSgbTanZhyz@%nL9Hpd+Tfay_MRV#&#34;</span>
   <span style="color:#ae81ff">end_date              = &#34;2099-01-01T01:02:03Z&#34;</span>
 }
-
-</code></pre></div><p>Apart from creating the application I&rsquo;m also creating a client secret to test the client credentials flow. Nonetheless there is another issue I found in the process.<br>
-The issue is that I cannot grant consent to use the role in an automatically way, so I need to do it manually&hellip;</p>
+</code></pre></div><p>Apart from creating the application I&rsquo;m also creating a client secret to test the client credentials flow.</p>
+<p>Be mindful that the Terraform provider <strong>cannot grant consent to use the role in an automatically way</strong>, you need to do it manually or using a script.</p>
 <p><img src="/img/aad-api-grant-admin-consent.png" alt="booking-app-grant-admin-consent"></p>
 <p>After doing that, let&rsquo;s test it and see if it works. I&rsquo;m going to request an access token using the Booking API client id and client secret.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">
@@ -368,52 +389,59 @@ curl -X POST <span style="color:#ae81ff">\
 <hr>
 <p>The FrontEnd SPA has the following configuration:</p>
 <ul>
-<li>It&rsquo;s a public <em>&ldquo;Single Page Application&rdquo;</em> written in Angular. Uses an implicit flow to obtain an access_token and a id_token and uses the access_token to attain access to the Payment API</li>
-<li>The FrontEnd SPA app has permission only to ask for the payment.read
-scope</li>
+<li>It&rsquo;s a public <em>&ldquo;Single Page Application&rdquo;</em> written in Angular.</li>
+<li>Uses an implicit flow to obtain an access token and a id token and aftewards uses the access token to attain access to the Payment API.</li>
+<li>The FrontEnd SPA app has permission only to ask for the payment.read scope.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">
-<span style="color:#ae81ff">resource &#34;azuread_application&#34; &#34;frontend_spa&#34; {</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">resource &#34;azuread_application&#34; &#34;frontend_spa&#34; {</span>
     <span style="color:#ae81ff">name                       = &#34;frontend_spa&#34;</span>
     <span style="color:#ae81ff">available_to_other_tenants = false</span>
     <span style="color:#ae81ff">oauth2_allow_implicit_flow = true</span>
-    <span style="color:#ae81ff">type                       = &#34;webapp/api&#34;</span>
-    <span style="color:#ae81ff">reply_urls                 = [&#34;http://localhost:4200&#34;]</span>
+    <span style="color:#ae81ff">reply_urls                 = [&#34;https://oidcdebugger.com/debug&#34;]</span>
     <span style="color:#ae81ff">logout_url                 = &#34;https://localhost:4200/logout&#34;</span>
-    <span style="color:#ae81ff">public_client              = true</span>
 
     <span style="color:#ae81ff">required_resource_access {</span>
         <span style="color:#ae81ff">resource_app_id = azuread_application.payments_api.application_id</span>
         <span style="color:#ae81ff">resource_access {</span>
-            <span style="color:#ae81ff">id   = tolist(azuread_application.payments_api.oauth2_permissions)[1].id</span>
+            <span style="color:#ae81ff">id   = azuread_application_oauth2_permission.payment_apis_payment_read_scope.permission_id</span>
             <span style="color:#ae81ff">type = &#34;Scope&#34;</span>
         }
     }
 }
-
 
 <span style="color:#ae81ff">resource &#34;azuread_service_principal&#34; &#34;frontend_spa&#34; {</span>
   <span style="color:#ae81ff">application_id               = azuread_application.frontend_spa.application_id</span>
   <span style="color:#ae81ff">app_role_assignment_required = false</span>
   <span style="color:#ae81ff">tags = [ &#34;frontend&#34;, &#34;spa&#34;]</span>
 }
-</code></pre></div><p>I have found the same problem that I mention in the step 3: I cannot grant admin content to use the payment API scopes in a programmatic way.</p>
+</code></pre></div><p>I have found a few problems with the SPA:</p>
+<ul>
+<li>I have the same issue I mention in the step 3: the Terraform provider cannot grant admin content to use the payment API scope in a programmatic way.</li>
+</ul>
 <p><img src="/img/aad-spa-grant-admin-consent.png" alt="frontend-spa-grant-admin-consent"></p>
-<p>And there is another issue that bugs me, the issue is that if you&rsquo;re using the Azure Portal to register an SPA you can specify that the application type is &ldquo;SPA&rdquo; and use the grant type auth code flow with PKCE, but that option is missing here, so I&rsquo;m forced to use and implicit flow.<br>
-It seems that someone else opened an issue about it in Github (<a href="https://github.com/terraform-providers/terraform-provider-azuread/issues/286">https://github.com/terraform-providers/terraform-provider-azuread/issues/286</a>)</p>
-<p>But anyway, let&rsquo;s test it.</p>
-<p>I&rsquo;m going to begin an implicit flow and login into the AAD as <strong>Jane</strong>.<br>
-Remember from the step 2 that I have <strong>manually</strong> assigned a Reader role in the Payment API to Jane.<br>
-The fastest way to begin an implicit flow is by building the URI by myself.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">
-https://login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/oauth2/v2.0/authorize
+<ul>
+<li>
+<p>You can specify that the application type is &ldquo;SPA&rdquo; and use the grant type auth code flow with PKCE if you register the app using the portal, but that option is missing here. So I&rsquo;m being forced to instead use an implicit flow.<br>
+Again the problem is that the provider is not using the MS Graph API, it seems that I&rsquo;m not the only one with the same problem: <a href="https://github.com/terraform-providers/terraform-provider-azuread/issues/286">https://github.com/terraform-providers/terraform-provider-azuread/issues/286</a></p>
+</li>
+<li>
+<p>There is also a weird infinite loop if you set the public_client to true. Every time you run the &ldquo;terraform plan&rdquo; command it detects a drift and changes your application type from &ldquo;native&rdquo; to &ldquo;webapp/api&rdquo;.<br>
+Seems that again I&rsquo;m not the only one experiencing this problem: <a href="https://github.com/terraform-providers/terraform-provider-azuread/issues/236">https://github.com/terraform-providers/terraform-provider-azuread/issues/236</a></p>
+</li>
+</ul>
+<p>Those issues should not affect us, let&rsquo;s test it.
+I&rsquo;m starting an implicit flow and try to log in as <strong>Jane</strong>.</p>
+<blockquote>
+<p>Remember from the step 2 that I have <strong>manually</strong> assigned a Reader role in the Payment API to Jane.</p>
+</blockquote>
+<p>The fastest way to begin an implicit flow is by building the URI by myself.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">https://login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/oauth2/v2.0/authorize
   ?client_id<span style="color:#f92672">=</span>c6b731f2-785b-4206-974a-db8d34eb4397
   &amp;redirect_uri<span style="color:#f92672">=</span>https%3A%2F%2Foidcdebugger.com%2Fdebug
   &amp;scope<span style="color:#f92672">=</span>api%3A%2F%2Fpayment%2Fpayment.read%20openid
   &amp;response_type<span style="color:#f92672">=</span>token%20id_token
   &amp;response_mode<span style="color:#f92672">=</span>form_post
   &amp;nonce<span style="color:#f92672">=</span>iaiqs1h3pa
-
 </code></pre></div><p>And it returns an access_token with the following attributes:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
    <span style="color:#f92672">&#34;aud&#34;</span>: <span style="color:#e6db74">&#34;api://payment&#34;</span>,
@@ -447,15 +475,20 @@ https://login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/oauth2/v2
 </code></pre></div><p>Everything looks alright: issuer, audience, scopes, upn, roles.</p>
 <h2 id="conclusion">Conclusion</h2>
 <hr>
-<p>I tried to build a pretty common scenario and as you can see it&rsquo;s pretty straightforward to register an app on AAD using Terraform. If you already have a knowledge about how AAD works it&rsquo;s going to be easy work switching to Terraform.<br>
-But be aware that some features are missing, just tinkering with the provider for a very brief period of time I have already found some missing features:</p>
+<p>It is really easy to built a pretty common scenario using the AAD Terraform provider and if you already have some knowledge about how AAD works it&rsquo;s going to be a breeze switching from the portal to Terraform.<br>
+But be aware that the provider <strong>STILL</strong> is lacking features, just tinkering with the provider for a very brief period of time I have already found some missing features:</p>
 <ul>
-<li>You cannot assign users or groups into an app</li>
-<li>You cannot grant admin consent programatically</li>
-<li>It&rsquo;s missing the grant type auth code flow with PKCE</li>
+<li>You cannot assign users or groups into an app.</li>
+<li>You cannot grant admin consent programatically.</li>
+<li>It&rsquo;s missing the grant type auth code flow with PKCE.</li>
 </ul>
-<p>Those issues can be resolved using Powershell or the AZ CLI and building some kind of script that fills in those missing steps, but I don&rsquo;t want to manage both files.</p>
-<p>I&rsquo;m also surprised that the provider is using the Legacy Azure Active Directory API (Azure Active Directory Graph) instead of the newer MS Graph API, that raises some doubts about the adoption of the new features that are only possible using the newer Graph API, so be aware of it.</p>
+<p>All those issues can be resolved is you&rsquo;re willing to mix the AAD provider with another provider like the shell-provider or if you build some scripts that fills in for those missing steps.</p>
+<p>I&rsquo;m also surprised that the provider is still using the Legacy Azure Active Directory API (Azure Active Directory Graph) instead of the newer MS Graph API, that raises some doubts about the adoption of the new features that are only possible using the newer Graph API, so be aware of it.</p>
+<h3 id="updated-conclusion">Updated Conclusion:</h3>
+<p><strong>The version 1.1.1 still is burdened by the use of the legacy AAD API</strong>. <br>
+So all the more recent features that where missing on the 0.11 release are still missing in this version. <br>
+The good news is that it seems that they&rsquo;re already working on a new version that uses the MS Graph Api. More info here: <a href="https://github.com/terraform-providers/terraform-provider-azuread/issues/323">https://github.com/terraform-providers/terraform-provider-azuread/issues/323</a></p>
+<p>Apart from that, there are not a lot of new things to comment to. It is nice that now we can create appRoles and OAuth2 permissions outside of the application resource, but to be honest after testing the 1.1.1 version I didn&rsquo;t find any major improvements compared to the 0.11.</p>
 
     </div>
     
