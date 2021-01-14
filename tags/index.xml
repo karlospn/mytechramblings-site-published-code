@@ -9,10 +9,90 @@
     <description>Recent content in Tags on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 24 Nov 2020 10:04:40 +0100</lastBuildDate>
+    <lastBuildDate>Thu, 14 Jan 2021 12:59:43 +0100</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>csharp</title>
+      <link>https://www.mytechramblings.com/tags/csharp/</link>
+      <pubDate>Thu, 14 Jan 2021 12:59:43 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/csharp/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>dotnet</title>
+      <link>https://www.mytechramblings.com/tags/dotnet/</link>
+      <pubDate>Thu, 14 Jan 2021 12:59:43 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/dotnet/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>editorconfig</title>
+      <link>https://www.mytechramblings.com/tags/editorconfig/</link>
+      <pubDate>Thu, 14 Jan 2021 12:59:43 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/editorconfig/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>roslyn</title>
+      <link>https://www.mytechramblings.com/tags/roslyn/</link>
+      <pubDate>Thu, 14 Jan 2021 12:59:43 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/roslyn/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>action</title>
@@ -315,46 +395,6 @@
     </item>
     
     <item>
-      <title>csharp</title>
-      <link>https://www.mytechramblings.com/tags/csharp/</link>
-      <pubDate>Wed, 02 Sep 2020 10:01:20 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/csharp/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>dotnet</title>
-      <link>https://www.mytechramblings.com/tags/dotnet/</link>
-      <pubDate>Wed, 02 Sep 2020 10:01:20 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/dotnet/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
       <title>nuget</title>
       <link>https://www.mytechramblings.com/tags/nuget/</link>
       <pubDate>Wed, 02 Sep 2020 10:01:20 +0200</pubDate>
@@ -620,26 +660,6 @@
       <pubDate>Wed, 24 Jun 2020 15:25:42 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/analyzers/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>roslyn</title>
-      <link>https://www.mytechramblings.com/tags/roslyn/</link>
-      <pubDate>Wed, 24 Jun 2020 15:25:42 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/roslyn/</guid>
       <description>
         
           

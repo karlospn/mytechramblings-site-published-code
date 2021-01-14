@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>How to configure your custom roslyn analyzer using an .editorconfig file :: my tech ramblings — A blog for writing about my techie ramblings</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Roslyn Analyzers are extensions that analyze source code and report violations. Some analyzers are built-into VS (like the IDE analyzers that report style issues) and some are third party ones which can be installed (like StyleCopyAnalyzers, FxCopAnalyzers, etc.).
+Analyzers can be configurated using file(s) to allow end users to control the behavior of each analyzer and severity of reported diagnostics. This may be via an editorconfig or a ruleset file or even completely custom format specific to the third party analyzer package."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://www.mytechramblings.com/posts/configure-roslyn-analyzers-using-editorconfig/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/assets/style.css">
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.mytechramblings.com/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://www.mytechramblings.com/img/favicon.png">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="How to configure your custom roslyn analyzer using an .editorconfig file"/>
+<meta name="twitter:description" content="Roslyn Analyzers are extensions that analyze source code and report violations. Some analyzers are built-into VS (like the IDE analyzers that report style issues) and some are third party ones which can be installed (like StyleCopyAnalyzers, FxCopAnalyzers, etc.).
+Analyzers can be configurated using file(s) to allow end users to control the behavior of each analyzer and severity of reported diagnostics. This may be via an editorconfig or a ruleset file or even completely custom format specific to the third party analyzer package."/>
+
+
+
+<meta property="og:title" content="How to configure your custom roslyn analyzer using an .editorconfig file" />
+<meta property="og:description" content="Roslyn Analyzers are extensions that analyze source code and report violations. Some analyzers are built-into VS (like the IDE analyzers that report style issues) and some are third party ones which can be installed (like StyleCopyAnalyzers, FxCopAnalyzers, etc.).
+Analyzers can be configurated using file(s) to allow end users to control the behavior of each analyzer and severity of reported diagnostics. This may be via an editorconfig or a ruleset file or even completely custom format specific to the third party analyzer package." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.mytechramblings.com/posts/configure-roslyn-analyzers-using-editorconfig/" />
+<meta property="article:published_time" content="2021-01-14T12:59:43+01:00" />
+<meta property="article:modified_time" content="2021-01-14T12:59:43+01:00" /><meta property="og:site_name" content="my tech ramblings" />
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://www.mytechramblings.com/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">my tech ramblings</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/configure-roslyn-analyzers-using-editorconfig/">How to configure your custom roslyn analyzer using an .editorconfig file</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2021-01-14
+        </span>
+
+        
+          
+            
+
+
+
+          
+        
+      
+
+      
+      
+        <span class="post-read-time">— 7 min read</span>
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          #<a href="https://www.mytechramblings.com/tags/csharp/">csharp</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/dotnet/">dotnet</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/roslyn/">roslyn</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/editorconfig/">editorconfig</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <p>Roslyn Analyzers are extensions that analyze source code and report violations. Some analyzers are built-into VS (like the IDE analyzers that report style issues) and some are third party ones which can be installed (like StyleCopyAnalyzers, FxCopAnalyzers, etc.).</p>
+<p>Analyzers can be configurated using file(s) to allow end users to control the behavior of each analyzer and severity of reported diagnostics. This may be via an editorconfig or a ruleset file or even completely custom format specific to the third party analyzer package.</p>
+<p>IDE analyzers support configuration via .editorconfig for available options and semantics.
+Meanwhile styleCop analyzers do not support EditorConfig based configuration, but use their own stylecop.json with their own custom format, that end users can provide in their project for configuration of stylecop analyzers.</p>
+<p>If you have been working with .NET long enough you have probably used FxCop XML Ruleset files to configure the code analysis on a particular project, rulesets and editorconfig files can coexist and both can be used to configure analyzers. Both editorconfig files and rulesets let you enable and disable rules and set their severity.<br>
+However, editorconfig files offer additional ways to configure rules too:</p>
+<ul>
+<li>For the .NET code-quality analyzers, editorconfig files let you define which types of code to analyze.</li>
+<li>For the .NET code-style analyzers, editorconfig files let you define the preferred code styles for a codebase.</li>
+</ul>
+<blockquote>
+<p>In this post I don&rsquo;t pretend to write a deep dive about how a roslyn analyzers works or what&rsquo;s an editorconfig file. I was just writing some lines about how these two work together, because that&rsquo;s going to be the main focus of this post.</p>
+</blockquote>
+<p><strong>In this post I want to show you how you can configure your custom roslyn analyzer using an editorconfig file.</strong><br>
+<strong>You can implement different code styles on you analyzer and allow the end-user to decide via editorconfig which code style they want to enforce.</strong></p>
+<p>I&rsquo;m aware that maybe it&rsquo;s not entirely clear what I&rsquo;m trying to achieve in this post so let me show you a very quick example.</p>
+<h2 id="quick-example">Quick example</h2>
+<p>The Roslyn rule <strong>IDE0065</strong> is an analyzer built into Visual Studio, specifically it analyzes if a &ldquo;using&rdquo; statement should be inside or outside a namespace based on a configuration attribute.</p>
+<p>This rule can be configure via editorconfig so you can define your preferred coding style.</p>
+<blockquote>
+<p>More info here: <a href="https://docs.microsoft.com/es-es/dotnet/fundamentals/code-analysis/style-rules/ide0065#csharp_using_directive_placement">https://docs.microsoft.com/es-es/dotnet/fundamentals/code-analysis/style-rules/ide0065#csharp_using_directive_placement</a></p>
+</blockquote>
+<p>As I said previously with rule <strong>IDE0065</strong> you can enforce if a &ldquo;using&rdquo; statement should be inside or outside a namespace with the following editorconfig attribute:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">csharp_using_directive_placement = inside_namespace:error</span>
+<span style="color:#ae81ff">csharp_using_directive_placement = outside_namespace:error</span>
+</code></pre></div><p>So if you want to enforce that all your &ldquo;usings&rdquo; are always placed inside a namespace you can use the &ldquo;inside_namespace&rdquo; value and viceversa.<br>
+Let me show a practical test.</p>
+<ul>
+<li><strong>Example 1</strong>: If we configure the analyzer <strong>IDE0065</strong> via editorconfig like this:</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">root = true</span>
+[<span style="color:#75715e">*.cs]</span>
+<span style="color:#ae81ff">csharp_using_directive_placement = inside_namespace:error</span>
+</code></pre></div><p>This block of code will report an error:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// csharp_using_directive_placement = outside_namespace
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">using</span> System;
+
+<span style="color:#66d9ef">namespace</span> Convention2
+{
+    ...
+}
+</code></pre></div><p>But this one won&rsquo;t report any error</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// csharp_using_directive_placement = inside_namespace
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">namespace</span> Convention1
+{
+    <span style="color:#66d9ef">using</span> System;
+    ...
+}
+</code></pre></div><ul>
+<li><strong>Example 2</strong>: If we configure the analyzer <strong>IDE0065</strong> via editorconfig like this:</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">root = true</span>
+[<span style="color:#75715e">*.cs]</span>
+<span style="color:#ae81ff">csharp_using_directive_placement = outside_namespace:error</span>
+</code></pre></div><p>This block of code will report an error:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// csharp_using_directive_placement = inside_namespace
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">namespace</span> Convention1
+{
+    <span style="color:#66d9ef">using</span> System;
+    ...
+}
+</code></pre></div><p>But this one won&rsquo;t report any error</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// csharp_using_directive_placement = outside_namespace
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">using</span> System;
+
+<span style="color:#66d9ef">namespace</span> Convention2
+{
+    ...
+}
+</code></pre></div><p><strong>In this example we&rsquo;re using the &ldquo;csharp_using_directive_placement&rdquo; attribute to enforce our own code-style.</strong></p>
+<p>And that&rsquo;s <strong>EXACTLY</strong> what I want to talk in this post.</p>
+<p><strong>Given a roslyn analyzer how we can add support for different code styles using the editorconfig file.</strong> <br>
+That&rsquo;s a cool feature to add on your own Roslyn analyzers and it&rsquo;s super easy to do it. <br>
+To do this we have the <strong>AnalyzerConfigOptionsProvider Roslyn API</strong></p>
+<h1 id="analyzerconfigoptionsprovider-roslyn-api">AnalyzerConfigOptionsProvider Roslyn API</h1>
+<p>The API <strong>context.Options.AnalyzerConfigOptionsProvider.GetOptions</strong>, it&rsquo;s a new Roslyn API that allows us to get the configuration from the editorconfig file.</p>
+<p>More info. here: <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.codeanalysis.diagnostics.analyzerconfigoptionsprovider?view=roslyn-dotnet">https://docs.microsoft.com/en-us/dotnet/api/microsoft.codeanalysis.diagnostics.analyzerconfigoptionsprovider?view=roslyn-dotnet</a></p>
+<p>Be aware that this feature is only available on the newer versions of Microsoft.CodeAnalysis nuget package. <strong>If you&rsquo;re using a nuget version below 3.1.0 that feature is not available</strong>.</p>
+<p>Let me show you how you can use it.</p>
+<h1 id="building-a-roslyn-analyzer-that-uses-the-analyzerconfigoptionsprovider-api">Building a Roslyn Analyzer that uses the AnalyzerConfigOptionsProvider API</h1>
+<p>First of all I have built a roslyn analyzer that reports an error if a csharp file contains more than one namespace. Here&rsquo;s the code:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis;
+<span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis.CSharp;
+<span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis.CSharp.Syntax;
+<span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis.Diagnostics;
+<span style="color:#66d9ef">using</span> System;
+<span style="color:#66d9ef">using</span> System.Collections.Immutable;
+
+<span style="color:#66d9ef">namespace</span> MyOwn.Analyzer
+{
+<span style="color:#a6e22e">    [DiagnosticAnalyzer(LanguageNames.CSharp)]</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyOwnAnalyzerAnalyzer</span> : DiagnosticAnalyzer
+    {
+        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> DiagnosticId = <span style="color:#e6db74">&#34;MyRules0001&#34;</span>;
+
+        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> LocalizableString Title = <span style="color:#66d9ef">new</span> LocalizableResourceString(nameof(Resources.AnalyzerTitle), Resources.ResourceManager, <span style="color:#66d9ef">typeof</span>(Resources));
+        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> LocalizableString MessageFormat = <span style="color:#66d9ef">new</span> LocalizableResourceString(nameof(Resources.AnalyzerMessageFormat), Resources.ResourceManager, <span style="color:#66d9ef">typeof</span>(Resources));
+        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> LocalizableString Description = <span style="color:#66d9ef">new</span> LocalizableResourceString(nameof(Resources.AnalyzerDescription), Resources.ResourceManager, <span style="color:#66d9ef">typeof</span>(Resources));
+        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> Category = <span style="color:#e6db74">&#34;Naming&#34;</span>;
+
+        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> DiagnosticDescriptor Rule = <span style="color:#66d9ef">new</span> DiagnosticDescriptor(DiagnosticId, 
+            Title, 
+            MessageFormat, 
+            Category, 
+            DiagnosticSeverity.Error, 
+            <span style="color:#66d9ef">true</span>, 
+            Description);
+
+        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> ImmutableArray&lt;DiagnosticDescriptor&gt; SupportedDiagnostics =&gt; ImmutableArray.Create(Rule);
+
+        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">void</span> Initialize(AnalysisContext context)
+        {
+            context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
+            context.EnableConcurrentExecution();
+            context.RegisterSyntaxTreeAction(AnalyzeAction);
+        }
+
+        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> AnalyzeAction(SyntaxTreeAnalysisContext context)
+        {
+           
+            <span style="color:#66d9ef">var</span> syntaxRoot = context.Tree.GetRoot(context.CancellationToken);
+
+            <span style="color:#66d9ef">var</span> descentNodes = syntaxRoot.
+                DescendantNodes(node =&gt; node != <span style="color:#66d9ef">null</span> &amp;&amp; !node.IsKind(SyntaxKind.ClassDeclaration));
+
+            <span style="color:#66d9ef">var</span> foundNode = <span style="color:#66d9ef">false</span>;
+            <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> node <span style="color:#66d9ef">in</span> descentNodes)
+            {
+                <span style="color:#66d9ef">if</span> (node.IsKind(SyntaxKind.NamespaceDeclaration))
+                {
+                    <span style="color:#66d9ef">if</span> (foundNode)
+                    {
+                        context.ReportDiagnostic(Diagnostic.Create(Rule, Location.None));
+                    }
+                    <span style="color:#66d9ef">else</span>
+                    {
+                        foundNode = <span style="color:#66d9ef">true</span>;
+                    }
+                }
+            }
+        }
+    }
+}
+</code></pre></div><p>So if you have more than one namespace in a single csharp file that analyzer is going to report an error.<br>
+But it would be kind of cool if <strong>the end-user was capable of choosing if a csharp file can contain more than one namespace or not</strong>.</p>
+<p>And that&rsquo;s exactly what are we going to build right now, we are going to use a new editorconfig attribute that allows us to choose which behaviour we want to enforce.</p>
+<p>First we need to create a new attribute on the editorconfig.</p>
+<blockquote>
+<p>Beware that you <strong>NEED</strong> to follow this pattern: dotnet_diagnostic.&lt;RULE_ID&gt;.&lt;ATTRIBUTE_NAME&gt;</p>
+</blockquote>
+<p>I decided that the attribute will be:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">dotnet_diagnostic.MyRules0001.use_multiple_namespaces_in_a_single_file = false</span>
+</code></pre></div><p>And now I need to add the code on my analyzer that reads this new attribute and acts accordingly. Here&rsquo;s the result:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis;
+<span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis.CSharp;
+<span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis.CSharp.Syntax;
+<span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis.Diagnostics;
+<span style="color:#66d9ef">using</span> System;
+<span style="color:#66d9ef">using</span> System.Collections.Immutable;
+
+<span style="color:#66d9ef">namespace</span> MyOwn.Analyzer
+{
+<span style="color:#a6e22e">    [DiagnosticAnalyzer(LanguageNames.CSharp)]</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyOwnAnalyzerAnalyzer</span> : DiagnosticAnalyzer
+    {
+        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> DiagnosticId = <span style="color:#e6db74">&#34;MyRules0001&#34;</span>;
+
+        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> LocalizableString Title = <span style="color:#66d9ef">new</span> LocalizableResourceString(nameof(Resources.AnalyzerTitle), Resources.ResourceManager, <span style="color:#66d9ef">typeof</span>(Resources));
+        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> LocalizableString MessageFormat = <span style="color:#66d9ef">new</span> LocalizableResourceString(nameof(Resources.AnalyzerMessageFormat), Resources.ResourceManager, <span style="color:#66d9ef">typeof</span>(Resources));
+        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> LocalizableString Description = <span style="color:#66d9ef">new</span> LocalizableResourceString(nameof(Resources.AnalyzerDescription), Resources.ResourceManager, <span style="color:#66d9ef">typeof</span>(Resources));
+        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> Category = <span style="color:#e6db74">&#34;Naming&#34;</span>;
+
+        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> DiagnosticDescriptor Rule = <span style="color:#66d9ef">new</span> DiagnosticDescriptor(DiagnosticId, 
+            Title, 
+            MessageFormat, 
+            Category, 
+            DiagnosticSeverity.Error, 
+            <span style="color:#66d9ef">true</span>, 
+            Description);
+
+        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> ImmutableArray&lt;DiagnosticDescriptor&gt; SupportedDiagnostics =&gt; ImmutableArray.Create(Rule);
+
+        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">void</span> Initialize(AnalysisContext context)
+        {
+            context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
+            context.EnableConcurrentExecution();
+            context.RegisterSyntaxTreeAction(AnalyzeAction);
+        }
+
+        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> AnalyzeAction(SyntaxTreeAnalysisContext context)
+        {
+            <span style="color:#66d9ef">var</span> config = context.Options.AnalyzerConfigOptionsProvider.GetOptions(context.Tree);
+            config.TryGetValue(<span style="color:#e6db74">&#34;dotnet_diagnostic.MyRules0001.use_multiple_namespaces_in_a_file&#34;</span>, <span style="color:#66d9ef">out</span> <span style="color:#66d9ef">var</span> configValue);
+           
+            <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">string</span>.IsNullOrEmpty(configValue))
+            {
+                <span style="color:#66d9ef">return</span>;
+            }
+
+            <span style="color:#66d9ef">var</span> syntaxRoot = context.Tree.GetRoot(context.CancellationToken);
+
+            <span style="color:#66d9ef">var</span> descentNodes = syntaxRoot.
+                DescendantNodes(node =&gt; node != <span style="color:#66d9ef">null</span> &amp;&amp; !node.IsKind(SyntaxKind.ClassDeclaration));
+            <span style="color:#66d9ef">var</span> foundNode = <span style="color:#66d9ef">false</span>;
+
+            <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> node <span style="color:#66d9ef">in</span> descentNodes)
+            {
+                <span style="color:#66d9ef">if</span> (node.IsKind(SyntaxKind.NamespaceDeclaration))
+                {
+                    <span style="color:#66d9ef">if</span> (foundNode)
+                    {
+                        <span style="color:#66d9ef">if</span> (configValue.Equals(<span style="color:#e6db74">&#34;false&#34;</span>, StringComparison.InvariantCultureIgnoreCase))                       
+                        {
+                            context.ReportDiagnostic(Diagnostic.Create(Rule, Location.None));
+                        }
+                    }
+                    <span style="color:#66d9ef">else</span>
+                    {
+                        foundNode = <span style="color:#66d9ef">true</span>;
+                    }
+                }
+            }
+        }
+    }
+}
+</code></pre></div><ul>
+<li>As you can see it&rsquo;s really easy to implement, but let me break down the key aspects:</li>
+</ul>
+<p>I begin by reading the value from the editorconfig file using the AnalyzerConfigOptionsProvider API.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> config = context.Options.AnalyzerConfigOptionsProvider.GetOptions(context.Tree);
+config.TryGetValue(<span style="color:#e6db74">&#34;dotnet_diagnostic.MyRules0001.use_multiple_namespaces_in_a_file&#34;</span>, <span style="color:#66d9ef">out</span> <span style="color:#66d9ef">var</span> configValue);
+</code></pre></div><p>In my case I have implemented a default behaviour, so if the end-user do not set the value on the editorconfig I assume that we can have more than one namespace in the same file.<br>
+That&rsquo;s the reason why I&rsquo;m breaking the code execution in case that the value is null or empty.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">string</span>.IsNullOrEmpty(configValue))
+{
+    <span style="color:#66d9ef">return</span>;
+}
+</code></pre></div><p>Only report a diagnostic if we have found more than one namespace on the same file and the &ldquo;use_multiple_namespaces_in_a_file&rdquo; value is set to false</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">if</span> (foundNode)
+{
+    <span style="color:#66d9ef">if</span> (configValue.Equals(<span style="color:#e6db74">&#34;false&#34;</span>, StringComparison.InvariantCultureIgnoreCase))
+    {
+        context.ReportDiagnostic(Diagnostic.Create(Rule, Location.None));
+    }
+}
+<span style="color:#66d9ef">else</span>
+{
+    foundNode = <span style="color:#66d9ef">true</span>;
+}
+</code></pre></div><h1 id="testing-our-analyzer">Testing our analyzer</h1>
+<p>As a last step let&rsquo;s test the analyzer.</p>
+<ul>
+<li><strong>Test 1</strong></li>
+</ul>
+<p>I created the following editorconfig file:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">root = true</span>
+
+<span style="color:#75715e"># C# files</span>
+[<span style="color:#75715e">*.cs]</span>
+
+<span style="color:#ae81ff">dotnet_diagnostic.MyRules0001.severity = error</span>
+<span style="color:#ae81ff">dotnet_diagnostic.MyRules0001.use_multiple_namespaces_in_a_file = false</span>
+</code></pre></div><p>Also I have created a new console program that contains my analyzer. <br>
+The <em>Program.cs</em> file looks like this:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">//program.cs
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">using</span> System;
+
+<span style="color:#66d9ef">namespace</span> ConsoleApp3
+{
+    <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Program</span>
+    {
+        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args)
+        {
+            <span style="color:#66d9ef">var</span> stud = <span style="color:#66d9ef">new</span> StudentNs.Student();
+            stud.PrintStudentName(<span style="color:#e6db74">&#34;Carlos&#34;</span>);        
+        }
+    }
+}
+
+
+<span style="color:#66d9ef">namespace</span> StudentNs
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Student</span>
+    {
+       <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> PrintStudentName(<span style="color:#66d9ef">string</span> name)
+       {
+            Console.WriteLine(<span style="color:#e6db74">$&#34;Your name is: {name}&#34;</span>);
+       }
+    }
+}
+</code></pre></div><p>As you can see VS shows an error:</p>
+<p><img src="/img/roslyn-analyzer-error-ns.png" alt="ns-error"></p>
+<ul>
+<li><strong>Test 2</strong></li>
+</ul>
+<p>Now if I modify the editorconfig file to look like this:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">root = true</span>
+
+<span style="color:#75715e"># C# files</span>
+[<span style="color:#75715e">*.cs]</span>
+
+<span style="color:#ae81ff">dotnet_diagnostic.MyRules0001.severity = error</span>
+<span style="color:#ae81ff">dotnet_diagnostic.MyRules0001.use_multiple_namespaces_in_a_file = true</span>
+</code></pre></div><p>And I&rsquo;m using the same program.cs as the previous test.</p>
+<p>Now Visual Studio doesn&rsquo;t show any error, because now we are allowing to use multiple namespaces in a single file.</p>
+<h1 id="useful-resources">Useful Resources</h1>
+<ul>
+<li><a href="https://github.com/dotnet/roslyn-analyzers/blob/master/docs/Analyzer%20Configuration.md">https://github.com/dotnet/roslyn-analyzers/blob/master/docs/Analyzer%20Configuration.md</a></li>
+<li><a href="https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/code-style-rule-options?view=vs-2017">https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/code-style-rule-options?view=vs-2017</a></li>
+<li><a href="https://docs.microsoft.com/en-us/visualstudio/code-quality/analyzers-faq?view=vs-2019">https://docs.microsoft.com/en-us/visualstudio/code-quality/analyzers-faq?view=vs-2019</a></li>
+<li><a href="https://github.com/dotnet/roslyn-analyzers">https://github.com/dotnet/roslyn-analyzers</a></li>
+</ul>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://www.mytechramblings.com/posts/moving-this-blog-to-azure-static-webapps/">
+                  <span class="button__text">Testing out Azure Static Web Apps service. Let&#39;s try to deploy this blog into an static web app</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2021 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>Theme created by <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://www.mytechramblings.com/assets/main.js"></script>
+<script src="https://www.mytechramblings.com/assets/prism.js"></script>
+
+      
+    </div>
+
+    
+      
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-170300931-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+    
+  </body>
+</html>

@@ -9,10 +9,31 @@
     <description>Recent content in dotnet on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 02 Sep 2020 10:01:20 +0200</lastBuildDate>
+    <lastBuildDate>Thu, 14 Jan 2021 12:59:43 +0100</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/dotnet/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>How to configure your custom roslyn analyzer using an .editorconfig file</title>
+      <link>https://www.mytechramblings.com/posts/configure-roslyn-analyzers-using-editorconfig/</link>
+      <pubDate>Thu, 14 Jan 2021 12:59:43 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/configure-roslyn-analyzers-using-editorconfig/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          Roslyn Analyzers are extensions that analyze source code and report violations. Some analyzers are built-into VS (like the IDE analyzers that report style issues) and some are third party ones which can be installed (like StyleCopyAnalyzers, FxCopAnalyzers, etc.).
+Analyzers can be configurated using file(s) to allow end users to control the behavior of each analyzer and severity of reported diagnostics. This may be via an editorconfig or a ruleset file or even completely custom format specific to the third party analyzer package.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>How to centrally manage NuGet package versions within your solution</title>
