@@ -2,6 +2,30 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://www.mytechramblings.com/tags/aad/</loc>
+    <lastmod>2021-03-18T10:00:02+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/azure/</loc>
+    <lastmod>2021-03-18T10:00:02+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/devops/</loc>
+    <lastmod>2021-03-18T10:00:02+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/</loc>
+    <lastmod>2021-03-18T10:00:02+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/</loc>
+    <lastmod>2021-03-18T10:00:02+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/</loc>
+    <lastmod>2021-03-18T10:00:02+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/terraform/</loc>
+    <lastmod>2021-03-18T10:00:02+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/automate-azure-devops-setup-using-terraform/</loc>
+    <lastmod>2021-03-18T10:00:02+01:00</lastmod>
+  </url><url>
     <loc>https://www.mytechramblings.com/tags/csharp/</loc>
     <lastmod>2021-01-14T12:59:43+01:00</lastmod>
   </url><url>
@@ -14,23 +38,11 @@
     <loc>https://www.mytechramblings.com/posts/configure-roslyn-analyzers-using-editorconfig/</loc>
     <lastmod>2021-01-14T12:59:43+01:00</lastmod>
   </url><url>
-    <loc>https://www.mytechramblings.com/</loc>
-    <lastmod>2021-01-14T12:59:43+01:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/posts/</loc>
-    <lastmod>2021-01-14T12:59:43+01:00</lastmod>
-  </url><url>
     <loc>https://www.mytechramblings.com/tags/roslyn/</loc>
-    <lastmod>2021-01-14T12:59:43+01:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/</loc>
     <lastmod>2021-01-14T12:59:43+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/action/</loc>
     <lastmod>2020-11-24T10:04:40+01:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/azure/</loc>
-    <lastmod>2020-12-08T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/github/</loc>
     <lastmod>2020-11-24T10:04:40+01:00</lastmod>
@@ -56,17 +68,11 @@
     <loc>https://www.mytechramblings.com/tags/containers/</loc>
     <lastmod>2020-11-10T10:10:18+01:00</lastmod>
   </url><url>
-    <loc>https://www.mytechramblings.com/tags/devops/</loc>
-    <lastmod>2020-11-10T10:10:18+01:00</lastmod>
-  </url><url>
     <loc>https://www.mytechramblings.com/tags/ecr/</loc>
     <lastmod>2020-11-10T10:10:18+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/ecs/</loc>
     <lastmod>2020-11-10T10:10:18+01:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/aad/</loc>
-    <lastmod>2020-12-08T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/adal/</loc>
     <lastmod>2020-10-14T10:00:50+02:00</lastmod>
@@ -105,9 +111,6 @@
     <lastmod>2020-07-29T22:10:21+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/graph/</loc>
-    <lastmod>2020-12-08T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/terraform/</loc>
     <lastmod>2020-12-08T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/posts/automate-azure-ad-app-registration-using-terraform/</loc>

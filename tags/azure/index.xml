@@ -9,10 +9,33 @@
     <description>Recent content in azure on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 24 Nov 2020 10:04:40 +0100</lastBuildDate>
+    <lastBuildDate>Thu, 18 Mar 2021 10:00:02 +0100</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/azure/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Trying to setup an Azure DevOps organization using Terraform</title>
+      <link>https://www.mytechramblings.com/posts/automate-azure-devops-setup-using-terraform/</link>
+      <pubDate>Thu, 18 Mar 2021 10:00:02 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/automate-azure-devops-setup-using-terraform/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          Show me the code
+If you don&amp;rsquo;t care about my writings I have upload the code on my Github
+ On today&amp;rsquo;s post I want to try to automate the setup of an Azure DevOps organization using the Azure DevOps Terraform provider.
+ You might also be interested in these post I wrote a few months ago about automating the AAD App Registration process using the Terraform Azure Active Directory provider.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>Testing out Azure Static Web Apps service. Let&#39;s try to deploy this blog into an static web app</title>

@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>Trying to setup an Azure DevOps organization using Terraform :: my tech ramblings — A blog for writing about my techie ramblings</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Show me the code
+If you don&amp;rsquo;t care about my writings I have upload the code on my Github
+ On today&amp;rsquo;s post I want to try to automate the setup of an Azure DevOps organization using the Azure DevOps Terraform provider.
+ You might also be interested in these post I wrote a few months ago about automating the AAD App Registration process using the Terraform Azure Active Directory provider."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://www.mytechramblings.com/posts/automate-azure-devops-setup-using-terraform/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/assets/style.css">
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.mytechramblings.com/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://www.mytechramblings.com/img/favicon.png">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Trying to setup an Azure DevOps organization using Terraform"/>
+<meta name="twitter:description" content="Show me the code
+If you don&rsquo;t care about my writings I have upload the code on my Github
+ On today&rsquo;s post I want to try to automate the setup of an Azure DevOps organization using the Azure DevOps Terraform provider.
+ You might also be interested in these post I wrote a few months ago about automating the AAD App Registration process using the Terraform Azure Active Directory provider."/>
+
+
+
+<meta property="og:title" content="Trying to setup an Azure DevOps organization using Terraform" />
+<meta property="og:description" content="Show me the code
+If you don&rsquo;t care about my writings I have upload the code on my Github
+ On today&rsquo;s post I want to try to automate the setup of an Azure DevOps organization using the Azure DevOps Terraform provider.
+ You might also be interested in these post I wrote a few months ago about automating the AAD App Registration process using the Terraform Azure Active Directory provider." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.mytechramblings.com/posts/automate-azure-devops-setup-using-terraform/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-03-18T10:00:02&#43;01:00" />
+<meta property="article:modified_time" content="2021-03-18T10:00:02&#43;01:00" /><meta property="og:site_name" content="my tech ramblings" />
+
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://www.mytechramblings.com/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">my tech ramblings</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/automate-azure-devops-setup-using-terraform/">Trying to setup an Azure DevOps organization using Terraform</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2021-03-18
+        </span>
+
+        
+          
+            
+
+
+
+          
+        
+      
+
+      
+      
+        <span class="post-read-time">— 13 min read</span>
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          #<a href="https://www.mytechramblings.com/tags/azure/">azure</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/devops/">devops</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/terraform/">terraform</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/aad/">aad</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <blockquote>
+<p><strong>Show me the code</strong><br>
+If you don&rsquo;t care about my writings I have upload the code on my <a href="https://github.com/karlospn/provisioning-an-azdo-org-with-terraform">Github</a></p>
+</blockquote>
+<p>On today&rsquo;s post <strong>I want to try to automate the setup of an Azure DevOps organization using the Azure DevOps Terraform provider</strong>.</p>
+<blockquote>
+<p>You might also be interested in these post I wrote a few months ago about automating the AAD App Registration process using the Terraform Azure Active Directory provider.<br>
+<strong>Link <a href="https://www.mytechramblings.com/posts/automate-azure-ad-app-registration-using-terraform/">HERE</a></strong></p>
+</blockquote>
+<h1 id="prerequisites">Prerequisites</h1>
+<p>There are some prerequisites I have done beforehand to try to speed things up.</p>
+<ul>
+<li>I have created an AzDo organization.</li>
+<li>I have an existing Azure Active Directory, and I have populated it with some users and groups.
+<ul>
+<li>This prerequisite is key because we&rsquo;re not going to create new users on my AzDo organization, we&rsquo;re going to use the existing AAD groups and enroll the users from those groups into our AzDo organization.</li>
+<li>I think that using the users from AAD instead of creating some fake new users directly on my AzDo organization it&rsquo;s a more interesting and realistic scenario.</li>
+</ul>
+</li>
+<li>I have connected my Azure DevOps organization into the AAD directory.</li>
+</ul>
+<p><img src="/img/azdo-connect-aad.png" alt="azdo-connect-aad"></p>
+<h1 id="scenario-to-build">Scenario to build</h1>
+<p>Let me explain what I&rsquo;m going to build. We&rsquo;re going to implement the following requirements:</p>
+<ul>
+<li>I have <strong>2 development teams</strong> (the <strong>commercial dev team</strong> and the <strong>sales dev team</strong>) and I want to enroll them on my AzDo organization so they can start working as soon as possible.</li>
+<li>I also have a <strong>managers team</strong> and I want to enroll it into my AzDo org, but <strong>the managers doen&rsquo;t need the same permissions as the developers</strong>.</li>
+<li><strong>Those 3 teams have been created as groups on my Azure Active Directory</strong>.</li>
+</ul>
+<p>I think I can summarize those 3 requirements in these 4 steps.</p>
+<p><em><strong>Step 1</strong></em> - We need to <strong>enroll those 3 AAD groups into my AzDo organization</strong> and <strong>assign a license to each member of the different groups</strong>.</p>
+<p><em><strong>Step 2</strong></em> - We need to <strong>create a Team Project for each development team</strong>. The managers team doesn&rsquo;t need a Team Project.</p>
+<p><em><strong>Step 3</strong></em> - We need to <strong>give permissions to everyone</strong> so each team can start working on his respective Team Project.</p>
+<p><em><strong>Step 4</strong></em> -  We need to <strong>create the git repositories for all the applications</strong> that each team are going to develop. Also <strong>we are going to set some branch policies on every git repository we create</strong>.</p>
+<h1 id="step-0---setup-the-terraform-providers">Step 0 - Setup the Terraform providers</h1>
+<p>Before start building those 4 steps we need to setup the Terraform provider correctly.</p>
+<h2 id="1-azure-devops-terraform-provider">1. Azure DevOps Terraform provider</h2>
+<p>The Azure DevOps provider only supports a PAT (personal access token) for authenticating to Azure DevOps.</p>
+<blockquote>
+<p>More info about it: <strong><a href="https://registry.terraform.io/providers/microsoft/azuredevops/latest/docs/guides/authenticating_using_the_personal_access_token">official provider docs</a></strong></p>
+</blockquote>
+<p>So I&rsquo;m going to create PAT on my AzDo org.</p>
+<blockquote>
+<p>The PAT has to be created it manually via the UI, right now there is no other way to do it.<br>
+But be aware  that a PAT lifecicle management API is going to be available in a near future: <a href="https://docs.microsoft.com/en-us/azure/devops/release-notes/2021/sprint-183-update#pat-lifecycle-management-api-private-preview">https://docs.microsoft.com/en-us/azure/devops/release-notes/2021/sprint-183-update#pat-lifecycle-management-api-private-preview</a></p>
+</blockquote>
+<p>The provider configuration will look like this:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">provider &#34;azuredevops&#34;{</span>
+    <span style="color:#ae81ff">org_service_url         = &#34;https://dev.azure.com/cpn&#34;</span>
+    <span style="color:#ae81ff">personal_access_token   = &#34;the_pat_goes_here&#34;</span>
+}
+</code></pre></div><p><em><strong>You don&rsquo;t want to hardcode the PAT on the Terraform file.</strong> Use variables, use variables files, use Terragrunt or use whatever you like the most, but do not hardcode any kind of credentials in here.</em></p>
+<h2 id="2-azure-active-directory-terraform-provider">2. Azure Active Directory Terraform provider</h2>
+<p>I&rsquo;m going to need to use the Azure AD provider, but why?</p>
+<ul>
+<li>The AzDo provider cannot access the Active Directory to retrieve the AAD groups, so &rsquo;m going to use the provider to retrieve the groups info and feed that info into the AzDo provider.</li>
+</ul>
+<p>To authenticate against my AAD I&rsquo;m going to register a new App on my AAD with some Graph permissions and create a Service Principal with a client secret .</p>
+<blockquote>
+<p>If you want to read more about what you need, you can go <strong><a href="https://www.terraform.io/docs/providers/azuread/guides/service_principal_client_secret.html">HERE</a></strong></p>
+</blockquote>
+<p>The provider configuration will look like this:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">provider &#34;azuread&#34; {</span>
+    <span style="color:#ae81ff">client_id         = &#34;ba4d0620-0522-4ada-b0b6-0cdd8cfaeae7&#34;</span>
+    <span style="color:#ae81ff">client_secret     = &#34;my_secret_goes_here&#34;</span>
+    <span style="color:#ae81ff">tenant_id         = &#34;my_tenant_goes_here&#34;</span>
+}
+</code></pre></div><h1 id="step-1---enroll-the-aad-groups-into-my-azdo-org">Step 1 - Enroll the AAD groups into my AzDo org</h1>
+<p>We have 3 groups on my Azure Active Directory Team.</p>
+<ul>
+<li><strong>it-commercial-team</strong>: The group contains the members of the commercial development team.</li>
+<li><strong>it-sales-team</strong>: The group contains the members of the sales development team.</li>
+<li><strong>it-managers</strong>: The group contains the bosses from both teams.</li>
+</ul>
+<p><img src="/img/aad-azdo-groups.png" alt="aad-azdo-groups"></p>
+<p>And each group contains some AAD users. Here&rsquo;s a quick peek at how a group looks like on my AAD:</p>
+<p><img src="/img/aad-azdo-group-members.png" alt="aad-azdo-group-members"></p>
+<p>We want to enroll those 3 AAD groups into my AzDo organization and assign all the users from those groups a license.</p>
+<ul>
+<li>I&rsquo;m going to <strong>assign a <em>&ldquo;Basic&rdquo;</em> license</strong> to every user <strong>from the commercial dev team and the sales dev team</strong>.</li>
+<li>I&rsquo;m going to <strong>assign a <em>&ldquo;Stakeholder&rdquo;</em> license</strong> to every user <strong>from the managers team.</strong></li>
+</ul>
+<p><strong>Instead of creating a single Terraform file</strong> with the enrollment of these 3 groups, I&rsquo;m going to <strong>build a Terraform module so I can reuse it to enroll each team</strong>.</p>
+<p>The end result looks like this.</p>
+<ul>
+<li>That&rsquo;s the main.tf file.</li>
+<li>The main.tf is using a Terraform module called <em>&ldquo;add-entitlement-to-group-users&rdquo;</em> to enroll the users.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">#main.tf</span>
+<span style="color:#ae81ff">terraform {</span>
+  <span style="color:#ae81ff">required_providers {</span>
+    <span style="color:#ae81ff">azuredevops = {</span>
+      <span style="color:#ae81ff">source = &#34;microsoft/azuredevops&#34;</span>
+      <span style="color:#ae81ff">version = &#34;&gt;=0.1.0&#34;</span>
+    }
+
+    <span style="color:#ae81ff">azuread = {</span>
+      <span style="color:#ae81ff">source = &#34;azuread&#34;</span>
+      <span style="color:#ae81ff">version = &#34;&gt;=1.4.0&#34;</span>
+    }
+  }
+}
+
+<span style="color:#ae81ff">provider &#34;azuredevops&#34;{</span>
+    <span style="color:#ae81ff">org_service_url = var.org_service_url</span>
+    <span style="color:#ae81ff">personal_access_token = var.personal_access_token</span>
+}
+
+<span style="color:#ae81ff">provider &#34;azuread&#34; {</span>
+    <span style="color:#ae81ff">client_id = var.aad_client_id</span>
+    <span style="color:#ae81ff">client_secret = var.aad_client_secret</span>
+    <span style="color:#ae81ff">tenant_id     = var.aad_tenant_id</span>
+}
+
+<span style="color:#75715e">## Add entitlements to all users from the AAD it-sales-team</span>
+<span style="color:#ae81ff">module &#34;add-entitlement-to-sales-team-group-users&#34; {</span>
+    <span style="color:#ae81ff">source      = &#34;../modules/add-entitlement-to-group-users&#34;</span>
+    <span style="color:#ae81ff">aad_users_groups = [&#34;it-sales-team&#34;]</span>
+    <span style="color:#ae81ff">license_type = &#34;basic&#34;</span>
+}
+
+<span style="color:#75715e">## Add entitlements to all users from the AAD it-commercial-team</span>
+<span style="color:#ae81ff">module &#34;add-entitlement-to-commercial-team-group-users&#34; {</span>
+    <span style="color:#ae81ff">source      = &#34;../modules/add-entitlement-to-group-users&#34;</span>
+    <span style="color:#ae81ff">aad_users_groups = [&#34;it-commercial-team&#34;]</span>
+    <span style="color:#ae81ff">license_type = &#34;basic&#34;</span>
+}
+
+<span style="color:#75715e">## Add entitlements to all users from the AAD it-managers-team</span>
+<span style="color:#ae81ff">module &#34;add-entitlement-to-managers-team-group-users&#34; {</span>
+    <span style="color:#ae81ff">source      = &#34;../modules/add-entitlement-to-group-users&#34;</span>
+    <span style="color:#ae81ff">aad_users_groups = [&#34;it-managers-team&#34;]</span>
+    <span style="color:#ae81ff">license_type = &#34;stakeholder&#34;</span>
+}
+
+</code></pre></div><ul>
+<li>And now let&rsquo;s take a look at the module.</li>
+</ul>
+<p><em>For ease the reading, I have compacted all the module files on a single markdown block code</em></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">#/modules//add-entitlement-to-group-users/variables.tf</span>
+
+<span style="color:#ae81ff">variable &#34;license_type&#34; {</span>
+    <span style="color:#ae81ff">type = string</span>
+}
+
+<span style="color:#ae81ff">variable &#34;aad_users_groups&#34; {</span>
+    <span style="color:#ae81ff">type = list(string)</span>
+}
+
+
+<span style="color:#75715e">#/modules/add-entitlement-to-group-users/main.tf</span>
+<span style="color:#ae81ff">terraform {</span>
+  <span style="color:#ae81ff">required_providers {</span>
+    <span style="color:#ae81ff">azuredevops = {</span>
+      <span style="color:#ae81ff">source = &#34;microsoft/azuredevops&#34;</span>
+      <span style="color:#ae81ff">version = &#34;&gt;=0.1.0&#34;</span>
+    }
+    
+    <span style="color:#ae81ff">azuread = {</span>
+      <span style="color:#ae81ff">source = &#34;azuread&#34;</span>
+      <span style="color:#ae81ff">version = &#34;&gt;=1.4.0&#34;</span>
+    }
+  }
+}
+
+<span style="color:#75715e">## Flattening the members from the different groups</span>
+<span style="color:#ae81ff">locals {</span>
+  <span style="color:#ae81ff">members = distinct(flatten([</span>
+    <span style="color:#f92672">for s in data.azuread_group.aad_group</span>: [
+      <span style="color:#ae81ff">for m in s.members:{</span>
+        <span style="color:#ae81ff">item = m</span>
+      }
+    ]
+  ]<span style="color:#ae81ff">))</span>
+}
+
+<span style="color:#75715e">## Get group info from azure ad</span>
+<span style="color:#ae81ff">data &#34;azuread_group&#34; &#34;aad_group&#34; {</span>
+  <span style="color:#ae81ff">for_each  = toset(var.aad_users_groups)</span>
+  <span style="color:#ae81ff">display_name     = each.value</span>
+}
+
+<span style="color:#75715e">## Get aad users from group</span>
+<span style="color:#ae81ff">data &#34;azuread_user&#34; &#34;aad_users&#34; {</span>
+  <span style="color:#ae81ff">for_each = { for x in local.members: x.item =&gt; x }</span>
+  <span style="color:#ae81ff">object_id = each.value.item</span>
+}
+
+<span style="color:#75715e">## Add entitlement to users in the aad group</span>
+<span style="color:#ae81ff">resource &#34;azuredevops_user_entitlement&#34; &#34;user&#34; {</span>
+  <span style="color:#ae81ff">for_each = data.azuread_user.aad_users</span>
+  <span style="color:#ae81ff">principal_name = each.value.user_principal_name</span>
+  <span style="color:#ae81ff">account_license_type = var.license_type</span>
+}
+
+<span style="color:#75715e">#/modules/add-entitlement-to-group-users/output.tf</span>
+<span style="color:#ae81ff">output &#34;aad_users&#34; {</span>
+    <span style="color:#ae81ff">value = {</span>
+        <span style="color:#f92672">for user in data.azuread_user.aad_users</span>: 
+            <span style="color:#ae81ff">user.id =&gt; user.display_name</span>
+    }
+}
+
+</code></pre></div><p>Let me explain a little bit what we&rsquo;re doing on the module:</p>
+<ul>
+<li>First of all with the <em>&ldquo;azuread_group&rdquo; data resource</em> we retrieve the groups from the AAD.</li>
+<li>After that using the <em>&ldquo;azuread_user&rdquo; data resource</em> we retrieve all the users from each AAD group.</li>
+<li>And finally with the <em>&ldquo;azuredevops_user_entitlement&rdquo; resource</em> we enroll every AAD user into our AzDo org.</li>
+</ul>
+<p>Maybe you&rsquo;re are asking yourself: <em>&ldquo;Why are you not using the Azure DevOps &ldquo;Group Rules&rdquo; feature to enroll the users?&quot;</em> <br>
+It&rsquo;s true that the AzDo <a href="https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/assign-access-levels-by-group-membership">&ldquo;Group Rules&rdquo;</a> allows us to do the same thing in a cleaner way, but the provider doesn&rsquo;t support it.</p>
+<h1 id="step-2---create-a-team-project-for-each-team">Step 2 - Create a Team project for each team</h1>
+<ul>
+<li>We are going to create 2 Team Projects.
+<ul>
+<li>One team project for the commercial development Team.</li>
+<li>One team project for the sales development Team.</li>
+</ul>
+</li>
+</ul>
+<p>There is no need to built a Terraform module because the code it&rsquo;s going to be pretty straightforward.</p>
+<p>The main.tf file will look like this:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">#main.tf</span>
+<span style="color:#ae81ff">terraform {</span>
+  <span style="color:#ae81ff">required_providers {</span>
+    <span style="color:#ae81ff">azuredevops = {</span>
+      <span style="color:#ae81ff">source = &#34;microsoft/azuredevops&#34;</span>
+      <span style="color:#ae81ff">version = &#34;&gt;=0.1.0&#34;</span>
+    }
+  }
+}
+
+<span style="color:#ae81ff">provider &#34;azuredevops&#34;{</span>
+    <span style="color:#ae81ff">org_service_url = var.org_service_url</span>
+    <span style="color:#ae81ff">personal_access_token = var.personal_access_token</span>
+}
+
+<span style="color:#75715e">## Create team project for the commercial team</span>
+<span style="color:#ae81ff">resource &#34;azuredevops_project&#34; &#34;project-comm&#34; {</span>
+  <span style="color:#ae81ff">name       = &#34;Commercial Team Project&#34;</span>
+  <span style="color:#ae81ff">description        = &#34;Repository used by the Commercial IT Team&#34;</span>
+  <span style="color:#ae81ff">visibility         = &#34;private&#34;</span>
+  <span style="color:#ae81ff">version_control    = &#34;Git&#34;</span>
+  <span style="color:#ae81ff">work_item_template = &#34;Agile&#34;</span>
+
+  <span style="color:#ae81ff">features = {</span>
+      <span style="color:#e6db74">&#34;boards&#34;</span> <span style="color:#ae81ff">= &#34;disabled&#34;</span>
+      <span style="color:#e6db74">&#34;repositories&#34;</span> <span style="color:#ae81ff">= &#34;enabled&#34;</span>
+      <span style="color:#e6db74">&#34;pipelines&#34;</span> <span style="color:#ae81ff">= &#34;enabled&#34;</span>
+      <span style="color:#e6db74">&#34;artifacts&#34;</span> <span style="color:#ae81ff">= &#34;enabled&#34;</span>
+  }
+}
+
+<span style="color:#75715e">## Create team project for the sales team</span>
+<span style="color:#ae81ff">resource &#34;azuredevops_project&#34; &#34;project-sales&#34; {</span>
+  <span style="color:#ae81ff">name       = &#34;Sales Team Project&#34;</span>
+  <span style="color:#ae81ff">description        = &#34;Repository used by the Sales IT Team&#34;</span>
+  <span style="color:#ae81ff">visibility         = &#34;private&#34;</span>
+  <span style="color:#ae81ff">version_control    = &#34;Git&#34;</span>
+  <span style="color:#ae81ff">work_item_template = &#34;Agile&#34;</span>
+
+  <span style="color:#ae81ff">features = {</span>
+      <span style="color:#e6db74">&#34;boards&#34;</span> <span style="color:#ae81ff">= &#34;disabled&#34;</span>
+      <span style="color:#e6db74">&#34;repositories&#34;</span> <span style="color:#ae81ff">= &#34;enabled&#34;</span>
+      <span style="color:#e6db74">&#34;pipelines&#34;</span> <span style="color:#ae81ff">= &#34;enabled&#34;</span>
+      <span style="color:#e6db74">&#34;artifacts&#34;</span> <span style="color:#ae81ff">= &#34;enabled&#34;</span>
+  }
+}
+</code></pre></div><p>Nothing remarkable to explain here, it&rsquo;s pretty self-explanatory.</p>
+<h1 id="step-3---add-permissions">Step 3 - Add permissions</h1>
+<p>Let me make a quick recap:</p>
+<ul>
+<li>On step 1 we have enrolled those 3 AAD groups: <em>&lsquo;it-commercial-team&rsquo;</em>, <em>&lsquo;it-sales-team&rsquo;</em>, <em>&lsquo;it-managers&rsquo;</em> into our AzDo org.</li>
+<li>On step 2 we have created a team project for the <em>&lsquo;it-commercial-team&rsquo;</em> and another one for the <em>&lsquo;it-sales-team&rsquo;</em>.</li>
+</ul>
+<p>Now it&rsquo;s time to set the permissions in each team project.</p>
+<ul>
+<li>
+<p>In the <strong>&lsquo;Commercial Team Project&rsquo;</strong> we&rsquo;re going to set the following permissions:</p>
+<ul>
+<li>The <strong><em>&lsquo;it-commercial-team&rsquo;</em> AAD group</strong> is going to be added into the <strong>&lsquo;Contributors&rsquo; security group</strong>.</li>
+<li>The &lsquo;<strong><em>&lsquo;it-managers&rsquo;</em> AAD group</strong> is going to be added into the <strong>&lsquo;Readers&rsquo; security group.</strong></li>
+</ul>
+</li>
+<li>
+<p>In the <strong>&lsquo;Sales Team Project&rsquo;</strong> we&rsquo;re going to set the following permissions:</p>
+<ul>
+<li>The <strong><em>&lsquo;it-sales-team&rsquo;</em> AAD group</strong> is going to be added into the <strong>&lsquo;Contributors&rsquo; security group</strong>.</li>
+<li>The <strong><em>&lsquo;it-managers&rsquo;</em> AAD group</strong> is going to be added into the <strong>&lsquo;Readers&rsquo; security group</strong>.</li>
+</ul>
+</li>
+</ul>
+<p>I&rsquo;m going to built another Terraform module, mainly because it looks cleaner to create a module a reuse it instead of repeating the same code over and over again to add permissions for each group.</p>
+<p>The end result looks like this.</p>
+<ul>
+<li>The main.tf is using a Terraform module called. <em>&ldquo;add-aad-groups-to-azdo-team-project-sec-group&rdquo;</em>  to add the permissions in every team project.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">#main.tf</span>
+<span style="color:#ae81ff">terraform {</span>
+  <span style="color:#ae81ff">required_providers {</span>
+    <span style="color:#ae81ff">azuredevops = {</span>
+      <span style="color:#ae81ff">source = &#34;microsoft/azuredevops&#34;</span>
+      <span style="color:#ae81ff">version = &#34;&gt;=0.1.0&#34;</span>
+    }
+
+    <span style="color:#ae81ff">azuread = {</span>
+      <span style="color:#ae81ff">source = &#34;azuread&#34;</span>
+      <span style="color:#ae81ff">version = &#34;&gt;=1.4.0&#34;</span>
+    }
+  }
+}
+
+<span style="color:#ae81ff">provider &#34;azuredevops&#34;{</span>
+    <span style="color:#ae81ff">org_service_url = var.org_service_url</span>
+    <span style="color:#ae81ff">personal_access_token = var.personal_access_token</span>
+}
+
+<span style="color:#ae81ff">provider &#34;azuread&#34; {</span>
+    <span style="color:#ae81ff">client_id = var.aad_client_id</span>
+    <span style="color:#ae81ff">client_secret = var.aad_client_secret</span>
+    <span style="color:#ae81ff">tenant_id     = var.aad_tenant_id</span>
+}
+
+
+<span style="color:#75715e">## Add the commercial teams AAD group as contributor on the commercial team project</span>
+<span style="color:#ae81ff">module &#34;add-comm-group-to-azdo-sec-group&#34; {</span>
+    <span style="color:#ae81ff">source      = &#34;../modules/add-aad-groups-to-azdo-team-project-sec-group&#34;</span>
+    <span style="color:#ae81ff">project_name =  &#34;Commercial Team Project&#34;</span>
+    <span style="color:#ae81ff">azdo_group_name = &#34;Contributors&#34;</span>
+    <span style="color:#ae81ff">aad_users_groups = [&#34;it-commercial-team&#34;]</span>
+}
+
+<span style="color:#75715e">## Add the sales teams AAD group as contributor on the sales team project</span>
+<span style="color:#ae81ff">module &#34;add-sales-group-to-azdo-sec-group&#34; {</span>
+    <span style="color:#ae81ff">source      = &#34;../modules/add-aad-groups-to-azdo-team-project-sec-group&#34;</span>
+    <span style="color:#ae81ff">project_name = &#34;Sales Team Project&#34;</span>
+    <span style="color:#ae81ff">azdo_group_name = &#34;Contributors&#34;</span>
+    <span style="color:#ae81ff">aad_users_groups = [&#34;it-sales-team&#34;]</span>
+}
+
+
+<span style="color:#75715e">## Add the managers AAD group as readers on the commercial team project</span>
+<span style="color:#ae81ff">module &#34;add-manager-group-to-comm-azdo-sec-group&#34; {</span>
+    <span style="color:#ae81ff">source      = &#34;../modules/add-aad-groups-to-azdo-team-project-sec-group&#34;</span>
+    <span style="color:#ae81ff">project_name =  &#34;Commercial Team Project&#34;</span>
+    <span style="color:#ae81ff">azdo_group_name = &#34;Readers&#34;</span>
+    <span style="color:#ae81ff">aad_users_groups = [&#34;it-managers-team&#34;]</span>
+}
+
+
+<span style="color:#75715e">## Add the managers AAD group as readers on the sales team project</span>
+<span style="color:#ae81ff">module &#34;add-manager-group-to-sales-azdo-sec-group&#34; {</span>
+    <span style="color:#ae81ff">source      = &#34;../modules/add-aad-groups-to-azdo-team-project-sec-group&#34;</span>
+    <span style="color:#ae81ff">project_name = &#34;Sales Team Project&#34;</span>
+    <span style="color:#ae81ff">azdo_group_name = &#34;Readers&#34;</span>
+    <span style="color:#ae81ff">aad_users_groups = [&#34;it-managers-team&#34;]</span>
+}
+
+</code></pre></div><ul>
+<li>And now let&rsquo;s take a look at the module.</li>
+</ul>
+<p><em>For ease the reading, I have compacted all the module files on a single markdown block code</em></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">#/modules/add-aad-groups-to-azdo-team-project-sec-group/variables.tf</span>
+<span style="color:#ae81ff">variable &#34;project_name&#34; {</span>
+    <span style="color:#ae81ff">type = string</span>
+}
+
+<span style="color:#ae81ff">variable &#34;azdo_group_name&#34; {</span>
+    <span style="color:#ae81ff">type = string</span>
+}
+
+<span style="color:#ae81ff">variable &#34;aad_users_groups&#34; {</span>
+    <span style="color:#ae81ff">type = list(string)</span>
+    <span style="color:#ae81ff">default = []</span>
+}
+
+
+<span style="color:#75715e">#/modules/add-aad-groups-to-azdo-team-project-sec-group/main.tf</span>
+<span style="color:#ae81ff">terraform {</span>
+  <span style="color:#ae81ff">required_providers {</span>
+    <span style="color:#ae81ff">azuredevops = {</span>
+      <span style="color:#ae81ff">source = &#34;microsoft/azuredevops&#34;</span>
+      <span style="color:#ae81ff">version = &#34;&gt;=0.1.0&#34;</span>
+    }
+    
+    <span style="color:#ae81ff">azuread = {</span>
+      <span style="color:#ae81ff">source = &#34;azuread&#34;</span>
+      <span style="color:#ae81ff">version = &#34;&gt;=1.4.0&#34;</span>
+    }
+  }
+}
+
+<span style="color:#75715e">## Get project info</span>
+<span style="color:#ae81ff">data &#34;azuredevops_project&#34; &#34;project&#34; {</span>
+  <span style="color:#ae81ff">name = var.project_name</span>
+}
+
+<span style="color:#75715e">## Get group info from azure ad</span>
+<span style="color:#ae81ff">data &#34;azuread_group&#34; &#34;aad_group&#34; {</span>
+  <span style="color:#ae81ff">for_each  = toset(var.aad_users_groups)</span>
+  <span style="color:#ae81ff">display_name     = each.value</span>
+}
+
+<span style="color:#75715e">## Get group info from AzDo</span>
+<span style="color:#ae81ff">data &#34;azuredevops_group&#34; &#34;azdo_group&#34; {</span>
+  <span style="color:#ae81ff">project_id = data.azuredevops_project.project.id</span>
+  <span style="color:#ae81ff">name       = var.azdo_group_name</span>
+}
+
+<span style="color:#75715e">## Link the aad group to an azdo group</span>
+<span style="color:#ae81ff">resource &#34;azuredevops_group&#34; &#34;azdo_group_linked_to_aad&#34; {</span>
+  <span style="color:#ae81ff">for_each  = toset(var.aad_users_groups)</span>
+  <span style="color:#ae81ff">origin_id = data.azuread_group.aad_group[each.key].object_id</span>
+}
+
+<span style="color:#75715e">## Add membership</span>
+<span style="color:#ae81ff">resource &#34;azuredevops_group_membership&#34; &#34;membership&#34; {</span>
+  <span style="color:#ae81ff">group = data.azuredevops_group.azdo_group.descriptor</span>
+  <span style="color:#ae81ff">members = flatten(values(azuredevops_group.azdo_group_linked_to_aad)[*].descriptor)</span>
+}
+</code></pre></div><p>Let me explain a little bit what we&rsquo;re doing in the module:</p>
+<ul>
+<li>With the <em>&ldquo;azuread_group&rdquo;</em> data resource we retrieve the groups from the AAD.</li>
+<li>With the <em>&ldquo;azuredevops_group&rdquo;</em> data resource we retrieve the security groups.</li>
+<li>With the <em>&ldquo;azuredevops_group&rdquo;</em> resource we are linking the aad group to the azdo group.</li>
+<li>And finally with the <em>&ldquo;azuredevops_group_membership&rdquo;</em> resource we&rsquo;re adding the AAD group into the security group.</li>
+</ul>
+<h1 id="step-4---create-git-repositories-and-main-branch-policies">Step 4 - Create git repositories and main branch policies</h1>
+<p>We&rsquo;re going to create the git repositories for all the applications that each team are going to develop. Also we&rsquo;re going to set some branch policies for the main branch.</p>
+<p>We&rsquo;re going to create the following git repositories:</p>
+<ul>
+<li>
+<p>In the <strong>Commercial Team Project</strong>:</p>
+<ul>
+<li>A <strong>git repository for a WebAPI</strong>.</li>
+<li>A <strong>git repository for a SPA</strong>.</li>
+</ul>
+</li>
+<li>
+<p>In the <strong>&lsquo;Sales Team Project</strong>:</p>
+<ul>
+<li>A <strong>git repository for a WebAPI</strong>.</li>
+</ul>
+</li>
+</ul>
+<p>The end result looks like this.</p>
+<ul>
+<li>The main.tf is using another Terraform module (I like Terraform modules&hellip;) called <em>&ldquo;create-repository-and-branch-policies&rdquo;</em>. That module is used to create the git repositories and aad some branch policies in the main branch.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">#main.tf</span>
+<span style="color:#ae81ff">terraform {</span>
+  <span style="color:#ae81ff">required_providers {</span>
+    <span style="color:#ae81ff">azuredevops = {</span>
+      <span style="color:#ae81ff">source = &#34;microsoft/azuredevops&#34;</span>
+      <span style="color:#ae81ff">version = &#34;&gt;=0.1.0&#34;</span>
+    }
+  }
+}
+
+<span style="color:#ae81ff">provider &#34;azuredevops&#34;{</span>
+    <span style="color:#ae81ff">org_service_url = var.org_service_url</span>
+    <span style="color:#ae81ff">personal_access_token = var.personal_access_token</span>
+}
+
+<span style="color:#ae81ff">locals {</span>
+  <span style="color:#ae81ff">comm_prj_name = &#34;Commercial Team Project&#34;</span>
+  <span style="color:#ae81ff">sales_prj_name = &#34;Sales Team Project&#34;</span>
+}
+
+<span style="color:#75715e">## Create repository for commercial team apps</span>
+<span style="color:#75715e">## Create repository for commercial team api</span>
+<span style="color:#ae81ff">module &#34;create-repository-and-policies-for-commercial-team-api&#34; {</span>
+    <span style="color:#ae81ff">source      = &#34;../modules/create-repository-and-branch-policies&#34;</span>
+    <span style="color:#ae81ff">project_name = local.comm_prj_name</span>
+    <span style="color:#ae81ff">repository_name = &#34;comm.api&#34;</span>
+}
+
+<span style="color:#75715e">## Create repository for commercial team ui</span>
+<span style="color:#ae81ff">module &#34;create-repository-and-policies-for-commercial-team-ui&#34; {</span>
+    <span style="color:#ae81ff">source      = &#34;../modules/create-repository-and-branch-policies&#34;</span>
+    <span style="color:#ae81ff">project_name = local.comm_prj_name</span>
+    <span style="color:#ae81ff">repository_name = &#34;comm.spa&#34;</span>
+}
+
+<span style="color:#75715e">## Create repository for sales team apps</span>
+<span style="color:#75715e">## Create repository for sales team ui</span>
+<span style="color:#ae81ff">module &#34;create-repository-and-policies-for-sales-team-api&#34; {</span>
+    <span style="color:#ae81ff">source      = &#34;../modules/create-repository-and-branch-policies&#34;</span>
+    <span style="color:#ae81ff">project_name = local.sales_prj_name</span>
+    <span style="color:#ae81ff">repository_name = &#34;sales.api&#34;</span>
+}
+</code></pre></div><ul>
+<li>And let&rsquo;s take a look at the module.</li>
+</ul>
+<p><em>For ease the reading, I have compacted all the module files on a single markdown block code</em></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">#/modules/create-repository-and-branch-policies/variables.tf</span>
+<span style="color:#ae81ff">variable &#34;project_name&#34; {</span>
+    <span style="color:#ae81ff">type = string</span>
+}
+
+<span style="color:#ae81ff">variable &#34;repository_name&#34; {</span>
+    <span style="color:#ae81ff">type = string</span>
+}
+
+
+<span style="color:#75715e">#/modules/create-repository-and-branch-policies/main.tf</span>
+<span style="color:#ae81ff">terraform {</span>
+  <span style="color:#ae81ff">required_providers {</span>
+    <span style="color:#ae81ff">azuredevops = {</span>
+      <span style="color:#ae81ff">source = &#34;microsoft/azuredevops&#34;</span>
+      <span style="color:#ae81ff">version = &#34;&gt;=0.1.0&#34;</span>
+    }
+  }
+}
+
+
+<span style="color:#75715e">## Get project info</span>
+<span style="color:#ae81ff">data &#34;azuredevops_project&#34; &#34;project&#34; {</span>
+  <span style="color:#ae81ff">name = var.project_name</span>
+}
+
+
+<span style="color:#75715e">## Create Git Repository</span>
+<span style="color:#ae81ff">resource &#34;azuredevops_git_repository&#34; &#34;repository&#34; {</span>
+  <span style="color:#ae81ff">project_id = data.azuredevops_project.project.id</span>
+  <span style="color:#ae81ff">name       =  var.repository_name</span>
+  <span style="color:#ae81ff">initialization {</span>
+    <span style="color:#ae81ff">init_type = &#34;Clean&#34;</span>
+  }
+}
+
+
+<span style="color:#75715e">## Start Branch permission block</span>
+<span style="color:#ae81ff">resource &#34;azuredevops_branch_policy_min_reviewers&#34; &#34;policy-min-reviewers&#34; {</span>
+  <span style="color:#ae81ff">project_id = data.azuredevops_project.project.id</span>
+
+  <span style="color:#ae81ff">enabled  = true</span>
+  <span style="color:#ae81ff">blocking = true</span>
+
+  <span style="color:#ae81ff">settings {</span>
+    <span style="color:#ae81ff">reviewer_count     = 1</span>
+    <span style="color:#ae81ff">submitter_can_vote = false</span>
+    <span style="color:#ae81ff">last_pusher_cannot_approve = true</span>
+    <span style="color:#ae81ff">allow_completion_with_rejects_or_waits = false</span>
+    <span style="color:#ae81ff">on_push_reset_approved_votes = true</span>
+
+    <span style="color:#ae81ff">scope {</span>
+      <span style="color:#ae81ff">repository_id  = azuredevops_git_repository.repository.id               </span>
+      <span style="color:#ae81ff">repository_ref = azuredevops_git_repository.repository.default_branch</span>
+      <span style="color:#ae81ff">match_type     = &#34;Exact&#34;</span>
+    }
+  }
+}
+
+<span style="color:#ae81ff">resource &#34;azuredevops_branch_policy_comment_resolution&#34; &#34;policy-comment-resolution&#34; {</span>
+  <span style="color:#ae81ff">project_id = data.azuredevops_project.project.id</span>
+
+  <span style="color:#ae81ff">enabled  = true</span>
+  <span style="color:#ae81ff">blocking = true</span>
+
+  <span style="color:#ae81ff">settings {</span>
+
+     <span style="color:#ae81ff">scope {</span>
+      <span style="color:#ae81ff">repository_id  = azuredevops_git_repository.repository.id               </span>
+      <span style="color:#ae81ff">repository_ref = azuredevops_git_repository.repository.default_branch</span>
+      <span style="color:#ae81ff">match_type     = &#34;Exact&#34;</span>
+    }
+  }
+}
+
+<span style="color:#75715e">## End Branch permission block</span>
+
+<span style="color:#75715e">#/modules/create-repository-and-branch-policies/outputs.tf</span>
+<span style="color:#ae81ff">output &#34;repository_id&#34; {</span>
+  <span style="color:#ae81ff">value = azuredevops_git_repository.repository.id</span>
+}
+</code></pre></div><p>I think that the module needs no explanation, it&rsquo;s really simple and pretty easy to read.</p>
+<h1 id="next-steps">Next Steps</h1>
+<p>I could keep adding more and more steps into this test, for example I could built another module that creates the Service Connections to AWS or Azure so each team can use it to deploy the apps whenever they want.<br>
+But I think that this post it&rsquo;s running a little bit longer than usual so I&rsquo;m going to stop here. For now&hellip;</p>
+<p>The provider offers a few resources that I haven&rsquo;t tested yet and be aware that there are quite a few resources that still missing, but overall it looks like a solid provider.<br>
+If you&rsquo;re interested in trying it out for yourself, go take a look the official docs:
+<a href="https://registry.terraform.io/providers/microsoft/azuredevops/latest/docs">https://registry.terraform.io/providers/microsoft/azuredevops/latest/docs</a></p>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://www.mytechramblings.com/posts/configure-roslyn-analyzers-using-editorconfig/">
+                  <span class="button__text">How to configure your custom roslyn analyzer using an .editorconfig file</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2021 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>Theme created by <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://www.mytechramblings.com/assets/main.js"></script>
+<script src="https://www.mytechramblings.com/assets/prism.js"></script>
+
+      
+    </div>
+
+    
+      
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-170300931-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+    
+  </body>
+</html>
