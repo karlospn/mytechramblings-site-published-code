@@ -9,10 +9,110 @@
     <description>Recent content in Tags on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 18 Mar 2021 10:00:02 +0100</lastBuildDate>
+    <lastBuildDate>Thu, 08 Apr 2021 10:11:51 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>csharp</title>
+      <link>https://www.mytechramblings.com/tags/csharp/</link>
+      <pubDate>Thu, 08 Apr 2021 10:11:51 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/csharp/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>dotnet</title>
+      <link>https://www.mytechramblings.com/tags/dotnet/</link>
+      <pubDate>Thu, 08 Apr 2021 10:11:51 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/dotnet/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>jaeger</title>
+      <link>https://www.mytechramblings.com/tags/jaeger/</link>
+      <pubDate>Thu, 08 Apr 2021 10:11:51 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/jaeger/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>opentelemetry</title>
+      <link>https://www.mytechramblings.com/tags/opentelemetry/</link>
+      <pubDate>Thu, 08 Apr 2021 10:11:51 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/opentelemetry/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>tracing</title>
+      <link>https://www.mytechramblings.com/tags/tracing/</link>
+      <pubDate>Thu, 08 Apr 2021 10:11:51 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/tracing/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>aad</title>
@@ -80,46 +180,6 @@
       <pubDate>Thu, 18 Mar 2021 10:00:02 +0100</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/terraform/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>csharp</title>
-      <link>https://www.mytechramblings.com/tags/csharp/</link>
-      <pubDate>Thu, 14 Jan 2021 12:59:43 +0100</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/csharp/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>dotnet</title>
-      <link>https://www.mytechramblings.com/tags/dotnet/</link>
-      <pubDate>Thu, 14 Jan 2021 12:59:43 +0100</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/dotnet/</guid>
       <description>
         
           

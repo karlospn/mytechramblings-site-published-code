@@ -2,6 +2,33 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://www.mytechramblings.com/tags/csharp/</loc>
+    <lastmod>2021-04-08T10:11:51+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/dotnet/</loc>
+    <lastmod>2021-04-08T10:11:51+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-and-dotnet-core/</loc>
+    <lastmod>2021-04-08T10:11:51+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/jaeger/</loc>
+    <lastmod>2021-04-08T10:11:51+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/</loc>
+    <lastmod>2021-04-08T10:11:51+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/opentelemetry/</loc>
+    <lastmod>2021-04-08T10:11:51+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/</loc>
+    <lastmod>2021-04-08T10:11:51+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/</loc>
+    <lastmod>2021-04-08T10:11:51+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/tracing/</loc>
+    <lastmod>2021-04-08T10:11:51+02:00</lastmod>
+  </url><url>
     <loc>https://www.mytechramblings.com/tags/aad/</loc>
     <lastmod>2021-03-18T10:00:02+01:00</lastmod>
   </url><url>
@@ -11,26 +38,11 @@
     <loc>https://www.mytechramblings.com/tags/devops/</loc>
     <lastmod>2021-03-18T10:00:02+01:00</lastmod>
   </url><url>
-    <loc>https://www.mytechramblings.com/</loc>
-    <lastmod>2021-03-18T10:00:02+01:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/posts/</loc>
-    <lastmod>2021-03-18T10:00:02+01:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/</loc>
-    <lastmod>2021-03-18T10:00:02+01:00</lastmod>
-  </url><url>
     <loc>https://www.mytechramblings.com/tags/terraform/</loc>
     <lastmod>2021-03-18T10:00:02+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/posts/automate-azure-devops-setup-using-terraform/</loc>
     <lastmod>2021-03-18T10:00:02+01:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/csharp/</loc>
-    <lastmod>2021-01-14T12:59:43+01:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/dotnet/</loc>
-    <lastmod>2021-01-14T12:59:43+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/editorconfig/</loc>
     <lastmod>2021-01-14T12:59:43+01:00</lastmod>
