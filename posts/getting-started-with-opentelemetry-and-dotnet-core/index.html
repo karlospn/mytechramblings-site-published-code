@@ -317,15 +317,15 @@ With the <code>SetResourceBuilder</code> method we&rsquo;re configuring the Reso
     <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> ActivitySource Activity = <span style="color:#66d9ef">new</span>(nameof(PublishMessageController));
     <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> TextMapPropagator Propagator = Propagators.DefaultTextMapPropagator;
 
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger&lt;PublishMessageController&gt; _logger;
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IConfiguration _configuration;
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger&lt;PublishMessageController&gt; <span style="color:#ae81ff">_l</span>ogger;
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IConfiguration <span style="color:#ae81ff">_</span>configuration;
 
     <span style="color:#66d9ef">public</span> PublishMessageController(
         ILogger&lt;PublishMessageController&gt; logger,
         IConfiguration configuration)
     {
-        _logger = logger;
-        _configuration = configuration;
+        <span style="color:#ae81ff">_l</span>ogger = logger;
+        <span style="color:#ae81ff">_</span>configuration = configuration;
     }
 <span style="color:#a6e22e">
 </span><span style="color:#a6e22e">    [HttpGet]</span>
@@ -335,7 +335,7 @@ With the <code>SetResourceBuilder</code> method we&rsquo;re configuring the Reso
         {
             <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> activity = Activity.StartActivity(<span style="color:#e6db74">&#34;RabbitMq Publish&#34;</span>, ActivityKind.Producer))
             {
-                <span style="color:#66d9ef">var</span> factory = <span style="color:#66d9ef">new</span> ConnectionFactory { HostName = _configuration[<span style="color:#e6db74">&#34;RabbitMq:Host&#34;</span>] };
+                <span style="color:#66d9ef">var</span> factory = <span style="color:#66d9ef">new</span> ConnectionFactory { HostName = <span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;RabbitMq:Host&#34;</span>] };
                 <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> connection = factory.CreateConnection())
                 <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> channel = connection.CreateModel())
                 {
@@ -360,7 +360,7 @@ With the <code>SetResourceBuilder</code> method we&rsquo;re configuring the Reso
         }
         <span style="color:#66d9ef">catch</span> (Exception e)
         {
-            _logger.LogError(<span style="color:#e6db74">&#34;Error trying to publish a message&#34;</span>, e);
+            <span style="color:#ae81ff">_l</span>ogger.LogError(<span style="color:#e6db74">&#34;Error trying to publish a message&#34;</span>, e);
             <span style="color:#66d9ef">throw</span>;
         }
     }
@@ -382,7 +382,7 @@ With the <code>SetResourceBuilder</code> method we&rsquo;re configuring the Reso
         }
         <span style="color:#66d9ef">catch</span> (Exception ex)
         {
-            _logger.LogError(ex, <span style="color:#e6db74">&#34;Failed to inject trace context.&#34;</span>);
+            <span style="color:#ae81ff">_l</span>ogger.LogError(ex, <span style="color:#e6db74">&#34;Failed to inject trace context.&#34;</span>);
         }
     }
 }
@@ -396,8 +396,8 @@ With the <code>SetResourceBuilder</code> method we&rsquo;re configuring the Reso
     .AddSource(nameof(Program))
     .AddJaegerExporter(opts =&gt;
     {
-        opts.AgentHost = _configuration[<span style="color:#e6db74">&#34;Jaeger:AgentHost&#34;</span>];
-        opts.AgentPort = Convert.ToInt32(_configuration[<span style="color:#e6db74">&#34;Jaeger:AgentPort&#34;</span>]);
+        opts.AgentHost = <span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;Jaeger:AgentHost&#34;</span>];
+        opts.AgentPort = Convert.ToInt32(<span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;Jaeger:AgentPort&#34;</span>]);
     })
     .Build();
 </code></pre></div><p><strong>2 . Instrument dependency calls</strong></p>
@@ -423,9 +423,9 @@ The code is pretty much the same as the one we have created for the Rabbit produ
           <span style="color:#75715e">//Add Tags to the Activity
 </span><span style="color:#75715e"></span>          AddActivityTags(activity);
 
-          _logger.LogInformation(<span style="color:#e6db74">&#34;Message Received: &#34;</span> + message);
+          <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">&#34;Message Received: &#34;</span> + message);
 
-          _ = <span style="color:#66d9ef">await</span> httpClient.PostAsync(<span style="color:#e6db74">&#34;/sql-to-event&#34;</span>,
+          <span style="color:#ae81ff">_</span> = <span style="color:#66d9ef">await</span> httpClient.PostAsync(<span style="color:#e6db74">&#34;/sql-to-event&#34;</span>,
               <span style="color:#66d9ef">new</span> StringContent(JsonSerializer.Serialize(message),
                   Encoding.UTF8,
                   <span style="color:#e6db74">&#34;application/json&#34;</span>));
@@ -436,7 +436,7 @@ The code is pretty much the same as the one we have created for the Rabbit produ
     }
     <span style="color:#66d9ef">catch</span> (Exception ex)
     {
-        _logger.LogError(<span style="color:#e6db74">$&#34;There was an error processing the message: {ex} &#34;</span>);
+        <span style="color:#ae81ff">_l</span>ogger.LogError(<span style="color:#e6db74">$&#34;There was an error processing the message: {ex} &#34;</span>);
     }
 }
 
@@ -453,7 +453,7 @@ The code is pretty much the same as the one we have created for the Rabbit produ
     }
     <span style="color:#66d9ef">catch</span> (Exception ex)
     {
-        _logger.LogError(<span style="color:#e6db74">$&#34;Failed to extract trace context: {ex}&#34;</span>);
+        <span style="color:#ae81ff">_l</span>ogger.LogError(<span style="color:#e6db74">$&#34;Failed to extract trace context: {ex}&#34;</span>);
     }
 
     <span style="color:#66d9ef">return</span> Enumerable.Empty&lt;<span style="color:#66d9ef">string</span>&gt;();

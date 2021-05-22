@@ -241,7 +241,7 @@ That&rsquo;s an easy way to reassure that every application enforces your own co
 <span style="color:#a6e22e">    [DiagnosticAnalyzer(LanguageNames.CSharp)]</span>
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CheckNetCoreFrameworkVersionRule</span> : DiagnosticAnalyzer
     {
-        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> <span style="color:#66d9ef">string</span>[] _allowedFrameworkVersions = { <span style="color:#e6db74">&#34;2.1&#34;</span>, <span style="color:#e6db74">&#34;3.1&#34;</span> };
+        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> <span style="color:#66d9ef">string</span>[] <span style="color:#ae81ff">_</span>allowedFrameworkVersions = { <span style="color:#e6db74">&#34;2.1&#34;</span>, <span style="color:#e6db74">&#34;3.1&#34;</span> };
 
         <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> CoreFrameworkString = <span style="color:#e6db74">&#34;.NETCoreApp,Version=v&#34;</span>;
         <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> DiagnosticId = <span style="color:#e6db74">&#34;MyRule0001&#34;</span>;
@@ -278,7 +278,7 @@ That&rsquo;s an easy way to reassure that every application enforces your own co
             {
                 <span style="color:#66d9ef">var</span> attrString = attrs.ToString();
                 
-                <span style="color:#66d9ef">var</span> found = _allowedFrameworkVersions
+                <span style="color:#66d9ef">var</span> found = <span style="color:#ae81ff">_</span>allowedFrameworkVersions
                     .Select(version =&gt; <span style="color:#e6db74">$&#34;{CoreFrameworkString}{version}&#34;</span>)
                     .Any(pattern =&gt; attrString.Contains(pattern));
 
@@ -289,7 +289,7 @@ That&rsquo;s an easy way to reassure that every application enforces your own co
                         Location.None,
                         context.Compilation.AssemblyName,
                         attrString,
-                        _allowedFrameworkVersions.Aggregate((result, next) =&gt; <span style="color:#e6db74">$&#34;{next}, {result}&#34;</span>));
+                        <span style="color:#ae81ff">_</span>allowedFrameworkVersions.Aggregate((result, next) =&gt; <span style="color:#e6db74">$&#34;{next}, {result}&#34;</span>));
 
                     context.ReportDiagnostic(diagnostic);
                 }
