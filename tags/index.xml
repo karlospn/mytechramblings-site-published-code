@@ -9,17 +9,37 @@
     <description>Recent content in Tags on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 08 Apr 2021 10:11:51 +0200</lastBuildDate>
+    <lastBuildDate>Tue, 25 May 2021 10:01:46 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>csharp</title>
-      <link>https://www.mytechramblings.com/tags/csharp/</link>
-      <pubDate>Thu, 08 Apr 2021 10:11:51 +0200</pubDate>
+      <title>aws</title>
+      <link>https://www.mytechramblings.com/tags/aws/</link>
+      <pubDate>Tue, 25 May 2021 10:01:46 +0200</pubDate>
       
-      <guid>https://www.mytechramblings.com/tags/csharp/</guid>
+      <guid>https://www.mytechramblings.com/tags/aws/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>cdk</title>
+      <link>https://www.mytechramblings.com/tags/cdk/</link>
+      <pubDate>Tue, 25 May 2021 10:01:46 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/cdk/</guid>
       <description>
         
           
@@ -37,9 +57,49 @@
     <item>
       <title>dotnet</title>
       <link>https://www.mytechramblings.com/tags/dotnet/</link>
-      <pubDate>Thu, 08 Apr 2021 10:11:51 +0200</pubDate>
+      <pubDate>Tue, 25 May 2021 10:01:46 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/dotnet/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>lambda</title>
+      <link>https://www.mytechramblings.com/tags/lambda/</link>
+      <pubDate>Tue, 25 May 2021 10:01:46 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/lambda/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>csharp</title>
+      <link>https://www.mytechramblings.com/tags/csharp/</link>
+      <pubDate>Thu, 08 Apr 2021 10:11:51 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/csharp/</guid>
       <description>
         
           
@@ -300,46 +360,6 @@
       <pubDate>Tue, 24 Nov 2020 10:04:40 +0100</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/webapps/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>aws</title>
-      <link>https://www.mytechramblings.com/tags/aws/</link>
-      <pubDate>Tue, 10 Nov 2020 10:10:18 +0100</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/aws/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>cdk</title>
-      <link>https://www.mytechramblings.com/tags/cdk/</link>
-      <pubDate>Tue, 10 Nov 2020 10:10:18 +0100</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/cdk/</guid>
       <description>
         
           

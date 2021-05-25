@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>4 ways to deploy a .NET Core Lambda using AWS CDK :: my tech ramblings — A blog for writing about my techie ramblings</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Show me the code
+If you don&amp;rsquo;t care about the post I have upload the code on my Github
+ I already talked in some of my post about AWS CDK, but for those unaware of AWS CDK is a framework that allows us to define cloud infrastructure in code.
+AWS CDK is available in a bunch of different languages:
+ JavaScript TypeScript Python Java .NET Core  I already shared my thoughts about AWS CDK in some of my older posts so in this one I will cut to the chase and I will focus on showing you some of the options available when you want to deploy a ."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://www.mytechramblings.com/posts/deploy-dotnet-lambdas-with-aws-cdk/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/assets/style.css">
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.mytechramblings.com/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://www.mytechramblings.com/img/favicon.png">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="4 ways to deploy a .NET Core Lambda using AWS CDK"/>
+<meta name="twitter:description" content="Show me the code
+If you don&rsquo;t care about the post I have upload the code on my Github
+ I already talked in some of my post about AWS CDK, but for those unaware of AWS CDK is a framework that allows us to define cloud infrastructure in code.
+AWS CDK is available in a bunch of different languages:
+ JavaScript TypeScript Python Java .NET Core  I already shared my thoughts about AWS CDK in some of my older posts so in this one I will cut to the chase and I will focus on showing you some of the options available when you want to deploy a ."/>
+
+
+
+<meta property="og:title" content="4 ways to deploy a .NET Core Lambda using AWS CDK" />
+<meta property="og:description" content="Show me the code
+If you don&rsquo;t care about the post I have upload the code on my Github
+ I already talked in some of my post about AWS CDK, but for those unaware of AWS CDK is a framework that allows us to define cloud infrastructure in code.
+AWS CDK is available in a bunch of different languages:
+ JavaScript TypeScript Python Java .NET Core  I already shared my thoughts about AWS CDK in some of my older posts so in this one I will cut to the chase and I will focus on showing you some of the options available when you want to deploy a ." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.mytechramblings.com/posts/deploy-dotnet-lambdas-with-aws-cdk/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-05-25T10:01:46&#43;02:00" />
+<meta property="article:modified_time" content="2021-05-25T10:01:46&#43;02:00" /><meta property="og:site_name" content="my tech ramblings" />
+
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://www.mytechramblings.com/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">my tech ramblings</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/deploy-dotnet-lambdas-with-aws-cdk/">4 ways to deploy a .NET Core Lambda using AWS CDK</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2021-05-25
+        </span>
+
+        
+          
+            
+
+
+
+          
+        
+      
+
+      
+      
+        <span class="post-read-time">— 8 min read</span>
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          #<a href="https://www.mytechramblings.com/tags/aws/">aws</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/lambda/">lambda</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/cdk/">cdk</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/dotnet/">dotnet</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <blockquote>
+<p><strong>Show me the code</strong><br>
+If you don&rsquo;t care about the post I have upload the code on my <a href="https://github.com/karlospn/deploy-dotnet-lambda-with-aws-cdk">Github</a></p>
+</blockquote>
+<p>I already talked in some of my post about AWS CDK, but for those unaware of AWS CDK is a framework that allows us to define cloud infrastructure in code.</p>
+<p>AWS CDK is available in a bunch of different languages:</p>
+<ul>
+<li>JavaScript</li>
+<li>TypeScript</li>
+<li>Python</li>
+<li>Java</li>
+<li>.NET Core</li>
+</ul>
+<p>I already shared my thoughts about AWS CDK in some of my older posts so in this one I will cut to the chase and I will focus on showing you some of the options available when you want to deploy a .NET Core Lambda.</p>
+<p>Before start showing you the code I think that there are 2 concepts worth mentioning:</p>
+<h2 id="deployment-types">Deployment Types</h2>
+<p>Right now if you want to deploy a Lambda you have <strong>two types of deployments available</strong>: <strong>container images</strong> and <strong>.zip files</strong>.</p>
+<p>A container image includes the base operating system, the runtime, Lambda extensions, your application code and its dependencies.<br>
+You upload your container images to Amazon Elastic Container Registry (Amazon ECR). <br>
+To deploy the image to your function, you specify the Amazon ECR image URL using the Lambda console, the Lambda API, command line tools, or the AWS SDKs.</p>
+<p>A .zip file archive includes your application code and its dependencies. When you author functions using the Lambda console or a toolkit, Lambda automatically creates a .zip file archive of your code.<br>
+You can upload a .zip file as your deployment package using the Lambda console, AWS Command Line Interface (AWS CLI), or to an Amazon Simple Storage Service (Amazon S3) bucket.</p>
+<h2 id="dotnet-managed-runtime">Dotnet Managed runtime</h2>
+<p>Lambda supports multiple languages through the use of runtimes.<br>
+The runtime provides a language-specific environment that runs in an execution environment. The runtime relays invocation events, context information, and responses between Lambda and the function. You can use managed runtimes that Lambda provides or you can build your own.</p>
+<p>The policy with .NET runtimes has always been to support only LTS versions for managed runtimes. So you cannot use .NET 5 as a managed runtime.</p>
+<p>So if you want to deploy a .NET 5 lambda you have 2 options available:</p>
+<ul>
+<li>Use the container image deployment type.</li>
+<li>Or if you really want to deploy your lambda as a .zip file you&rsquo;re going to need to build a custom .NET 5 runtime.</li>
+</ul>
+<p>Also if you don&rsquo;t mind working with .NET Core 3.1 instead of .NET 5 you can use the .zip file deployment straightaway.</p>
+<hr>
+<br/>
+<p>The 4 options to deploy a .NET Core lambda with AWS CDK that I&rsquo;m going to show you in this post are the following ones:</p>
+<ul>
+<li><strong>Deploy a NET 5 lambda using a container image and the AWS CDK <code>FromImageAsset</code> option.</strong></li>
+<li><strong>Deploy a NET 5 lambda using a container image that has already been pushed into an ECR registry.</strong></li>
+<li><strong>Deploy a NET Core 3.1 lambda using a .zip file and the AWS CDK <code>FromAsset</code> with bundling options.</strong></li>
+<li><strong>Deploy a NET Core 3.1 lambda using an existing .zip file and the AWS CDK <code>FromAsset</code> option.</strong></li>
+</ul>
+<blockquote>
+<p>In the following sections I&rsquo;m going to assume that you have already a NET 5 lambda and a NET Core 3.1 lambda already built so I can focus on how to deploy them.</p>
+</blockquote>
+<h1 id="1-deploy-a-net-5-lambda-using-a-container-image-and-the-aws-cdk-_fromimageasset_-option">1. Deploy a NET 5 lambda using a container image and the AWS CDK <em>&ldquo;FromImageAsset&rdquo;</em> option</h1>
+<blockquote>
+<p><em>You can find a working example of this scenario in this <a href="https://github.com/karlospn/deploy-dotnet-lambda-with-aws-cdk/tree/main/src/Net5BundlingContainerLambdaCdk">Link</a></em></p>
+</blockquote>
+<p>In this scenario the AWS CDK and the application will be deployed at the same time.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> Amazon.CDK;
+<span style="color:#66d9ef">using</span> Amazon.CDK.AWS.Lambda;
+
+<span style="color:#66d9ef">namespace</span> Net5BundlingContainerLambdaCdk
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Net5LambdaCdkStack</span> : Stack
+    {
+        <span style="color:#66d9ef">internal</span> Net5LambdaCdkStack(Construct scope, 
+            <span style="color:#66d9ef">string</span> id,
+            IStackProps props = <span style="color:#66d9ef">null</span>) : <span style="color:#66d9ef">base</span>(scope, id, props)
+        {
+            DockerImageCode dockerImageCode = DockerImageCode.FromImageAsset(<span style="color:#e6db74">&#34;../My.Net5.Lambda&#34;</span>);
+
+            DockerImageFunction dockerImageFunction = <span style="color:#66d9ef">new</span> DockerImageFunction(<span style="color:#66d9ef">this</span>, 
+                <span style="color:#e6db74">&#34;container-image-lambda-function&#34;</span>,
+                <span style="color:#66d9ef">new</span> DockerImageFunctionProps()
+            {
+                Code = dockerImageCode,
+                Description = <span style="color:#e6db74">&#34;.NET 5 Docker Lambda function&#34;</span>,
+                
+            });
+        }
+    }
+}
+</code></pre></div><p>The <code>DockerImageCode.FromImageAsset</code> construct needs to point to a local folder with a
+Dockerfile.<br>
+The Dockerfile output will be used as the function handler.</p>
+<p>In this particular example when we execute the <code>cdk deploy</code> command the following steps are going to happen:</p>
+<ul>
+<li>The container is going to be built using the dockerfile found in the <code>../My.Net5.Lambda</code></li>
+<li>An ECR repository named <code>aws-cdk\assets</code> will be created if it doesn&rsquo;t exists yet (the <strong><code>aws-cdk\assets</code> is a centralized repository</strong>, so every lambda created using this method will be pushed into this very same ECR repository).</li>
+<li>The image is going to be pushed into the <code>aws-cdk/assets</code> repository.</li>
+<li>The lambda will be created among the rest of the infrastructura declared in the CDK project.</li>
+</ul>
+<p>Also let me show you how the dockerfile looks like:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">FROM public.ecr.aws/lambda/dotnet:5.0 as base</span>
+
+<span style="color:#ae81ff">FROM mcr.microsoft.com/dotnet/sdk:5.0 as build-image</span>
+<span style="color:#ae81ff">WORKDIR /app</span>
+
+<span style="color:#ae81ff">COPY *.csproj .</span>
+<span style="color:#ae81ff">RUN dotnet restore</span>
+
+<span style="color:#ae81ff">COPY . .</span>
+<span style="color:#ae81ff">RUN dotnet publish --no-restore -c Release -o /publish</span>
+
+<span style="color:#ae81ff">FROM base AS final</span>
+<span style="color:#ae81ff">WORKDIR /var/task</span>
+<span style="color:#ae81ff">COPY --from=build-image /publish .</span>
+<span style="color:#ae81ff">CMD [&#34;My.Net5.Lambda::My.Net5.Lambda.Function::FunctionHandler&#34;]</span>
+</code></pre></div><p>AWS offers a .NET 5 lambda base image so I&rsquo;m using the .NET 5 SDK image to build and publish the project and afterwards I&rsquo;m pushing the artifact into the NET 5 lambda base image.</p>
+<h1 id="2-deploy-a-net-5-lambda-using-a-container-image-that-has-already-been-pushed-into-an-ecr-registry">2. Deploy a NET 5 lambda using a container image that has already been pushed into an ECR registry</h1>
+<blockquote>
+<p><em>You can find a working example of this scenario in this <a href="https://github.com/karlospn/deploy-dotnet-lambda-with-aws-cdk/tree/main/src/Net5ExistingContainerLambdaCdk">Link</a></em></p>
+</blockquote>
+<p>In this scenario the AWS CDK and the application won&rsquo;t be deployed at the same time. This scenario assumes that you have already pushed the lambda image into an axisting ECR repository.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">
+<span style="color:#66d9ef">using</span> Amazon.CDK;
+<span style="color:#66d9ef">using</span> Amazon.CDK.AWS.ECR;
+<span style="color:#66d9ef">using</span> Amazon.CDK.AWS.Lambda;
+
+<span style="color:#66d9ef">namespace</span> Net5ExistingContainerLambdaCdk
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Net5LambdaCdkStack</span> : Stack
+    {
+        <span style="color:#66d9ef">internal</span> Net5LambdaCdkStack(Construct scope, 
+            <span style="color:#66d9ef">string</span> id,
+            IStackProps props = <span style="color:#66d9ef">null</span>) : <span style="color:#66d9ef">base</span>(scope, id, props)
+        {
+
+            <span style="color:#66d9ef">var</span> ecrRepo = Repository.FromRepositoryName(<span style="color:#66d9ef">this</span>, 
+                <span style="color:#e6db74">&#34;ecr-image-repository&#34;</span>, 
+                <span style="color:#e6db74">&#34;net5.container.lambda&#34;</span>);
+
+            DockerImageCode dockerImageCode = DockerImageCode.FromEcr(ecrRepo);
+            
+            DockerImageFunction dockerImageFunction = <span style="color:#66d9ef">new</span> DockerImageFunction(<span style="color:#66d9ef">this</span>, 
+                <span style="color:#e6db74">&#34;container-image-lambda-function&#34;</span>, 
+                <span style="color:#66d9ef">new</span> DockerImageFunctionProps()
+            {
+                Code = dockerImageCode,
+                Description = <span style="color:#e6db74">&#34;.NET 5 Docker Lambda function&#34;</span>
+            });
+        }
+    }
+}
+
+</code></pre></div><p>The <code>DockerImageCode.FromEcr</code> command allows us to specify an image that already exists in ECR as the lambda function handler.</p>
+<p>In this particular example when we execute the <code>cdk deploy</code> command the following steps are going to happen:</p>
+<ul>
+<li>The lambda will be created using the image stored in the <code>net5.container.lambda</code> ECR repository.</li>
+</ul>
+<h1 id="3-deploy-a-net-core-31-lambda-using-a-zip-file-and-the-aws-cdk-_fromasset_-with-bundling-options">3. Deploy a NET Core 3.1 lambda using a .zip file and the AWS CDK <em>&ldquo;FromAsset&rdquo;</em> with bundling options</h1>
+<blockquote>
+<p><em>You can find a working example of this scenario in this <a href="https://github.com/karlospn/deploy-dotnet-lambda-with-aws-cdk/tree/main/src/NetCore31BundlingZipFileLambdaCdk">Link</a></em></p>
+</blockquote>
+<p>In this scenario the AWS CDK and the application will be deployed at the same time.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">  
+<span style="color:#66d9ef">using</span> System.Collections.Generic;
+<span style="color:#66d9ef">using</span> Amazon.CDK;
+<span style="color:#66d9ef">using</span> Amazon.CDK.AWS.Lambda;
+<span style="color:#66d9ef">using</span> AssetOptions = Amazon.CDK.AWS.S3.Assets.AssetOptions;
+
+<span style="color:#66d9ef">namespace</span> NetCore31BundlingZipFileLambdaCdk
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">NetCore31LambdaCdkStack</span> : Stack
+    {
+        <span style="color:#66d9ef">internal</span> NetCore31LambdaCdkStack(Construct scope, 
+            <span style="color:#66d9ef">string</span> id,
+            IStackProps props = <span style="color:#66d9ef">null</span>) : <span style="color:#66d9ef">base</span>(scope, id, props)
+        {
+            IEnumerable&lt;<span style="color:#66d9ef">string?</span>&gt; commands = <span style="color:#66d9ef">new</span>[]
+            {
+                <span style="color:#e6db74">&#34;cd /asset-input&#34;</span>,
+                <span style="color:#e6db74">&#34;export DOTNET_CLI_HOME=\&#34;/tmp/DOTNET_CLI_HOME\&#34;&#34;</span>,
+                <span style="color:#e6db74">&#34;export PATH=\&#34;$PATH:/tmp/DOTNET_CLI_HOME/.dotnet/tools\&#34;&#34;</span>,
+                <span style="color:#e6db74">&#34;dotnet tool install -g Amazon.Lambda.Tools&#34;</span>,
+                <span style="color:#e6db74">&#34;dotnet lambda package -o output.zip&#34;</span>,
+                <span style="color:#e6db74">&#34;unzip -o -d /asset-output output.zip&#34;</span>
+            };
+
+            Function function = <span style="color:#66d9ef">new</span> Function(<span style="color:#66d9ef">this</span>,
+                <span style="color:#e6db74">&#34;zip-lambda-function&#34;</span>,
+                <span style="color:#66d9ef">new</span> FunctionProps
+            {
+                Runtime = Runtime.DOTNET_CORE_3_1,
+                Code = Code.FromAsset(<span style="color:#e6db74">&#34;../My.NetCore31.Lambda&#34;</span>, <span style="color:#66d9ef">new</span> AssetOptions
+                {
+                    Bundling = <span style="color:#66d9ef">new</span> BundlingOptions
+                    {
+                      Image  = Runtime.DOTNET_CORE_3_1.BundlingImage,
+                      Command = <span style="color:#66d9ef">new</span> []
+                      {
+                          <span style="color:#e6db74">&#34;bash&#34;</span>, <span style="color:#e6db74">&#34;-c&#34;</span>, <span style="color:#66d9ef">string</span>.Join(<span style="color:#e6db74">&#34; &amp;&amp; &#34;</span>, commands)
+                      }
+                    }
+                }),
+                Handler = <span style="color:#e6db74">&#34;My.NetCore31.Lambda::My.NetCore31.Lambda.Function::FunctionHandler&#34;</span>
+            });
+        }
+    }
+}
+
+</code></pre></div><p>When using <code>Code.fromAsset(path)</code> command it is possible to bundle the code found in the &ldquo;path&rdquo; folder by running some commands inside a Docker container.</p>
+<p>The &ldquo;path&rdquo; will be mounted in the container inside the  <code>/asset-input</code> folder. Afterwards you can run some commands to bundle the code at runtime.<br>
+The output needs to be stored in the <code>/asset-output</code> folder. <br>
+Finally the contents of the <code>/asset-output/</code> folder will be zipped and used as the Lambda handler.</p>
+<p>In this particular example when we execute the <code>cdk deploy</code> command the following steps are going to happen:</p>
+<ul>
+<li>The <code>../My.NetCore31.Lambda</code>  path will be mounted as <code>/asset-input</code> folder inside the docker container.</li>
+<li>The commands described in the &ldquo;Command&rdquo; attribute will be executed.
+<ul>
+<li>The first command to be executed will be <code>bash -c</code> . This command will allows us to execute series of sequential bash commands. The bash commands to be executed will be:
+<ul>
+<li><code>cd /asset-input</code> command is used to step into the folder where our assets are being mounted.</li>
+<li>The export commands are simply adding into the <code>PATH</code> environment variable the location of the <code>.dotnet/tool</code> folder (this is needed because in the next step we&rsquo;re going to install and use a dotnet tool).</li>
+<li><code>dotnet tool install -g Amazon.Lambda.Tools</code> command is installing the dotnet lambda  tool. This tool adds commands to the dotnet cli that can be used manage Lambda functions including deploying a function from the dotnet cli.</li>
+<li><code>dotnet lambda package -o output.zip</code> command is using the global tool to build, publish and package the lambda function.</li>
+<li>The last command <code>unzip -o -d /asset-output output.zip</code> is outputting the result into the <code>/asset-output</code> folder.</li>
+</ul>
+</li>
+<li>The content of the <code>/asset-output</code> will be zipped and used as the function handler.</li>
+</ul>
+</li>
+</ul>
+<h1 id="4-deploy-a-net-core-31-lambda-using-an-existing-zip-file-and-the-aws-cdk-_fromasset_-option">4. Deploy a NET Core 3.1 lambda using an existing .zip file and the AWS CDK <em>&ldquo;FromAsset&rdquo;</em> option</h1>
+<blockquote>
+<p><em>You can find a working example of this scenario in this <a href="https://github.com/karlospn/deploy-dotnet-lambda-with-aws-cdk/tree/main/src/NetCore31ExistingZipFileLambdaCdk">Link</a></em></p>
+</blockquote>
+<p>In this scenario the AWS CDK and the application will be deployed at the same time, but you need to have created the zip that contains the lambda function beforehand.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> Amazon.CDK;
+<span style="color:#66d9ef">using</span> Amazon.CDK.AWS.Lambda;
+
+<span style="color:#66d9ef">namespace</span> NetCore31ExistingZipFileLambdaCdk
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">NetCore31LambdaCdkStack</span> : Stack
+    {
+        <span style="color:#66d9ef">internal</span> NetCore31LambdaCdkStack(Construct scope, 
+            <span style="color:#66d9ef">string</span> id,
+            IStackProps props = <span style="color:#66d9ef">null</span>) : <span style="color:#66d9ef">base</span>(scope, id, props)
+        {
+
+            Function function = <span style="color:#66d9ef">new</span> Function(<span style="color:#66d9ef">this</span>,
+                <span style="color:#e6db74">&#34;zip-lambda-function&#34;</span>,
+                <span style="color:#66d9ef">new</span> FunctionProps
+            {
+                Runtime = Runtime.DOTNET_CORE_3_1,
+                Code = Code.FromAsset(<span style="color:#e6db74">&#34;./src/My.NetCore31.Lambda.zip&#34;</span>),
+                Handler = <span style="color:#e6db74">&#34;My.NetCore31.Lambda::My.NetCore31.Lambda.Function::FunctionHandler&#34;</span>
+
+            });
+        }
+    }
+}
+</code></pre></div><p>In the previous scenario we have used the <code>Code.fromAsset(path)</code> command to create the artifact at deploy time, but with the <code>Code.fromAsset(path)</code> command you can also point to an existing .zip file that contains the published lambda function.</p>
+<p>In this particular example when we execute the <code>cdk deploy</code> command the following steps are going to happen:</p>
+<ul>
+<li>The lambda will be created using the .zip file stored <code>./src/My.NetCore31.Lambda.zip</code> local folder.</li>
+</ul>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-and-dotnet-core/">
+                  <span class="button__text">Getting started with OpenTelemetry and distributed tracing in .NET Core</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2021 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>Theme created by <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://www.mytechramblings.com/assets/main.js"></script>
+<script src="https://www.mytechramblings.com/assets/prism.js"></script>
+
+      
+    </div>
+
+    
+      
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-170300931-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+    
+  </body>
+</html>
