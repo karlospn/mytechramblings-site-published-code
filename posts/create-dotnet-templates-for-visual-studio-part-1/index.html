@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>How to pick a few .NET apps, convert them into .NET templates, package them together in a NuGet package and use them as templates within Visual Studio. Part 1: Key Concepts :: my tech ramblings — A blog for writing about my techie ramblings</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="This is a 2 part-series.
+ In part 1 I will talk about some key concepts that you should know when creating a .NET template. In part 2 I will show you the process of converting a .NET app into a .NET template.   When you install the .NET SDK you receive a handful of built-in templates for creating projects like console apps, web apis, class libraries, unit test projects, etc."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://www.mytechramblings.com/posts/create-dotnet-templates-for-visual-studio-part-1/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/assets/style.css">
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.mytechramblings.com/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://www.mytechramblings.com/img/favicon.png">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="How to pick a few .NET apps, convert them into .NET templates, package them together in a NuGet package and use them as templates within Visual Studio. Part 1: Key Concepts"/>
+<meta name="twitter:description" content="This is a 2 part-series.
+ In part 1 I will talk about some key concepts that you should know when creating a .NET template. In part 2 I will show you the process of converting a .NET app into a .NET template.   When you install the .NET SDK you receive a handful of built-in templates for creating projects like console apps, web apis, class libraries, unit test projects, etc."/>
+
+
+
+<meta property="og:title" content="How to pick a few .NET apps, convert them into .NET templates, package them together in a NuGet package and use them as templates within Visual Studio. Part 1: Key Concepts" />
+<meta property="og:description" content="This is a 2 part-series.
+ In part 1 I will talk about some key concepts that you should know when creating a .NET template. In part 2 I will show you the process of converting a .NET app into a .NET template.   When you install the .NET SDK you receive a handful of built-in templates for creating projects like console apps, web apis, class libraries, unit test projects, etc." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.mytechramblings.com/posts/create-dotnet-templates-for-visual-studio-part-1/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-06-14T00:07:29&#43;02:00" />
+<meta property="article:modified_time" content="2021-06-14T00:07:29&#43;02:00" /><meta property="og:site_name" content="my tech ramblings" />
+
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://www.mytechramblings.com/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">my tech ramblings</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/create-dotnet-templates-for-visual-studio-part-1/">How to pick a few .NET apps, convert them into .NET templates, package them together in a NuGet package and use them as templates within Visual Studio. Part 1: Key Concepts</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2021-06-14
+        </span>
+
+        
+          
+            
+
+
+
+          
+        
+      
+
+      
+      
+        <span class="post-read-time">— 9 min read</span>
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          #<a href="https://www.mytechramblings.com/tags/dotnet/">dotnet</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/csharp/">csharp</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/templates/">templates</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/vs/">vs</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/visual/">visual</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/studio/">studio</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <blockquote>
+<p>This is a 2 part-series.</p>
+<ul>
+<li>In <strong>part 1</strong> I will talk about some key concepts that you should know when creating a .NET template.</li>
+<li>In <strong>part 2</strong> I will show you the process of converting a .NET app into a .NET template.</li>
+</ul>
+</blockquote>
+<p>When you install the .NET SDK you receive a handful of built-in templates for creating projects  like console apps, web apis, class libraries, unit test projects, etc.<br>
+But you can also create your own templates and install them using a NuGet package.</p>
+<p>In fact packaging .NET templates inside a NuGet it&rsquo;s nothing new, it&rsquo;s been around for quite a long time. <br>
+Everytime you need to create a new app you have to setup a set of common features like: logging, documentation, healthchecks, authentication, dockerfiles, deployment pipelines, etc. <br>
+This is time consuming, boring and quite error prone, so a better approach is to convert your application into a template and reuse it everytime time that you need to scaffold a new one.</p>
+<p>As I stated before, creating .NET templates and using NuGet to package them it&rsquo;s nothing new. <em>But then, why writing this post right now?</em></p>
+<p>A few years ago the experience to create and package reusable .NET templates was pretty bare bones, but little by little the experience has been enhanced.</p>
+<p>Nowadays if you want to develop a .NET template, the template engine offers features like:</p>
+<ul>
+<li>Replace values.</li>
+<li>Include and exclude files.</li>
+<li>Preprocessor conditional directives to include or exclude entire blocks of code.</li>
+<li>Execute custom operations when your template is used.</li>
+</ul>
+<p>Also a couple of weeks ago Microsoft anounced the release of Visual Studio 2019 version 16.10. This version adds the capability of creating entire solutions from a .NET template.</p>
+<p>Nowadays the developer experience when you want to develop a template is quite fleshed out, so I thought it might be a good moment to write a full recap about how you can create and use a .NET template.</p>
+<h3 id="so-in-this-series-i-will-try-to-explain-the-process-of-converting-a-few-net-applications-in-templates-package-them-in-a-single-nuget-package-and-use-it-as-templates-within-visual-studio"><strong>So in this series I will try to explain the process of converting a few .NET applications in templates, package them in a single NuGet package and use it as templates within Visual Studio.</strong></h3>
+<p>But first of all, let&rsquo;s talk about some key concepts that I think are worth mentioning.</p>
+<h1 id="1-key-concepts"><strong>1. Key Concepts</strong></h1>
+<h2 id="11-templateconfig-folder">1.1. <strong>.template.config folder</strong></h2>
+<p>Templates are recognized by a special folder that exist at the root of your template. This  folder needs to be specifically named: <em><code>.template.config</code></em></p>
+<p>When you create a new project using a custom template all files and folders are copied as part of the template except for the <code>.template.config</code> folder.</p>
+<p>In a single NuGet you can add multiple templates, but each template needs to have a <code>.template.config</code> folder at its root level. Within the NuGet package all the templates must be stored in the <code>/content</code> folder.</p>
+<p>Here&rsquo;s how the folder structure should look like:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">---content
+    +---TemplateA
+    |   +---.template.config
+    |   +---src
+    |   <span style="color:#ae81ff">\-</span>--test
+    +---TemplateB
+    |   +---.template.config
+    |   +---src
+    |   <span style="color:#ae81ff">\-</span>--test
+    <span style="color:#ae81ff">\-</span>--TemplateC
+        +---.template.config
+        +---src
+        <span style="color:#ae81ff">\-</span>--test
+</code></pre></div><p>In this example the <code>/content</code> folder contains 3 templates and each template contains a <code>.template.config</code> folder.<br>
+Inside the <code>.template.config</code> folder you need to place <strong>at least</strong> a file named <code>template.json</code></p>
+<p>The <code>template.json</code> file provides information about what the template engine should do with your template.<br>
+Here&rsquo;s a brief example about how a <code>template.json</code> file looks like:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">{
+  <span style="color:#e6db74">&#34;$schema&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;http://json.schemastore.org/template&#34;</span>,
+  <span style="color:#e6db74">&#34;author&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;mytechramblings.com&#34;</span>,
+  <span style="color:#e6db74">&#34;classifications&#34;</span><span style="color:#f92672">:</span> [
+    <span style="color:#e6db74">&#34;Cloud&#34;</span>,
+    <span style="color:#e6db74">&#34;Service&#34;</span>,
+    <span style="color:#e6db74">&#34;Web&#34;</span>
+  ],
+  <span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Azure Function with Timer and NET Core 3.1&#34;</span>,
+  <span style="color:#e6db74">&#34;description&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;An Azure Function trigger by a timer and built using NET Core 3.1&#34;</span>,
+  <span style="color:#e6db74">&#34;groupIdentity&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Dotnet.Function.Timer&#34;</span>,
+  <span style="color:#e6db74">&#34;identity&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Dotnet.Function.Timer.CSharp&#34;</span>,
+  <span style="color:#e6db74">&#34;shortName&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;mtr-az-func-timer&#34;</span>,
+  <span style="color:#e6db74">&#34;defaultName&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;TimerFunction1&#34;</span>,
+  <span style="color:#e6db74">&#34;tags&#34;</span><span style="color:#f92672">:</span> {
+    <span style="color:#e6db74">&#34;language&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;C#&#34;</span>,
+    <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;project&#34;</span>
+  },
+  <span style="color:#e6db74">&#34;sourceName&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;ApplicationName&#34;</span>,
+  <span style="color:#e6db74">&#34;symbols&#34;</span><span style="color:#f92672">:</span> {
+    <span style="color:#e6db74">&#34;FunctionName&#34;</span><span style="color:#f92672">:</span> {
+        <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;parameter&#34;</span>,
+        <span style="color:#e6db74">&#34;datatype&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;string&#34;</span>,
+        <span style="color:#e6db74">&#34;defaultValue&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;MyFunction&#34;</span>,
+        <span style="color:#e6db74">&#34;replaces&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;FUNCTION-NAME&#34;</span>,
+        <span style="color:#e6db74">&#34;description&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;The name of the Azure Function.&#34;</span>
+    },
+    <span style="color:#e6db74">&#34;CronExpression&#34;</span><span style="color:#f92672">:</span> {
+        <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;parameter&#34;</span>,
+        <span style="color:#e6db74">&#34;datatype&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;string&#34;</span>,
+        <span style="color:#e6db74">&#34;defaultValue&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;0 * * * * *&#34;</span>,
+        <span style="color:#e6db74">&#34;replaces&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;CRON-TIMER&#34;</span>,
+        <span style="color:#e6db74">&#34;description&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;The timer expression in cron expression.&#34;</span>
+    },
+    <span style="color:#e6db74">&#34;LogLevel&#34;</span><span style="color:#f92672">:</span> {
+        <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;parameter&#34;</span>,
+        <span style="color:#e6db74">&#34;datatype&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;string&#34;</span>,
+        <span style="color:#e6db74">&#34;defaultValue&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Information&#34;</span>,
+        <span style="color:#e6db74">&#34;replaces&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;LOG-LEVEL&#34;</span>,
+        <span style="color:#e6db74">&#34;description&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Default LogLevel for the Azure Function.&#34;</span>
+    },
+  }
+}
+</code></pre></div><p>I will walk you through a complex <code>template.json</code> file on <strong>part 2</strong>, but for now you just need to know that every template needs to have a corresponding <code>template.json</code> file.</p>
+<blockquote>
+<p>If you don&rsquo;t want to wait for part 2 take a look at this page, it describes quite in-depth the different attributes you can use in the <code>template.json</code>.
+<a href="https://github.com/dotnet/templating/wiki/Reference-for-template.json">https://github.com/dotnet/templating/wiki/Reference-for-template.json</a></p>
+</blockquote>
+<h2 id="12-packaging-your-templates-into-a-nuget-package"><strong>1.2. Packaging your templates into a nuget package</strong></h2>
+<p>There are a couple of ways of packaging your templates:</p>
+<ul>
+<li>Using a <code>.csproj</code> file and the <code>dotnet pack</code> command.</li>
+<li>Using a <code>.nuspec</code> file and the  <code>nuget pack</code> command from <code>nuget.exe</code>.</li>
+</ul>
+<p>If you use the <code>.csproj</code> file approach you need to know that the <code>.csproj</code> is slightly different from a traditional code-project <code>.csproj</code> file. Here&rsquo;s an example:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;Project</span> <span style="color:#a6e22e">Sdk=</span><span style="color:#e6db74">&#34;Microsoft.NET.Sdk&#34;</span><span style="color:#f92672">&gt;</span>
+
+  <span style="color:#f92672">&lt;PropertyGroup&gt;</span>
+    <span style="color:#f92672">&lt;PackageType&gt;</span>Template<span style="color:#f92672">&lt;/PackageType&gt;</span>
+    <span style="color:#f92672">&lt;PackageVersion&gt;</span>1.0.0<span style="color:#f92672">&lt;/PackageVersion&gt;</span>
+    <span style="color:#f92672">&lt;PackageId&gt;</span>MyTechRamblings.Templates<span style="color:#f92672">&lt;/PackageId&gt;</span>
+    <span style="color:#f92672">&lt;Title&gt;</span>&gt;MyTechRamblings Dotnet Templates<span style="color:#f92672">&lt;/Title&gt;</span>
+    <span style="color:#f92672">&lt;Authors&gt;</span>MyTechRamblings<span style="color:#f92672">&lt;/Authors&gt;</span>
+    <span style="color:#f92672">&lt;Description&gt;</span>Templates to use when creating an application<span style="color:#f92672">&lt;/Description&gt;</span>
+    <span style="color:#f92672">&lt;PackageTags&gt;</span>dotnet;templates;foo<span style="color:#f92672">&lt;/PackageTags&gt;</span>
+    <span style="color:#f92672">&lt;TargetFramework&gt;</span>netstandard2.0<span style="color:#f92672">&lt;/TargetFramework&gt;</span>
+
+    <span style="color:#f92672">&lt;IncludeContentInPack&gt;</span>true<span style="color:#f92672">&lt;/IncludeContentInPack&gt;</span>
+    <span style="color:#f92672">&lt;IncludeBuildOutput&gt;</span>false<span style="color:#f92672">&lt;/IncludeBuildOutput&gt;</span>
+    <span style="color:#f92672">&lt;ContentTargetFolders&gt;</span>content<span style="color:#f92672">&lt;/ContentTargetFolders&gt;</span>
+  <span style="color:#f92672">&lt;/PropertyGroup&gt;</span>
+
+  <span style="color:#f92672">&lt;ItemGroup&gt;</span>
+    <span style="color:#f92672">&lt;Content</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;src\**\*&#34;</span> <span style="color:#a6e22e">Exclude=</span><span style="color:#e6db74">&#34;src\**\bin\**;src\**\obj\**&#34;</span> <span style="color:#f92672">/&gt;</span>
+    <span style="color:#f92672">&lt;Compile</span> <span style="color:#a6e22e">Remove=</span><span style="color:#e6db74">&#34;**\*&#34;</span> <span style="color:#f92672">/&gt;</span>
+  <span style="color:#f92672">&lt;/ItemGroup&gt;</span>
+<span style="color:#f92672">&lt;/Project&gt;</span>
+</code></pre></div><p>Note the following settings:</p>
+<ul>
+<li>The <code>&lt;PackageType&gt;</code> setting is added and set to <code>Template</code>.</li>
+<li>The <code>&lt;PackageVersion&gt;</code> setting is added and set to a valid NuGet version number.</li>
+<li>The <code>&lt;PackageId&gt;</code> setting is added and set to a unique identifier. This identifier is used to install and uninstall the template package.</li>
+<li>The <code>&lt;TargetFramework&gt;</code> setting must be set, even though the binary produced by the template process isn&rsquo;t used. In the example below it&rsquo;s set to netstandard2.0.</li>
+<li>The <code>&lt;IncludeContentInPack&gt;</code> setting is set to true to include any file the project sets as content in the NuGet package.</li>
+<li>The <code>&lt;IncludeBuildOutput&gt;</code> setting is set to false to exclude all binaries generated by the compiler from the NuGet package.</li>
+<li>The <code>&lt;ContentTargetFolders&gt;</code> setting is set to content. This makes sure that the files set as content are stored in the content folder in the NuGet package. The <code>/content</code> folder is the one parsed by the template engine.</li>
+</ul>
+<p>If you use the <code>.nuspec file</code> approach, the current <code>nuspec.xsd</code> schema file can be found <a href="https://github.com/NuGet/NuGet.Client/blob/dev/src/NuGet.Core/NuGet.Packaging/compiler/resources/nuspec.xsd">here</a><br>
+Here&rsquo;s an example:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#75715e">&lt;?xml version=&#34;1.0&#34; encoding=&#34;utf-8&#34;?&gt;</span>
+<span style="color:#f92672">&lt;package&gt;</span>
+  <span style="color:#f92672">&lt;metadata&gt;</span>
+    <span style="color:#f92672">&lt;id&gt;</span>MyTechRamblings.Templates<span style="color:#f92672">&lt;/id&gt;</span>
+    <span style="color:#f92672">&lt;version&gt;</span>1.0.0<span style="color:#f92672">&lt;/version&gt;</span>
+    <span style="color:#f92672">&lt;description&gt;</span>Templates to use when creating an application<span style="color:#f92672">&lt;/description&gt;</span>
+    <span style="color:#f92672">&lt;authors&gt;</span>MyTechRambligns<span style="color:#f92672">&lt;/authors&gt;</span>
+    <span style="color:#f92672">&lt;title&gt;</span>&gt;MyTechRamblings Dotnet Templates<span style="color:#f92672">&lt;/title&gt;</span>
+    <span style="color:#f92672">&lt;requireLicenseAcceptance&gt;</span>false<span style="color:#f92672">&lt;/requireLicenseAcceptance&gt;</span>
+    <span style="color:#f92672">&lt;license</span> <span style="color:#a6e22e">type=</span><span style="color:#e6db74">&#34;expression&#34;</span><span style="color:#f92672">&gt;</span>MIT<span style="color:#f92672">&lt;/license&gt;</span>
+    <span style="color:#f92672">&lt;tags&gt;</span>dotnet templates foo<span style="color:#f92672">&lt;/tags&gt;</span>
+    <span style="color:#f92672">&lt;language&gt;</span>en-US<span style="color:#f92672">&lt;/language&gt;</span>
+	  <span style="color:#f92672">&lt;packageTypes&gt;</span>
+      <span style="color:#f92672">&lt;packageType</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;Template&#34;</span> <span style="color:#f92672">/&gt;</span>
+    <span style="color:#f92672">&lt;/packageTypes&gt;</span>
+  <span style="color:#f92672">&lt;/metadata&gt;</span>
+  <span style="color:#f92672">&lt;files&gt;</span>
+    <span style="color:#f92672">&lt;file</span> <span style="color:#a6e22e">src=</span><span style="color:#e6db74">&#34;**&#34;</span> <span style="color:#a6e22e">exclude=</span><span style="color:#e6db74">&#34;**\bin\**\*;**\obj\**\*;**\*.user;**\*.lock.json;_rels\**\*;package\**\*&#34;</span> <span style="color:#f92672">/&gt;</span>
+  <span style="color:#f92672">&lt;/files&gt;</span>
+<span style="color:#f92672">&lt;/package&gt;</span>
+</code></pre></div><ul>
+<li>The <code>&lt;id&gt;</code> setting is added and set to a unique identifier. This identifier is used to
+install and uninstall the template package.</li>
+<li>The <code>&lt;version&gt;</code> needs to be set to a valid NuGet version number.</li>
+<li>The <code>&lt;packageType&gt;</code> setting needs to be set to <code>Template</code>.</li>
+<li>The <code>&lt;files&gt;</code> setting is excluding all binaries generated by the compiler from the NuGet package.</li>
+</ul>
+<h2 id="13-installing-the-templates-package"><strong>1.3. Installing the templates package</strong></h2>
+<p>Template packages are represented by a NuGet package (.nupkg) file. <br>
+Like any NuGet package, you can upload the template pack to a NuGet feed. The <code>dotnet new -i</code> command supports installing the template package from a NuGet feed and from your local file system.</p>
+<ul>
+<li>To install a template from a NuGet package stored at nuget.org:</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">dotnet new -i &lt;NUGET_PACKAGE_ID&gt;
+</code></pre></div><ul>
+<li>To install a template from a file system directory:</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">dotnet new -i &lt;FILE_SYSTEM_NUPKG_PATH&gt;
+</code></pre></div><ul>
+<li>To uninstall a template:</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">dotnet new -u &lt;NUGET_PACKAGE_ID&gt;
+</code></pre></div><ul>
+<li>To check if you template has been installed successfully:</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">dotnet new -l
+</code></pre></div><p>The <code>dotnet new -l</code> command will list all the templates you have installed in your machine. If your custom template has been installed successfully it will show up there.</p>
+<p><img src="/img/dotnet-list-installed-templates.png" alt="dotnet-list-templates"></p>
+<h2 id="14-using-your-templates-with-the-net-cli"><strong>1.4. Using your templates with the .NET CLI</strong></h2>
+<p>Once you have installed your templates you can start creating new projects (or new solutions) with them using the <code>dotnet new &lt;TEMPLATE_NAME&gt;</code> command.</p>
+<p>If your template needs some command line parameters you can customize them by adding  a <code>dotnetcli.host.json</code> file inside the <code>.template.config</code> folder.</p>
+<p>In the <code>dotnetcli.host.json</code> file you can specify the short and long names for each of the command line parameters.</p>
+<p>Here&rsquo;s an example:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">{
+    <span style="color:#e6db74">&#34;$schema&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;http://json.schemastore.org/dotnetcli.host&#34;</span>,
+    <span style="color:#e6db74">&#34;symbolInfo&#34;</span><span style="color:#f92672">:</span> {
+        <span style="color:#e6db74">&#34;FunctionName&#34;</span><span style="color:#f92672">:</span> {
+            <span style="color:#e6db74">&#34;longName&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;function-name&#34;</span>,
+            <span style="color:#e6db74">&#34;shortName&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;fn&#34;</span>
+        },
+        <span style="color:#e6db74">&#34;LogLevel&#34;</span><span style="color:#f92672">:</span> {
+            <span style="color:#e6db74">&#34;longName&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;log-level&#34;</span>,
+            <span style="color:#e6db74">&#34;shortName&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;log&#34;</span>
+        },
+        <span style="color:#e6db74">&#34;CronExpression&#34;</span><span style="color:#f92672">:</span> {
+            <span style="color:#e6db74">&#34;longName&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;cron-job&#34;</span>,
+            <span style="color:#e6db74">&#34;shortName&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;cr&#34;</span>
+        }
+    }
+}
+</code></pre></div><p>With this concrete <code>dotnetcli.host.json</code> file put in place you can create a new project running the following commands:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">dotnet new &lt;TEMPLATE_NAME&gt; -fn <span style="color:#e6db74">&#34;MyFunc&#34;</span> -log <span style="color:#e6db74">&#34;Debug&#34;</span> -cr <span style="color:#e6db74">&#34;0 * * * *&#34;</span>
+dotnet new &lt;TEMPLATE_NAME&gt; --function-name <span style="color:#e6db74">&#34;MyFunc&#34;</span> --log-level <span style="color:#e6db74">&#34;Debug&#34;</span> --cron-job <span style="color:#e6db74">&#34;0 * * * *&#34;</span>
+</code></pre></div><p>Both commands will output exactly the same result.</p>
+<p>The <code>dotnetcli.host.json</code> it&rsquo;s not mandatory, but if you don&rsquo;t use it then the template engine will pick the command line names for you.</p>
+<p><strong>Quick tip</strong>: The name of the objects being placed inside the <code>symbolInfo</code> object: <code>FunctionName</code>, <code>LogLevel</code> and <code>CronExpression</code> must match the names found inside the <code>symbols</code> object from the <code>template.json</code>.</p>
+<h2 id="16-configure-your-templates-to-work-with-visual-studio"><strong>1.6. Configure your templates to work with Visual Studio</strong></h2>
+<p>If your template needs some command line parameters you need to create a file named <code>ide.host.json</code> and place it inside the <code>.template.config</code> folder.</p>
+<p>This file will be used to show the command line parameters inside a project dialog within the Visual Studio when you try to create a new project.</p>
+<p>Here&rsquo;s a brief example:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">{
+    <span style="color:#e6db74">&#34;$schema&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;http://json.schemastore.org/vs-2017.3.host&#34;</span>,
+    <span style="color:#e6db74">&#34;order&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">0</span>,
+    <span style="color:#e6db74">&#34;icon&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;icon.png&#34;</span>,
+    <span style="color:#e6db74">&#34;symbolInfo&#34;</span><span style="color:#f92672">:</span> [
+      {       
+        <span style="color:#e6db74">&#34;id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;FunctionName&#34;</span>,
+        <span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> 
+        {
+          <span style="color:#e6db74">&#34;text&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;The name of the Azure Function.&#34;</span>
+        },
+        <span style="color:#e6db74">&#34;isVisible&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>      
+      },
+      {       
+        <span style="color:#e6db74">&#34;id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;LogLevel&#34;</span>,
+        <span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> 
+        {
+          <span style="color:#e6db74">&#34;text&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Default LogLevel for the Azure Function.&#34;</span>
+        },
+        <span style="color:#e6db74">&#34;isVisible&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>      
+      },
+      {       
+        <span style="color:#e6db74">&#34;id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;CronExpression&#34;</span>,
+        <span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> 
+        {
+          <span style="color:#e6db74">&#34;text&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;The timer expression in cron expression.&#34;</span>
+        },
+        <span style="color:#e6db74">&#34;isVisible&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>      
+      },
+    ]
+}
+</code></pre></div><ul>
+<li>The <code>order</code> attribute is used to specify the order of the template in the <code>Visual Studio New Project</code> dialog.</li>
+<li>You can customize your templates appearance in the template list with an icon. If it is not provided, a default icon will be associated with your project template. <br>
+To add your own icon you just need to put an  <code>icon.png</code> file inside the <code>.template.confg</code> folder.</li>
+<li>The <code>symbolInfo</code> array contains all the command line parameters that we want to render inside the Visual Studio dialog.</li>
+<li>The <code>symbolInfo.isVisible</code> property enables the parameter visibility. The default value of the <code>isVisible</code> property is <code>false</code>. You need to change it to <code>true</code> or is not going to show in the Visual Studio dialog.</li>
+</ul>
+<p><strong>Quick tip</strong>: The id attribute of the objects being placed inside the <code>symbolInfo</code> array: <code>FunctionName</code>, <code>LogLevel</code> and <code>CronExpression</code> must match the names found inside the <code>symbols</code> object from the <code>template.json</code>.</p>
+<h2 id="16-using-your-templates-within-visual-studio"><strong>1.6. Using your templates within Visual Studio</strong></h2>
+<blockquote>
+<ul>
+<li><strong>This feature is only available in Visual Studio version 16.8 or higher</strong>.</li>
+<li><strong>If you&rsquo;re creating a solution template you need at least Visual Studio version 16.10 or higher.</strong></li>
+</ul>
+</blockquote>
+<p>Right now there is <strong>no way to install a template package within Visual Studio</strong>, to install them on your machine <strong>you need to do it using the .NET CLI</strong>. <em>More info about how you can do it on section 1.3.</em></p>
+<p>After you have installed the templates via .NET CLI you need to enable the use of templates within Visual Studio.<br>
+To enable this option visit the <code>Preview Features</code> options in the <code>Tools &gt; Options</code> menu and look for the <code>Show all .NET Core templates in the New Project dialog</code> checkbox.</p>
+<p>After enabling this option if you choose to create a new project you’ll see your custom templates in the list of available templates.
+<img src="/img/dotnet-vs-list-templates.png" alt="list-templates"></p>
+<p>If you try to create a new project using your custom template a dialog will show up with all the command line parameters you set previously in the <code>ide.host.json</code> file. <br>
+Here&rsquo;s an example about how it looks:<br>
+<img src="/img/dotnet-api-template-vs-dialog.png" alt="api-vs-dialog"></p>
+<p>I think it&rsquo;s enough theory for now and I have covered the basic concepts you need to know when building a template.</p>
+<p>In the next section I will show you how to convert some apps into .NET templates, but it won&rsquo;t be right now. <strong>See you in part 2</strong></p>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://www.mytechramblings.com/posts/deploy-dotnet-lambdas-with-aws-cdk/">
+                  <span class="button__text">4 ways to deploy a .NET Core Lambda using AWS CDK</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2021 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>Theme created by <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://www.mytechramblings.com/assets/main.js"></script>
+<script src="https://www.mytechramblings.com/assets/prism.js"></script>
+
+      
+    </div>
+
+    
+      
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-170300931-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+    
+  </body>
+</html>
