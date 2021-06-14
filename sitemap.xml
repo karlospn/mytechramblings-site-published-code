@@ -2,13 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://www.mytechramblings.com/posts/create-dotnet-templates-for-visual-studio-part-1/</loc>
+    <lastmod>2021-06-14T00:07:29+02:00</lastmod>
+  </url><url>
     <loc>https://www.mytechramblings.com/tags/csharp/</loc>
     <lastmod>2021-06-14T00:07:29+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/dotnet/</loc>
-    <lastmod>2021-06-14T00:07:29+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/posts/create-dotnet-templates-for-visual-studio-part-1/</loc>
     <lastmod>2021-06-14T00:07:29+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/</loc>

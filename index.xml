@@ -15,7 +15,7 @@
     
     
     <item>
-      <title>How to pick a few .NET apps, convert them into .NET templates, package them together in a NuGet package and use them as templates within Visual Studio. Part 1: Key Concepts</title>
+      <title>Build a few .NET apps, convert them into .NET templates, package them together in a NuGet and use them as templates within Visual Studio. Part 1: Key Concepts</title>
       <link>https://www.mytechramblings.com/posts/create-dotnet-templates-for-visual-studio-part-1/</link>
       <pubDate>Mon, 14 Jun 2021 00:07:29 +0200</pubDate>
       
