@@ -3,33 +3,36 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://www.mytechramblings.com/tags/csharp/</loc>
-    <lastmod>2021-06-14T00:07:29+02:00</lastmod>
+    <lastmod>2021-06-17T10:01:29+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/dotnet/</loc>
-    <lastmod>2021-06-14T00:07:29+02:00</lastmod>
+    <lastmod>2021-06-17T10:01:29+02:00</lastmod>
   </url><url>
-    <loc>https://www.mytechramblings.com/posts/create-dotnet-templates-for-visual-studio-part-1/</loc>
-    <lastmod>2021-06-14T00:07:29+02:00</lastmod>
+    <loc>https://www.mytechramblings.com/posts/create-dotnet-templates-for-visual-studio-part-2/</loc>
+    <lastmod>2021-06-17T10:01:29+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/</loc>
-    <lastmod>2021-06-14T00:07:29+02:00</lastmod>
+    <lastmod>2021-06-17T10:01:29+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/posts/</loc>
-    <lastmod>2021-06-14T00:07:29+02:00</lastmod>
+    <lastmod>2021-06-17T10:01:29+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/studio/</loc>
-    <lastmod>2021-06-14T00:07:29+02:00</lastmod>
+    <lastmod>2021-06-17T10:01:29+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/</loc>
-    <lastmod>2021-06-14T00:07:29+02:00</lastmod>
+    <lastmod>2021-06-17T10:01:29+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/templates/</loc>
-    <lastmod>2021-06-14T00:07:29+02:00</lastmod>
+    <lastmod>2021-06-17T10:01:29+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/visual/</loc>
-    <lastmod>2021-06-14T00:07:29+02:00</lastmod>
+    <lastmod>2021-06-17T10:01:29+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/vs/</loc>
+    <lastmod>2021-06-17T10:01:29+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/create-dotnet-templates-for-visual-studio-part-1/</loc>
     <lastmod>2021-06-14T00:07:29+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/posts/deploy-dotnet-lambdas-with-aws-cdk/</loc>

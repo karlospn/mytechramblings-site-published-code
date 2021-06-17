@@ -9,10 +9,32 @@
     <description>Recent content in csharp on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 14 Jun 2021 00:07:29 +0200</lastBuildDate>
+    <lastBuildDate>Thu, 17 Jun 2021 10:01:29 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/csharp/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>How to build a .NET template and use it within Visual Studio. Part 2: Creating a template package</title>
+      <link>https://www.mytechramblings.com/posts/create-dotnet-templates-for-visual-studio-part-2/</link>
+      <pubDate>Thu, 17 Jun 2021 10:01:29 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/create-dotnet-templates-for-visual-studio-part-2/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          This is a 2 part-series.
+ Part 1: Key concepts that you should know when creating a .NET template. If you want to read it, click here Part 2: How to convert a few .NET apps into .NET templates, package them together in a single NuGet pack and use them as templates within Visual Studio.   Just show me the code
+As always if you don’t care about the post I have upload the source code on my Github.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>How to build a .NET template and use it within Visual Studio. Part 1: Key concepts</title>
