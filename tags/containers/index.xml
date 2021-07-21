@@ -9,10 +9,33 @@
     <description>Recent content in containers on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 10 Nov 2020 10:10:18 +0100</lastBuildDate>
+    <lastBuildDate>Wed, 21 Jul 2021 10:05:32 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/containers/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Some common gotchas when trying to deploy a dotnet gRPC app to AWS ECS</title>
+      <link>https://www.mytechramblings.com/posts/some-gotchas-when-deploying-a-dotnet-grpc-app-to-ecs/</link>
+      <pubDate>Wed, 21 Jul 2021 10:05:32 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/some-gotchas-when-deploying-a-dotnet-grpc-app-to-ecs/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          Just show me the code
+As always if you don’t care about the post I have upload a few examples on my Github.
+ Nowadays creating a new dotnet gRPC application is pretty straightforward. From the developer standpoint the experience of creating a gRPC app it&amp;rsquo;s quite similar to creating an API, furthermore, Visual Studio also offers Intellisense support for gRPC services and proto files.
+As I stated before developing a dotnet gRPC app right now is an easy feat, but when you try to deploy it in some cloud provider that&amp;rsquo;s when some wrinkles might appear.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>An opinionated approach about how to create an AWS ECS Fargate cluster and deploy apps on it using Azure DevOps Pipelines</title>

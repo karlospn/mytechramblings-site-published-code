@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>ecs on my tech ramblings</title>
+    <title>grpc on my tech ramblings</title>
     
     
     
-    <link>https://www.mytechramblings.com/tags/ecs/</link>
-    <description>Recent content in ecs on my tech ramblings</description>
+    <link>https://www.mytechramblings.com/tags/grpc/</link>
+    <description>Recent content in grpc on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 21 Jul 2021 10:05:32 +0200</lastBuildDate>
     
-	<atom:link href="https://www.mytechramblings.com/tags/ecs/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://www.mytechramblings.com/tags/grpc/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -32,28 +32,6 @@
 As always if you don’t care about the post I have upload a few examples on my Github.
  Nowadays creating a new dotnet gRPC application is pretty straightforward. From the developer standpoint the experience of creating a gRPC app it&amp;rsquo;s quite similar to creating an API, furthermore, Visual Studio also offers Intellisense support for gRPC services and proto files.
 As I stated before developing a dotnet gRPC app right now is an easy feat, but when you try to deploy it in some cloud provider that&amp;rsquo;s when some wrinkles might appear.
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>An opinionated approach about how to create an AWS ECS Fargate cluster and deploy apps on it using Azure DevOps Pipelines</title>
-      <link>https://www.mytechramblings.com/posts/create-an-ecs-cluster-and-deploy-apps-using-azure-devops/</link>
-      <pubDate>Tue, 10 Nov 2020 10:10:18 +0100</pubDate>
-      
-      <guid>https://www.mytechramblings.com/posts/create-an-ecs-cluster-and-deploy-apps-using-azure-devops/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          These past couple of weeks I&amp;rsquo;ve been tinkering with AWS ECS Fargate and after losing some time tackling different approaches I thought it might be useful to write down what I ended up building.
-My goal was trying to build an AWS ECS Fargate cluster and deploy apps on it using Azure DevOps Pipelines and I had 3 clear objectives I wanted to achieve.
- All the infrastructure in AWS must be created using IaC (infrastructure-as-code) and must be created using an Azure DevOps pipeline.
           
         
         </description>

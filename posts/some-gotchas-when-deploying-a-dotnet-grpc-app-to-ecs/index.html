@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>Some common gotchas when trying to deploy a dotnet gRPC app to AWS ECS :: my tech ramblings — A blog for writing about my techie ramblings</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Just show me the code
+As always if you don’t care about the post I have upload a few examples on my Github.
+ Nowadays creating a new dotnet gRPC application is pretty straightforward. From the developer standpoint the experience of creating a gRPC app it&amp;rsquo;s quite similar to creating an API, furthermore, Visual Studio also offers Intellisense support for gRPC services and proto files.
+As I stated before developing a dotnet gRPC app right now is an easy feat, but when you try to deploy it in some cloud provider that&amp;rsquo;s when some wrinkles might appear."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://www.mytechramblings.com/posts/some-gotchas-when-deploying-a-dotnet-grpc-app-to-ecs/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/assets/style.css">
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.mytechramblings.com/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://www.mytechramblings.com/img/favicon.png">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Some common gotchas when trying to deploy a dotnet gRPC app to AWS ECS"/>
+<meta name="twitter:description" content="Just show me the code
+As always if you don’t care about the post I have upload a few examples on my Github.
+ Nowadays creating a new dotnet gRPC application is pretty straightforward. From the developer standpoint the experience of creating a gRPC app it&rsquo;s quite similar to creating an API, furthermore, Visual Studio also offers Intellisense support for gRPC services and proto files.
+As I stated before developing a dotnet gRPC app right now is an easy feat, but when you try to deploy it in some cloud provider that&rsquo;s when some wrinkles might appear."/>
+
+
+
+<meta property="og:title" content="Some common gotchas when trying to deploy a dotnet gRPC app to AWS ECS" />
+<meta property="og:description" content="Just show me the code
+As always if you don’t care about the post I have upload a few examples on my Github.
+ Nowadays creating a new dotnet gRPC application is pretty straightforward. From the developer standpoint the experience of creating a gRPC app it&rsquo;s quite similar to creating an API, furthermore, Visual Studio also offers Intellisense support for gRPC services and proto files.
+As I stated before developing a dotnet gRPC app right now is an easy feat, but when you try to deploy it in some cloud provider that&rsquo;s when some wrinkles might appear." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.mytechramblings.com/posts/some-gotchas-when-deploying-a-dotnet-grpc-app-to-ecs/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-07-21T10:05:32+02:00" />
+<meta property="article:modified_time" content="2021-07-21T10:05:32+02:00" /><meta property="og:site_name" content="my tech ramblings" />
+
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://www.mytechramblings.com/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">my tech ramblings</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/some-gotchas-when-deploying-a-dotnet-grpc-app-to-ecs/">Some common gotchas when trying to deploy a dotnet gRPC app to AWS ECS</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2021-07-21
+        </span>
+
+        
+          
+            
+
+
+
+          
+        
+      
+
+      
+      
+        <span class="post-read-time">— 14 min read</span>
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          #<a href="https://www.mytechramblings.com/tags/dotnet/">dotnet</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/grpc/">grpc</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/containers/">containers</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/aws/">aws</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/ecs/">ecs</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <blockquote>
+<p><strong>Just show me the code</strong><br>
+As always if you don’t care about the post I have upload a few examples on my <a href="https://github.com/karlospn/deploying-net-grpc-services-on-ecs-fargate">Github</a>.</p>
+</blockquote>
+<p>Nowadays creating a new dotnet gRPC application is pretty straightforward. From the developer standpoint the experience of creating a gRPC app it&rsquo;s quite similar to creating an API, furthermore, Visual Studio also offers Intellisense support for gRPC services and proto files.</p>
+<p>As I stated before developing a dotnet gRPC app right now is an easy feat, but when you try to deploy it in some cloud provider that&rsquo;s when some wrinkles might appear.</p>
+<p>Lately I&rsquo;ve been deploying a sizable amount of gRPC services to AWS ECS so I thought it might be useful to talk a little bit about some gotchas I have encountered.<br>
+Some of the problems are specific of the dotnet implementation of gRPC and another ones are from the AWS side.</p>
+<p>If people are interested in the gRPC theme maybe in the near future I write a more in-depth post about dotnet gRPC apps and AWS, but for now I want to focus in a few gotchas I have encountered this past weeks.<br>
+In this post I will talk about these 4 themes:</p>
+<ul>
+<li><strong>gRPC healtchecks</strong>: How to implement a gRPC health checking service on a dotnet gRPC app and how to use it as the ALB Target Group healthcheck endpoint.</li>
+<li><strong>Adding a gRPC endpoint into an existing HTTP REST WebApi</strong>: It is really easy to add a gRPC service into an Http REST WebApi, but when you deploy this service into ECS it probably won&rsquo;t work. Why is that? What&rsquo;s the workaround?</li>
+<li><strong>What&rsquo;s the package attribute on the .proto file for</strong>: The <code>package</code> attribute on the proto file might seem useless on dotnet mainly because the <code>csharp_namespace</code> attribute takes precendence over it, but the gRPC implementation for the ALB uses the package attribute to route the gRPC calls to the appropriate target. Let&rsquo;s see how it works.</li>
+<li><strong>gRPC Reflection</strong>: What is the easiest way to test a gRPC service that has been deployed into AWS ECS?</li>
+</ul>
+<h1 id="1-grpc-healthchecks">1. gRPC Healthchecks</h1>
+<p>One of the first things you need to do when building a gRPC app is to add a gRPC healthchecking service. You&rsquo;ll need it because if you want to use ECS with a Load Balancer the Target Group needs a healthcheck endpoint to probe that the service is up and running.</p>
+<p>gRPC Health checks are used to probe whether the server is able to handle rpcs.</p>
+<p>A gRPC service is used as the health checking mechanism for both client-to-server scenario and other control systems such as load-balancing. Since it is a GRPC service itself, doing a health check is in the same format as a normal rpc.</p>
+<p>If you want to read the gRPC protocol standard, click <a href="https://github.com/grpc/grpc/blob/master/doc/health-checking.md">here</a>. <br>
+This is the standard proto file that a gRPC healthcheck service needs to implement:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">syntax = <span style="color:#e6db74">&#34;proto3&#34;</span>;
+
+package grpc.health.v1;
+
+message HealthCheckRequest {
+  <span style="color:#66d9ef">string</span> service = <span style="color:#ae81ff">1</span>;
+}
+
+message HealthCheckResponse {
+  <span style="color:#66d9ef">enum</span> ServingStatus {
+    UNKNOWN = <span style="color:#ae81ff">0</span>;
+    SERVING = <span style="color:#ae81ff">1</span>;
+    NOT_SERVING = <span style="color:#ae81ff">2</span>;
+    SERVICE_UNKNOWN = <span style="color:#ae81ff">3</span>;  <span style="color:#75715e">// Used only by the Watch method.
+</span><span style="color:#75715e"></span>  }
+  ServingStatus status = <span style="color:#ae81ff">1</span>;
+}
+
+service Health {
+  rpc Check(HealthCheckRequest) returns (HealthCheckResponse);
+
+  rpc Watch(HealthCheckRequest) returns (stream HealthCheckResponse);
+}
+</code></pre></div><p>The healthchecking protocol standard defines that a gRPC healthcheck service should respond with the following status code and value:</p>
+<ul>
+<li>
+<p>A client can query the server’s health status by calling the <code>Check</code> method. <br>
+For each request received a response must be sent back with an <code>OK</code> status and the status field should be set to <code>SERVING</code> or <code>NOT_SERVING</code> accordingly.<br>
+If the service name is not registered, the server returns a <code>NOT_FOUND</code> gRPC status.</p>
+</li>
+<li>
+<p>A client can also call the <code>Watch</code> method to perform a streaming health-check. The server will immediately send back a message indicating the current serving status. It will then subsequently send a new message whenever the service&rsquo;s serving status changes.</p>
+</li>
+</ul>
+<p>We could implement the healthchecking proto definition by ourselves, but it also exists the <code>Grpc.HealthCheck</code> NuGet package that does some heavy lifting for us. This nuget package contains a implementation of the <code>Check</code> and <code>Watch</code> methods and also contains the definitions used to send a request and reply to the healthcheck service.</p>
+<p>We could install the package and start using it right off the bat, but in .NET Core we have a rich offering of healthcheck implementations (<a href="https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks">https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks</a>) that uses the <code>AspNetCore.Diagnostics.HealthChecks</code>  NuGet as a base and I want to keep using them.<br>
+To use the <code>AspNetCore.Diagnostics.HealthChecks</code> in combination with the <code>Grpc.HealthCheck</code> package you have to override the gRPC healthchecking service that the <code>Grpc.HealthCheck</code> NuGet offers.<br>
+If you take a look at the implementation of the <code>Check</code> method in the <code>Grpc.Healthcheck</code> package, you&rsquo;ll see that the method can be overriden.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e">/// Performs a health status check.
+</span><span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e">/// &lt;param name=&#34;request&#34;&gt;The check request.&lt;/param&gt;
+</span><span style="color:#75715e">/// &lt;param name=&#34;context&#34;&gt;The call context.&lt;/param&gt;
+</span><span style="color:#75715e">/// &lt;returns&gt;The asynchronous response.&lt;/returns&gt;
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> Task&lt;HealthCheckResponse&gt; Check(HealthCheckRequest request, ServerCallContext context)
+{
+    HealthCheckResponse response = GetHealthCheckResponse(request.Service, throwOnNotFound: <span style="color:#66d9ef">true</span>);
+
+    <span style="color:#66d9ef">return</span> Task.FromResult(response);
+}
+</code></pre></div><p>We can override the <code>Check</code> method and use the <code>HealthCheckService</code> from the <code>AspNetCore.Diagnostics.HealthChecks</code> to execute the .NET Core healthchecks.<br>
+Here&rsquo;s the result:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> System;
+<span style="color:#66d9ef">using</span> System.Threading.Tasks;
+<span style="color:#66d9ef">using</span> Grpc.Core;
+<span style="color:#66d9ef">using</span> Grpc.Health.V1;
+<span style="color:#66d9ef">using</span> Microsoft.Extensions.Diagnostics.HealthChecks;
+
+<span style="color:#66d9ef">namespace</span> Server.gRPC
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">GrpcHealthCheckService</span>: Health.HealthBase
+    {
+        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> HealthCheckService <span style="color:#ae81ff">_</span>healthCheckService;
+
+        <span style="color:#66d9ef">public</span> GrpcHealthCheckService(HealthCheckService healthCheckService)
+        {
+            <span style="color:#ae81ff">_</span>healthCheckService = healthCheckService;
+        }
+
+        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">async</span> Task&lt;HealthCheckResponse&gt; Check(
+            HealthCheckRequest request, 
+            ServerCallContext context)
+        {
+            Func&lt;HealthCheckRegistration, <span style="color:#66d9ef">bool</span>&gt; GetHealthCheckPredicate()
+            {
+                <span style="color:#66d9ef">var</span> tags = request.Service?.Split(<span style="color:#e6db74">&#34;;&#34;</span>) ??
+                           Array.Empty&lt;<span style="color:#66d9ef">string</span>&gt;();
+
+                <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">bool</span> PassAlways(HealthCheckRegistration <span style="color:#ae81ff">_</span>) =&gt; <span style="color:#66d9ef">true</span>;
+
+                <span style="color:#66d9ef">if</span> (tags.Length == <span style="color:#ae81ff">0</span>)
+                {
+                    <span style="color:#66d9ef">return</span> PassAlways;
+                }
+
+                <span style="color:#66d9ef">bool</span> CheckContainsTags(HealthCheckRegistration healthCheck) =&gt;
+                    healthCheck.Tags.IsSupersetOf(tags);
+
+                <span style="color:#66d9ef">return</span> CheckContainsTags;
+            }
+
+            <span style="color:#66d9ef">var</span> predicate = GetHealthCheckPredicate();
+
+            <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">await</span> <span style="color:#ae81ff">_</span>healthCheckService.CheckHealthAsync(predicate, 
+            context.CancellationToken);
+
+            <span style="color:#66d9ef">var</span> status = result.Status == HealthStatus.Healthy ? 
+            ServingStatus.Serving : ServingStatus.NotServing;
+
+            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> HealthCheckResponse
+            {
+                Status = status
+            };
+        }
+    }
+}
+</code></pre></div><h2 id="using-the-grpc-healthchecks-as-the-alb-target-group-healthcheck">Using the gRPC healthchecks as the ALB Target Group HealthCheck</h2>
+<p>As I have stated in the previous section this is what the gRPC healthcheck protocol says about the <code>Check</code> Method:</p>
+<blockquote>
+<p>A client can query the server’s health status by calling the <code>Check</code> method. <br>
+For each request received a response must be sent back with an <code>OK</code> status and the status field should be set to <code>SERVING</code> or <code>NOT_SERVING</code> accordingly.<br>
+If the service name is not registered, the server returns a <code>NOT_FOUND</code> gRPC status.</p>
+</blockquote>
+<p>The protocol says that you should return an <code>OK</code> status code (gRPC status code = 0) if the service is healthy and also an <code>OK</code> status code (gRPC status code = 0) if the service is unhealthy. And you should use the status field to specify if the service is healthy or not.</p>
+<p>In the previous section I have develop a gRPC healthcheck service that takes into account this protocol, but if you try to use it as the healthcheck endpoint for the ALB Target Group, it won&rsquo;t work.</p>
+<p>The healthcheck protocol says that you should respond with the same status code if the service is healthy or unhealthy. You see the problem? The target group healthcheck uses the status code to ascertain that a service is healthy.</p>
+<p>We need to modify a little bit the implementation that I posted in the previous section. We are going to return a different status code based on the healthcheck status response.</p>
+<ul>
+<li>If the service is healthy return an <code>OK</code> status (gRPC status code = 0)</li>
+<li>If the service is unhealthy return a <code>Unavailable</code> status (gRPC status code = 14)</li>
+</ul>
+<p>Here&rsquo;s a snippet of code showing the end result:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> System;
+<span style="color:#66d9ef">using</span> System.Threading.Tasks;
+<span style="color:#66d9ef">using</span> Grpc.Core;
+<span style="color:#66d9ef">using</span> Grpc.Health.V1;
+<span style="color:#66d9ef">using</span> Microsoft.Extensions.Diagnostics.HealthChecks;
+
+<span style="color:#66d9ef">namespace</span> Server.gRPC
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">GrpcHealthCheckService</span>: Health.HealthBase
+    {
+        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> HealthCheckService <span style="color:#ae81ff">_</span>healthCheckService;
+
+        <span style="color:#66d9ef">public</span> GrpcHealthCheckService(HealthCheckService healthCheckService)
+        {
+            <span style="color:#ae81ff">_</span>healthCheckService = healthCheckService;
+        }
+
+        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">async</span> Task&lt;HealthCheckResponse&gt; Check(HealthCheckRequest request, ServerCallContext context)
+        {
+            Func&lt;HealthCheckRegistration, <span style="color:#66d9ef">bool</span>&gt; GetHealthCheckPredicate()
+            {
+                <span style="color:#66d9ef">var</span> tags = request.Service?.Split(<span style="color:#e6db74">&#34;;&#34;</span>) ??
+                           Array.Empty&lt;<span style="color:#66d9ef">string</span>&gt;();
+
+                <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">bool</span> PassAlways(HealthCheckRegistration <span style="color:#ae81ff">_</span>) =&gt; <span style="color:#66d9ef">true</span>;
+
+                <span style="color:#66d9ef">if</span> (tags.Length == <span style="color:#ae81ff">0</span>)
+                {
+                    <span style="color:#66d9ef">return</span> PassAlways;
+                }
+
+                <span style="color:#66d9ef">bool</span> CheckContainsTags(HealthCheckRegistration healthCheck) =&gt;
+                    healthCheck.Tags.IsSupersetOf(tags);
+
+                <span style="color:#66d9ef">return</span> CheckContainsTags;
+            }
+
+            <span style="color:#66d9ef">var</span> predicate = GetHealthCheckPredicate();
+
+            <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">await</span> <span style="color:#ae81ff">_</span>healthCheckService.CheckHealthAsync(predicate, context.CancellationToken);
+
+            <span style="color:#66d9ef">if</span> (result.Status == HealthStatus.Unhealthy)
+                <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> RpcException(<span style="color:#66d9ef">new</span> Status(StatusCode.Unavailable, <span style="color:#e6db74">&#34;Service Unavailable&#34;</span>));
+
+            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> HealthCheckResponse
+            {
+                Status = HealthCheckResponse.Types.ServingStatus.Serving
+            };
+        }
+    }
+}
+</code></pre></div><p>After this little modification, we are ready to start using this gRPC service as a Target group healthcheck endpoint.</p>
+<h1 id="2-adding-a-grpc-endpoint-into-an-existing-http-rest-webapi">2. Adding a gRPC endpoint into an existing HTTP REST WebApi</h1>
+<p>Image you have an existing .NET API and now you also want to expose it also via gRPC.</p>
+<p>gRPC uses HTTP/2 as its transfer protocol, but obviously you need to maintain support for HTTP/1.1 for your current clients.</p>
+<h2 id="kestrel-http-protocols">Kestrel HTTP protocols</h2>
+<p>Using the <code>Protocols</code> property you can specify which HTTP Protocol Kestrel is going to use.</p>
+<p>The possible values are the following ones:</p>
+<ul>
+<li><code>Http1</code>: Accept HTTP/1.1 only. Can be used with or without TLS.</li>
+<li><code>Http2</code>: Accept HTTP/2 only. May be used without TLS only if the client supports a Prior Knowledge mode.</li>
+<li><code>Http1AndHttp2</code>: Accept HTTP/1.1 and HTTP/2.*HTTP/2 requires the client to select HTTP/2 in the TLS Application-Layer Protocol Negotiation (ALPN) handshake; otherwise, the connection defaults to HTTP/1.1.</li>
+</ul>
+<p>The default <code>Protocols</code> value for any endpoint is <code>HttpProtocols.Http1AndHttp2</code></p>
+<p>You can set the HTTP protocol via config file or directly in code.<br>
+The following <code>Program.cs</code> example establishes HTTP/1.1 for the 5001 port and HTTP/2 for the 5002 port.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> IHostBuilder CreateHostBuilder(<span style="color:#66d9ef">string</span>[] args) =&gt;
+        Host.CreateDefaultBuilder(args)
+            .ConfigureWebHostDefaults(webBuilder =&gt;
+            {
+                webBuilder.ConfigureKestrel(options =&gt;
+                {
+                    options.Listen(IPAddress.Any, <span style="color:#ae81ff">5001</span>, listenOptions =&gt;
+                    {
+                        listenOptions.Protocols = HttpProtocols.Http1;
+                    });
+                    options.Listen(IPAddress.Any, <span style="color:#ae81ff">5002</span>, listenOptions =&gt;
+                    {
+                        listenOptions.Protocols = HttpProtocols.Http2;
+                    });
+                });
+                webBuilder.UseStartup&lt;Startup&gt;();
+            });
+</code></pre></div><p>The following <code>appsettings.json</code> example establishes HTTP/1.1 as the default connection protocol for all endpoints:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">{
+  <span style="color:#e6db74">&#34;Kestrel&#34;</span><span style="color:#f92672">:</span> {
+    <span style="color:#e6db74">&#34;EndpointDefaults&#34;</span><span style="color:#f92672">:</span> {
+      <span style="color:#e6db74">&#34;Protocols&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Http1&#34;</span>
+    }
+  }
+}
+</code></pre></div><p>Protocols specified in code override values set by configuration.</p>
+<h2 id="configuring-kestrel-to-work-with-http11-and-http2">Configuring Kestrel to work with HTTP/1.1 and HTTP/2</h2>
+<p>After reading the previous section you&rsquo;ll think that the solution is quite obvious:</p>
+<ul>
+<li>set on Kestrel the <code>Protocols</code> attribute to <code>HttpProtocols.Http1AndHttp2</code>.</li>
+</ul>
+<p>After deploying the application to AWS ECS you&rsquo;ll find that it works for the clients that are using HTTP/1.1 to communicate with your API but it won&rsquo;t work for the clients that are using HTTP/2.</p>
+<p>Why is that? This is because when you set Kestrel to <code>Http1AndHttp2</code>, it requires the client to select HTTP/2 in the TLS ALPN handshake; otherwise, the connection defaults to HTTP/1.1.<br>
+Simply put, if you set Kestrel to <code>Http1AndHttp2</code>  and want to communicate via HTTP/2 you&rsquo;ll need to use TLS end-to-end.<br>
+With AWS ECS we are doing a TLS termination in the Load Balancer, so the communication between the ALB and the ECS Service is not using TLS, so it will default to HTTP/1.1 and it won&rsquo;t work.</p>
+<p>There are a few workarounds available:</p>
+<ul>
+<li>
+<p><strong>Use TLS end-to-end</strong>. I discarded immediately this option because I don&rsquo;t want to manage TLS certificates at Kestrel level.</p>
+</li>
+<li>
+<p><strong>Use HTTP/2 only</strong>. If you set Kestrel as <code>Http2</code> you don&rsquo;t need to use TLS because the TLS ALPN handshake is not required, but this is not a feasible option because we are breaking compatibility with the clients that are using HTTP/1.1.</p>
+</li>
+<li>
+<p><strong>Set Kestrel to listen 2 differents ports. Each port will use a different Http protocol</strong>. This is probably the best of the 3 options. To use this option you&rsquo;ll need to modify the <code>Program.cs</code> like this:</p>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Program</span>
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args)
+    {
+        CreateHostBuilder(args).Build().Run();
+    }
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> IHostBuilder CreateHostBuilder(<span style="color:#66d9ef">string</span>[] args) =&gt;
+        Host.CreateDefaultBuilder(args)
+            .ConfigureWebHostDefaults(webBuilder =&gt;
+            {
+                webBuilder.ConfigureKestrel(options =&gt;
+                {
+                    options.Listen(IPAddress.Any, <span style="color:#ae81ff">5001</span>, listenOptions =&gt;
+                    {
+                        listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
+                    });
+                    options.Listen(IPAddress.Any, <span style="color:#ae81ff">5002</span>, listenOptions =&gt;
+                    {
+                        listenOptions.Protocols = HttpProtocols.Http2;
+                    });
+                });
+                webBuilder.UseStartup&lt;Startup&gt;();
+            });
+}
+</code></pre></div><ul>
+<li>Kestrel will listen on port 5001 for Http/1.1 connections and on port 5002 for Http/2 connections.</li>
+</ul>
+<h2 id="hosting-grpc-services-and-http-services-using-a-single-alb">Hosting gRPC services and HTTP services using a single ALB</h2>
+<p>In the previous section we have set Kestrel to listen 2 differents ports:</p>
+<ul>
+<li>Port 5001 for Http/1.1 connections.</li>
+<li>Port 5002 for Http/2 connections.</li>
+</ul>
+<p>To host this API you need to create 2 Target Groups:</p>
+<ul>
+<li>One Target Group that routes the HTTP requests.</li>
+<li>One Target Group that routes the gRPC requests.</li>
+</ul>
+<p>Both Target Groups will be routing requests to the same ECS service.</p>
+<p><img src="/img/alb-route-grpc-http-requests.png" alt="alb-route-grpc-http-requests"></p>
+<p>The clients will send both HTTP/1.1 and HTTP/2 requests to the same listener of the ALB and using path routing it will route the traffic to the Http or the gRPC target groups.</p>
+<p>Here&rsquo;s an example about how the ALB Listener rules will look like:</p>
+<ul>
+<li>If the path is /api/* route the requests to the Http Target Group.</li>
+<li>If the path is /greet.* route the requests to the gRPC Target Group. In the next section I&rsquo;ll talk a little bit about how the routing works when using a gRPC Target Group.</li>
+</ul>
+<p><img src="/img/http-grpc-alb-rules.png" alt="http-grpc-alb-rules.png"></p>
+<h1 id="3whats-the-package-attribute-on-the-proto-file-for-how-the-alb-path-routing-works-with-grpc-apps">3.What&rsquo;s the package attribute on the proto file for? How the ALB path routing works with gRPC apps.</h1>
+<p>When you create a new dotnet gRPC service you need to be aware of the <code>package</code> atribute.<br>
+The namespace is inferred from the proto <code>package</code> attribute. For example, a proto with a package named <code>reply</code> would result in an auto-generated file with the namespace of <code>Reply</code>. If you take a look at the auto-generated files from the <code>/obj</code> folder you can clearly see it.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// &lt;auto-generated&gt;
+</span><span style="color:#75715e">//     Generated by the protocol buffer compiler.  DO NOT EDIT!
+</span><span style="color:#75715e">//     source: Protos/reply.proto
+</span><span style="color:#75715e">// &lt;/auto-generated&gt;
+</span><span style="color:#75715e"></span><span style="color:#75715e">#pragma warning disable 1591, 0612, 3021
+</span><span style="color:#75715e">#region Designer generated code
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">using</span> pb = <span style="color:#66d9ef">global</span>::Google.Protobuf;
+<span style="color:#66d9ef">using</span> pbc = <span style="color:#66d9ef">global</span>::Google.Protobuf.Collections;
+<span style="color:#66d9ef">using</span> pbr = <span style="color:#66d9ef">global</span>::Google.Protobuf.Reflection;
+<span style="color:#66d9ef">using</span> scg = <span style="color:#66d9ef">global</span>::System.Collections.Generic;
+<span style="color:#66d9ef">namespace</span> Reply {
+    ...
+}
+</code></pre></div><p>You can override the namespace for a particular proto file using the <code>csharp_namespace</code></p>
+<p>When working with dotnet gRPC apps I tend to use the <code>csharp_namespace</code> attribute because it feels more natural for setting the namespace than using the <code>package</code> attribute, so it might seem that the proto <code>package</code> attribute is useless mainly because the <code>csharp_namespace</code> option takes precendence over it. But far from it.</p>
+<p>The gRPC implementation for the Application Load Balancer parses gRPC requests and routes the gRPC calls to the appropriate target groups based on the <strong>package name, service name, and method name.</strong></p>
+<p>Let&rsquo;s see a few examples so it should be easier to understand.</p>
+<ul>
+<li><strong>Example 1:</strong></li>
+</ul>
+<p>Given this proto file:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">syntax = <span style="color:#e6db74">&#34;proto3&#34;</span>;
+
+option csharp_namespace = <span style="color:#e6db74">&#34;Server.Grpc&#34;</span>;
+
+package greet;
+
+service Greeter {
+  rpc SayHello (HelloRequest) returns (HelloReply);
+}
+
+message HelloRequest {
+  <span style="color:#66d9ef">string</span> name = <span style="color:#ae81ff">1</span>;
+}
+
+message HelloReply {
+  <span style="color:#66d9ef">string</span> message = <span style="color:#ae81ff">1</span>;
+}
+</code></pre></div><p>This proto file will generate a csharp file with the <code>Server.Grpc</code> namespace and the <code>Greet.Greeter</code> serviceName.<br>
+With this proto file you can build the following routes in the ALB:</p>
+<ul>
+<li><code>Path is /greet.*</code> - routes all requests to the greet package.</li>
+<li><code>Path is /greet.Greeter/*</code> - routes all the requests to the Greeter service in the greet package.</li>
+<li><code>Path is /greet.Greeter/SayHello</code> - routes all the requests to the SayHello method implemented in the Greeter service in the greet package.</li>
+</ul>
+<p>Basically it might seem that the package attribute is useless, but if you define it in your proto file you need to use it when routing the gRPC calls.</p>
+<ul>
+<li><strong>Example 2:</strong></li>
+</ul>
+<p>Another option is to remove the <code>package</code> attribute from the proto file.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">syntax = <span style="color:#e6db74">&#34;proto3&#34;</span>;
+
+option csharp_namespace = <span style="color:#e6db74">&#34;Server.Grpc&#34;</span>;
+
+service Greeter {
+  rpc SayHello (HelloRequest) returns (HelloReply);
+}
+
+message HelloRequest {
+  <span style="color:#66d9ef">string</span> name = <span style="color:#ae81ff">1</span>;
+}
+
+message HelloReply {
+  <span style="color:#66d9ef">string</span> message = <span style="color:#ae81ff">1</span>;
+}
+</code></pre></div><p>This proto file will generate a csharp file with the <code>Server.Grpc</code> namespace and the  <code>Greeter</code> serviceName. With this proto file you can build the path routes without taking in consideration the <code>package</code> attribute.</p>
+<ul>
+<li><code>Path is /Greeter/*</code> - routes all the requests to the Greeter service in the greet package.</li>
+<li><code>Path is /Greeter/SayHello</code> - routes all the requests to the SayHello method implemented in the Greeter service in the greet package.</li>
+</ul>
+<h1 id="4-grpc-reflection">4. gRPC Reflection</h1>
+<p>Testing a gRPC application is far more troubling than testing a HTTP Api and that&rsquo;s exactly what gRPC reflection could solve for us.</p>
+<p>gRPC reflection is an extension for gRPC servers to assist clients in runtime construction of requests without having the proto files precompiled into the client.</p>
+<p>gRPC reflection tries to answer the following questions:</p>
+<ul>
+<li>What methods does a service export?</li>
+<li>For a particular method, how do we call it?</li>
+<li>What are the names of the methods, are those methods unary or streaming?</li>
+<li>What are the types of the argument and result?</li>
+</ul>
+<p>In dotnet you can enable gRPC Reflection using the <code>Grpc.AspNetCore.Server.Reflection</code> package.
+Configure gRPC reflection in an app is really easy:</p>
+<ul>
+<li>Add a <code>Grpc.AspNetCore.Server.Reflection</code> package reference.</li>
+<li>Register reflection in Startup.cs:
+<ul>
+<li><code>AddGrpcReflection</code> to register services that enable reflection.</li>
+<li><code>MapGrpcReflectionService</code> to add a reflection service endpoint.</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">namespace</span> Server.Grpc
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Startup</span>
+    {
+        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
+        {
+            services.AddGrpc();
+            services.AddGrpcReflection();
+        }
+
+        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            <span style="color:#66d9ef">if</span> (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+
+            app.UseRouting();
+
+            app.UseEndpoints(endpoints =&gt;
+            {
+                endpoints.MapGrpcService&lt;GreeterService&gt;();
+                endpoints.MapGrpcReflectionService();
+
+                endpoints.MapGet(<span style="color:#e6db74">&#34;/&#34;</span>, <span style="color:#66d9ef">async</span> context =&gt;
+                {
+                    <span style="color:#66d9ef">await</span> context.Response.WriteAsync(<span style="color:#e6db74">&#34;Communication with gRPC endpoints must be made through a gRPC client.&#34;</span>);
+                });
+            });
+        }
+    }
+}
+</code></pre></div><p>When gRPC reflection is set up:</p>
+<ul>
+<li>A gRPC reflection service is added to the server app.</li>
+<li>gRPC services are still called from the client. Reflection only enables service discovery and doesn&rsquo;t bypass server-side security. Endpoints protected by authentication and authorization require the caller to pass credentials for the endpoint to be called successfully.</li>
+</ul>
+<p>Now we can invoke our gRPC services using client tools that support gRPC reflection. <br>
+Those tools will call the reflection service to discover services hosted by the server. Here&rsquo;s a short list of tools that you might be interested in trying:</p>
+<ul>
+<li>gRPCurl: <a href="https://github.com/fullstorydev/grpcurl">https://github.com/fullstorydev/grpcurl</a></li>
+<li>gRPC UI: <a href="https://github.com/fullstorydev/grpcui">https://github.com/fullstorydev/grpcui</a></li>
+<li>BloomRPC: <a href="https://github.com/uw-labs/bloomrpc">https://github.com/uw-labs/bloomrpc</a></li>
+<li>dotnet-grpc-cli: <a href="https://github.com/bjorkstromm/dotnet-grpc-cli">https://github.com/bjorkstromm/dotnet-grpc-cli</a></li>
+</ul>
+<h1 id="useful-links">Useful links</h1>
+<ul>
+<li><a href="https://codevalue.com/grpc-health-checks-with-net-core-kubernetes/">https://codevalue.com/grpc-health-checks-with-net-core-kubernetes/</a></li>
+<li><a href="https://exampleloadbalancer.com/albgrpc_demo.html">https://exampleloadbalancer.com/albgrpc_demo.html</a></li>
+<li><a href="https://grpc.io/">https://grpc.io/</a></li>
+</ul>
+<p><em>I want to give a special thanks to the creator of the codevalue blog page, because the gRPC healthcheck implementation is based on his work.</em></p>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://www.mytechramblings.com/posts/create-dotnet-templates-for-visual-studio-part-2/">
+                  <span class="button__text">How to build a .NET template and use it within Visual Studio. Part 2: Creating a template package</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2021 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>Theme created by <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://www.mytechramblings.com/assets/main.js"></script>
+<script src="https://www.mytechramblings.com/assets/prism.js"></script>
+<script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="carlospons" data-description="Support me on Buy me a coffee!" data-message="If you find my blog useful, please consider buying me a cup of coffee. Thank you!" data-color="#FF5F5F" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
+
+      
+    </div>
+
+    
+      
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-170300931-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+    
+  </body>
+</html>
