@@ -206,7 +206,7 @@ If you don&rsquo;t care about my writings I have upload the code on my <a href="
 But be aware  that a PAT lifecicle management API is going to be available in a near future: <a href="https://docs.microsoft.com/en-us/azure/devops/release-notes/2021/sprint-183-update#pat-lifecycle-management-api-private-preview">https://docs.microsoft.com/en-us/azure/devops/release-notes/2021/sprint-183-update#pat-lifecycle-management-api-private-preview</a></p>
 </blockquote>
 <p>The provider configuration will look like this:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">provider &#34;azuredevops&#34;{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">provider &#34;azuredevops&#34;{</span>
     <span style="color:#ae81ff">org_service_url         = &#34;https://dev.azure.com/cpn&#34;</span>
     <span style="color:#ae81ff">personal_access_token   = &#34;the_pat_goes_here&#34;</span>
 }
@@ -221,7 +221,7 @@ But be aware  that a PAT lifecicle management API is going to be available in a 
 <p>If you want to read more about what you need, you can go <strong><a href="https://www.terraform.io/docs/providers/azuread/guides/service_principal_client_secret.html">HERE</a></strong></p>
 </blockquote>
 <p>The provider configuration will look like this:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">provider &#34;azuread&#34; {</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">provider &#34;azuread&#34; {</span>
     <span style="color:#ae81ff">client_id         = &#34;ba4d0620-0522-4ada-b0b6-0cdd8cfaeae7&#34;</span>
     <span style="color:#ae81ff">client_secret     = &#34;my_secret_goes_here&#34;</span>
     <span style="color:#ae81ff">tenant_id         = &#34;my_tenant_goes_here&#34;</span>
@@ -247,7 +247,7 @@ But be aware  that a PAT lifecicle management API is going to be available in a 
 <li>That&rsquo;s the main.tf file.</li>
 <li>The main.tf is using a Terraform module called <em>&ldquo;add-entitlement-to-group-users&rdquo;</em> to enroll the users.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">#main.tf</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">#main.tf</span>
 <span style="color:#ae81ff">terraform {</span>
   <span style="color:#ae81ff">required_providers {</span>
     <span style="color:#ae81ff">azuredevops = {</span>
@@ -298,7 +298,7 @@ But be aware  that a PAT lifecicle management API is going to be available in a 
 <li>And now let&rsquo;s take a look at the module.</li>
 </ul>
 <p><em>For ease the reading, I have compacted all the module files on a single markdown block code</em></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">#/modules//add-entitlement-to-group-users/variables.tf</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">#/modules//add-entitlement-to-group-users/variables.tf</span>
 
 <span style="color:#ae81ff">variable &#34;license_type&#34; {</span>
     <span style="color:#ae81ff">type = string</span>
@@ -381,7 +381,7 @@ It&rsquo;s true that the AzDo <a href="https://docs.microsoft.com/en-us/azure/de
 </ul>
 <p>There is no need to built a Terraform module because the code it&rsquo;s going to be pretty straightforward.</p>
 <p>The main.tf file will look like this:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">#main.tf</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">#main.tf</span>
 <span style="color:#ae81ff">terraform {</span>
   <span style="color:#ae81ff">required_providers {</span>
     <span style="color:#ae81ff">azuredevops = {</span>
@@ -456,7 +456,7 @@ It&rsquo;s true that the AzDo <a href="https://docs.microsoft.com/en-us/azure/de
 <ul>
 <li>The main.tf is using a Terraform module called. <em>&ldquo;add-aad-groups-to-azdo-team-project-sec-group&rdquo;</em>  to add the permissions in every team project.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">#main.tf</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">#main.tf</span>
 <span style="color:#ae81ff">terraform {</span>
   <span style="color:#ae81ff">required_providers {</span>
     <span style="color:#ae81ff">azuredevops = {</span>
@@ -521,7 +521,7 @@ It&rsquo;s true that the AzDo <a href="https://docs.microsoft.com/en-us/azure/de
 <li>And now let&rsquo;s take a look at the module.</li>
 </ul>
 <p><em>For ease the reading, I have compacted all the module files on a single markdown block code</em></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">#/modules/add-aad-groups-to-azdo-team-project-sec-group/variables.tf</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">#/modules/add-aad-groups-to-azdo-team-project-sec-group/variables.tf</span>
 <span style="color:#ae81ff">variable &#34;project_name&#34; {</span>
     <span style="color:#ae81ff">type = string</span>
 }
@@ -608,7 +608,7 @@ It&rsquo;s true that the AzDo <a href="https://docs.microsoft.com/en-us/azure/de
 <ul>
 <li>The main.tf is using another Terraform module (I like Terraform modules&hellip;) called <em>&ldquo;create-repository-and-branch-policies&rdquo;</em>. That module is used to create the git repositories and aad some branch policies in the main branch.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">#main.tf</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">#main.tf</span>
 <span style="color:#ae81ff">terraform {</span>
   <span style="color:#ae81ff">required_providers {</span>
     <span style="color:#ae81ff">azuredevops = {</span>
@@ -654,7 +654,7 @@ It&rsquo;s true that the AzDo <a href="https://docs.microsoft.com/en-us/azure/de
 <li>And let&rsquo;s take a look at the module.</li>
 </ul>
 <p><em>For ease the reading, I have compacted all the module files on a single markdown block code</em></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">#/modules/create-repository-and-branch-policies/variables.tf</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">#/modules/create-repository-and-branch-policies/variables.tf</span>
 <span style="color:#ae81ff">variable &#34;project_name&#34; {</span>
     <span style="color:#ae81ff">type = string</span>
 }

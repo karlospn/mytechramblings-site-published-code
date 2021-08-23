@@ -176,18 +176,18 @@ However, editorconfig files offer additional ways to configure rules too:</p>
 <p>More info here: <a href="https://docs.microsoft.com/es-es/dotnet/fundamentals/code-analysis/style-rules/ide0065#csharp_using_directive_placement">https://docs.microsoft.com/es-es/dotnet/fundamentals/code-analysis/style-rules/ide0065#csharp_using_directive_placement</a></p>
 </blockquote>
 <p>As I said previously with rule <strong>IDE0065</strong> you can enforce if a &ldquo;using&rdquo; statement should be inside or outside a namespace with the following editorconfig attribute:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">csharp_using_directive_placement = inside_namespace:error</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">csharp_using_directive_placement = inside_namespace:error</span>
 <span style="color:#ae81ff">csharp_using_directive_placement = outside_namespace:error</span>
 </code></pre></div><p>So if you want to enforce that all your &ldquo;usings&rdquo; are always placed inside a namespace you can use the &ldquo;inside_namespace&rdquo; value and viceversa.<br>
 Let me show a practical test.</p>
 <ul>
 <li><strong>Example 1</strong>: If we configure the analyzer <strong>IDE0065</strong> via editorconfig like this:</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">root = true</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">root = true</span>
 [<span style="color:#75715e">*.cs]</span>
 <span style="color:#ae81ff">csharp_using_directive_placement = inside_namespace:error</span>
 </code></pre></div><p>This block of code will report an error:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// csharp_using_directive_placement = outside_namespace
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// csharp_using_directive_placement = outside_namespace
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">using</span> System;
 
 <span style="color:#66d9ef">namespace</span> Convention2
@@ -195,7 +195,7 @@ Let me show a practical test.</p>
     ...
 }
 </code></pre></div><p>But this one won&rsquo;t report any error</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// csharp_using_directive_placement = inside_namespace
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// csharp_using_directive_placement = inside_namespace
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">namespace</span> Convention1
 {
     <span style="color:#66d9ef">using</span> System;
@@ -204,18 +204,18 @@ Let me show a practical test.</p>
 </code></pre></div><ul>
 <li><strong>Example 2</strong>: If we configure the analyzer <strong>IDE0065</strong> via editorconfig like this:</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">root = true</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">root = true</span>
 [<span style="color:#75715e">*.cs]</span>
 <span style="color:#ae81ff">csharp_using_directive_placement = outside_namespace:error</span>
 </code></pre></div><p>This block of code will report an error:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// csharp_using_directive_placement = inside_namespace
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// csharp_using_directive_placement = inside_namespace
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">namespace</span> Convention1
 {
     <span style="color:#66d9ef">using</span> System;
     ...
 }
 </code></pre></div><p>But this one won&rsquo;t report any error</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// csharp_using_directive_placement = outside_namespace
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// csharp_using_directive_placement = outside_namespace
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">using</span> System;
 
 <span style="color:#66d9ef">namespace</span> Convention2
@@ -234,7 +234,7 @@ To do this we have the <strong>AnalyzerConfigOptionsProvider Roslyn API</strong>
 <p>Let me show you how you can use it.</p>
 <h1 id="building-a-roslyn-analyzer-that-uses-the-analyzerconfigoptionsprovider-api">Building a Roslyn Analyzer that uses the AnalyzerConfigOptionsProvider API</h1>
 <p>First of all I have built a roslyn analyzer that reports an error if a csharp file contains more than one namespace. Here&rsquo;s the code:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis;
 <span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis.CSharp;
 <span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis.CSharp.Syntax;
 <span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis.Diagnostics;
@@ -304,9 +304,9 @@ But it would be kind of cool if <strong>the end-user was capable of choosing if 
 <p>Beware that you <strong>NEED</strong> to follow this pattern: dotnet_diagnostic.&lt;RULE_ID&gt;.&lt;ATTRIBUTE_NAME&gt;</p>
 </blockquote>
 <p>I decided that the attribute will be:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">dotnet_diagnostic.MyRules0001.use_multiple_namespaces_in_a_single_file = false</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">dotnet_diagnostic.MyRules0001.use_multiple_namespaces_in_a_single_file = false</span>
 </code></pre></div><p>And now I need to add the code on my analyzer that reads this new attribute and acts accordingly. Here&rsquo;s the result:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis;
 <span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis.CSharp;
 <span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis.CSharp.Syntax;
 <span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis.Diagnostics;
@@ -382,16 +382,16 @@ But it would be kind of cool if <strong>the end-user was capable of choosing if 
 <li>As you can see it&rsquo;s really easy to implement, but let me break down the key aspects:</li>
 </ul>
 <p>I begin by reading the value from the editorconfig file using the AnalyzerConfigOptionsProvider API.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> config = context.Options.AnalyzerConfigOptionsProvider.GetOptions(context.Tree);
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> config = context.Options.AnalyzerConfigOptionsProvider.GetOptions(context.Tree);
 config.TryGetValue(<span style="color:#e6db74">&#34;dotnet_diagnostic.MyRules0001.use_multiple_namespaces_in_a_file&#34;</span>, <span style="color:#66d9ef">out</span> <span style="color:#66d9ef">var</span> configValue);
 </code></pre></div><p>In my case I have implemented a default behaviour, so if the end-user do not set the value on the editorconfig I assume that we can have more than one namespace in the same file.<br>
 That&rsquo;s the reason why I&rsquo;m breaking the code execution in case that the value is null or empty.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">string</span>.IsNullOrEmpty(configValue))
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">string</span>.IsNullOrEmpty(configValue))
 {
     <span style="color:#66d9ef">return</span>;
 }
 </code></pre></div><p>Only report a diagnostic if we have found more than one namespace on the same file and the &ldquo;use_multiple_namespaces_in_a_file&rdquo; value is set to false</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">if</span> (foundNode)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">if</span> (foundNode)
 {
     <span style="color:#66d9ef">if</span> (configValue.Equals(<span style="color:#e6db74">&#34;false&#34;</span>, StringComparison.InvariantCultureIgnoreCase))
     {
@@ -408,7 +408,7 @@ That&rsquo;s the reason why I&rsquo;m breaking the code execution in case that t
 <li><strong>Test 1</strong></li>
 </ul>
 <p>I created the following editorconfig file:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">root = true</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">root = true</span>
 
 <span style="color:#75715e"># C# files</span>
 [<span style="color:#75715e">*.cs]</span>
@@ -417,7 +417,7 @@ That&rsquo;s the reason why I&rsquo;m breaking the code execution in case that t
 <span style="color:#ae81ff">dotnet_diagnostic.MyRules0001.use_multiple_namespaces_in_a_file = false</span>
 </code></pre></div><p>Also I have created a new console program that contains my analyzer. <br>
 The <em>Program.cs</em> file looks like this:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">//program.cs
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">//program.cs
 </span><span style="color:#75715e"></span>
 <span style="color:#66d9ef">using</span> System;
 
@@ -450,7 +450,7 @@ The <em>Program.cs</em> file looks like this:</p>
 <li><strong>Test 2</strong></li>
 </ul>
 <p>Now if I modify the editorconfig file to look like this:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">root = true</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">root = true</span>
 
 <span style="color:#75715e"># C# files</span>
 [<span style="color:#75715e">*.cs]</span>

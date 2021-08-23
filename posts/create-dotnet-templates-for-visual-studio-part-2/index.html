@@ -398,7 +398,7 @@ Also I have upload the NuGet package to <a href="https://www.nuget.org/packages/
 </ul>
 <p>As can be seen from the table below there is also a default value for each parameter. A good tip when building a template with a lot of parameters is to set the default values to your most used scenario, so you won&rsquo;t need to set them every time you want to scaffold a new app.</p>
 <p>After listing which features I wanted to parameterize, here&rsquo;s the <code>template.json</code> file:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">{
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">{
     <span style="color:#e6db74">&#34;$schema&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;http://json.schemastore.org/template&#34;</span>,
     <span style="color:#e6db74">&#34;author&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;mytechramblings.com&#34;</span>,
     <span style="color:#e6db74">&#34;classifications&#34;</span><span style="color:#f92672">:</span> [
@@ -758,7 +758,7 @@ Instead of that, I&rsquo;m going to explain the strategies I have used, so in th
 </ul>
 <p><strong>Example:</strong><br>
 Here I have the symbol <code>HealthCheckPath</code> of type <code>parameter</code>. It has a default value of <code>/health</code> and a replace value of <code>HEALTHCHECK-VALUE</code>.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">  <span style="color:#e6db74">&#34;HealthCheckPath&#34;</span><span style="color:#f92672">:</span> {
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">  <span style="color:#e6db74">&#34;HealthCheckPath&#34;</span><span style="color:#f92672">:</span> {
     <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;parameter&#34;</span>,
     <span style="color:#e6db74">&#34;datatype&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;string&#34;</span>,
     <span style="color:#e6db74">&#34;defaultValue&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;/health&#34;</span>,
@@ -770,7 +770,7 @@ Here I have the symbol <code>HealthCheckPath</code> of type <code>parameter</cod
 <li>The template engine will try to find the <code>HEALTHCHECK-PATH</code> string anywhere in the template and if it finds it, it will be replaced either by the user input or the default value (<code>/health</code>). <br>
 If you take a look at the <code>Startup.cs</code>, you&rsquo;ll see the <em><code>replaces</code></em> value is hard-coded in the template.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">   endpoints.MapHealthChecks(<span style="color:#e6db74">&#34;HEALTHCHECK-PATH&#34;</span>, <span style="color:#66d9ef">new</span> HealthCheckOptions
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">   endpoints.MapHealthChecks(<span style="color:#e6db74">&#34;HEALTHCHECK-PATH&#34;</span>, <span style="color:#66d9ef">new</span> HealthCheckOptions
     {
       ResponseWriter = ApplicationBuilderWriteResponseExtension.WriteResponse
     });
@@ -782,7 +782,7 @@ If you take a look at the <code>Startup.cs</code>, you&rsquo;ll see the <em><cod
 </ul>
 <p><strong>Example:</strong><br>
 Here I have the symbol <code>Authorization</code> of type <code>bool</code> with the default value of <code>true</code>.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">  <span style="color:#e6db74">&#34;Authorization&#34;</span><span style="color:#f92672">:</span> {
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">  <span style="color:#e6db74">&#34;Authorization&#34;</span><span style="color:#f92672">:</span> {
     <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;parameter&#34;</span>,
     <span style="color:#e6db74">&#34;datatype&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;bool&#34;</span>,
     <span style="color:#e6db74">&#34;defaultValue&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;true&#34;</span>,
@@ -793,7 +793,7 @@ Here I have the symbol <code>Authorization</code> of type <code>bool</code> with
 <li>If the user sets this symbol to <code>true</code>, the template engine needs to keep the references to the <code>Microsoft.Web.Identity</code> library.</li>
 </ul>
 <p>If you take a look at the  <code>Startup.cs</code>, you&rsquo;ll see that all the <code>Microsoft.Web.Identity</code> references are being wrapped in a conditional operator.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">#if Authorization
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">#if Authorization
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">using</span> Microsoft.AspNetCore.Authentication.JwtBearer;
 <span style="color:#66d9ef">using</span> Microsoft.Identity.Web;
 <span style="color:#75715e">#endif
@@ -811,7 +811,7 @@ Here I have the symbol <code>Authorization</code> of type <code>bool</code> with
 <span style="color:#75715e">#endif
 </span></code></pre></div><p>The <code>Microsoft.Web.Identity</code> references are only being kept if the symbol <code>Authorization</code> is set to <code>true</code>.</p>
 <p>But that&rsquo;s not enough, we need to remove the <code>Microsoft.Web.Identity</code> references from the <code>appsettings.json</code> file too.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">{
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">{
   <span style="color:#75715e">//#if (Authorization)  
 </span><span style="color:#75715e"></span>  <span style="color:#e6db74">&#34;AzureAd&#34;</span><span style="color:#f92672">:</span> {
     <span style="color:#e6db74">&#34;Instance&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;https://login.microsoftonline.com/&#34;</span>,
@@ -829,7 +829,7 @@ Here I have the symbol <code>Authorization</code> of type <code>bool</code> with
   <span style="color:#75715e">//#endif
 </span><span style="color:#75715e"></span>}
 </code></pre></div><p>And also from the api controller:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">#if Authorization
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">#if Authorization
 </span><span style="color:#75715e"></span><span style="color:#a6e22e">    [Authorize]</span>
 <span style="color:#75715e">#endif
 </span><span style="color:#75715e"></span><span style="color:#a6e22e">    [ApiVersion(&#34;1.0&#34;)]</span>
@@ -849,7 +849,7 @@ Here I have the symbol <code>Authorization</code> of type <code>bool</code> with
 </ul>
 <p><strong>Example:</strong></p>
 <p>The <code>DeploymentType</code> symbol is of type <code>choice</code> and with its value you can set the value of the <code>DeployContainer</code> symbol and the <code>DeployZip</code> symbol.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"> <span style="color:#e6db74">&#34;DeploymentType&#34;</span><span style="color:#f92672">:</span> {
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"> <span style="color:#e6db74">&#34;DeploymentType&#34;</span><span style="color:#f92672">:</span> {
     <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;parameter&#34;</span>,
     <span style="color:#e6db74">&#34;datatype&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;choice&#34;</span>,
     <span style="color:#e6db74">&#34;choices&#34;</span><span style="color:#f92672">:</span> [
@@ -881,7 +881,7 @@ The <code>DeployContainer</code> symbol value is used to create a deployment pip
 The <code>DeployZip</code> symbol value is used to create a deployment pipeline that will build and deploy a zipped artifact.</li>
 </ul>
 <p>Take a look at how the Azure Pipelines YAML file uses the <code>DeployAsZip</code> and <code>DeployAsContainer</code> symbol value to add a specific pipeline type.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">trigger</span>:
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">trigger</span>:
 - <span style="color:#ae81ff">master</span>
 
 <span style="color:#f92672">pool</span>: 
@@ -967,7 +967,7 @@ The <code>DeployZip</code> symbol value is used to create a deployment pipeline 
     <span style="color:#f92672">package</span>: <span style="color:#ae81ff">$(Build.ArtifactStagingDirectory)/**/*.zip</span>
 <span style="color:#75715e">#endif</span>
 </code></pre></div><p>Take a look at how the GitHub Action YAML file uses the <code>DeployAsZip</code> and <code>DeployAsContainer</code> symbol value to add a specific pipeline type.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">.NET api deploy to Azure App Service</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">.NET api deploy to Azure App Service</span>
 
 <span style="color:#f92672">on</span>:
   <span style="color:#f92672">push</span>:
@@ -1054,7 +1054,7 @@ The <code>DeployZip</code> symbol value is used to create a deployment pipeline 
 </ul>
 <p><strong>Example 1:</strong></p>
 <p>The <code>Dockerfile</code> symbol is of type <code>parameter</code> and the default value is <code>true</code>.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">  <span style="color:#e6db74">&#34;Docker&#34;</span><span style="color:#f92672">:</span> {
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">  <span style="color:#e6db74">&#34;Docker&#34;</span><span style="color:#f92672">:</span> {
       <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;parameter&#34;</span>,
       <span style="color:#e6db74">&#34;datatype&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;bool&#34;</span>,
       <span style="color:#e6db74">&#34;description&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Adds an optimised Dockerfile to add the ability to build a Docker image.&#34;</span>,
@@ -1066,7 +1066,7 @@ The <code>DeployZip</code> symbol value is used to create a deployment pipeline 
 </ul>
 <p>To achieve the desired behaviour, you can add the following object inside the <code>source.modifiers</code> array.<br>
 The <code>Docker</code> symbol value is used as the condition to exclude both files.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">  {
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">  {
       <span style="color:#e6db74">&#34;condition&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;(!Docker)&#34;</span>,
       <span style="color:#e6db74">&#34;exclude&#34;</span><span style="color:#f92672">:</span>
       [
@@ -1077,7 +1077,7 @@ The <code>Docker</code> symbol value is used as the condition to exclude both fi
 </code></pre></div><p>The template engine will remove the <code>Dockerfile</code> and the <code>.dockerignore</code> files, if the value of the <code>Docker</code> symbol equals to <code>false</code>.</p>
 <p><strong>Example 2:</strong></p>
 <p>This is a more interesting example. The <code>Test</code> symbol is of type <code>parameter</code> and the default value is <code>true</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">  <span style="color:#e6db74">&#34;Tests&#34;</span><span style="color:#f92672">:</span> {
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">  <span style="color:#e6db74">&#34;Tests&#34;</span><span style="color:#f92672">:</span> {
       <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;parameter&#34;</span>,
       <span style="color:#e6db74">&#34;datatype&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;bool&#34;</span>,
       <span style="color:#e6db74">&#34;defaultValue&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;true&#34;</span>,
@@ -1094,7 +1094,7 @@ The <code>Docker</code> symbol value is used as the condition to exclude both fi
 <li>If the symbol value is set to <code>true</code>, the template engines needs to keep the test projects.</li>
 </ul>
 <p>To achieve the desired behaviour, you can add the following object in the <code>source.modifiers</code> array.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">  {
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">  {
       <span style="color:#e6db74">&#34;condition&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;(!Tests)&#34;</span>,
       <span style="color:#e6db74">&#34;exclude&#34;</span><span style="color:#f92672">:</span> 
       [
@@ -1104,7 +1104,7 @@ The <code>Docker</code> symbol value is used as the condition to exclude both fi
   },
 </code></pre></div><p>The <code>Tests</code> symbol value is used as the condition to exclude both test folders.<br>
 Also the <code>Tests</code> symbol is used to remove the test project references from the <code>.sln</code> file via a conditional operator.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">#if (Tests)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">#if (Tests)
 </span><span style="color:#75715e"></span>Project(<span style="color:#e6db74">&#34;{2150E333-8FDC-42A3-9474-1A3956D46DE8}&#34;</span>) = <span style="color:#e6db74">&#34;Test&#34;</span>, <span style="color:#e6db74">&#34;Test&#34;</span>, <span style="color:#e6db74">&#34;{0323DDF8-0F80-4DF1-8F12-C37353534337}&#34;</span>
 EndProject
 <span style="color:#75715e">#endif
@@ -1120,7 +1120,7 @@ EndProject
 <p>In the <code>dotnetcli.host.json</code> file you can specify the short and long names for each of the command line parameters.</p>
 <p>This step is not mandatory and in my case I have quite a sizeable list of parameters to customize, but nonetheless I prefer to customize each parameter name as I see fit.<br>
 Here&rsquo;s how the <code>dotnetcli.host.json</code> looks:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">{
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">{
     <span style="color:#e6db74">&#34;$schema&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;http://json.schemastore.org/dotnetcli.host&#34;</span>,
     <span style="color:#e6db74">&#34;symbolInfo&#34;</span><span style="color:#f92672">:</span>
     {
@@ -1223,7 +1223,7 @@ For example, this command: <code>dotnet new mtr-api --github true --azure-pipeli
 <p><img src="/img/dotnet-api-template-vs-dialog.png" alt="api-vs-dialog"></p>
 <p>Also you can customize your templates appearance in the Visual Studio template list with an icon. If it is not provided, a default icon will be associated with your project template.</p>
 <p>Here&rsquo;s how the <code>ide.host.json</code> for the api looks like:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">{
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">{
     <span style="color:#e6db74">&#34;$schema&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;http://json.schemastore.org/vs-2017.3.host&#34;</span>,
     <span style="color:#e6db74">&#34;order&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">0</span>,
     <span style="color:#e6db74">&#34;icon&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;icon.png&#34;</span>,
@@ -1419,7 +1419,7 @@ For example, this command: <code>dotnet new mtr-api --github true --azure-pipeli
 <li>Using a <code>.nuspec</code> file and the <code>nuget pack</code> command from <code>nuget.exe</code>.</li>
 </ul>
 <p>I&rsquo;m using a <code>.nuspec</code> file. It looks like this:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#75715e">&lt;?xml version=&#34;1.0&#34; encoding=&#34;utf-8&#34;?&gt;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#75715e">&lt;?xml version=&#34;1.0&#34; encoding=&#34;utf-8&#34;?&gt;</span>
 <span style="color:#f92672">&lt;package&gt;</span>
   <span style="color:#f92672">&lt;metadata&gt;</span>
     <span style="color:#f92672">&lt;id&gt;</span>MyTechRamblings.Templates<span style="color:#f92672">&lt;/id&gt;</span>
@@ -1445,7 +1445,7 @@ For example, this command: <code>dotnet new mtr-api --github true --azure-pipeli
 </code></pre></div><h1 id="5-publish-the-package-to-nugetspanorg">5. Publish the package to nuget<span>.org</h1>
 <p>I don&rsquo;t want to  create and publish the package manually.<br>
 Instead of that, I have created a <code>Powershell</code> script that fetches the nuget executable from the <code>nuget.org</code> website, bundles everything together and creates the pack using the <code>nuget pack</code> command.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">Set-StrictMode -Version Latest
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">Set-StrictMode -Version Latest
 $templateName <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;template&#34;</span>
 $templatePath <span style="color:#f92672">=</span>     <span style="color:#e6db74">&#34;./</span>$templateName<span style="color:#e6db74">/mtr&#34;</span>
 $contentDirectory <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;./</span>$templateName<span style="color:#e6db74">/mtr/content&#34;</span>
@@ -1474,7 +1474,7 @@ $cmdArgList <span style="color:#f92672">=</span> @<span style="color:#f92672">(<
 				 <span style="color:#e6db74">&#34;-OutputDirectory&#34;</span>, <span style="color:#e6db74">&#34;</span>$nugetOut<span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74">&#34;-NoDefaultExcludes&#34;</span><span style="color:#f92672">)</span>
 &amp; $nugetPath $cmdArgList 
 </code></pre></div><p>And also I have created a GitHub Action that executes the script and pushes the <code>.nupkg</code> into the <code>nuget.org</code> feed.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">push the template package to nuget.org</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">push the template package to nuget.org</span>
 
 <span style="color:#f92672">on</span>:
   <span style="color:#f92672">push</span>:

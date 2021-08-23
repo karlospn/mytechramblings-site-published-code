@@ -211,7 +211,7 @@ The runtime provides a language-specific environment that runs in an execution e
 <p><em>You can find a working example of this scenario in this <a href="https://github.com/karlospn/deploy-dotnet-lambda-with-aws-cdk/tree/main/src/Net5BundlingContainerLambdaCdk">Link</a></em></p>
 </blockquote>
 <p>In this scenario the AWS CDK and the application will be deployed at the same time.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> Amazon.CDK;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> Amazon.CDK;
 <span style="color:#66d9ef">using</span> Amazon.CDK.AWS.Lambda;
 
 <span style="color:#66d9ef">namespace</span> Net5BundlingContainerLambdaCdk
@@ -246,7 +246,7 @@ The Dockerfile output will be used as the function handler.</p>
 <li>The lambda will be created among the rest of the infrastructura declared in the CDK project.</li>
 </ul>
 <p>Also let me show you how the dockerfile looks like:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">FROM public.ecr.aws/lambda/dotnet:5.0 as base</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">FROM public.ecr.aws/lambda/dotnet:5.0 as base</span>
 
 <span style="color:#ae81ff">FROM mcr.microsoft.com/dotnet/sdk:5.0 as build-image</span>
 <span style="color:#ae81ff">WORKDIR /app</span>
@@ -267,7 +267,7 @@ The Dockerfile output will be used as the function handler.</p>
 <p><em>You can find a working example of this scenario in this <a href="https://github.com/karlospn/deploy-dotnet-lambda-with-aws-cdk/tree/main/src/Net5ExistingContainerLambdaCdk">Link</a></em></p>
 </blockquote>
 <p>In this scenario the AWS CDK and the application won&rsquo;t be deployed at the same time. This scenario assumes that you have already pushed the lambda image into an axisting ECR repository.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">
 <span style="color:#66d9ef">using</span> Amazon.CDK;
 <span style="color:#66d9ef">using</span> Amazon.CDK.AWS.ECR;
 <span style="color:#66d9ef">using</span> Amazon.CDK.AWS.Lambda;
@@ -308,7 +308,7 @@ The Dockerfile output will be used as the function handler.</p>
 <p><em>You can find a working example of this scenario in this <a href="https://github.com/karlospn/deploy-dotnet-lambda-with-aws-cdk/tree/main/src/NetCore31BundlingZipFileLambdaCdk">Link</a></em></p>
 </blockquote>
 <p>In this scenario the AWS CDK and the application will be deployed at the same time.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">  
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">  
 <span style="color:#66d9ef">using</span> System.Collections.Generic;
 <span style="color:#66d9ef">using</span> Amazon.CDK;
 <span style="color:#66d9ef">using</span> Amazon.CDK.AWS.Lambda;
@@ -381,7 +381,7 @@ Finally the contents of the <code>/asset-output/</code> folder will be zipped an
 <p><em>You can find a working example of this scenario in this <a href="https://github.com/karlospn/deploy-dotnet-lambda-with-aws-cdk/tree/main/src/NetCore31ExistingZipFileLambdaCdk">Link</a></em></p>
 </blockquote>
 <p>In this scenario the AWS CDK and the application will be deployed at the same time, but you need to have created the zip that contains the lambda function beforehand.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> Amazon.CDK;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> Amazon.CDK;
 <span style="color:#66d9ef">using</span> Amazon.CDK.AWS.Lambda;
 
 <span style="color:#66d9ef">namespace</span> NetCore31ExistingZipFileLambdaCdk

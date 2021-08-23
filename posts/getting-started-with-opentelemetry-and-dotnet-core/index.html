@@ -175,21 +175,21 @@ Multiple spans are pieced together to create a trace. Traces are often viewed as
 <p>The OpenTelemetry client for dotnet is reusing the existing Activity and associated classes to represent the OpenTelemetry Span. <br>
 This means that users can instrument their applications/libraries to emit OpenTelemetry compatible traces by using just the .NET Runtime.</p>
 <p>To create a Span in .NET we must first create a new activity:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> ActivitySource Activity = <span style="color:#66d9ef">new</span>(nameof(RabbitRepository));
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> ActivitySource Activity = <span style="color:#66d9ef">new</span>(nameof(RabbitRepository));
 </code></pre></div><p>And then call <em>&ldquo;StartActivity&rdquo;</em> to begin recording, everything that happens inside the using block will be recorded into that Span.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> activity = Activity.StartActivity(<span style="color:#e6db74">&#34;Process Message&#34;</span>, ActivityKind.Consumer, parentContext.ActivityContext)){}
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> activity = Activity.StartActivity(<span style="color:#e6db74">&#34;Process Message&#34;</span>, ActivityKind.Consumer, parentContext.ActivityContext)){}
 </code></pre></div><h2 id="propagators"><strong>Propagators</strong></h2>
 <p>A propagator allows us to extract and inject context across process boundaries.</p>
 <p>This is typically required if you are not using any of the .NET communication libraries which has instrumentations already available which does the propagation (eg: HttpClient). <br>
 In such cases, context extraction and propagation is the responsibility of the library itself.</p>
 <p>To create a propagator in .NET we must first create a TextMapPropagator</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> TextMapPropagator Propagator = <span style="color:#66d9ef">new</span> TraceContextPropagator();
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> TextMapPropagator Propagator = <span style="color:#66d9ef">new</span> TraceContextPropagator();
 </code></pre></div><p>Then use the Inject and Extract methods for inter-process trace propagation.</p>
 <p>The <em>&ldquo;Inject&rdquo;</em> method injects the Activity into a carrier. For example, into the headers of an HTTP request.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">Propagator.Inject(<span style="color:#66d9ef">new</span> PropagationContext(activity.Context, Baggage.Current), props, InjectContextIntoHeader);
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">Propagator.Inject(<span style="color:#66d9ef">new</span> PropagationContext(activity.Context, Baggage.Current), props, InjectContextIntoHeader);
 </code></pre></div><p>And the <em>&ldquo;Extract&rdquo;</em> method extracts the value from an incoming request. For example, from the headers of an HTTP request.</p>
 <p>If a value can not be parsed from the carrier, for a cross-cutting concern, the implementation should not throw an exception and should not store a new value in the Context, in order to preserve any previously existing valid value.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"> <span style="color:#66d9ef">var</span> parentContext = Propagator.Extract(<span style="color:#66d9ef">default</span>, ea.BasicProperties, ExtractTraceContextFromBasicProperties);
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"> <span style="color:#66d9ef">var</span> parentContext = Propagator.Extract(<span style="color:#66d9ef">default</span>, ea.BasicProperties, ExtractTraceContextFromBasicProperties);
 </code></pre></div><h2 id="exporters"><strong>Exporters</strong></h2>
 <p>Let&rsquo;s be honest emiting traces is kind of pointless if you don&rsquo;t have a backend capable of aggregating the traces and displaying those traces in a friendly manner.</p>
 <p>An exporter is how data gets sent to those different back-ends.</p>
@@ -207,7 +207,7 @@ In such cases, context extraction and propagation is the responsibility of the l
 <h2 id="attributes"><strong>Attributes</strong></h2>
 <p>Attributes are key:value pairs that provide additional information to a trace.</p>
 <p>In .NET those are called Tags. We can add an attribute into an Activity like this:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">  activity?.SetTag(<span style="color:#e6db74">&#34;messaging.system&#34;</span>, <span style="color:#e6db74">&#34;rabbitmq&#34;</span>);
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">  activity?.SetTag(<span style="color:#e6db74">&#34;messaging.system&#34;</span>, <span style="color:#e6db74">&#34;rabbitmq&#34;</span>);
   activity?.SetTag(<span style="color:#e6db74">&#34;messaging.destination_kind&#34;</span>, <span style="color:#e6db74">&#34;queue&#34;</span>);
   activity?.SetTag(<span style="color:#e6db74">&#34;messaging.rabbitmq.queue&#34;</span>, <span style="color:#e6db74">&#34;sample&#34;</span>);
 </code></pre></div><hr>
@@ -251,7 +251,7 @@ The important part is that all the apps are talking among them and also using ot
 <p>Those apps are not using OpenTelemetry right now, so in the next sections we&rsquo;re going to do a step-by-step guide about how to setup and use the OpenTelemetry client.</p>
 <h1 id="opentelemetry-net-client">OpenTelemetry .NET Client</h1>
 <p>To get started with OpenTelemetry we&rsquo;re going to need the following packages.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;OpenTelemetry&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.1.0-beta1&#34;</span> <span style="color:#f92672">/&gt;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;OpenTelemetry&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.1.0-beta1&#34;</span> <span style="color:#f92672">/&gt;</span>
 <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;OpenTelemetry.Exporter.Jaeger&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.1.0-beta1&#34;</span> <span style="color:#f92672">/&gt;</span>
 <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;OpenTelemetry.Extensions.Hosting&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.0.0-rc3&#34;</span> <span style="color:#f92672">/&gt;</span>
 <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;OpenTelemetry.Instrumentation.AspNetCore&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.0.0-rc3&#34;</span> <span style="color:#f92672">/&gt;</span>
@@ -274,7 +274,7 @@ The important part is that all the apps are talking among them and also using ot
 <p>In the near future I expect to see more and more instrumentation libraries like these ones so we can instrument the most common dependencies with no effort at all, just install a nuget, add some config lines in the <em>Startup</em> and you&rsquo;re good to go.</p>
 <h1 id="adding-opentelemetry-on-app1">Adding OpenTelemetry on App1</h1>
 <p><strong>1 . Setup the OpenTelemetry library</strong></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">services.AddOpenTelemetryTracing((sp, builder) =&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">services.AddOpenTelemetryTracing((sp, builder) =&gt;
 {
     builder.AddAspNetCoreInstrumentation()
         .AddHttpClientInstrumentation()
@@ -287,19 +287,19 @@ The important part is that all the apps are talking among them and also using ot
         });
 });
 </code></pre></div><p>This is the first app we&rsquo;re instrumenting so I&rsquo;m going to explain a little bit what we&rsquo;re doing line by line</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">AddAspNetCoreInstrumentation()
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">AddAspNetCoreInstrumentation()
 </code></pre></div><p>Enables NET Core instrumentation.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">AddHttpClientInstrumentation()
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">AddHttpClientInstrumentation()
 </code></pre></div><p>Enable HTTP Instrumentation. <br>
 The Api 1 makes an HTTP request to the App2, if we want to trace the HTTP call between these 2 apps we can do it simply by adding this extension method.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">.AddSource(nameof(PublishMessageController))
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">.AddSource(nameof(PublishMessageController))
 </code></pre></div><p>The <code>AddSource</code> method can be used to add a ActivitySource to the provider. Multiple AddSource can be called to add more than one span.</p>
 <p>Why we need this? The Api 1 queues a message into a rabbit queue and we want to record this trace.<br>
 In the former paragraph we have seen that  HTTP requests has built-in instrumentation via method extension, that is not the case for the RabbitMQ dependency. In order to continue the distributed transaction, we must create a new Activity.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(<span style="color:#e6db74">&#34;App1&#34;</span>))
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(<span style="color:#e6db74">&#34;App1&#34;</span>))
 </code></pre></div><p>A Resource is the immutable representation of the entity producing the telemetry.<br>
 With the <code>SetResourceBuilder</code> method we&rsquo;re configuring the Resource for the application.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">AddJaegerExporter(opts =&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">AddJaegerExporter(opts =&gt;
 {
     opts.AgentHost = Configuration[<span style="color:#e6db74">&#34;Jaeger:AgentHost&#34;</span>];
     opts.AgentPort = Convert.ToInt32(Configuration[<span style="color:#e6db74">&#34;Jaeger:AgentPort&#34;</span>]);
@@ -310,7 +310,7 @@ With the <code>SetResourceBuilder</code> method we&rsquo;re configuring the Reso
 <p>The code below demonstrates how the <em>&ldquo;publish message&rdquo;</em> trace can be created. The code snippet adds the trace information to the enqueued message header, which will later be used to link both operations.</p>
 <p>Specifically we are using a Propagator to inject the activity into the message header that is going to be queued to Rabbit, afterwards the consumer application will use another Propagator to extract the Activity and link the producer activity with the consumer activity.</p>
 <p>Also we are also using the Tags attribute to store relevant metadata into the Activity.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[ApiController]</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[ApiController]</span>
 <span style="color:#a6e22e">[Route(&#34;publish-message&#34;)]</span>
 <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PublishMessageController</span> : ControllerBase
 {
@@ -390,7 +390,7 @@ With the <code>SetResourceBuilder</code> method we&rsquo;re configuring the Reso
 </code></pre></div><h1 id="adding-opentelemetry-on-app2">Adding OpenTelemetry on App2</h1>
 <p><strong>1 . Setup the OpenTelemetry library</strong></p>
 <p>The App2 is a console app so we have to setup the library in a different way,  instead of using an IServiceCollection extension we&rsquo;re creating directly a TraceProvider. Apart from that the setup looks pretty much the same.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"> Sdk.CreateTracerProviderBuilder()
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"> Sdk.CreateTracerProviderBuilder()
     .AddHttpClientInstrumentation()
     .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(<span style="color:#e6db74">&#34;App2&#34;</span>))
     .AddSource(nameof(Program))
@@ -403,7 +403,7 @@ With the <code>SetResourceBuilder</code> method we&rsquo;re configuring the Reso
 </code></pre></div><p><strong>2 . Instrument dependency calls</strong></p>
 <p>The HTTP call is being instrumented automatically thanks to the <code>AddHttpClientInstrumentation</code> extension method, but this app also dequeues a message from Rabbit, so we want to instrument that part.<br>
 The code is pretty much the same as the one we have created for the Rabbit producer on App1, the only difference is that instead of injecting the activity we are to extracting it from the message header.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">async</span> Task ProcessMessage(BasicDeliverEventArgs ea,
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">async</span> Task ProcessMessage(BasicDeliverEventArgs ea,
             HttpClient httpClient,
             IModel rabbitMqChannel)
 {
@@ -468,7 +468,7 @@ The code is pretty much the same as the one we have created for the Rabbit produ
 }
 </code></pre></div><h1 id="adding-opentelemetry-on-app3">Adding OpenTelemetry on App3</h1>
 <p><strong>1 . Setup the OpenTelemetry library</strong></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"> services.AddOpenTelemetryTracing((sp, builder) =&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"> services.AddOpenTelemetryTracing((sp, builder) =&gt;
 {
     builder.AddAspNetCoreInstrumentation()
         .AddSource(nameof(RabbitRepository))
@@ -481,12 +481,12 @@ The code is pretty much the same as the one we have created for the Rabbit produ
         });
 });
 </code></pre></div><p>The setup looks almost identical as the ones on the App1 and App2. There is only one thing worth mentioning here:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">AddSqlClientInstrumentation()
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">AddSqlClientInstrumentation()
 </code></pre></div><p>This app is not making any HTTP request, instead of that is querying a database, so we&rsquo;re using the SQL extension method to enable SQL instrumentation. We&rsquo;re simply swapping the <code>OpenTelemetry.Instrumentation.Http</code> library for the <code>OpenTelemetry.Instrumentation.SqlClient</code> library.</p>
 <p>This app is also queuing a message into a RabbitMq queue, but the code it&rsquo;s exactly the same as the one I have showed for the app1 section.</p>
 <h2 id="adding-opentelemetry-on-app4">Adding OpenTelemetry on App4</h2>
 <p><strong>1 . Setup the OpenTelemetry library</strong></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"> services.AddOpenTelemetryTracing((sp, builder) =&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"> services.AddOpenTelemetryTracing((sp, builder) =&gt;
 {
     IConfiguration config = sp.GetRequiredService&lt;IConfiguration&gt;();
     RedisCache cache = (RedisCache)sp.GetRequiredService&lt;IDistributedCache&gt;();
@@ -505,14 +505,14 @@ The code is pretty much the same as the one we have created for the Rabbit produ
 <p>The instrumentation part for dequeuing the message from RabbitMq looks exactly the same as the snippet I have put on the App2 section.</p>
 <p>The instrumentation for Redis is a little more problematic, the issue when trying to instrument Redis is that the <code>AddRedisInstrumentation()</code> extension method needs an instance of the Redis <code>ConnectionMultiplexer</code>.<br>
 If you&rsquo;re using an <code>IDistributedCache</code> interface and the <code>AddStackExchangeRedisCache</code> extension method to configure the Redis connection, like this one:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">services.AddStackExchangeRedisCache(options =&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">services.AddStackExchangeRedisCache(options =&gt;
 {
     <span style="color:#66d9ef">var</span> connString =
         <span style="color:#e6db74">$&#34;{hostContext.Configuration[&#34;</span>Redis:Host<span style="color:#e6db74">&#34;]}:{hostContext.Configuration[&#34;</span>Redis:Port<span style="color:#e6db74">&#34;]}&#34;</span>;
     options.Configuration = connString;
 });
 </code></pre></div><p>You will realize that you can&rsquo;t access the <code>ConnectionMultiplexer</code> property because is not publicly accesible, so I&rsquo;m writing an extension method that is using Reflection to obtain it.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">RedisCacheExtensions</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">RedisCacheExtensions</span>
 {
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> ConnectionMultiplexer GetConnectionAsync(<span style="color:#66d9ef">this</span> RedisCache cache)
     {
@@ -563,7 +563,7 @@ If you&rsquo;re using an <code>IDistributedCache</code> interface and the <code>
 <p>If we want more info on any span we can drill-down and inspect the metadata. For example if we inspect the &ldquo;HTTP POST&rdquo; span we can see more info about it.</p>
 <p><img src="/img/otel-jaeger-http-instrumentation.png" alt="otel-jaeger-http-instrumentation"></p>
 <p>Also, do you remember that in the App1 we added some extra Tags on the Activity?</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">activity?.SetTag(<span style="color:#e6db74">&#34;messaging.system&#34;</span>, <span style="color:#e6db74">&#34;rabbitmq&#34;</span>);
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">activity?.SetTag(<span style="color:#e6db74">&#34;messaging.system&#34;</span>, <span style="color:#e6db74">&#34;rabbitmq&#34;</span>);
 activity?.SetTag(<span style="color:#e6db74">&#34;messaging.destination_kind&#34;</span>, <span style="color:#e6db74">&#34;queue&#34;</span>);
 activity?.SetTag(<span style="color:#e6db74">&#34;messaging.rabbitmq.queue&#34;</span>, <span style="color:#e6db74">&#34;sample&#34;</span>);
 </code></pre></div><p>Here is the result:</p>
@@ -581,7 +581,7 @@ activity?.SetTag(<span style="color:#e6db74">&#34;messaging.rabbitmq.queue&#34;<
 <p>With docker-compose you can control the order of the services startup and shutdown with the depends_on option, but it does not wait until a container is “ready”, it only waits until is running.</p>
 <p>In my case that&rsquo;s a problem because App2 and App4 need to wait for the rabbitMq container to be ready, to avoid this problem the compose file is overwriting the &ldquo;entrypoint&rdquo; for both apps and executing a shell script that makes both apps sleep 30 seconds before starting up.</p>
 <p>Here&rsquo;s the docker-compose file:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">version</span>: <span style="color:#e6db74">&#39;3.4&#39;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">version</span>: <span style="color:#e6db74">&#39;3.4&#39;</span>
 
 <span style="color:#f92672">networks</span>:
   <span style="color:#f92672">tracing</span>:

@@ -161,10 +161,10 @@ Imagine you&rsquo;re trying to create a Docker image from an application and it 
       <p>Let&rsquo;s go for a quick post this time.</p>
 <p>Imagine you&rsquo;re trying to create a Docker image from an application and it is using some custom nugets. Those custom nugets are hosted in your private Azure DevOps Feed.
 And when you try to build the image you get one of the following errors:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">/src/MyConsoleApplication.csproj : error NU1101: Unable to find package MyOwn.EmailService. No packages exist with this id in source<span style="color:#f92672">(</span>s<span style="color:#f92672">)</span>: nuget.org
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">/src/MyConsoleApplication.csproj : error NU1101: Unable to find package MyOwn.EmailService. No packages exist with this id in source<span style="color:#f92672">(</span>s<span style="color:#f92672">)</span>: nuget.org
   Failed to restore /src/MyConsoleApplication.csproj <span style="color:#f92672">(</span>in 2.37 sec<span style="color:#f92672">)</span>.
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">C:<span style="color:#ae81ff">\P</span>rogram Files<span style="color:#ae81ff">\d</span>otnet<span style="color:#ae81ff">\s</span>dk<span style="color:#ae81ff">\3</span>.1.301<span style="color:#ae81ff">\N</span>uGet.targets<span style="color:#f92672">(</span>128,5<span style="color:#f92672">)</span>: error : Unable to load the service index <span style="color:#66d9ef">for</span> source https://pkgs.dev.azure.com/cpn/_packaging/my-very-private-feed/nuget/v3/index.json. <span style="color:#f92672">[</span>C:<span style="color:#ae81ff">\s</span>rc<span style="color:#ae81ff">\M</span>yConsoleApplication.csproj<span style="color:#f92672">]</span>
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">C:<span style="color:#ae81ff">\P</span>rogram Files<span style="color:#ae81ff">\d</span>otnet<span style="color:#ae81ff">\s</span>dk<span style="color:#ae81ff">\3</span>.1.301<span style="color:#ae81ff">\N</span>uGet.targets<span style="color:#f92672">(</span>128,5<span style="color:#f92672">)</span>: error :   Response status code does not indicate success: <span style="color:#ae81ff">401</span> <span style="color:#f92672">(</span>Unauthorized<span style="color:#f92672">)</span>. <span style="color:#f92672">[</span>C:<span style="color:#ae81ff">\s</span>rc<span style="color:#ae81ff">\M</span>yConsoleApplication.csproj<span style="color:#f92672">]</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">C:<span style="color:#ae81ff">\P</span>rogram Files<span style="color:#ae81ff">\d</span>otnet<span style="color:#ae81ff">\s</span>dk<span style="color:#ae81ff">\3</span>.1.301<span style="color:#ae81ff">\N</span>uGet.targets<span style="color:#f92672">(</span>128,5<span style="color:#f92672">)</span>: error : Unable to load the service index <span style="color:#66d9ef">for</span> source https://pkgs.dev.azure.com/cpn/_packaging/my-very-private-feed/nuget/v3/index.json. <span style="color:#f92672">[</span>C:<span style="color:#ae81ff">\s</span>rc<span style="color:#ae81ff">\M</span>yConsoleApplication.csproj<span style="color:#f92672">]</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">C:<span style="color:#ae81ff">\P</span>rogram Files<span style="color:#ae81ff">\d</span>otnet<span style="color:#ae81ff">\s</span>dk<span style="color:#ae81ff">\3</span>.1.301<span style="color:#ae81ff">\N</span>uGet.targets<span style="color:#f92672">(</span>128,5<span style="color:#f92672">)</span>: error :   Response status code does not indicate success: <span style="color:#ae81ff">401</span> <span style="color:#f92672">(</span>Unauthorized<span style="color:#f92672">)</span>. <span style="color:#f92672">[</span>C:<span style="color:#ae81ff">\s</span>rc<span style="color:#ae81ff">\M</span>yConsoleApplication.csproj<span style="color:#f92672">]</span>
 </code></pre></div><p>That&rsquo;s a pretty common pain point when trying to create a Docker image that uses a private Azure DevOps Feed.</p>
 <p>To solve this problem there are two possible solutions:</p>
 <ul>
@@ -176,7 +176,7 @@ The second one is the most recent one and in my opinion a better way to do it.</
 <p>I&rsquo;m going to show you how you can fix it using both Linux and Windows Containers. But first I&rsquo;m going to set everything up on the Azure Devops end.</p>
 <p>I did the following steps on my Azure DevOps account:</p>
 <p>1- Create a private Azure DevOps Feed named <em><strong>&ldquo;my-very-private-feed&rdquo;</strong></em></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#75715e">&lt;?xml version=&#34;1.0&#34; encoding=&#34;utf-8&#34;?&gt;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#75715e">&lt;?xml version=&#34;1.0&#34; encoding=&#34;utf-8&#34;?&gt;</span>
 <span style="color:#f92672">&lt;configuration&gt;</span>
   <span style="color:#f92672">&lt;packageSources&gt;</span>
     <span style="color:#f92672">&lt;clear</span> <span style="color:#f92672">/&gt;</span>
@@ -186,7 +186,7 @@ The second one is the most recent one and in my opinion a better way to do it.</
 
 </code></pre></div><p>2- Push a custom Nuget named <em><strong>&ldquo;MyOwn.EmailService&rdquo;</strong></em> into my the Azure DevOps feed.</p>
 <p>3- Create a .NETCore 3.1 console app that uses the <em><strong>&ldquo;MyOwn.EmailService&rdquo;</strong></em> nuget</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">
 <span style="color:#f92672">&lt;Project</span> <span style="color:#a6e22e">Sdk=</span><span style="color:#e6db74">&#34;Microsoft.NET.Sdk&#34;</span><span style="color:#f92672">&gt;</span>
 
   <span style="color:#f92672">&lt;PropertyGroup&gt;</span>
@@ -201,7 +201,7 @@ The second one is the most recent one and in my opinion a better way to do it.</
 <span style="color:#f92672">&lt;/Project&gt;</span>
 
 </code></pre></div><p>4 - Create a DockerFile for the app</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-docker" data-lang="docker"><span style="color:#960050;background-color:#1e0010">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-docker" data-lang="docker"><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> mcr.microsoft.com/dotnet/core/runtime:3.1-buster-slim AS base</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">WORKDIR</span><span style="color:#e6db74"> /app</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010">
@@ -228,7 +228,7 @@ Let&rsquo;s see how to fix it.</p>
 <hr>
 <p>Create a NuGet.Config and place it within the app.<br>
 You also need to create a PAT <em>(Personal Access Token)</em> to authenticate against the private feed.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#75715e">&lt;?xml version=&#34;1.0&#34; encoding=&#34;utf-8&#34;?&gt;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#75715e">&lt;?xml version=&#34;1.0&#34; encoding=&#34;utf-8&#34;?&gt;</span>
 <span style="color:#f92672">&lt;configuration&gt;</span>
   <span style="color:#f92672">&lt;packageSources&gt;</span>
     <span style="color:#f92672">&lt;add</span> <span style="color:#a6e22e">key=</span><span style="color:#e6db74">&#34;nuget.org&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;https://api.nuget.org/v3/index.json&#34;</span> <span style="color:#a6e22e">protocolVersion=</span><span style="color:#e6db74">&#34;3&#34;</span> <span style="color:#f92672">/&gt;</span>
@@ -243,7 +243,7 @@ You also need to create a PAT <em>(Personal Access Token)</em> to authenticate a
 <span style="color:#f92672">&lt;/configuration&gt;</span>
 
 </code></pre></div><p>Change the Dockerfile to use the NuGet.Config file when trying to restore the nugets:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-docker" data-lang="docker"><span style="color:#960050;background-color:#1e0010">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-docker" data-lang="docker"><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> mcr.microsoft.com/dotnet/core/runtime:3.1-buster-slim AS base</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">WORKDIR</span><span style="color:#e6db74"> /app</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010">
@@ -280,7 +280,7 @@ The provider authenticates against all the providers found inside the array, so 
 </ul>
 <p>Also In the <em>&ldquo;dotnet restore&rdquo;</em> step we need to specify our private feed. If we don&rsquo;t specify it  the credential provider will try to restore the nugets using only the default feed.</p>
 <p>The Dockerfile looks like this:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-docker" data-lang="docker"><span style="color:#960050;background-color:#1e0010">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-docker" data-lang="docker"><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> mcr.microsoft.com/dotnet/core/runtime:3.1-buster-slim AS base</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">WORKDIR</span><span style="color:#e6db74"> /app</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010">
@@ -316,7 +316,7 @@ Let&rsquo;s try to replicate the same scenarios but these time using Windows Con
 <h3 id="scenario-1--using-the-nugetconfig-with-a-nanoserver-image">Scenario 1 : Using the Nuget.Config with a nanoserver image</h3>
 <hr>
 <p>The only difference with the Linux scenario is that I&rsquo;m using a windows nanoserver image</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-docker" data-lang="docker"><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> mcr.microsoft.com/dotnet/core/runtime:3.1-nanoserver-1903 AS base</span><span style="color:#960050;background-color:#1e0010">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-docker" data-lang="docker"><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> mcr.microsoft.com/dotnet/core/runtime:3.1-nanoserver-1903 AS base</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">WORKDIR</span><span style="color:#e6db74"> /app</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> mcr.microsoft.com/dotnet/core/sdk:3.1-nanoserver-1903 AS build</span><span style="color:#960050;background-color:#1e0010">
@@ -343,7 +343,7 @@ Let&rsquo;s try to replicate the same scenarios but these time using Windows Con
 <p>We are running on windows containers, so we cannot use the bash script to install the provider, instead of using the bash script we are going to use another script written in Powershell.<br>
 That&rsquo;s not a problem at all because the nanoserver image comes with Powershell Core already installed.</p>
 <p>The real problem is that the credential provider installer doesn&rsquo;t play nice with the nanoserver image. The solution is to install the credentials provider in a <strong>windows server core</strong> image and copy the folder where the credential provider is installed into the nanoserver image.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-docker" data-lang="docker"><span style="color:#960050;background-color:#1e0010">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-docker" data-lang="docker"><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># escape=`</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># Install the cred provider in a separate stage based on Windows Server Core</span><span style="color:#960050;background-color:#1e0010">

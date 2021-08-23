@@ -213,7 +213,7 @@ That pipelines is going to do the following steps:</p>
 </ul>
 <h1 id="step-2---building-the-pr-pipeline">Step 2 - Building the PR pipeline</h1>
 <p>Let me show you the complete pipeline first:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">trigger</span>:
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">trigger</span>:
 - <span style="color:#ae81ff">none</span>
 
 <span style="color:#f92672">pool</span>:
@@ -316,7 +316,7 @@ A build validation validates code by pre-merging and building pull request chang
 <p>Now, let&rsquo;s try to explain step by step what the pipeline is exactly doing.</p>
 <p><strong>1 -</strong> We begin setting up which <em>Node</em> version is going to be used by the aws-cdk and which <em>Ruby</em> version is going to be used by the cfn-nag tool.<br>
 After setting both versions we install the aws-cdk and cfn-nag packages.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">NodeTool@0</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">NodeTool@0</span>
   <span style="color:#f92672">inputs</span>:
     <span style="color:#f92672">versionSpec</span>: <span style="color:#e6db74">&#39;12.x&#39;</span>
 
@@ -332,7 +332,7 @@ After setting both versions we install the aws-cdk and cfn-nag packages.</p>
 
 </code></pre></div><p><strong>2-</strong>_  In this step we&rsquo;re installing the CDK app dependencies and transpiling the code.<br>
 If the CDK app was written in csharp instead of typescript we would be doing &ldquo;dotnet build&rdquo; instead of &ldquo;npm run build&rdquo;.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
 </span><span style="color:#e6db74">    echo &#34;Installing project dependencies&#34;
 </span><span style="color:#e6db74">    sudo npm install
 </span><span style="color:#e6db74">    sudo npm run build</span>    
@@ -345,7 +345,7 @@ Afterwards I run the cfn-nag tool passing the Cfn template as a parameter.</p>
 <li>A failing violation will return a non-zero exit code an stop the pipeline.</li>
 <li>A warning will return a zero/success exit code and the pipelines will continue the execution.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AWSShellScript@1</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AWSShellScript@1</span>
   <span style="color:#f92672">inputs</span>:
     <span style="color:#f92672">awsCredentials</span>: <span style="color:#e6db74">&#39;AWS DEV ACCOUNT&#39;</span>
     <span style="color:#f92672">regionName</span>: <span style="color:#e6db74">&#39;eu-west-1&#39;</span>
@@ -360,7 +360,7 @@ Afterwards I run the cfn-nag tool passing the Cfn template as a parameter.</p>
   <span style="color:#f92672">displayName</span>: <span style="color:#e6db74">&#39;Validating AWS CDK output&#39;</span>
 </code></pre></div><p>4- CDK diff compares the stack to be deployed with the already deployed stack and show the differences between both of them.<br>
 In this step I&rsquo;m storing the CDK diff output in a file called &ldquo;output.log&rdquo;, before saving the output of the CDK diff into the file I&rsquo;m applying some filters.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AWSShellScript@1</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AWSShellScript@1</span>
   <span style="color:#f92672">inputs</span>:
     <span style="color:#f92672">awsCredentials</span>: <span style="color:#e6db74">&#39;AWS DEV ACCOUNT&#39;</span>
     <span style="color:#f92672">regionName</span>: <span style="color:#e6db74">&#39;eu-west-1&#39;</span>
@@ -376,19 +376,19 @@ In this step I&rsquo;m storing the CDK diff output in a file called &ldquo;outpu
 <ul>
 <li>The CDK diff command shows quite a lot of information but I only want the information about which resources are going to be created/modified.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"> _sed -n <span style="color:#e6db74">&#39;/Resources/,/Outputs/p&#39;</span>_
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"> _sed -n <span style="color:#e6db74">&#39;/Resources/,/Outputs/p&#39;</span>_
 </code></pre></div><ul>
 <li>The CDK diff output shows an output similar to the Linux &ldquo;tree&rdquo; command so I need to transform the tree output to ASCII otherwise when we create the PR comment we are going to find that some characters are missing.<br>
 That seems to be some kind of weird issue with the Azure Devops API.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sed <span style="color:#e6db74">&#39;s/├/\+/g; s/│/|/g; s/─/-/g; s/└/`/g&#39;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sed <span style="color:#e6db74">&#39;s/├/\+/g; s/│/|/g; s/─/-/g; s/└/`/g&#39;</span>
 </code></pre></div><ul>
 <li>Azure DevOps accepts markdown as a PR comment, so that&rsquo;s exactly why I&rsquo;m wrapping the output inside a markdown code block.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">  sed -i <span style="color:#e6db74">&#39;1 i\```bash&#39;</span> output.log
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">  sed -i <span style="color:#e6db74">&#39;1 i\```bash&#39;</span> output.log
   sed -i -e <span style="color:#e6db74">&#39;$a```&#39;</span> output.log
 </code></pre></div><p>Let me show you an example at the how the &ldquo;output.log&rdquo; file looks like after applying all the filters.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">  <span style="color:#e6db74">```</span>bash
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">  <span style="color:#e6db74">```</span>bash
 <span style="color:#f92672">[</span>~<span style="color:#f92672">]</span> AWS::S3::Bucket MyFirstBucket MyFirstBucketB8884501
  +- <span style="color:#f92672">[</span>~<span style="color:#f92672">]</span> DeletionPolicy
  |   +- <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> Retain
@@ -399,7 +399,7 @@ That seems to be some kind of weird issue with the Azure Devops API.</li>
     <span style="color:#e6db74">```</span>
 </code></pre></div><p>5- The last step looks a little bit daunting but it&rsquo;s quite simple.</p>
 <p>I&rsquo;m reading the &ldquo;output.log&rdquo; file that I created in the previous step an posting the content as a PR comment using the Azure DevOps API.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">  <span style="color:#f92672">displayName</span>: <span style="color:#e6db74">&#39;Generating CDK diff file&#39;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">  <span style="color:#f92672">displayName</span>: <span style="color:#e6db74">&#39;Generating CDK diff file&#39;</span>
 
 - <span style="color:#f92672">task</span>: <span style="color:#ae81ff">PowerShell@2</span>
   <span style="color:#f92672">displayName</span>: <span style="color:#e6db74">&#34;Write Pull Request Comment&#34;</span>
@@ -473,7 +473,7 @@ The PR pipeline ends correctly and if we take a look at the PR section we can se
 <p><img src="/img/pr-nochange-comment.png" alt="pr-nochange"></p>
 <h1 id="step-5---building-the-master-branch-integration-pipeline">Step 5 - Building the master branch integration pipeline</h1>
 <p>The pipeline will be triggered when the PR is completed and the code is commited to the master branch.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">trigger</span>:
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">trigger</span>:
     <span style="color:#f92672">branches</span>:
         <span style="color:#f92672">include</span>:
         - <span style="color:#ae81ff">master</span>
@@ -508,7 +508,7 @@ The PR pipeline ends correctly and if we take a look at the PR section we can se
    
 </code></pre></div><p>Let me explain every step that the pipeline does.</p>
 <p><strong>1 -</strong> First of all I need to exclude the pipeline files because I don&rsquo;t want to trigger this pipeline if I&rsquo;m only updating the YAML files.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">trigger</span>:
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">trigger</span>:
     <span style="color:#f92672">branches</span>:
         <span style="color:#f92672">include</span>:
         - <span style="color:#ae81ff">master</span>
@@ -523,7 +523,7 @@ The PR pipeline ends correctly and if we take a look at the PR section we can se
 <li>Installing the AWS-CDK package.</li>
 <li>Installing the application dependencies.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
 </span><span style="color:#e6db74">    echo &#34;Installing packages&#34;
 </span><span style="color:#e6db74">    sudo npm install -g aws-cdk</span>    
   <span style="color:#f92672">displayName</span>: <span style="color:#e6db74">&#39;Installing aws cdk&#39;</span>
@@ -540,7 +540,7 @@ If the CDK needs to create any security resource like IAM users you need to add 
 <p>You might want to add a manual intervention step before doing the deploy, in that case you should create an &ldquo;Environment&rdquo; and convert that step into a deployment job.<br>
 More info here: <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/process/environments?view=azure-devops">https://docs.microsoft.com/en-us/azure/devops/pipelines/process/environments?view=azure-devops</a></p>
 </blockquote>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AWSShellScript@1</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AWSShellScript@1</span>
   <span style="color:#f92672">inputs</span>:
     <span style="color:#f92672">awsCredentials</span>: <span style="color:#e6db74">&#39;AWS DEV ACCOUNT&#39;</span>
     <span style="color:#f92672">regionName</span>: <span style="color:#e6db74">&#39;eu-west-1&#39;</span>

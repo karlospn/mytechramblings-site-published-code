@@ -229,7 +229,7 @@ That&rsquo;s a bad sign to begin with, it means that all the most recent feature
 But let&rsquo;s going forward, that&rsquo;s the final look after registering in my AAD the master app and giving it the proper permissions:</p>
 <p><img src="/img/tf-aad-master-app.png" alt="master-app-config"></p>
 <p>Now we can configure the Terraform provider using the master app client_id and client_secret.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">
 <span style="color:#ae81ff">provider &#34;azuread&#34; {</span>
   <span style="color:#ae81ff">version           = &#34;=1.1.1&#34;</span>
   <span style="color:#ae81ff">client_id         = &#34;ba4d0620-0522-4ada-b0b6-0cdd8cfaeae7&#34;</span>
@@ -245,7 +245,7 @@ The payment API has the following configuration:</p>
 <li>It exposes 2 scopes : payment.write and payment.read.</li>
 <li>It has 2 application roles: Reader and Writer.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">resource &#34;azuread_application&#34; &#34;payments_api&#34; {</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">resource &#34;azuread_application&#34; &#34;payments_api&#34; {</span>
     <span style="color:#ae81ff">name                       = &#34;payments_api&#34;</span>
     <span style="color:#ae81ff">available_to_other_tenants = false</span>
     <span style="color:#ae81ff">oauth2_allow_implicit_flow = false</span>
@@ -325,7 +325,7 @@ There is an example on this page: <a href="https://github.com/terraform-provider
 </li>
 <li>The Booking API has the Payment API Reader Role assigned.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">resource &#34;azuread_application&#34; &#34;booking_api&#34; {</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">resource &#34;azuread_application&#34; &#34;booking_api&#34; {</span>
     <span style="color:#ae81ff">name                       = &#34;booking_api&#34;</span>
     <span style="color:#ae81ff">available_to_other_tenants = false</span>
     <span style="color:#ae81ff">oauth2_allow_implicit_flow = false</span>
@@ -357,7 +357,7 @@ There is an example on this page: <a href="https://github.com/terraform-provider
 <p>Be mindful that the Terraform provider <strong>cannot grant consent to use the role in an automatically way</strong>, you need to do it manually or using a script.</p>
 <p><img src="/img/aad-api-grant-admin-consent.png" alt="booking-app-grant-admin-consent"></p>
 <p>After doing that, let&rsquo;s test it and see if it works. I&rsquo;m going to request an access token using the Booking API client id and client secret.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">
 curl -X POST <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>  https://login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/oauth2/v2.0/token <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>  -H <span style="color:#e6db74">&#39;Cache-Control: no-cache&#39;</span> <span style="color:#ae81ff">\
@@ -365,7 +365,7 @@ curl -X POST <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>  -d <span style="color:#e6db74">&#39;grant_type=client_credentials&amp;client_id=5cd49945-086c-4605-9f86-00fe08134dab&amp;client_secret=VT%3DuSgbTanZhyz%40%25nL9Hpd%2BTfay_MRV%23&amp;scope=api%3A%2F%2Fpayment%2F.default&#39;</span>
 
 </code></pre></div><p>And it returns an access_token with the following attributes:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
   <span style="color:#f92672">&#34;aud&#34;</span>: <span style="color:#e6db74">&#34;api://payment&#34;</span>,
   <span style="color:#f92672">&#34;iss&#34;</span>: <span style="color:#e6db74">&#34;https://sts.windows.net/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/&#34;</span>,
   <span style="color:#f92672">&#34;iat&#34;</span>: <span style="color:#ae81ff">1595422827</span>,
@@ -394,7 +394,7 @@ curl -X POST <span style="color:#ae81ff">\
 <li>Uses an implicit flow to obtain an access token and a id token and aftewards uses the access token to attain access to the Payment API.</li>
 <li>The FrontEnd SPA app has permission only to ask for the payment.read scope.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">resource &#34;azuread_application&#34; &#34;frontend_spa&#34; {</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">resource &#34;azuread_application&#34; &#34;frontend_spa&#34; {</span>
     <span style="color:#ae81ff">name                       = &#34;frontend_spa&#34;</span>
     <span style="color:#ae81ff">available_to_other_tenants = false</span>
     <span style="color:#ae81ff">oauth2_allow_implicit_flow = true</span>
@@ -436,7 +436,7 @@ I&rsquo;m starting an implicit flow and try to log in as <strong>Jane</strong>.<
 <p>Remember from the step 2 that I have <strong>manually</strong> assigned a Reader role in the Payment API to Jane.</p>
 </blockquote>
 <p>The fastest way to begin an implicit flow is by building the URI by myself.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">https://login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/oauth2/v2.0/authorize
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">https://login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/oauth2/v2.0/authorize
   ?client_id<span style="color:#f92672">=</span>c6b731f2-785b-4206-974a-db8d34eb4397
   &amp;redirect_uri<span style="color:#f92672">=</span>https%3A%2F%2Foidcdebugger.com%2Fdebug
   &amp;scope<span style="color:#f92672">=</span>api%3A%2F%2Fpayment%2Fpayment.read%20openid
@@ -444,7 +444,7 @@ I&rsquo;m starting an implicit flow and try to log in as <strong>Jane</strong>.<
   &amp;response_mode<span style="color:#f92672">=</span>form_post
   &amp;nonce<span style="color:#f92672">=</span>iaiqs1h3pa
 </code></pre></div><p>And it returns an access_token with the following attributes:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
    <span style="color:#f92672">&#34;aud&#34;</span>: <span style="color:#e6db74">&#34;api://payment&#34;</span>,
    <span style="color:#f92672">&#34;iss&#34;</span>: <span style="color:#e6db74">&#34;https://sts.windows.net/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/&#34;</span>,
    <span style="color:#f92672">&#34;iat&#34;</span>: <span style="color:#ae81ff">1595425611</span>,

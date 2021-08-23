@@ -208,7 +208,7 @@ If you want to deploy a new application or update an existing one, you only need
 <li>The app also needs to have a <em>/chart</em> folder. That folder is going to contain all the Kubernetes definition files that the application needs.</li>
 </ul>
 <p>An example of the application structure would be something like this:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">.
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">.
 │   .gitignore
 │   azure-pipelines.yml
 │   README.md
@@ -255,7 +255,7 @@ If you want to deploy a new application or update an existing one, you only need
 <li>Push the helm chart into an existing ACR</li>
 </ul>
 <p>That&rsquo;s the pipeline:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-YAML" data-lang="YAML"><span style="color:#f92672">trigger</span>:
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-YAML" data-lang="YAML"><span style="color:#f92672">trigger</span>:
 - <span style="color:#ae81ff">master</span>
 
 <span style="color:#f92672">resources</span>:
@@ -333,7 +333,7 @@ If you&rsquo;re interested in helm versioning strategies you can read it more he
 <p><em>Why I&rsquo;m using the Replace Tokens task in my pipeline?</em> (<a href="https://marketplace.visualstudio.com/items?itemName=qetza.replacetokens">https://marketplace.visualstudio.com/items?itemName=qetza.replacetokens</a>)<br>
 That&rsquo;s because in the Kubernetes Deployment YAML file I defined the image i&rsquo;m using like this:</p>
 </blockquote>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">    <span style="color:#f92672">containers</span>:
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">    <span style="color:#f92672">containers</span>:
     - <span style="color:#f92672">name</span>: {{ <span style="color:#ae81ff">.Chart.Name }}</span>
         <span style="color:#f92672">image</span>: <span style="color:#e6db74">&#34;{{ .Values.image.repository }}:#{tag}#&#34;</span> 
 </code></pre></div><blockquote>
@@ -348,13 +348,13 @@ That&rsquo;s because in the Kubernetes Deployment YAML file I defined the image 
 <p><img src="/img/fluxcd-helm-operator-diagram.png" alt="flux-helm-diagram"></p>
 <p>I&rsquo;m going to enumerate the steps required to install both Flux and the Helm Operator into the Kubernetes cluster.</p>
 <p>1 - Create the Flux namespace:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl create ns flux
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl create ns flux
 </code></pre></div><p>2 - Add the Flux repository</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">helm repo add fluxcd https://charts.fluxcd.io
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">helm repo add fluxcd https://charts.fluxcd.io
 </code></pre></div><p>3 - Apply the Helm Operator CRD</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/fluxcd/helm-operator/master/deploy/crds.yaml
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/fluxcd/helm-operator/master/deploy/crds.yaml
 </code></pre></div><p>4 - Install Flux</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">helm upgrade -i flux fluxcd/flux --set git.url<span style="color:#f92672">=</span>git@ssh.dev.azure.com:v3/cpn/Provisioning/Manifests  --set registry.acr.enabled<span style="color:#f92672">=</span>true --namespace flux
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">helm upgrade -i flux fluxcd/flux --set git.url<span style="color:#f92672">=</span>git@ssh.dev.azure.com:v3/cpn/Provisioning/Manifests  --set registry.acr.enabled<span style="color:#f92672">=</span>true --namespace flux
 </code></pre></div><ul>
 <li>
 <p>The <strong>git.url</strong> attribute needs to be the <strong>Azure DevOps Repository URL</strong> that we want Flux to monitor. Flux is going to connect to the Git repo through <strong>SSH</strong>.</p>
@@ -367,7 +367,7 @@ That&rsquo;s because in the Kubernetes Deployment YAML file I defined the image 
 <p>In the previous step we told Flux which Azure DevOps git repository should monitor. Now we need to give Flux access to the git repository.<br>
 This is pretty straight-forward as Flux generates a SSH key at startup.</p>
 <p>To get the SSH public key generated by Flux you need to run:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl -n flux logs deployment/flux | grep identity.pub | cut -d <span style="color:#e6db74">&#39;&#34;&#39;</span> -f2
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl -n flux logs deployment/flux | grep identity.pub | cut -d <span style="color:#e6db74">&#39;&#34;&#39;</span> -f2
 </code></pre></div><p>And in order to sync Flux with your Git repository you need to add the key as an SSH public key in your Azure DevOps account settings.</p>
 <p><img src="/img/flux-ados-ssh.png" alt="Azure DevOps flux SSH key"></p>
 <p>6 - Install the Flux Operator</p>
@@ -382,7 +382,7 @@ This is pretty straight-forward as Flux generates a SSH key at startup.</p>
 <li>The url of your ACR Helm endpoint. It must end with a slash.</li>
 </ul>
 <p>So the command is going to be something like:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">helm upgrade -i helm-operator fluxcd/helm-operator --set git.ssh.secretName<span style="color:#f92672">=</span>flux-git-deploy --set helm.versions<span style="color:#f92672">=</span>v3 --namespace flux --set configureRepositories.enable<span style="color:#f92672">=</span>true --set configureRepositories.repositories<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span>.name<span style="color:#f92672">=</span>acrgitopsdev,configureRepositories.repositories<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span>.url<span style="color:#f92672">=</span>https://acrgitopsdev.azurecr.io/helm/v1/repo,configureRepositories.repositories<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span>.username<span style="color:#f92672">=</span>put-your-sp-id-here,configureRepositories.repositories<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span>.password<span style="color:#f92672">=</span>put-your-sp-password-here
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">helm upgrade -i helm-operator fluxcd/helm-operator --set git.ssh.secretName<span style="color:#f92672">=</span>flux-git-deploy --set helm.versions<span style="color:#f92672">=</span>v3 --namespace flux --set configureRepositories.enable<span style="color:#f92672">=</span>true --set configureRepositories.repositories<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span>.name<span style="color:#f92672">=</span>acrgitopsdev,configureRepositories.repositories<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span>.url<span style="color:#f92672">=</span>https://acrgitopsdev.azurecr.io/helm/v1/repo,configureRepositories.repositories<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span>.username<span style="color:#f92672">=</span>put-your-sp-id-here,configureRepositories.repositories<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span>.password<span style="color:#f92672">=</span>put-your-sp-password-here
 </code></pre></div><blockquote>
 <p>You can do all those steps manually or create an Azure Pipelines to orchestrate all those commands.<br>
 To be honest, it&rsquo;s really easy to build the pipeline once you know all the commands you need to execute, so i&rsquo;m not going to waste time doing it.</p>
@@ -390,7 +390,7 @@ To be honest, it&rsquo;s really easy to build the pipeline once you know all the
 <h2 id="step-4---creating-the-application-config-file">Step 4 - Creating the application config file</h2>
 <hr>
 <p>The last step is to create the application config file, push it into the &ldquo;<strong>Manifests</strong>&rdquo; repository and see if Flux is capable of deploying our application in our Kubernetes cluster.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">
 <span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">helm.fluxcd.io/v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">HelmRelease</span>
 <span style="color:#f92672">metadata</span>:
@@ -410,7 +410,7 @@ There are more options available when creating the config file, if you&rsquo;re 
 If you want to read more about it: <a href="https://docs.microsoft.com/es-es/azure/container-registry/container-registry-auth-kubernetes">https://docs.microsoft.com/es-es/azure/container-registry/container-registry-auth-kubernetes</a></p>
 <p>And that&rsquo;s it, we are done! Flux has deployed the app into our cluster.<br>
 Let&rsquo;s test it a little bit. If we change the chart version and commit the file again:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">
 <span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">helm.fluxcd.io/v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">HelmRelease</span>
 <span style="color:#f92672">metadata</span>:
@@ -426,7 +426,7 @@ Let&rsquo;s test it a little bit. If we change the chart version and commit the 
 
 </code></pre></div><p>Flux automatically picks the change (with a 5 minutes delay) and replaces the application with the old version with the new one.</p>
 <p>Next we create a new application and push a new config file into the centralized repository, like this:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">
 <span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">helm.fluxcd.io/v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">HelmRelease</span>
 <span style="color:#f92672">metadata</span>:

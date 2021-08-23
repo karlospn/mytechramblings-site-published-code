@@ -178,7 +178,7 @@ Having multiple options is always nice and maybe in your company they cannot upd
 <li>First of all I define the response object that the healthcheck is going to return.<br>
 The healthcheck is going to return a <em>&ldquo;HealthCheckResponse&rdquo;</em> that contains a descriptive message and the status of our service: <em>Healthy</em>, <em>Unhealthy</em> or <em>Degraded</em></li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> System.Runtime.Serialization;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> System.Runtime.Serialization;
 
 <span style="color:#66d9ef">namespace</span> HealthChecks.Wcf
 {
@@ -198,7 +198,7 @@ The healthcheck is going to return a <em>&ldquo;HealthCheckResponse&rdquo;</em> 
 <li>Next step is to define the contract.<br>
 The endpoint created is going to be located under the <em>/check</em> uri</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> System.ServiceModel;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> System.ServiceModel;
 <span style="color:#66d9ef">using</span> System.ServiceModel.Web;
 
 <span style="color:#66d9ef">namespace</span> HealthChecks.Wcf
@@ -223,7 +223,7 @@ The endpoint created is going to be located under the <em>/check</em> uri</li>
 <p>Notice that I  created an abstract class that defines an abstract method: <em>ExecuteHealthCheck()</em> , that&rsquo;s because the <em>ExecuteHealthcheck</em> method needs to be implemented by the client app and it will contain the healthcheck logic that the client want to check.</p>
 <p>The <em>HealthCheckBase</em> is going to fetch the result of the <em>ExecuteHealthCheck</em> method, map from the method response to the response object and return a result.<br>
 In case the healthcheck fails it will return a WebFaultException with a 500 status code, and if the healthcheck succeeds with a healthy or degraded status it will return a 200 OK.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> System.Net;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> System.Net;
 <span style="color:#66d9ef">using</span> System.ServiceModel.Web;
 <span style="color:#66d9ef">using</span> HealthChecks.Wcf.Enums;
 
@@ -304,7 +304,7 @@ In case the healthcheck fails it will return a WebFaultException with a 500 stat
 When the serviceHost is opening the connection we use it to create a ServiceEndpoint with a WebHttpBinding.<br>
 Basically that will allow us to create a new REST endpoint in our WCF application.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> System;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> System;
 <span style="color:#66d9ef">using</span> System.Collections.Generic;
 <span style="color:#66d9ef">using</span> System.Linq;
 <span style="color:#66d9ef">using</span> System.Reflection;
@@ -362,7 +362,7 @@ Basically that will allow us to create a new REST endpoint in our WCF applicatio
 <h1 id="test-the-library">Test the library</h1>
 <p>Begin by creating a new WCF from scratch and adding a new csharp class that inherits from <em>HealthCheckBase</em>.<br>
 The class needs to implement the <em>ExecuteHealthCheck</em> method. The method will contain our health checking code. In my case I&rsquo;m returning directly an OK result.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> HealthChecks.Wcf.Enums;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> HealthChecks.Wcf.Enums;
 
 <span style="color:#66d9ef">namespace</span> HealthChecks.Wcf.IntegrationTest
 {
@@ -385,7 +385,7 @@ The class needs to implement the <em>ExecuteHealthCheck</em> method. The method 
 </code></pre></div><p>Next we need to register everything on our IoC container.
 I&rsquo;m using Autofac, so I need to follow the steps that Autofac dictates when you&rsquo;re registering the dependencies in a WCF.<br>
 You can use the IoC container that best suits your necessities, just look it up at the documentation what steps you need to follow.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">  <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> Application_Start(<span style="color:#66d9ef">object</span> sender, EventArgs e)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">  <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> Application_Start(<span style="color:#66d9ef">object</span> sender, EventArgs e)
         {
             <span style="color:#66d9ef">var</span> builder = <span style="color:#66d9ef">new</span> ContainerBuilder();
             builder.RegisterType&lt;Service1&gt;().As&lt;IService1&gt;();
@@ -399,14 +399,14 @@ You can use the IoC container that best suits your necessities, just look it up 
 </code></pre></div><p>We are creating a service without a .svc file, to do it with Autofac you need to add the following lines in the web.config.</p>
 <p>If you want more information about how to add a svc-less service using Autofac read it from the offical documentation <a href="https://autofaccn.readthedocs.io/en/latest/integration/wcf.html#svc-less-services">here</a></p>
 <p>As I said before if you&rsquo;re using another IoC container just search in the documentation how to create a svc-less service.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">  <span style="color:#f92672">&lt;serviceHostingEnvironment</span> <span style="color:#a6e22e">aspNetCompatibilityEnabled=</span><span style="color:#e6db74">&#34;true&#34;</span> <span style="color:#a6e22e">multipleSiteBindingsEnabled=</span><span style="color:#e6db74">&#34;true&#34;</span> <span style="color:#f92672">&gt;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">  <span style="color:#f92672">&lt;serviceHostingEnvironment</span> <span style="color:#a6e22e">aspNetCompatibilityEnabled=</span><span style="color:#e6db74">&#34;true&#34;</span> <span style="color:#a6e22e">multipleSiteBindingsEnabled=</span><span style="color:#e6db74">&#34;true&#34;</span> <span style="color:#f92672">&gt;</span>
       <span style="color:#f92672">&lt;serviceActivations&gt;</span>
        <span style="color:#f92672">&lt;add</span> <span style="color:#a6e22e">relativeAddress=</span><span style="color:#e6db74">&#34;health.svc&#34;</span> <span style="color:#a6e22e">service=</span><span style="color:#e6db74">&#34;HealthChecks.Wcf.IntegrationTest.MyHealthCheckService, HealthChecks.Wcf.IntegrationTest&#34;</span> <span style="color:#a6e22e">factory=</span><span style="color:#e6db74">&#34;Autofac.Integration.Wcf.AutofacServiceHostFactory, Autofac.Integration.Wcf&#34;</span><span style="color:#f92672">/&gt;</span>
       <span style="color:#f92672">&lt;/serviceActivations&gt;</span>
     <span style="color:#f92672">&lt;/serviceHostingEnvironment&gt;</span>
 </code></pre></div><p>The REST endpoint is going to be located in the uri : <em><strong>/health.svc/check</strong></em></p>
 <p>Now run the application and test the REST endpoint:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">curl -i http://localhost:39150/health.svc/check
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">curl -i http://localhost:39150/health.svc/check
 HTTP/1.1 <span style="color:#ae81ff">200</span> OK
 Cache-Control: private
 Content-Type: application/json; charset<span style="color:#f92672">=</span>utf-8
@@ -419,7 +419,7 @@ Date: Sat, <span style="color:#ae81ff">04</span> Jul <span style="color:#ae81ff"
 Content-Length: <span style="color:#ae81ff">57</span>
 
 </code></pre></div><p>Now modify the healthcheck class to make it fail:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> HealthChecks.Wcf.Enums;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> HealthChecks.Wcf.Enums;
 
 <span style="color:#66d9ef">namespace</span> HealthChecks.Wcf.IntegrationTest
 {
@@ -439,7 +439,7 @@ Content-Length: <span style="color:#ae81ff">57</span>
     }
 }
 </code></pre></div><p>And test it again:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">HTTP/1.1 <span style="color:#ae81ff">500</span> Internal Server Error
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">HTTP/1.1 <span style="color:#ae81ff">500</span> Internal Server Error
 Cache-Control: private
 Content-Type: application/json; charset<span style="color:#f92672">=</span>utf-8
 Server: Microsoft-IIS/10.0

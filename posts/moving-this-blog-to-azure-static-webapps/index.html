@@ -205,7 +205,7 @@ So I&rsquo;m hoping to maintain that simplicity when I move it to Azure Static W
 <p>My de facto tool for IaC is <strong>Terraform</strong>, but it doesn&rsquo;t support Azure Static WebApps right now. It seems that they&rsquo;re also working on it: <a href="https://github.com/terraform-providers/terraform-provider-azurerm/pull/7150">https://github.com/terraform-providers/terraform-provider-azurerm/pull/7150</a> <br>
 <strong>Pulumi</strong> also doesn&rsquo;t support it, so it seems that my best option right now is using an <strong>ARM template</strong>.</p>
 <p>Here&rsquo;s the ARM template I have built:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
     <span style="color:#f92672">&#34;$schema&#34;</span>: <span style="color:#e6db74">&#34;https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#&#34;</span>,
     <span style="color:#f92672">&#34;contentVersion&#34;</span>: <span style="color:#e6db74">&#34;1.0.0.0&#34;</span>,
     <span style="color:#f92672">&#34;parameters&#34;</span>: {
@@ -268,7 +268,7 @@ So I&rsquo;m hoping to maintain that simplicity when I move it to Azure Static W
     ]
 }
 </code></pre></div><p>And I&rsquo;m also using a parameters file:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
     <span style="color:#f92672">&#34;$schema&#34;</span>: <span style="color:#e6db74">&#34;https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#&#34;</span>,
     <span style="color:#f92672">&#34;contentVersion&#34;</span>: <span style="color:#e6db74">&#34;1.0.0.0&#34;</span>,
     <span style="color:#f92672">&#34;parameters&#34;</span>: {
@@ -347,7 +347,7 @@ If you try to do that you&rsquo;re going to end up with 2 pipelines that are doi
 <ul>
 <li><strong>This action creates the Azure static web app using an ARM template</strong></li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">Create Azure Static WebApps resources</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">Create Azure Static WebApps resources</span>
 <span style="color:#f92672">on</span>:
   <span style="color:#f92672">workflow_dispatch</span>:
   
@@ -380,7 +380,7 @@ If you try to do that you&rsquo;re going to end up with 2 pipelines that are doi
 <li><strong>This action builds and deploy the blog</strong>. <br>
 I did not build this action it was auto-generated and commited on my repository by the service itself.</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">Azure Static Web Apps CI/CD</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">Azure Static Web Apps CI/CD</span>
 
 <span style="color:#f92672">on</span>:
   <span style="color:#f92672">push</span>:
@@ -430,7 +430,7 @@ I did not build this action it was auto-generated and commited on my repository 
           <span style="color:#f92672">action</span>: <span style="color:#e6db74">&#34;close&#34;</span>
 </code></pre></div><p>After executing both pipelines the blog is finally up and running on an static web app.</p>
 <p>The last step is to add my custom domain in the web app, you can do it either from the Azure portal or using the Azure CLI:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">az staticwebapp hostname set -n mytechramblings-blog --hostname www.mytechramblings.com
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">az staticwebapp hostname set -n mytechramblings-blog --hostname www.mytechramblings.com
 </code></pre></div><h2 id="final-thoughts">Final thoughts</h2>
 <p>My impressions after tinkering a little bit with Azure Static WebApps is that it&rsquo;s still lacking a little bit in some departments.</p>
 <p>I&rsquo;m getting the impression that the service is trying a little too hard to automate things for me, it&rsquo;s a nice feature that it creates a fully functional CI/CD pipeline for me, but I want the ability to turn that feature off and do whatever I want to deploy the code.<br>

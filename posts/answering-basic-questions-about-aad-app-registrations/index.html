@@ -218,7 +218,7 @@ If we request an access token using the .default scope our users will be asked t
 <p>I have register an app with the following permissions:</p>
 <p><img src="/img/default-scope-permissions-1.png" alt="default-scope-permissions-1"></p>
 <p>And if I request an access token using the .default scope</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#a6e22e">https</span><span style="color:#f92672">:</span><span style="color:#75715e">//login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/oauth2/v2.0/authorize
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#a6e22e">https</span><span style="color:#f92672">:</span><span style="color:#75715e">//login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/oauth2/v2.0/authorize
 </span><span style="color:#75715e"></span><span style="color:#f92672">?</span><span style="color:#a6e22e">client_id</span><span style="color:#f92672">=</span><span style="color:#ae81ff">5833</span><span style="color:#a6e22e">d6c7</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span><span style="color:#a6e22e">ba5</span><span style="color:#f92672">-</span><span style="color:#ae81ff">4184</span><span style="color:#f92672">-</span><span style="color:#ae81ff">9</span><span style="color:#a6e22e">b14</span><span style="color:#f92672">-</span><span style="color:#ae81ff">050</span><span style="color:#a6e22e">a6b5ed212</span>
 <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">redirect_uri</span><span style="color:#f92672">=</span><span style="color:#a6e22e">https</span><span style="color:#f92672">:</span><span style="color:#75715e">//oidcdebugger.com/debug
 </span><span style="color:#75715e"></span><span style="color:#f92672">&amp;</span><span style="color:#a6e22e">scope</span><span style="color:#f92672">=</span><span style="color:#a6e22e">https</span><span style="color:#f92672">:</span><span style="color:#75715e">//graph.microsoft.com/.default
@@ -226,7 +226,7 @@ If we request an access token using the .default scope our users will be asked t
 <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">response_mode</span><span style="color:#f92672">=</span><span style="color:#a6e22e">form_post</span>
 <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">nonce</span><span style="color:#f92672">=</span><span style="color:#a6e22e">yj8o2c250eq</span>
 </code></pre></div><p>I get an access token containing all the scopes that where present on the permissions section</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">{
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">{
    ...
    <span style="color:#e6db74">&#34;scp&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;AccessReview.Read.All Agreement.Read.All Calendars.Read Device.Read.All profile openid email&#34;</span>,
    ...
@@ -242,7 +242,7 @@ If we request an access token using the .default scope our users will be asked t
 <p>The Booking app has the following permissions for the payment app:</p>
 <p><img src="/img/default-scope-permissions-3.png" alt="default-scope-permissions-3"></p>
 <p>If I request an access token using the .default scope</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#a6e22e">https</span><span style="color:#f92672">:</span><span style="color:#75715e">//login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/oauth2/v2.0/authorize
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#a6e22e">https</span><span style="color:#f92672">:</span><span style="color:#75715e">//login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/oauth2/v2.0/authorize
 </span><span style="color:#75715e"></span><span style="color:#f92672">?</span><span style="color:#a6e22e">client_id</span><span style="color:#f92672">=</span><span style="color:#a6e22e">c3b8b95f</span><span style="color:#f92672">-</span><span style="color:#ae81ff">922</span><span style="color:#a6e22e">b</span><span style="color:#f92672">-</span><span style="color:#ae81ff">4384</span><span style="color:#f92672">-</span><span style="color:#ae81ff">8</span><span style="color:#a6e22e">ab2</span><span style="color:#f92672">-</span><span style="color:#a6e22e">a1215a9fc295</span>
 <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">redirect_uri</span><span style="color:#f92672">=</span><span style="color:#a6e22e">https</span><span style="color:#f92672">:</span><span style="color:#75715e">//oidcdebugger.com/debug
 </span><span style="color:#75715e"></span><span style="color:#f92672">&amp;</span><span style="color:#a6e22e">scope</span><span style="color:#f92672">=</span><span style="color:#a6e22e">api</span><span style="color:#f92672">:</span><span style="color:#75715e">//payment/.default
@@ -250,7 +250,7 @@ If we request an access token using the .default scope our users will be asked t
 <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">response_mode</span><span style="color:#f92672">=</span><span style="color:#a6e22e">form_post</span>
 <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">nonce</span><span style="color:#f92672">=</span><span style="color:#a6e22e">wq2vzi24b5</span>
 </code></pre></div><p>I get an access token containing all the scopes for the payment api that where present on the permissions section</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">{
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">{
    ...
    <span style="color:#e6db74">&#34;scp&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;payment.read payment.write&#34;</span>,
    ...
@@ -299,7 +299,7 @@ The SPA has to make authenticated requests to the WebApi and also the middle-tie
 <ul>
 <li>On the WebApi 1 project:</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> Microsoft.Identity.Web;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> Microsoft.Identity.Web;
 
 <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Startup</span>
 {
@@ -316,7 +316,7 @@ The SPA has to make authenticated requests to the WebApi and also the middle-tie
 
 </code></pre></div><p>WebApi 1 needs to acquire a token for the downstream API (WebApi 2). You specify it by adding the <em>.EnableTokenAcquisitionToCallDownstreamApi()</em> line after <em>.AddMicrosoftIdentityWebApi(Configuration)</em>.<br>
 You can call the downstream API without adding the extension <em>.AddDownstreamWebApi()</em> but it&rsquo;s really useful because now I can directly inject an <em>IDownstreamWebApi</em> service in my controller and use it to call the WebApi 2 app without the need to build an HttpClient.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">
 </span><span style="color:#a6e22e">[ApiController]</span>
 <span style="color:#a6e22e">[Authorize]</span>
 <span style="color:#a6e22e">[Route(&#34;api/invoke&#34;)]</span>
@@ -354,7 +354,7 @@ You can call the downstream API without adding the extension <em>.AddDownstreamW
 </ul>
 <p>We simply need to add <em>.AddMicrosoftIdentityWebApiAuthentication()</em> on the <em>Startup.cs</em>.<br>
 This method enables your WebAPI to be protected using the Microsoft identity platform. This includes validating the token in all scenarios (single- and multi-tenant applications).</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
 {
    services.AddMicrosoftIdentityWebApiAuthentication(Configuration);
    services.AddControllers();
@@ -363,7 +363,7 @@ This method enables your WebAPI to be protected using the Microsoft identity pla
 <p>No, you can&rsquo;t.
 What you can do is define appRoles and have them returned via the client credential flow. Also you need to specify the .default scope in a client credentials flow, you cannot specify a concrete scope.</p>
 <p>Just like this:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#a6e22e">curl</span> <span style="color:#f92672">-</span><span style="color:#a6e22e">X</span> <span style="color:#a6e22e">POST</span> <span style="color:#a6e22e">https</span><span style="color:#f92672">:</span><span style="color:#75715e">//login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/oauth2/v2.0/token 
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#a6e22e">curl</span> <span style="color:#f92672">-</span><span style="color:#a6e22e">X</span> <span style="color:#a6e22e">POST</span> <span style="color:#a6e22e">https</span><span style="color:#f92672">:</span><span style="color:#75715e">//login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/oauth2/v2.0/token 
 </span><span style="color:#75715e"></span><span style="color:#f92672">-</span><span style="color:#a6e22e">H</span> <span style="color:#e6db74">&#39;Cache-Control: no-cache&#39;</span> 
 <span style="color:#f92672">-</span><span style="color:#a6e22e">H</span> <span style="color:#e6db74">&#39;Content-Type: application/x-www-form-urlencoded&#39;</span> 
 <span style="color:#f92672">-</span><span style="color:#a6e22e">d</span> <span style="color:#e6db74">&#39;grant_type=client_credentials&amp;client_id=c3b8b9 5f-922b-4384-8ab2-a1215a9fc295&amp;client_secret=e-M2va9la3O1pl~x1HPQNVXKSrK-a9_iRK&amp;scope=api://payment/.default&#39;</span>
@@ -387,7 +387,7 @@ You&rsquo;re going to run in some troubles if you&rsquo;re try to validate the i
 <li>Let me show you what I&rsquo;m trying to explain with an example:</li>
 </ul>
 <p>Here&rsquo;s an access token that has been issued when the attribute &ldquo;accesstokenAcceptedVersion&rdquo; is set to <strong>null</strong> or <strong>1</strong>:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">{
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">{
    <span style="color:#e6db74">&#34;aud&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;api://42216d82-c01b-45c6-8bcf-511d472900b1&#34;</span>,
    <span style="color:#e6db74">&#34;iss&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;https://sts.windows.net/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/&#34;</span>,
    <span style="color:#e6db74">&#34;iat&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1602591474</span>,
@@ -416,7 +416,7 @@ You&rsquo;re going to run in some troubles if you&rsquo;re try to validate the i
    <span style="color:#e6db74">&#34;ver&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;1.0&#34;</span>
 }
 </code></pre></div><p>And here&rsquo;s an access token that has been issued when the attribute &ldquo;accesstokenAcceptedVersion&rdquo; is set to <strong>2</strong>:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">{
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">{
    <span style="color:#e6db74">&#34;aud&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;42216d82-c01b-45c6-8bcf-511d472900b1&#34;</span>,
    <span style="color:#e6db74">&#34;iss&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;https://login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/v2.0&#34;</span>,
    <span style="color:#e6db74">&#34;iat&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1602594547</span>,
@@ -437,7 +437,7 @@ You&rsquo;re going to run in some troubles if you&rsquo;re try to validate the i
    <span style="color:#e6db74">&#34;ver&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2.0&#34;</span>
 }
 </code></pre></div><p>As you can see both the issuer and the audience values are completely different, so be mindful if you do some kind of token validations like this one:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">app.UseWindowsAzureActiveDirectoryBearerAuthentication(
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">app.UseWindowsAzureActiveDirectoryBearerAuthentication(
    <span style="color:#66d9ef">new</span> WindowsAzureActiveDirectoryBearerAuthenticationOptions
    {
          Audience = <span style="color:#e6db74">&#34;https://sts.windows.net/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/&#34;</span>

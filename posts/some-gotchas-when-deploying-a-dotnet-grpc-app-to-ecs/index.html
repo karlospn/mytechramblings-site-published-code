@@ -183,7 +183,7 @@ In this post I will talk about these 4 themes:</p>
 <p>A gRPC service is used as the health checking mechanism for both client-to-server scenario and other control systems such as load-balancing. Since it is a GRPC service itself, doing a health check is in the same format as a normal rpc.</p>
 <p>If you want to read the gRPC protocol standard, click <a href="https://github.com/grpc/grpc/blob/master/doc/health-checking.md">here</a>. <br>
 This is the standard proto file that a gRPC healthcheck service needs to implement:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">syntax = <span style="color:#e6db74">&#34;proto3&#34;</span>;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">syntax = <span style="color:#e6db74">&#34;proto3&#34;</span>;
 
 package grpc.health.v1;
 
@@ -221,7 +221,7 @@ If the service name is not registered, the server returns a <code>NOT_FOUND</cod
 <p>We could install the package and start using it right off the bat, but in .NET Core we have a rich offering of healthcheck implementations (<a href="https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks">https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks</a>) that uses the <code>AspNetCore.Diagnostics.HealthChecks</code>  NuGet as a base and I want to keep using them.<br>
 To use the <code>AspNetCore.Diagnostics.HealthChecks</code> in combination with the <code>Grpc.HealthCheck</code> package you have to override the gRPC healthchecking service that the <code>Grpc.HealthCheck</code> NuGet offers.<br>
 If you take a look at the implementation of the <code>Check</code> method in the <code>Grpc.Healthcheck</code> package, you&rsquo;ll see that the method can be overriden.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e">/// Performs a health status check.
 </span><span style="color:#75715e">/// &lt;/summary&gt;
 </span><span style="color:#75715e">/// &lt;param name=&#34;request&#34;&gt;The check request.&lt;/param&gt;
@@ -235,7 +235,7 @@ If you take a look at the implementation of the <code>Check</code> method in the
 }
 </code></pre></div><p>We can override the <code>Check</code> method and use the <code>HealthCheckService</code> from the <code>AspNetCore.Diagnostics.HealthChecks</code> to execute the .NET Core healthchecks.<br>
 Here&rsquo;s the result:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> System;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> System;
 <span style="color:#66d9ef">using</span> System.Threading.Tasks;
 <span style="color:#66d9ef">using</span> Grpc.Core;
 <span style="color:#66d9ef">using</span> Grpc.Health.V1;
@@ -305,7 +305,7 @@ If the service name is not registered, the server returns a <code>NOT_FOUND</cod
 <li>If the service is unhealthy return a <code>Unavailable</code> status (gRPC status code = 14)</li>
 </ul>
 <p>Here&rsquo;s a snippet of code showing the end result:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> System;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> System;
 <span style="color:#66d9ef">using</span> System.Threading.Tasks;
 <span style="color:#66d9ef">using</span> Grpc.Core;
 <span style="color:#66d9ef">using</span> Grpc.Health.V1;
@@ -371,7 +371,7 @@ If the service name is not registered, the server returns a <code>NOT_FOUND</cod
 <p>The default <code>Protocols</code> value for any endpoint is <code>HttpProtocols.Http1AndHttp2</code></p>
 <p>You can set the HTTP protocol via config file or directly in code.<br>
 The following <code>Program.cs</code> example establishes HTTP/1.1 for the 5001 port and HTTP/2 for the 5002 port.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> IHostBuilder CreateHostBuilder(<span style="color:#66d9ef">string</span>[] args) =&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> IHostBuilder CreateHostBuilder(<span style="color:#66d9ef">string</span>[] args) =&gt;
         Host.CreateDefaultBuilder(args)
             .ConfigureWebHostDefaults(webBuilder =&gt;
             {
@@ -389,7 +389,7 @@ The following <code>Program.cs</code> example establishes HTTP/1.1 for the 5001 
                 webBuilder.UseStartup&lt;Startup&gt;();
             });
 </code></pre></div><p>The following <code>appsettings.json</code> example establishes HTTP/1.1 as the default connection protocol for all endpoints:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">{
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">{
   <span style="color:#e6db74">&#34;Kestrel&#34;</span><span style="color:#f92672">:</span> {
     <span style="color:#e6db74">&#34;EndpointDefaults&#34;</span><span style="color:#f92672">:</span> {
       <span style="color:#e6db74">&#34;Protocols&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Http1&#34;</span>
@@ -418,7 +418,7 @@ With AWS ECS we are doing a TLS termination in the Load Balancer, so the communi
 <p><strong>Set Kestrel to listen 2 differents ports. Each port will use a different Http protocol</strong>. This is probably the best of the 3 options. To use this option you&rsquo;ll need to modify the <code>Program.cs</code> like this:</p>
 </li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Program</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Program</span>
 {
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args)
     {
@@ -469,7 +469,7 @@ With AWS ECS we are doing a TLS termination in the Load Balancer, so the communi
 <h1 id="3whats-the-package-attribute-on-the-proto-file-for-how-the-alb-path-routing-works-with-grpc-apps">3.What&rsquo;s the package attribute on the proto file for? How the ALB path routing works with gRPC apps.</h1>
 <p>When you create a new dotnet gRPC service you need to be aware of the <code>package</code> atribute.<br>
 The namespace is inferred from the proto <code>package</code> attribute. For example, a proto with a package named <code>reply</code> would result in an auto-generated file with the namespace of <code>Reply</code>. If you take a look at the auto-generated files from the <code>/obj</code> folder you can clearly see it.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// &lt;auto-generated&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// &lt;auto-generated&gt;
 </span><span style="color:#75715e">//     Generated by the protocol buffer compiler.  DO NOT EDIT!
 </span><span style="color:#75715e">//     source: Protos/reply.proto
 </span><span style="color:#75715e">// &lt;/auto-generated&gt;
@@ -491,7 +491,7 @@ The namespace is inferred from the proto <code>package</code> attribute. For exa
 <li><strong>Example 1:</strong></li>
 </ul>
 <p>Given this proto file:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">syntax = <span style="color:#e6db74">&#34;proto3&#34;</span>;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">syntax = <span style="color:#e6db74">&#34;proto3&#34;</span>;
 
 option csharp_namespace = <span style="color:#e6db74">&#34;Server.Grpc&#34;</span>;
 
@@ -520,7 +520,7 @@ With this proto file you can build the following routes in the ALB:</p>
 <li><strong>Example 2:</strong></li>
 </ul>
 <p>Another option is to remove the <code>package</code> attribute from the proto file.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">syntax = <span style="color:#e6db74">&#34;proto3&#34;</span>;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">syntax = <span style="color:#e6db74">&#34;proto3&#34;</span>;
 
 option csharp_namespace = <span style="color:#e6db74">&#34;Server.Grpc&#34;</span>;
 
@@ -561,7 +561,7 @@ Configure gRPC reflection in an app is really easy:</p>
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">namespace</span> Server.Grpc
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">namespace</span> Server.Grpc
 {
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Startup</span>
     {
