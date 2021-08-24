@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>graphql on my tech ramblings</title>
+    
+    
+    
+    <link>https://www.mytechramblings.com/tags/graphql/</link>
+    <description>Recent content in graphql on my tech ramblings</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 24 Aug 2021 10:21:33 +0200</lastBuildDate>
+    
+	<atom:link href="https://www.mytechramblings.com/tags/graphql/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Securing a graphQL API with Azure Active Directory</title>
+      <link>https://www.mytechramblings.com/posts/securing-dotnet-graphql-api-with-aad/</link>
+      <pubDate>Tue, 24 Aug 2021 10:21:33 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/securing-dotnet-graphql-api-with-aad/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          Just show me the code
+As always if you don’t care about the post I have upload the source code on my Github.
+ In today&amp;rsquo;s post I want to talk about how you can secure a .NET graphQL API using Azure Active Directory (AAD).
+If you want to build a graphQL API in .NET right now, the most well-known options available are the graphQL.NET implementation (https://graphql-dotnet.github.io/) and the HotChocolate one (https://chillicream.
+          
+        
+        </description>
+    </item>
+    
+  </channel>
+</rss>
