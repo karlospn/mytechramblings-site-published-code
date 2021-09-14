@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>Setting up the SonarQube scanner when building a .NET Core container image :: my tech ramblings — A blog for writing about my techie ramblings</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Just show me the code
+As always if you don’t care about the post I have upload the source code on my Github.
+ SonarQube is one of the most well-known code review tools in the dotnet space. It is used mainly to detect bugs, vulnerabilities and code smells in your codebase and it can be integrated with any workflow to enable a continuous code inspection across multiple branches and pull requests."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://www.mytechramblings.com/posts/running-a-sonarqube-scan-when-building-docker-image/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/assets/style.css">
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.mytechramblings.com/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://www.mytechramblings.com/img/favicon.png">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Setting up the SonarQube scanner when building a .NET Core container image"/>
+<meta name="twitter:description" content="Just show me the code
+As always if you don’t care about the post I have upload the source code on my Github.
+ SonarQube is one of the most well-known code review tools in the dotnet space. It is used mainly to detect bugs, vulnerabilities and code smells in your codebase and it can be integrated with any workflow to enable a continuous code inspection across multiple branches and pull requests."/>
+
+
+
+<meta property="og:title" content="Setting up the SonarQube scanner when building a .NET Core container image" />
+<meta property="og:description" content="Just show me the code
+As always if you don’t care about the post I have upload the source code on my Github.
+ SonarQube is one of the most well-known code review tools in the dotnet space. It is used mainly to detect bugs, vulnerabilities and code smells in your codebase and it can be integrated with any workflow to enable a continuous code inspection across multiple branches and pull requests." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.mytechramblings.com/posts/running-a-sonarqube-scan-when-building-docker-image/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-09-14T10:05:00+02:00" />
+<meta property="article:modified_time" content="2021-09-14T10:05:00+02:00" /><meta property="og:site_name" content="my tech ramblings" />
+
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://www.mytechramblings.com/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">my tech ramblings</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/running-a-sonarqube-scan-when-building-docker-image/">Setting up the SonarQube scanner when building a .NET Core container image</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2021-09-14
+        </span>
+
+        
+          
+            
+
+
+
+          
+        
+      
+
+      
+      
+        <span class="post-read-time">— 7 min read</span>
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          #<a href="https://www.mytechramblings.com/tags/sonarqube/">sonarqube</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/docker/">docker</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/containers/">containers</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/csharp/">csharp</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/dotnet/">dotnet</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <blockquote>
+<p><strong>Just show me the code</strong><br>
+As always if you don’t care about the post I have upload the source code on my <a href="https://github.com/karlospn/sonarqube-scan-inside-a-dockerfile">Github</a>.</p>
+</blockquote>
+<p>SonarQube is one of the most well-known code review tools in the dotnet space. It is used mainly to detect bugs, vulnerabilities and code smells in your codebase and it can be integrated with any workflow to enable a continuous code inspection across multiple branches and pull requests.</p>
+<p>In a typical development process:</p>
+<ul>
+<li>A Developer checks-in their code to their CVS (control version system).</li>
+<li>The organization continuous integration tool checks out the code, builds, runs the tests and afterwards an integrated SonarQube scanner analyzes the results.</li>
+<li>The SonarQube scanner posts the results to the SonarQube server which provides feedback to developers through the SonarQube UI.</li>
+</ul>
+<p><img src="/img/sonarqube-dev-cycle.png" alt="sonarqube-dev-cycle"></p>
+<p>To analyze your code you need to install and configure a SonarQube scanner. The scanner can either run on your build or as part of your continuous integration pipeline performing a scan whenever your build process is triggered.</p>
+<p>If you&rsquo;re using containers quite probably you&rsquo;re doing the build, test and analysis steps inside the Dockerfile, and setting up the SonarQube scanner when building the image can be a little more cumbersome than usual, and that&rsquo;s why I wanted to write a little bit about it.</p>
+<h1 id="prerequisites">Prerequisites</h1>
+<ul>
+<li>A running SonarQube server instance.</li>
+</ul>
+<p>I&rsquo;m not going to talk about how to set up a SonarQube server because it is out of the scope for this post, you can use either a SonarCloud instance or spun your own Sonarqube server.</p>
+<p>For this post I&rsquo;ll be using a SonarCloud instance mainly because it is faster to set it up and it is free for public projects.</p>
+<h1 id="building-the-dockerfile">Building the Dockerfile</h1>
+<p>A good practice when writing a dockerfile is using multi-stage builds.</p>
+<p>A multi-stage build allow you to drastically reduce the size of your final image, without struggling to reduce the number of intermediate layers and files.</p>
+<p>With multi-stage builds, you use multiple FROM statements in your Dockerfile. Each FROM instruction can use a different base, and each of them begins a new stage of the build. You can selectively copy artifacts from one stage to another, leaving behind everything you don’t want in the final image.</p>
+<p>These are the steps we&rsquo;re going to do in each stage:</p>
+<ul>
+<li>
+<p><strong>Stage 1</strong></p>
+<ul>
+<li>Install Java.</li>
+<li>Install the <code>dotnet-sonarscanner</code> global tool.</li>
+<li>Install the <code>dotnet-reportgenerator-globaltool</code> global tool.</li>
+<li>Start the SonarQube scanner.</li>
+<li>Restore the dependencies.</li>
+<li>Build the app.</li>
+<li>Run the tests.</li>
+<li>Get the code coverage report from the tests and convert it into a SonarQube report.</li>
+<li>Publish the app.</li>
+<li>Stop the SonarQube scanner.</li>
+</ul>
+</li>
+<li>
+<p><strong>Stage 2</strong></p>
+<ul>
+<li>Get the artifact from the stage 1.</li>
+<li>Execute the run command.</li>
+</ul>
+</li>
+</ul>
+<p>Here&rsquo;s how the final Dockerfile looks like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">#############</span>
+<span style="color:#75715e">## Stage 1 ##</span>
+<span style="color:#75715e">#############</span>
+<span style="color:#ae81ff">FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS build-env</span>
+<span style="color:#ae81ff">WORKDIR /app</span>
+
+<span style="color:#75715e">## Arguments for setting the Sonarqube Token and the Project Key</span>
+<span style="color:#ae81ff">ARG SONAR_TOKEN</span>
+<span style="color:#ae81ff">ARG SONAR_PRJ_KEY</span>
+
+<span style="color:#75715e">## Setting the Sonarqube Organization and Uri</span>
+<span style="color:#ae81ff">ENV SONAR_ORG &#34;karlospn&#34;</span>
+<span style="color:#ae81ff">ENV SONAR_HOST &#34;https://sonarcloud.io&#34;</span>
+
+<span style="color:#75715e">## Install Java, because the sonarscanner needs it.</span>
+<span style="color:#ae81ff">RUN mkdir /usr/share/man/man1/</span>
+<span style="color:#ae81ff">RUN apt-get update &amp;&amp; apt-get dist-upgrade -y &amp;&amp; apt-get install -y openjdk-11-jre</span>
+
+<span style="color:#75715e">## Install sonarscanner</span>
+<span style="color:#ae81ff">RUN dotnet tool install --global dotnet-sonarscanner --version 5.3.1</span>
+
+<span style="color:#75715e">## Install report generator</span>
+<span style="color:#ae81ff">RUN dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.8.12</span>
+
+<span style="color:#75715e">## Set the dotnet tools folder in the PATH env variable</span>
+<span style="color:#ae81ff">ENV PATH=&#34;${PATH}:/root/.dotnet/tools&#34;</span>
+
+<span style="color:#75715e">## Start scanner</span>
+<span style="color:#ae81ff">RUN dotnet sonarscanner begin \</span>
+	<span style="color:#ae81ff">/o:&#34;$SONAR_ORG&#34; \</span>
+	<span style="color:#ae81ff">/k:&#34;$SONAR_PRJ_KEY&#34; \</span>
+	<span style="color:#ae81ff">/d:sonar.host.url=&#34;$SONAR_HOST&#34; \</span>
+	<span style="color:#ae81ff">/d:sonar.login=&#34;$SONAR_TOKEN&#34; \ </span>
+	<span style="color:#ae81ff">/d:sonar.coverageReportPaths=&#34;coverage/SonarQube.xml&#34;</span>
+
+<span style="color:#75715e">## Copy the applications .csproj</span>
+<span style="color:#ae81ff">COPY /src/WebApp/*.csproj ./src/WebApp/</span>
+
+<span style="color:#75715e">## Restore packages</span>
+<span style="color:#ae81ff">RUN dotnet restore &#34;./src/WebApp/WebApp.csproj&#34; -s &#34;https://api.nuget.org/v3/index.json&#34;</span>
+
+<span style="color:#75715e">## Copy everything else</span>
+<span style="color:#ae81ff">COPY . ./</span>
+
+<span style="color:#75715e">## Build the app</span>
+<span style="color:#ae81ff">RUN dotnet build &#34;./src/WebApp/WebApp.csproj&#34; -c Release --no-restore</span>
+
+<span style="color:#75715e">## Run dotnet test setting the output on the /coverage folder</span>
+<span style="color:#ae81ff">RUN dotnet test test/WebApp.Tests/*.csproj --collect:&#34;XPlat Code Coverage&#34; --results-directory ./coverage</span>
+
+<span style="color:#75715e">## Create the code coverage file in sonarqube format using the cobertura file generated from the dotnet test command</span>
+<span style="color:#ae81ff">RUN reportgenerator &#34;-reports:./coverage/*/coverage.cobertura.xml&#34; &#34;-targetdir:coverage&#34; &#34;-reporttypes:SonarQube&#34;</span>
+
+<span style="color:#75715e">## Publish the app</span>
+<span style="color:#ae81ff">RUN dotnet publish src/WebApp/*.csproj -c Release -o /app/publish --no-build --no-restore</span>
+
+<span style="color:#75715e">## Stop scanner</span>
+<span style="color:#ae81ff">RUN dotnet sonarscanner end /d:sonar.login=&#34;$SONAR_TOKEN&#34;</span>
+
+<span style="color:#75715e">#############</span>
+<span style="color:#75715e">## Stage 2 ##</span>
+<span style="color:#75715e">#############</span>
+<span style="color:#ae81ff">FROM mcr.microsoft.com/dotnet/aspnet:5.0-buster-slim</span>
+<span style="color:#ae81ff">WORKDIR /app</span>
+<span style="color:#ae81ff">COPY --from=build-env /app/publish .</span>
+<span style="color:#ae81ff">ENTRYPOINT [&#34;dotnet&#34;, &#34;WebApp.dll&#34;]</span>
+</code></pre></div><hr>
+<p>Now let me explain bit by bit what the Dockerfile is doing.</p>
+<ul>
+<li><strong>Step 1:</strong>  Define which arguments should be passed at runtime and which not.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">## Arguments for setting the Sonarqube Token and the Project Key</span>
+<span style="color:#ae81ff">ARG SONAR_TOKEN</span>
+<span style="color:#ae81ff">ARG SONAR_PRJ_KEY</span>
+
+<span style="color:#75715e">## Setting the Sonarqube Organization and Uri</span>
+<span style="color:#ae81ff">ENV SONAR_ORG &#34;karlospn&#34;</span>
+<span style="color:#ae81ff">ENV SONAR_HOST &#34;https://sonarcloud.io&#34;</span>
+</code></pre></div><p>The <code>&quot;SONAR_TOKEN&quot;</code> argument contains the SonarQube server credentials, so it should not be hardcoded into the Dockerfile.</p>
+<p>The <code>&quot;SONAR_PRJ_KEY</code> argument contains the project key name.</p>
+<p>The <code>&quot;SONAR_ORG&quot;</code> and <code>SONAR_HOST</code> parameters don&rsquo;t contain sensitive data and are not going to change so I can set both of them as environment variables.</p>
+<ul>
+<li><strong>Step 2:</strong> Install Java.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">## Install Java, because the sonarscanner needs it.</span>
+<span style="color:#ae81ff">RUN mkdir /usr/share/man/man1/</span>
+<span style="color:#ae81ff">RUN apt-get update &amp;&amp; apt-get dist-upgrade -y &amp;&amp; apt-get install -y openjdk-11-jre</span>
+</code></pre></div><p>This is a must, because the sonar scanner won&rsquo;t work without it.</p>
+<p>I&rsquo;m using <code>mcr.microsoft.com/dotnet/sdk:5.0-buster-slim</code> as a base image, this image is based on Debian 10 and if you try to install a Java Runtime Environment package, you' ll get this error:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">Errors were encountered <span style="color:#66d9ef">while</span> processing:
+ openjdk-11-jre-headless:amd64
+ openjdk-11-jre:amd64
+ default-jre
+E: Sub-process /usr/bin/dpkg returned an error code <span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>
+</code></pre></div><p>To fix the issue you need execute the command <code>mkdir -p /usr/share/man/man1</code>. It seems that java packages require that folder to exist. Installing the man package doesn&rsquo;t fix the issue, you need to create the folder manually.</p>
+<ul>
+<li><strong>Step 3:</strong> Install <code>dotnet-sonarscanner</code> and <code>dotnet-reportgenerator-globaltool</code></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">## Install sonarscanner</span>
+<span style="color:#ae81ff">RUN dotnet tool install --global dotnet-sonarscanner --version 5.3.1</span>
+
+<span style="color:#75715e">## Install report generator</span>
+<span style="color:#ae81ff">RUN dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.8.12</span>
+
+<span style="color:#75715e">## Set the dotnet tools folder in the PATH env variable</span>
+<span style="color:#ae81ff">ENV PATH=&#34;${PATH}:/root/.dotnet/tools&#34;</span>
+</code></pre></div><p>The <code>dotnet-sonarscanner</code> global tool is the recommended way to launch an analysis for projects using the dotnet command line as a build tool.</p>
+<p>The <code>dotnet-reportgenerator-globaltool</code>  global tool converts coverage reports generated by coverlet, OpenCover, dotCover, Visual Studio, NCover, Cobertura, JaCoCo, Clover, gcov or lcov into another formats, and one of this formats is the SonarQube format.</p>
+<ul>
+<li><strong>Step 4:</strong>  Start Sonar Scanner.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">## Start scanner</span>
+<span style="color:#ae81ff">RUN dotnet sonarscanner begin \</span>
+        <span style="color:#ae81ff">/o:&#34;$SONAR_ORG&#34; \</span>
+        <span style="color:#ae81ff">/k:&#34;$SONAR_PRJ_KEY&#34; \</span>
+        <span style="color:#ae81ff">/d:sonar.host.url=&#34;$SONAR_HOST&#34; \</span>
+        <span style="color:#ae81ff">/d:sonar.login=&#34;$SONAR_TOKEN&#34; \ </span>
+        <span style="color:#ae81ff">/d:sonar.coverageReportPaths=&#34;coverage/SonarQube.xml&#34;</span>
+</code></pre></div><p>The <code>coverageReportPaths</code> attribute needs to point to the code coverage report. <em>(More info on Step 6)</em></p>
+<ul>
+<li><strong>Step 5:</strong>  Copy the <code>.csproj</code> files, restore, build and run the tests.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">## Copy the applications .csproj</span>
+<span style="color:#ae81ff">COPY /src/WebApp/*.csproj ./src/WebApp/</span>
+
+<span style="color:#75715e">## Restore packages</span>
+<span style="color:#ae81ff">RUN dotnet restore &#34;./src/WebApp/WebApp.csproj&#34; -s &#34;https://api.nuget.org/v3/index.json&#34;</span>
+
+<span style="color:#75715e">## Copy everything else</span>
+<span style="color:#ae81ff">COPY . ./</span>
+
+<span style="color:#75715e">## Build the app</span>
+<span style="color:#ae81ff">RUN dotnet build &#34;./src/WebApp/WebApp.csproj&#34; -c Release --no-restore</span>
+
+<span style="color:#75715e">## Run dotnet test setting the output on the /coverage folder</span>
+<span style="color:#ae81ff">RUN dotnet test test/WebApp.Tests/*.csproj --collect:&#34;XPlat Code Coverage&#34; --results-directory ./coverage</span>
+</code></pre></div><p>When running the  <code>dotnet test</code> command you need to specify the &ldquo;XPlat Code Coverage&rdquo; argument, this argument is a friendly name that enables the Coverlet data collector and it will output a <code>coverage.cobertura.xml</code> file in the <code>results-directory</code> folder.</p>
+<p>As an alternative, you could use the MSBuild package if your build system already makes use of MSBuild. In this case you need run the tests using the <code>dotnet test/WebApp.Tests/*.csproj /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura</code>  command</p>
+<ul>
+<li><strong>Step 6:</strong> Generate the code coverage report in a format compatible for SonarQube.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">## Create the code coverage file in sonarqube format using the cobertura file generated from the dotnet test command</span>
+<span style="color:#ae81ff">RUN reportgenerator &#34;-reports:./coverage/*/coverage.cobertura.xml&#34; &#34;-targetdir:coverage&#34; &#34;-reporttypes:SonarQube&#34;</span>
+</code></pre></div><p>The code coverage file generated by the <code>dotnet test</code> command is not compatible with SonarQube, with the report generator tool we&rsquo;re converting the Coverlet code coverage report into a compatible SonarQube report.</p>
+<p>The <code>targetdir</code> attribute specifies the folder where the resulting report will be placed.</p>
+<ul>
+<li><strong>Step 7:</strong> Publish the application and stop the SonarQube scanner</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">## Publish the app</span>
+RUN dotnet publish src/WebApp/*.csproj -c Release -o /app/publish --no-build --no-restore
+
+<span style="color:#75715e">## Stop scanner</span>
+RUN dotnet sonarscanner end /d:sonar.login<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$SONAR_TOKEN<span style="color:#e6db74">&#34;</span>
+</code></pre></div><ul>
+<li><strong>Step 8:</strong> Get the artifact from the stage 1 and execute the run command.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#############</span>
+<span style="color:#75715e">## Stage 2 ##</span>
+<span style="color:#75715e">#############</span>
+FROM mcr.microsoft.com/dotnet/aspnet:5.0-buster-slim
+WORKDIR /app
+COPY --from<span style="color:#f92672">=</span>build-env /app/publish .
+ENTRYPOINT <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;dotnet&#34;</span>, <span style="color:#e6db74">&#34;WebApp.dll&#34;</span><span style="color:#f92672">]</span>
+</code></pre></div>
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://www.mytechramblings.com/posts/securing-dotnet-graphql-api-with-aad/">
+                  <span class="button__text">Securing a graphQL API with Azure Active Directory</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2021 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>Theme created by <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://www.mytechramblings.com/assets/main.js"></script>
+<script src="https://www.mytechramblings.com/assets/prism.js"></script>
+<script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="carlospons" data-description="Support me on Buy me a coffee!" data-message="If you find my blog useful, please consider buying me a cup of coffee. Thank you!" data-color="#FF5F5F" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
+
+      
+    </div>
+
+    
+      
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-170300931-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+    
+  </body>
+</html>
