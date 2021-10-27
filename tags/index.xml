@@ -9,17 +9,137 @@
     <description>Recent content in Tags on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 14 Sep 2021 10:05:00 +0200</lastBuildDate>
+    <lastBuildDate>Wed, 27 Oct 2021 09:05:14 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
+      <title>aws</title>
+      <link>https://www.mytechramblings.com/tags/aws/</link>
+      <pubDate>Wed, 27 Oct 2021 09:05:14 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/aws/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>azure</title>
+      <link>https://www.mytechramblings.com/tags/azure/</link>
+      <pubDate>Wed, 27 Oct 2021 09:05:14 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/azure/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
       <title>containers</title>
       <link>https://www.mytechramblings.com/tags/containers/</link>
-      <pubDate>Tue, 14 Sep 2021 10:05:00 +0200</pubDate>
+      <pubDate>Wed, 27 Oct 2021 09:05:14 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/containers/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>devops</title>
+      <link>https://www.mytechramblings.com/tags/devops/</link>
+      <pubDate>Wed, 27 Oct 2021 09:05:14 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/devops/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>docker</title>
+      <link>https://www.mytechramblings.com/tags/docker/</link>
+      <pubDate>Wed, 27 Oct 2021 09:05:14 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/docker/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>pipelines</title>
+      <link>https://www.mytechramblings.com/tags/pipelines/</link>
+      <pubDate>Wed, 27 Oct 2021 09:05:14 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/pipelines/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>security</title>
+      <link>https://www.mytechramblings.com/tags/security/</link>
+      <pubDate>Wed, 27 Oct 2021 09:05:14 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/security/</guid>
       <description>
         
           
@@ -40,26 +160,6 @@
       <pubDate>Tue, 14 Sep 2021 10:05:00 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/csharp/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>docker</title>
-      <link>https://www.mytechramblings.com/tags/docker/</link>
-      <pubDate>Tue, 14 Sep 2021 10:05:00 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/docker/</guid>
       <description>
         
           
@@ -135,51 +235,11 @@
     </item>
     
     <item>
-      <title>azure</title>
-      <link>https://www.mytechramblings.com/tags/azure/</link>
-      <pubDate>Tue, 24 Aug 2021 10:21:33 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/azure/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
       <title>graphql</title>
       <link>https://www.mytechramblings.com/tags/graphql/</link>
       <pubDate>Tue, 24 Aug 2021 10:21:33 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/graphql/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>aws</title>
-      <link>https://www.mytechramblings.com/tags/aws/</link>
-      <pubDate>Wed, 21 Jul 2021 10:05:32 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/aws/</guid>
       <description>
         
           
@@ -400,26 +460,6 @@
       <pubDate>Thu, 08 Apr 2021 10:11:51 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/tracing/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>devops</title>
-      <link>https://www.mytechramblings.com/tags/devops/</link>
-      <pubDate>Thu, 18 Mar 2021 10:00:02 +0100</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/devops/</guid>
       <description>
         
           

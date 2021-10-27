@@ -117,6 +117,61 @@
   <div class="posts">
     
     <div class="post on-list">
+      <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/moving-this-blog-to-azure-static-webapps/">Testing out the Azure Static Web Apps service. Let&rsquo;s try to deploy this blog into an static web app</a></h1>
+      <div class="post-meta">
+        
+          <span class="post-date">
+            2020-11-24
+          </span>
+
+          
+            
+
+
+
+          
+        
+        
+        
+          <span class="post-read-time">— 8 min read</span>
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+            #<a href="https://www.mytechramblings.com/tags/azure/">azure</a>&nbsp;
+          
+            #<a href="https://www.mytechramblings.com/tags/static/">static</a>&nbsp;
+          
+            #<a href="https://www.mytechramblings.com/tags/webapps/">webapps</a>&nbsp;
+          
+            #<a href="https://www.mytechramblings.com/tags/github/">github</a>&nbsp;
+          
+            #<a href="https://www.mytechramblings.com/tags/action/">action</a>&nbsp;
+          
+        </span>
+      
+
+      
+
+      <div class="post-content">
+        
+          
+            If you only care about the end result, I upload the final result in this GitHub repository: github-link
+This repository contains the entire blog source code.
+In the &quot;/infrastructure&quot; folder you can find an ARM template that is used to create the static web app.
+In the /.github/workflows folder you can find a couple of github actions:
+The infrastructure.yml file is a github action that creates the resources on Azure.
+          
+        
+      </div>
+      
+        <div><a class="read-more button" href="/posts/moving-this-blog-to-azure-static-webapps/">Read more →</a></div>
+      
+    </div>
+    
+    <div class="post on-list">
       <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/create-an-ecs-cluster-and-deploy-apps-using-azure-devops/">An opinionated approach about how to create an AWS ECS Fargate cluster and deploy apps on it using Azure DevOps Pipelines</a></h1>
       <div class="post-meta">
         
@@ -320,59 +375,6 @@ A common problem that usually appears when the number of projects begins to pile
       </div>
       
         <div><a class="read-more button" href="/posts/centrally-manage-nuget-versions/">Read more →</a></div>
-      
-    </div>
-    
-    <div class="post on-list">
-      <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/gitops-with-azure-devops-helm-acr-flux-and-k8s/">A practical example of GitOps using Azure DevOps, Azure Container Registry, Helm, Flux and Kubernetes</a></h1>
-      <div class="post-meta">
-        
-          <span class="post-date">
-            2020-07-29
-          </span>
-
-          
-            
-
-
-
-          
-        
-        
-        
-          <span class="post-read-time">— 10 min read</span>
-        
-      </div>
-
-      
-        <span class="post-tags">
-          
-            #<a href="https://www.mytechramblings.com/tags/azure/">azure</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/acr/">acr</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/kubernetes/">kubernetes</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/gitops/">gitops</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/helm/">helm</a>&nbsp;
-          
-        </span>
-      
-
-      
-
-      <div class="post-content">
-        
-          
-            GitOps is a term introduced by WeaveWorks a few years ago (<a href="https://www.weave.works/blog/gitops-operations-by-pull-request">https://www.weave.works/blog/gitops-operations-by-pull-request</a>)
-GitOps is a way of implementing Continuous Deployment. The core idea of GitOps is having a Git repository that always contains declarative descriptions of the infrastructure currently desired in the production environment and an automated process to make the production environment match the described state in the repository.
-If you want to deploy a new application or update an existing one, you only need to update the repository - the automated process handles everything else.
-          
-        
-      </div>
-      
-        <div><a class="read-more button" href="/posts/gitops-with-azure-devops-helm-acr-flux-and-k8s/">Read more →</a></div>
       
     </div>
     
