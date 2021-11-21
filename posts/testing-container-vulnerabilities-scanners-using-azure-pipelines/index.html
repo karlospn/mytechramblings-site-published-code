@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>Testing how to use some container vulnerabilities scanners with Azure Pipelines :: my tech ramblings — A blog for writing about my techie ramblings</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Just show me the code
+As always if you don’t care about the post I have upload the source code on my Github.
+ A big part of any organization’s risk assessment process is to be aware of and gain visibility into vulnerabilities in the software being used. Vulnerability scanning allows us to review the security state of the container images and take actions to fix issues identified during the scan, resulting in more secure deployments."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://www.mytechramblings.com/posts/testing-container-vulnerabilities-scanners-using-azure-pipelines/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/assets/style.css">
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.mytechramblings.com/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://www.mytechramblings.com/img/favicon.png">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Testing how to use some container vulnerabilities scanners with Azure Pipelines"/>
+<meta name="twitter:description" content="Vulnerability scanning allows us to review the security state of the container images and take actions to fix issues identified during the scan, resulting in more secure deployments. In this post I will be covering how you can use some of the most well-known scanners alongside with your Azure DevOps CI/CD YAML Pipelines."/>
+
+
+
+<meta property="og:title" content="Testing how to use some container vulnerabilities scanners with Azure Pipelines" />
+<meta property="og:description" content="Vulnerability scanning allows us to review the security state of the container images and take actions to fix issues identified during the scan, resulting in more secure deployments. In this post I will be covering how you can use some of the most well-known scanners alongside with your Azure DevOps CI/CD YAML Pipelines." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.mytechramblings.com/posts/testing-container-vulnerabilities-scanners-using-azure-pipelines/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-10-25T10:45:14+02:00" />
+<meta property="article:modified_time" content="2021-10-25T10:45:14+02:00" /><meta property="og:site_name" content="my tech ramblings" />
+
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://www.mytechramblings.com/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">my tech ramblings</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/testing-container-vulnerabilities-scanners-using-azure-pipelines/">Testing how to use some container vulnerabilities scanners with Azure Pipelines</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2021-10-25
+        </span>
+
+        
+          
+            
+
+
+
+          
+        
+      
+
+      
+      
+        <span class="post-read-time">— 17 min read</span>
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          #<a href="https://www.mytechramblings.com/tags/docker/">docker</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/devops/">devops</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/azure/">azure</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/aws/">aws</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/security/">security</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/containers/">containers</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <blockquote>
+<p><strong>Just show me the code</strong><br>
+As always if you don’t care about the post I have upload the source code on my <a href="https://github.com/karlospn/testing-container-vulnerability-scanners-with-azure-pipelines">Github</a>.</p>
+</blockquote>
+<p>A big part of any organization’s risk assessment process is to be aware of and gain visibility into vulnerabilities in the software being used. Vulnerability scanning allows us to review the security state of the container images and take actions to fix issues identified during the scan, resulting in more secure deployments.</p>
+<p>One of the main challenges a development team face is how to manage container security risk without slowing down application delivery. A way to address this early is by adopting a Secure DevOps workflow.<br>
+Image scanning is a key function of a Secure DevOps workflow. Image scanning refers to the process of analyzing the contents of a container image in order to detect security issues, vulnerabilities or bad practices.</p>
+<p><img src="/img/image-scanning-workflow.png" alt="container-img-scanning-workflow"></p>
+<p>Image scanning is easy to implement and automate and <strong>in this post I will be covering how you can use some of the most well-known scanners alongside with your Azure DevOps CI/CD YAML Pipelines.</strong></p>
+<p>Right now on the market there are a ton of great choices when you want to use a container vulnerability scanner. Snyk, Clair, Qualys, Sysdig or Trivy are some of the most well-known.</p>
+<p>In this post I&rsquo;ll be focusing on those 4 image scanners:</p>
+<ul>
+<li>AWS Elastic Container Registry integrated scanner featuring Clair.</li>
+<li>Azure Defender for ACR scan featuring Qualys.</li>
+<li>Sysdig</li>
+<li>AquaSec Trivy.</li>
+</ul>
+<h1 id="1--aws-elastic-container-registry-integrated-scanner-featuring-clair">1- AWS Elastic Container Registry integrated scanner featuring Clair</h1>
+<p>Elastic Container Register (ECR) is a fully managed container registry offered by AWS, it uses the Common Vulnerabilities and Exposures (CVEs) database from the open-source <a href="https://github.com/quay/clair">Clair</a> project.</p>
+<p>You can manually scan container images stored in ECR or you can configure your repositories to scan images when you push them to a repository, that might be an issue for some companies because in a secure DevOps workflow you might want to scan the image <strong>BEFORE</strong> pushing it into the registry.
+In that case you have 2 options available:</p>
+<ul>
+<li><strong>Option 1:</strong> Run another security scanner like Trivy or Sysdig before pushing the image to ECR. <em>If you&rsquo;re interested in this option, go to section 3 or section 4.</em></li>
+<li><strong>Option 2:</strong> After pushing the image, get the security report from ECR and if there are any vulnerabilities delete the image.</li>
+</ul>
+<p>Here&rsquo;s a code snippet showing how you can achieve &ldquo;Option 2&rdquo; using Azure YAML Pipelines:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">trigger</span>:
+  <span style="color:#f92672">branches</span>:
+    <span style="color:#f92672">include</span>:
+    - <span style="color:#ae81ff">master</span>
+  <span style="color:#f92672">paths</span>:
+    <span style="color:#f92672">exclude</span>:
+    - <span style="color:#ae81ff">pipelines/*</span>
+    - <span style="color:#ae81ff">test/*</span>
+    - <span style="color:#ae81ff">README.md</span>
+    - <span style="color:#ae81ff">.dockerignore</span>
+    - <span style="color:#ae81ff">.gitignore</span>
+ 
+<span style="color:#f92672">variables</span>:
+- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">appName</span>
+  <span style="color:#f92672">value</span>: <span style="color:#e6db74">&#39;ScanApp&#39;</span>
+- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">tag</span>
+  <span style="color:#f92672">value</span>: <span style="color:#e6db74">&#39;$(Build.BuildId)&#39;</span> 
+- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">awsCredentials</span>
+  <span style="color:#f92672">value</span>: <span style="color:#e6db74">&#39;aws-dev&#39;</span> 
+- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">awsRegion</span>
+  <span style="color:#f92672">value</span>: <span style="color:#e6db74">&#39;eu-west-1&#39;</span> 
+- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">awsAccount</span>
+  <span style="color:#f92672">value</span>: <span style="color:#e6db74">&#39;9433277812&#39;</span>
+
+<span style="color:#f92672">pool</span>:
+  <span style="color:#f92672">vmImage</span>: <span style="color:#e6db74">&#39;ubuntu-latest&#39;</span>
+
+<span style="color:#f92672">steps</span>:
+- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
+  <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Create application image</span>
+  <span style="color:#f92672">inputs</span>:
+    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+    <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
+</span><span style="color:#e6db74">      </span>      <span style="color:#ae81ff">docker build -t  ${{ lower(variables.appName) }}:$(tag) .</span>
+    <span style="color:#f92672">workingDirectory</span>: <span style="color:#e6db74">&#39;$(System.DefaultWorkingDirectory)&#39;</span>
+
+- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AWSShellScript@1</span>
+  <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Create ECR repository</span>
+  <span style="color:#f92672">inputs</span>:
+    <span style="color:#f92672">awsCredentials</span>: <span style="color:#e6db74">&#39;$(awsCredentials)&#39;</span>
+    <span style="color:#f92672">regionName</span>: <span style="color:#e6db74">&#39;$(awsRegion)&#39;</span>
+    <span style="color:#f92672">scriptType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+    <span style="color:#f92672">inlineScript</span>: |<span style="color:#e6db74">
+</span><span style="color:#e6db74">      </span>      <span style="color:#ae81ff">aws ecr describe-repositories --repository-names ${{ lower(variables.appName) }} || aws ecr create-repository --repository-name ${{ lower(variables.appName) }} --image-scanning-configuration scanOnPush=true</span>
+- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AWSShellScript@1</span>
+  <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Push image to ECR repository</span>
+  <span style="color:#f92672">inputs</span>:
+    <span style="color:#f92672">awsCredentials</span>: <span style="color:#e6db74">&#39;$(awsCredentials)&#39;</span>
+    <span style="color:#f92672">regionName</span>: <span style="color:#e6db74">&#39;$(awsRegion)&#39;</span>
+    <span style="color:#f92672">scriptType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+    <span style="color:#f92672">inlineScript</span>: |<span style="color:#e6db74">
+</span><span style="color:#e6db74">      aws ecr get-login-password --region $(awsRegion) | docker login --username AWS --password-stdin $(awsAccount).dkr.ecr.$(awsRegion).amazonaws.com
+</span><span style="color:#e6db74">      docker tag ${{ lower(variables.appName) }}:$(tag)  $(awsAccount).dkr.ecr.$(awsRegion).amazonaws.com/${{ lower(variables.appName) }}:$(tag)
+</span><span style="color:#e6db74">      docker push $(awsAccount).dkr.ecr.$(awsRegion).amazonaws.com/${{ lower(variables.appName) }}:$(tag)</span>      
+   
+- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AWSShellScript@1</span>
+  <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Check security vulnerabilities</span>
+  <span style="color:#f92672">inputs</span>:
+    <span style="color:#f92672">awsCredentials</span>: <span style="color:#e6db74">&#39;$(awsCredentials)&#39;</span>
+    <span style="color:#f92672">regionName</span>: <span style="color:#e6db74">&#39;$(awsRegion)&#39;</span>
+    <span style="color:#f92672">scriptType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+    <span style="color:#f92672">inlineScript</span>: |<span style="color:#e6db74">
+</span><span style="color:#e6db74">      aws ecr wait image-scan-complete --repository-name ${{ lower(variables.appName) }} --image-id imageTag=$(tag)
+</span><span style="color:#e6db74">      SCAN_FINDINGS=$(aws ecr describe-image-scan-findings --repository-name ${{ lower(variables.appName) }} --image-id imageTag=$(tag) | jq &#39;.imageScanFindings.findingSeverityCounts&#39;)      
+</span><span style="color:#e6db74">      CRITICAL=$(echo $SCAN_FINDINGS | jq &#39;.CRITICAL&#39;)
+</span><span style="color:#e6db74">      HIGH=$(echo $SCAN_FINDINGS | jq &#39;.HIGH&#39;)
+</span><span style="color:#e6db74">      MEDIUM=$(echo $SCAN_FINDINGS | jq &#39;.MEDIUM&#39;)
+</span><span style="color:#e6db74">      LOW=$(echo $SCAN_FINDINGS | jq &#39;.LOW&#39;)
+</span><span style="color:#e6db74">      INFORMATIONAL=$(echo $SCAN_FINDINGS | jq &#39;.INFORMATIONAL&#39;)
+</span><span style="color:#e6db74">      UNDEFINED=$(echo $SCAN_FINDINGS | jq &#39;.UNDEFINED&#39;)
+</span><span style="color:#e6db74">      if [ $CRITICAL != null ]; then
+</span><span style="color:#e6db74">        echo Docker image contains vulnerabilities at CRITICAL level. The image will be deleted.
+</span><span style="color:#e6db74">        aws ecr batch-delete-image --repository-name ${{ lower(variables.appName) }} --image-ids imageTag=$(tag)
+</span><span style="color:#e6db74">        exit 1;
+</span><span style="color:#e6db74">      fi
+</span><span style="color:#e6db74">      if [ $HIGH != null ]; then
+</span><span style="color:#e6db74">        echo Docker image contains vulnerabilities at HIGH level. The image will be deleted.
+</span><span style="color:#e6db74">        aws ecr batch-delete-image --repository-name ${{ lower(variables.appName) }} --image-ids imageTag=$(tag)
+</span><span style="color:#e6db74">        exit 1;
+</span><span style="color:#e6db74">      fi
+</span><span style="color:#e6db74">      if [ $MEDIUM != null || $LOW != null || $INFORMATIONAL != null ]; then
+</span><span style="color:#e6db74">        echo Docker image contains medium or lower vulnerabilities.
+</span><span style="color:#e6db74">      fi</span>      
+</code></pre></div><p>Let&rsquo;s review what the pipeline is doing.</p>
+<ul>
+<li>Create the image of your app.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
+  <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Create application image</span>
+  <span style="color:#f92672">inputs</span>:
+    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+    <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
+</span><span style="color:#e6db74">      </span>      <span style="color:#ae81ff">docker build -t  ${{ lower(variables.appName) }}:$(tag) .</span>
+    <span style="color:#f92672">workingDirectory</span>: <span style="color:#e6db74">&#39;$(System.DefaultWorkingDirectory)&#39;</span>
+</code></pre></div><ul>
+<li>Create the ECR repository if it doesn&rsquo;t exist.</li>
+</ul>
+<p>When creating the ECR repository it is very important setting the attribute <code>scanOnPush=true</code>.<br>
+If <code>scanOnPush</code> is enabled, images are scanned after being pushed. If <code>scanOnPush</code> is disabled on a repository, then you must manually start each image scan to get the scan results.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AWSShellScript@1</span>
+  <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Create ECR repository</span>
+  <span style="color:#f92672">inputs</span>:
+    <span style="color:#f92672">awsCredentials</span>: <span style="color:#e6db74">&#39;$(awsCredentials)&#39;</span>
+    <span style="color:#f92672">regionName</span>: <span style="color:#e6db74">&#39;$(awsRegion)&#39;</span>
+    <span style="color:#f92672">scriptType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+    <span style="color:#f92672">inlineScript</span>: |<span style="color:#e6db74">
+</span><span style="color:#e6db74">      </span>      <span style="color:#ae81ff">aws ecr describe-repositories --repository-names ${{ lower(variables.appName) }} || aws ecr create-repository --repository-name ${{ lower(variables.appName) }} --image-scanning-configuration scanOnPush=true</span>
+</code></pre></div><ul>
+<li>Push the image to ECR</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AWSShellScript@1</span>
+  <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Push image to ECR repository</span>
+  <span style="color:#f92672">inputs</span>:
+    <span style="color:#f92672">awsCredentials</span>: <span style="color:#e6db74">&#39;$(awsCredentials)&#39;</span>
+    <span style="color:#f92672">regionName</span>: <span style="color:#e6db74">&#39;$(awsRegion)&#39;</span>
+    <span style="color:#f92672">scriptType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+    <span style="color:#f92672">inlineScript</span>: |<span style="color:#e6db74">
+</span><span style="color:#e6db74">      aws ecr get-login-password --region $(awsRegion) | docker login --username AWS --password-stdin $(awsAccount).dkr.ecr.$(awsRegion).amazonaws.com
+</span><span style="color:#e6db74">      docker tag ${{ lower(variables.appName) }}:$(tag)  $(awsAccount).dkr.ecr.$(awsRegion).amazonaws.com/${{ lower(variables.appName) }}:$(tag)
+</span><span style="color:#e6db74">      docker push $(awsAccount).dkr.ecr.$(awsRegion).amazonaws.com/${{ lower(variables.appName) }}:$(tag)</span>      
+</code></pre></div><ul>
+<li>Analyze the scan results.</li>
+</ul>
+<p>The <code>aws ecr wait image-scan-complete</code> command waits until the image scan is complete and findings can be accessed, it will poll every 5 seconds until a successful state has been reached or will exit with a return code of 255 after 60 failed checks.</p>
+<p>After retrieving and parsing the scanner results, the script checks for HIGH or CRITICAL vulnerabilities and if there are any, it deletes the image from ECR and breaks the pipeline execution. <br>
+If the scripts finds only MEDIUM, LOW or INFORMATIONAL vulnerabilities continues the execution.</p>
+<p><em>I didn&rsquo;t write the script used to check the vulnerabilities, I&rsquo;m using a script from <a href="https://medium.com/@sahangunathilaka/scan-docker-images-in-amazon-ecr-and-retrieve-scan-findings-e5a3fe4e7afa">Sahan Ruwanga Gunathilaka post</a>, so kudos to him.</em></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AWSShellScript@1</span>
+  <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Check security vulnerabilities</span>
+  <span style="color:#f92672">inputs</span>:
+    <span style="color:#f92672">awsCredentials</span>: <span style="color:#e6db74">&#39;$(awsCredentials)&#39;</span>
+    <span style="color:#f92672">regionName</span>: <span style="color:#e6db74">&#39;$(awsRegion)&#39;</span>
+    <span style="color:#f92672">scriptType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+    <span style="color:#f92672">inlineScript</span>: |<span style="color:#e6db74">
+</span><span style="color:#e6db74">      aws ecr wait image-scan-complete --repository-name ${{ lower(variables.appName) }} --image-id imageTag=$(tag)
+</span><span style="color:#e6db74">      SCAN_FINDINGS=$(aws ecr describe-image-scan-findings --repository-name ${{ lower(variables.appName) }} --image-id imageTag=$(tag) | jq &#39;.imageScanFindings.findingSeverityCounts&#39;)      
+</span><span style="color:#e6db74">      CRITICAL=$(echo $SCAN_FINDINGS | jq &#39;.CRITICAL&#39;)
+</span><span style="color:#e6db74">      HIGH=$(echo $SCAN_FINDINGS | jq &#39;.HIGH&#39;)
+</span><span style="color:#e6db74">      MEDIUM=$(echo $SCAN_FINDINGS | jq &#39;.MEDIUM&#39;)
+</span><span style="color:#e6db74">      LOW=$(echo $SCAN_FINDINGS | jq &#39;.LOW&#39;)
+</span><span style="color:#e6db74">      INFORMATIONAL=$(echo $SCAN_FINDINGS | jq &#39;.INFORMATIONAL&#39;)
+</span><span style="color:#e6db74">      UNDEFINED=$(echo $SCAN_FINDINGS | jq &#39;.UNDEFINED&#39;)
+</span><span style="color:#e6db74">      if [ $CRITICAL != null ]; then
+</span><span style="color:#e6db74">        echo Docker image contains vulnerabilities at CRITICAL level. The image will be deleted.
+</span><span style="color:#e6db74">        aws ecr batch-delete-image --repository-name ${{ lower(variables.appName) }} --image-ids imageTag=$(tag)
+</span><span style="color:#e6db74">        exit 1;
+</span><span style="color:#e6db74">      fi
+</span><span style="color:#e6db74">      if [ $HIGH != null ]; then
+</span><span style="color:#e6db74">        echo Docker image contains vulnerabilities at HIGH level. The image will be deleted.
+</span><span style="color:#e6db74">        aws ecr batch-delete-image --repository-name ${{ lower(variables.appName) }} --image-ids imageTag=$(tag)
+</span><span style="color:#e6db74">        exit 1;
+</span><span style="color:#e6db74">      fi
+</span><span style="color:#e6db74">      if [ $MEDIUM != null || $LOW != null || $INFORMATIONAL != null ]; then
+</span><span style="color:#e6db74">        echo Docker image contains medium or lower vulnerabilities.
+</span><span style="color:#e6db74">      fi</span>      
+</code></pre></div><h1 id="2--azure-defender-for-acr-scan-featuring-qualys">2- Azure Defender for ACR scan featuring Qualys</h1>
+<p>Azure Container Registry (ACR) is a managed, private Docker registry service for storing container images.</p>
+<p>If you plan to use the image vulnerability scanning capabilities, you&rsquo;ll need to <strong>enable Azure Defender for container registries at the subscription level</strong>.  The scanner is powered by <a href="https://www.qualys.com/">Qualys</a>.</p>
+<p>Azure Defender works exactly like AWS ECR, that means that it will only scan the images when they’re pushed to the registry.</p>
+<p>With AWS ECR we had to build a script that fetch and analyze the scanning results, but in this case Microsoft has already built it, so you can just copy-paste it and you are good to go.<br>
+You can find it in the following <a href="https://github.com/Azure/Azure-Security-Center/tree/main/Container%20Image%20Scan%20Vulnerability%20Assessment/Image%20Scan%20Automation%20Enrichment%20Security%20Gate">link</a></p>
+<p>I grabbed the Azure Pipeline and the script built by Microsoft and made some slight modifications.<br>
+Here&rsquo;s how it looks:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">trigger</span>:
+  <span style="color:#f92672">branches</span>:
+    <span style="color:#f92672">include</span>:
+    - <span style="color:#ae81ff">master</span>
+  <span style="color:#f92672">paths</span>:
+    <span style="color:#f92672">exclude</span>:
+    - <span style="color:#ae81ff">pipelines/*</span>
+    - <span style="color:#ae81ff">test/*</span>
+    - <span style="color:#ae81ff">README.md</span>
+    - <span style="color:#ae81ff">.dockerignore</span>
+    - <span style="color:#ae81ff">.gitignore</span>
+ 
+<span style="color:#f92672">pool</span>:
+  <span style="color:#f92672">vmImage</span>: <span style="color:#e6db74">&#34;ubuntu-latest&#34;</span>
+
+<span style="color:#f92672">variables</span>:
+  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">registryName</span>
+    <span style="color:#f92672">value</span>: <span style="color:#e6db74">&#39;acrcponsndev&#39;</span>
+  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">imageName</span>
+    <span style="color:#f92672">value</span>: <span style="color:#e6db74">&#39;app-example-vulnerabilities&#39;</span>
+  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">azureSubscription</span>
+    <span style="color:#f92672">value</span>: <span style="color:#e6db74">&#39;service-endpoint-cpons-dev&#39;</span>
+  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">tag</span>
+    <span style="color:#f92672">value</span>: <span style="color:#e6db74">&#39;$(Build.BuildId)&#39;</span>
+  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">waitForScanResultsAfterPushInMinutes</span>
+    <span style="color:#f92672">value</span>: <span style="color:#e6db74">&#39;5&#39;</span>
+
+<span style="color:#f92672">stages</span>:
+- <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">Build_and_Publish</span>
+  <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Build and push image to registry than check for vulnerability scan results to determine publishing health</span>
+  <span style="color:#f92672">jobs</span>:
+  - <span style="color:#f92672">job</span>: <span style="color:#ae81ff">BuildAndPush</span>
+    <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">BuildAndPush</span>
+    <span style="color:#f92672">pool</span>:
+      <span style="color:#f92672">vmImage</span>: <span style="color:#e6db74">&#39;ubuntu-latest&#39;</span>
+    <span style="color:#f92672">steps</span>:
+    - <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AzureCLI@2</span>
+      <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">AZ ACR Login</span>
+      <span style="color:#f92672">inputs</span>:
+        <span style="color:#f92672">azureSubscription</span>: <span style="color:#ae81ff">$(azureSubscription)</span>
+        <span style="color:#f92672">scriptType</span>: <span style="color:#e6db74">&#39;bash&#39;</span>
+        <span style="color:#f92672">scriptLocation</span>: <span style="color:#e6db74">&#39;inlineScript&#39;</span>
+        <span style="color:#f92672">inlineScript</span>: <span style="color:#e6db74">&#39;az acr login --name $(registryName)&#39;</span>
+    - <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AzureCLI@2</span>
+      <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">AZ ACR Build</span>
+      <span style="color:#f92672">inputs</span>:
+        <span style="color:#f92672">azureSubscription</span>: <span style="color:#ae81ff">$(azureSubscription)</span>
+        <span style="color:#f92672">scriptType</span>: <span style="color:#e6db74">&#39;bash&#39;</span>
+        <span style="color:#f92672">scriptLocation</span>: <span style="color:#e6db74">&#39;inlineScript&#39;</span>
+        <span style="color:#f92672">inlineScript</span>: <span style="color:#e6db74">&#39;az acr build -t $(imageName):$(tag) -t $(imageName):latest -r $(registryName) -f Dockerfile .&#39;</span>
+        <span style="color:#f92672">useGlobalConfig</span>: <span style="color:#66d9ef">true</span>
+        <span style="color:#f92672">workingDirectory</span>: <span style="color:#e6db74">&#39;$(Build.SourcesDirectory)&#39;</span>
+
+  - <span style="color:#f92672">job</span>: <span style="color:#ae81ff">WaitForScanResults</span>
+    <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Wait for scan results</span>
+    <span style="color:#f92672">pool</span>: <span style="color:#e6db74">&#39;Server&#39;</span>
+    <span style="color:#f92672">dependsOn</span>: 
+    - <span style="color:#ae81ff">BuildAndPush</span>
+    <span style="color:#f92672">steps</span>:
+    - <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Delay@1</span>
+      <span style="color:#f92672">inputs</span>:
+        <span style="color:#f92672">delayForMinutes</span>: <span style="color:#e6db74">&#39;$(waitForScanResultsAfterPushInMinutes)&#39;</span>
+
+  - <span style="color:#f92672">job</span>: <span style="color:#ae81ff">ImageScanCheck</span>
+    <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Check for image vulnerabilities</span>
+    <span style="color:#f92672">pool</span>:
+      <span style="color:#f92672">vmImage</span>: <span style="color:#e6db74">&#39;ubuntu-latest&#39;</span>
+    <span style="color:#f92672">dependsOn</span>: 
+    - <span style="color:#ae81ff">BuildAndPush</span>
+    - <span style="color:#ae81ff">WaitForScanResults</span>
+    <span style="color:#f92672">steps</span>:
+      - <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AzureCLI@2</span>
+        <span style="color:#f92672">inputs</span>:
+          <span style="color:#f92672">azureSubscription</span>: <span style="color:#ae81ff">$(azureSubscription)</span>
+          <span style="color:#f92672">scriptType</span>: <span style="color:#e6db74">&#39;pscore&#39;</span>
+          <span style="color:#f92672">scriptLocation</span>: <span style="color:#e6db74">&#39;scriptPath&#39;</span>
+          <span style="color:#f92672">scriptPath</span>: <span style="color:#e6db74">&#39;$(Build.SourcesDirectory)/acr-image-scan.ps1&#39;</span>
+          <span style="color:#f92672">arguments</span>: <span style="color:#e6db74">&#39;-registryName $(registryName) -repository $(imageName) -tag $(tag)&#39;</span>
+</code></pre></div><p>This pipeline is using multiple jobs because the <code>Delay@1</code> task is an agentless task and on a single job you can&rsquo;t mix steps that requires an agent with step that don&rsquo;t.</p>
+<p>Let&rsquo;s make a quick review about the steps involved in this pipeline.</p>
+<ul>
+<li>Build and push the image into ACR.</li>
+</ul>
+<p>The <code>az acr build</code> command creates a container image, tags it, and pushes it to the registry. It does all those steps with just a single command.<br>
+To be able to push the image to ACR we need to log in first, and that&rsquo;s exactly what we&rsquo;re doing with the <code>az acr login</code> command.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">  - <span style="color:#f92672">job</span>: <span style="color:#ae81ff">BuildAndPush</span>
+    <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">BuildAndPush</span>
+    <span style="color:#f92672">pool</span>:
+      <span style="color:#f92672">vmImage</span>: <span style="color:#e6db74">&#39;ubuntu-latest&#39;</span>
+    <span style="color:#f92672">steps</span>:
+    - <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AzureCLI@2</span>
+      <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">AZ ACR Login</span>
+      <span style="color:#f92672">inputs</span>:
+        <span style="color:#f92672">azureSubscription</span>: <span style="color:#ae81ff">$(azureSubscription)</span>
+        <span style="color:#f92672">scriptType</span>: <span style="color:#e6db74">&#39;bash&#39;</span>
+        <span style="color:#f92672">scriptLocation</span>: <span style="color:#e6db74">&#39;inlineScript&#39;</span>
+        <span style="color:#f92672">inlineScript</span>: <span style="color:#e6db74">&#39;az acr login --name $(registryName)&#39;</span>
+    - <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AzureCLI@2</span>
+      <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">AZ ACR Build</span>
+      <span style="color:#f92672">inputs</span>:
+        <span style="color:#f92672">azureSubscription</span>: <span style="color:#ae81ff">$(azureSubscription)</span>
+        <span style="color:#f92672">scriptType</span>: <span style="color:#e6db74">&#39;bash&#39;</span>
+        <span style="color:#f92672">scriptLocation</span>: <span style="color:#e6db74">&#39;inlineScript&#39;</span>
+        <span style="color:#f92672">inlineScript</span>: <span style="color:#e6db74">&#39;az acr build -t $(imageName):$(tag) -t $(imageName):latest -r $(registryName) -f Dockerfile .&#39;</span>
+        <span style="color:#f92672">useGlobalConfig</span>: <span style="color:#66d9ef">true</span>
+        <span style="color:#f92672">workingDirectory</span>: <span style="color:#e6db74">&#39;$(Build.SourcesDirectory)&#39;</span>
+</code></pre></div><ul>
+<li>Stop the pipeline a fixed period of time.</li>
+</ul>
+<p>The delay task is stopping the pipeline execution a fixed amount of time because the vulnerability scan takes a few minutes to complete. This step is needed to ensure that the results are available and we can can continue on.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">  - <span style="color:#f92672">job</span>: <span style="color:#ae81ff">WaitForScanResults</span>
+    <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Wait for scan results</span>
+    <span style="color:#f92672">pool</span>: <span style="color:#e6db74">&#39;Server&#39;</span>
+    <span style="color:#f92672">dependsOn</span>: 
+    - <span style="color:#ae81ff">BuildAndPush</span>
+    <span style="color:#f92672">steps</span>:
+    - <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Delay@1</span>
+      <span style="color:#f92672">inputs</span>:
+        <span style="color:#f92672">delayForMinutes</span>: <span style="color:#e6db74">&#39;$(waitForScanResultsAfterPushInMinutes)&#39;</span>
+</code></pre></div><ul>
+<li>Get the scan results and analyze them</li>
+</ul>
+<p>Invoke the script that fetches the scan result and assess the vulnerabilities.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">  - <span style="color:#f92672">job</span>: <span style="color:#ae81ff">ImageScanCheck</span>
+    <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Check for image vulnerabilities</span>
+    <span style="color:#f92672">pool</span>:
+      <span style="color:#f92672">vmImage</span>: <span style="color:#e6db74">&#39;ubuntu-latest&#39;</span>
+    <span style="color:#f92672">dependsOn</span>: 
+    - <span style="color:#ae81ff">BuildAndPush</span>
+    - <span style="color:#ae81ff">WaitForScanResults</span>
+    <span style="color:#f92672">steps</span>:
+      - <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AzureCLI@2</span>
+        <span style="color:#f92672">inputs</span>:
+          <span style="color:#f92672">azureSubscription</span>: <span style="color:#ae81ff">$(azureSubscription)</span>
+          <span style="color:#f92672">scriptType</span>: <span style="color:#e6db74">&#39;pscore&#39;</span>
+          <span style="color:#f92672">scriptLocation</span>: <span style="color:#e6db74">&#39;scriptPath&#39;</span>
+          <span style="color:#f92672">scriptPath</span>: <span style="color:#e6db74">&#39;$(Build.SourcesDirectory)/acr-image-scan.ps1&#39;</span>
+          <span style="color:#f92672">arguments</span>: <span style="color:#e6db74">&#39;-registryName $(registryName) -repository $(imageName) -tag $(tag)&#39;</span>
+</code></pre></div><p>I decided to not touch this script at all, because it is good enough as it is. But, let&rsquo;s review it out anyways.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">&lt;<span style="color:#960050;background-color:#1e0010">#</span>  
+.SYNOPSIS  
+  Automation script to include ASC vulnerability assessment scan summary <span style="color:#66d9ef">for</span> provided image <span style="color:#66d9ef">as</span> a gate. 
+  Check result and assess whether to pass security gate <span style="color:#66d9ef">by</span> findings severity.
+     
+.DESCRIPTION  
+  Azure secuirty center (ASC) scan Azure container registry (ACR) images <span style="color:#66d9ef">for</span> known vulnerabilities <span style="color:#66d9ef">on</span> multiple scenarios including image push. 
+ (https:<span style="color:#75715e">//docs.microsoft.com/en-us/azure/security-center/defender-for-container-registries-introduction#when-are-images-scanned)  
+</span><span style="color:#75715e"></span>  Using <span style="color:#66d9ef">this</span> tool you can have a security gate <span style="color:#66d9ef">as</span> part of image release(push) or 
+  deployment to cluster to check <span style="color:#66d9ef">if</span> <span style="color:#66d9ef">for</span> image there <span style="color:#66d9ef">is</span> existent scan <span style="color:#66d9ef">in</span> ASC (<span style="color:#66d9ef">for</span> example part following push) - retry ,
+  And assess it<span style="color:#960050;background-color:#1e0010">&#39;</span>s findings <span style="color:#66d9ef">by</span> configurable thresholds to decide whether to fail the gate - i.e the release/deployment.
+  Script extracts provided ACR image digest, <span style="color:#66d9ef">try</span> to extract ASC scan summary <span style="color:#66d9ef">using</span> Azure resource graph AZ CLI module and check <span style="color:#66d9ef">if</span> result <span style="color:#66d9ef">is</span> healthy or not.
+  If Healthy, will exit gate successfully, otherwise <span style="color:#66d9ef">if</span> unhealthy, 
+  Check <span style="color:#66d9ef">for</span> any high findings or medium findings count suppress their thresholds to fail the gate, otherwise will <span style="color:#66d9ef">set</span> gate <span style="color:#66d9ef">in</span> warning mode.
+  In <span style="color:#66d9ef">case</span> there<span style="color:#960050;background-color:#1e0010">&#39;</span>s a major vulnerability <span style="color:#66d9ef">in</span> image, gate(script) will fail to allow exit <span style="color:#66d9ef">in</span> CI/CD pipelines.
+  
+  
+.PARAMETER registryName
+<span style="color:#a6e22e">  [mandatory]</span> 
+  Azure container registry resource name image <span style="color:#66d9ef">is</span> stored.
+.PARAMETER repository
+<span style="color:#a6e22e">  [mandatory]</span> 
+  It can be any EXISTING resource <span style="color:#66d9ef">group</span>, <span style="color:#66d9ef">using</span> the ASC <span style="color:#66d9ef">default</span> <span style="color:#e6db74">&#34;DefaultResourceGroup-XXX&#34;</span> <span style="color:#66d9ef">is</span> one option.
+  Note: Since the ASC VA solution <span style="color:#66d9ef">is</span> not an Azure resource it will not be listed under the resource <span style="color:#66d9ef">group</span>, but still it <span style="color:#66d9ef">is</span> attached to it.
+.PARAMETER tag
+<span style="color:#a6e22e">  [mandatory]</span> 
+  The name of the <span style="color:#66d9ef">new</span> solution
+.PARAMETER scanExtractionRetryCount
+<span style="color:#a6e22e">  [optional]</span> 
+  Max retries to <span style="color:#66d9ef">get</span> image scan summary <span style="color:#66d9ef">from</span> ASC. (Useful <span style="color:#66d9ef">for</span> waiting <span style="color:#66d9ef">for</span> scan result to finish following image push).
+.PARAMETER mediumFindingsCountFailThreshold
+<span style="color:#a6e22e">  [optional]</span> 
+  Threshold to fail gate <span style="color:#66d9ef">on</span> Medium severity findings count <span style="color:#66d9ef">in</span> scan (<span style="color:#66d9ef">default</span> <span style="color:#66d9ef">is</span> <span style="color:#ae81ff">5</span>)
+  ** In the <span style="color:#66d9ef">case</span> of High servirty finging gate will always fail.**
+.PARAMETER lowFindingsCountFailThreshold
+<span style="color:#a6e22e">  [optional]</span> 
+  Threshold to fail gate <span style="color:#66d9ef">on</span> Low severity findings count <span style="color:#66d9ef">in</span> scan (<span style="color:#66d9ef">default</span> <span style="color:#66d9ef">is</span> <span style="color:#ae81ff">15</span>)
+  ** In the <span style="color:#66d9ef">case</span> of High servirty finging gate will always fail.**
+  
+  
+.EXAMPLE
+	.<span style="color:#960050;background-color:#1e0010">\</span>ImageScanSummaryAssessmentGate.ps1 -registryName &lt;registryResourceName&gt; -repository &lt;respository&gt; -tag &lt;tag&gt;
+.EXAMPLE
+	.<span style="color:#960050;background-color:#1e0010">\</span>ImageScanSummaryAssessmentGate.ps1 -registryName tomerregistry -repository build -tag latest
+ 
+.NOTES
+   AUTHOR: Tomer Weinberger - Software Engineer at Microsoft Azure Security Center
+<span style="color:#960050;background-color:#1e0010">#</span>&gt;
+
+<span style="color:#960050;background-color:#1e0010">#</span> Prerequisites
+<span style="color:#960050;background-color:#1e0010">#</span> Azure CLI installed
+<span style="color:#960050;background-color:#1e0010">#</span> Optional: Azure CLI Resource Grpah extension installed (installed <span style="color:#66d9ef">as</span> part of script)
+Param(
+	<span style="color:#960050;background-color:#1e0010">#</span> Image registry name
+<span style="color:#a6e22e">	[Parameter(Mandatory=$true)]</span>
+	<span style="color:#960050;background-color:#1e0010">$</span>registryName,
+	
+	<span style="color:#960050;background-color:#1e0010">#</span> Image repository name <span style="color:#66d9ef">in</span> registry
+<span style="color:#a6e22e">   	[Parameter(Mandatory=$true)]</span>
+	<span style="color:#960050;background-color:#1e0010">$</span>repository,
+	
+	<span style="color:#960050;background-color:#1e0010">#</span> Image tag
+<span style="color:#a6e22e">   	[Parameter(Mandatory=$true)]</span>
+	<span style="color:#960050;background-color:#1e0010">$</span>tag,
+	
+	<span style="color:#960050;background-color:#1e0010">#</span> Max retries to <span style="color:#66d9ef">get</span> image scan summary <span style="color:#66d9ef">from</span> ASC.
+	<span style="color:#960050;background-color:#1e0010">$</span>scanExtractionRetryCount = <span style="color:#ae81ff">3</span>,
+	
+	<span style="color:#960050;background-color:#1e0010">#</span> Medium servrity findings failure threshold
+	<span style="color:#960050;background-color:#1e0010">$</span>mediumFindingsCountFailThreshold = <span style="color:#ae81ff">5</span>,
+	
+	<span style="color:#960050;background-color:#1e0010">#</span> Low servrity findings failure threshold
+	<span style="color:#960050;background-color:#1e0010">$</span>lowFindingsCountFailThreshold = <span style="color:#ae81ff">15</span>
+)
+
+az extension <span style="color:#66d9ef">add</span> --name resource-graph -y
+
+<span style="color:#960050;background-color:#1e0010">$</span>imageDigest = az acr repository show -n <span style="color:#960050;background-color:#1e0010">$</span>registryName --image <span style="color:#e6db74">&#34;$($repository):$($tag)&#34;</span> -o tsv --query digest
+<span style="color:#66d9ef">if</span>(!<span style="color:#960050;background-color:#1e0010">$</span>imageDigest)
+{
+	Write-Error <span style="color:#e6db74">&#34;Image &#39;$($repository):$($tag)&#39; was not found! (Registry: $registryName)&#34;</span>
+	exit <span style="color:#ae81ff">1</span>
+}
+
+Write-Host <span style="color:#e6db74">&#34;Image Digest: $imageDigest&#34;</span>
+
+<span style="color:#960050;background-color:#1e0010">#</span> All images scan summary ARG query.
+<span style="color:#960050;background-color:#1e0010">$</span>query = <span style="color:#e6db74">&#34;securityresources
+</span><span style="color:#e6db74"></span> | <span style="color:#66d9ef">where</span> type == <span style="color:#960050;background-color:#1e0010">&#39;</span>microsoft.security/assessments/subassessments<span style="color:#960050;background-color:#1e0010">&#39;</span>
+ | <span style="color:#66d9ef">where</span> id matches regex  <span style="color:#960050;background-color:#1e0010">&#39;</span>(.+?)/providers/Microsoft.ContainerRegistry/registries/(.+)/providers/Microsoft.Security/assessments/dbd0cb49-b563-<span style="color:#ae81ff">45e7</span>-<span style="color:#ae81ff">9724</span>-<span style="color:#ae81ff">889e799f</span>a648/<span style="color:#960050;background-color:#1e0010">&#39;</span>
+ | extend registryResourceId = tostring(split(id, <span style="color:#960050;background-color:#1e0010">&#39;</span>/providers/Microsoft.Security/assessments/<span style="color:#960050;background-color:#1e0010">&#39;</span>)[<span style="color:#ae81ff">0</span>])
+ | extend registryResourceName = tostring(split(registryResourceId, <span style="color:#960050;background-color:#1e0010">&#39;</span>/providers/Microsoft.ContainerRegistry/registries/<span style="color:#960050;background-color:#1e0010">&#39;</span>)[<span style="color:#ae81ff">1</span>])
+ | extend imageDigest = tostring(properties.additionalData.imageDigest)
+ | extend repository = tostring(properties.additionalData.repositoryName)
+ | extend scanFindingSeverity = tostring(properties.status.severity), scanStatus = tostring(properties.status.code)
+ | summarize scanFindingSeverityCount = count() <span style="color:#66d9ef">by</span> scanFindingSeverity, scanStatus, registryResourceId, registryResourceName, repository, imageDigest
+ | summarize  severitySummary = make_bag(pack(scanFindingSeverity, scanFindingSeverityCount)) <span style="color:#66d9ef">by</span> registryResourceId, registryResourceName, repository, imageDigest, scanStatus<span style="color:#e6db74">&#34;
+</span><span style="color:#e6db74"></span> 
+<span style="color:#960050;background-color:#1e0010">#</span> Add filter to <span style="color:#66d9ef">get</span> scan summary <span style="color:#66d9ef">for</span> specific provided image
+<span style="color:#960050;background-color:#1e0010">$</span>filter = <span style="color:#e6db74">&#34;| where imageDigest =~ &#39;$imagedigest&#39; and repository =~ &#39;$repository&#39; and registryResourceName =~ &#39;$registryname&#39;&#34;</span> 
+<span style="color:#960050;background-color:#1e0010">$</span>query  = <span style="color:#960050;background-color:#1e0010">@</span>(<span style="color:#960050;background-color:#1e0010">$</span>query, <span style="color:#960050;background-color:#1e0010">$</span>filter) | <span style="color:#66d9ef">out</span>-<span style="color:#66d9ef">string</span> 
+
+Write-Host <span style="color:#e6db74">&#34;Query: $query&#34;</span>
+
+<span style="color:#960050;background-color:#1e0010">#</span> Remove query<span style="color:#960050;background-color:#1e0010">&#39;</span>s <span style="color:#66d9ef">new</span> line to use ARG CLI
+<span style="color:#960050;background-color:#1e0010">$</span>query = <span style="color:#960050;background-color:#1e0010">$</span>query -replace [Environment]::NewLine,<span style="color:#e6db74">&#34;&#34;</span> -replace <span style="color:#e6db74">&#34;`r`n&#34;</span>,<span style="color:#e6db74">&#34;&#34;</span> -replace <span style="color:#e6db74">&#34;`n&#34;</span>,<span style="color:#e6db74">&#34;&#34;</span>
+
+<span style="color:#960050;background-color:#1e0010">#</span> Get result wit retry policy
+<span style="color:#960050;background-color:#1e0010">$</span>i = <span style="color:#ae81ff">0</span>
+<span style="color:#66d9ef">while</span>((<span style="color:#960050;background-color:#1e0010">$</span>result = az graph query -q <span style="color:#960050;background-color:#1e0010">$</span>query -o json | ConvertFrom-Json).count -eq <span style="color:#ae81ff">0</span> -and (<span style="color:#960050;background-color:#1e0010">$</span>i = <span style="color:#960050;background-color:#1e0010">$</span>i + <span style="color:#ae81ff">1</span>) -lt <span style="color:#960050;background-color:#1e0010">$</span>scanExtractionRetryCount)
+{ 
+	Write-Host <span style="color:#e6db74">&#34;No results for image $($repository):$($tag) yet ...&#34;</span>
+	Start-Sleep -s <span style="color:#ae81ff">20</span>
+}
+
+<span style="color:#66d9ef">if</span>(!<span style="color:#960050;background-color:#1e0010">$</span>result -or <span style="color:#960050;background-color:#1e0010">$</span>result.count -eq <span style="color:#ae81ff">0</span>)
+{
+	Write-Error <span style="color:#e6db74">&#34;No results were found for digest: $imageDigest after $scanExtractionRetryCount retries!&#34;</span>
+	exit <span style="color:#ae81ff">1</span>
+}
+
+<span style="color:#960050;background-color:#1e0010">#</span> <span style="color:#960050;background-color:#1e0010">#</span> Extract scan summary <span style="color:#66d9ef">from</span> result
+<span style="color:#960050;background-color:#1e0010">$</span>scansummary = <span style="color:#960050;background-color:#1e0010">$</span>result.data[<span style="color:#ae81ff">0</span>]
+Write-Host <span style="color:#e6db74">&#34;Scan summary: $($scansummary | out-string)&#34;</span>
+
+<span style="color:#66d9ef">if</span>(<span style="color:#960050;background-color:#1e0010">$</span>scansummary.scanstatus -eq <span style="color:#e6db74">&#34;healthy&#34;</span>)
+{
+  Write-Host <span style="color:#e6db74">&#34;Healthy scan result, no major vulnerabilities  found in image&#34;</span>
+}
+elseif(<span style="color:#960050;background-color:#1e0010">$</span>scansummary.scanstatus -eq <span style="color:#e6db74">&#34;unhealthy&#34;</span>)
+{
+	<span style="color:#960050;background-color:#1e0010">#</span> Check <span style="color:#66d9ef">if</span> there are major vulnerabilities  found - customize <span style="color:#66d9ef">by</span> parameters
+	<span style="color:#66d9ef">if</span>(<span style="color:#960050;background-color:#1e0010">$</span>scansummary.severitysummary.high -gt <span style="color:#ae81ff">0</span> <span style="color:#960050;background-color:#1e0010">`</span>
+	-or <span style="color:#960050;background-color:#1e0010">$</span>scansummary.severitysummary.medium -gt <span style="color:#960050;background-color:#1e0010">$</span>mediumFindingsCountFailThreshold <span style="color:#960050;background-color:#1e0010">`</span>
+	-or <span style="color:#960050;background-color:#1e0010">$</span>scansummary.severitysummary.low -gt <span style="color:#960050;background-color:#1e0010">$</span>lowFindingsCountFailThreshold)
+	{
+	   Write-Error <span style="color:#e6db74">&#34;Unhealthy scan result, major vulnerabilities  found in image summary&#34;</span>
+	}
+	<span style="color:#66d9ef">else</span>
+	{
+		Write-Warning <span style="color:#e6db74">&#34;Unhealthy scan result, some vulnerabilities  found in image&#34;</span>
+	}
+}
+<span style="color:#66d9ef">else</span>
+{
+	Write-Error <span style="color:#e6db74">&#34;Unknown scan result returned&#34;</span>
+}
+</code></pre></div><p>The script is using the <code>Azure Resource Graph</code> to query <code>Azure Security Center</code> to obtain the vulnerability scan results.</p>
+<p><code>Azure Resource Graph</code> is a service in Azure that is designed to extend ARM by providing the ability to query across a given set of subscriptions.<br>
+To use it, you must have at least read access to the resources you want to query. Without at least read permissions to the Azure object or object group, results won&rsquo;t be returned.</p>
+<blockquote>
+<p>If you&rsquo;re curious about using <code>Azure Resource Graph</code> to query ASC, the following link has a bunch of sample queries: <a href="https://docs.microsoft.com/en-us/azure/security-center/resource-graph-samples?tabs=azure-cli">https://docs.microsoft.com/en-us/azure/security-center/resource-graph-samples?tabs=azure-cli</a></p>
+</blockquote>
+<p>After obtaining the scan results from ARG, the script checks if the status of the scan is unhealthy and if so, it breaks the pipeline execution using the <code>Write-Error</code>  command.</p>
+<h1 id="3--sysdig">3- Sysdig</h1>
+<p>Sysdig is a SaaS (Software-as-a-Service) platform. It is built on an OSS stack that includes Falco and sysdig OSS.<br>
+It provides a stand-alone inline scanner that can perform local analysis on container images and post the result of the analysis to the SaaS backend.</p>
+<p>The Sysdig inline scanner works as an independent container, without any Docker dependency, and can analyze images using different image formats and sources.<br>
+When the inline scanner has completed the image analysis, it sends the metadata to the Sysdig SaaS to perform a &ldquo;policy evaluation&rdquo; step.<br>
+A policy is a combination of rules and actions that should be taken if the policy rule is breached.</p>
+<p>Here&rsquo;s a code snippet showing how you can run the Sysdig inline scanner with <code>Azure Pipelines</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">
+<span style="color:#f92672">trigger</span>:
+  <span style="color:#f92672">branches</span>:
+    <span style="color:#f92672">include</span>:
+    - <span style="color:#ae81ff">master</span>
+  <span style="color:#f92672">paths</span>:
+    <span style="color:#f92672">exclude</span>:
+    - <span style="color:#ae81ff">pipelines/*</span>
+    - <span style="color:#ae81ff">test/*</span>
+    - <span style="color:#ae81ff">README.md</span>
+    - <span style="color:#ae81ff">.dockerignore</span>
+    - <span style="color:#ae81ff">.gitignore</span>
+
+<span style="color:#f92672">variables</span>:
+- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">appName</span>
+  <span style="color:#f92672">value</span>: <span style="color:#e6db74">&#39;ScanApp&#39;</span>
+- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">tag</span>
+  <span style="color:#f92672">value</span>: <span style="color:#e6db74">&#39;$(Build.BuildId)&#39;</span> 
+
+
+<span style="color:#f92672">pool</span>:
+  <span style="color:#f92672">vmImage</span>: <span style="color:#e6db74">&#39;ubuntu-latest&#39;</span>
+
+<span style="color:#f92672">steps</span>:
+- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
+  <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Create application image</span>
+  <span style="color:#f92672">inputs</span>:
+    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+    <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
+</span><span style="color:#e6db74">      </span>      <span style="color:#ae81ff">docker build -t  ${{ lower(variables.appName) }}:$(tag) .</span>
+    <span style="color:#f92672">workingDirectory</span>: <span style="color:#e6db74">&#39;$(System.DefaultWorkingDirectory)&#39;</span>
+- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
+  <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Check vulnerabilities</span>
+  <span style="color:#f92672">inputs</span>:
+    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+    <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
+</span><span style="color:#e6db74">      docker run --rm \
+</span><span style="color:#e6db74">        -v /var/run/docker.sock:/var/run/docker.sock \
+</span><span style="color:#e6db74">        sysdiglabs/secure-inline-scan:2 \
+</span><span style="color:#e6db74">        --sysdig-url $(SYSDIG_URL) \
+</span><span style="color:#e6db74">        --sysdig-token $(SYSDIG_API_TOKEN) \
+</span><span style="color:#e6db74">        --storage-type docker-daemon \
+</span><span style="color:#e6db74">        --storage-path /var/run/docker.sock \
+</span><span style="color:#e6db74">        ${{ lower(variables.appName) }}:$(tag)</span>      
+</code></pre></div><p>As you can see, it is a pretty straightforward pipeline, but anyways let&rsquo;s review the steps.</p>
+<ul>
+<li>Create the image of your app.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
+  <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Create application image</span>
+  <span style="color:#f92672">inputs</span>:
+    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+    <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
+</span><span style="color:#e6db74">      </span>      <span style="color:#ae81ff">docker build -t  ${{ lower(variables.appName) }}:$(tag) .</span>
+    <span style="color:#f92672">workingDirectory</span>: <span style="color:#e6db74">&#39;$(System.DefaultWorkingDirectory)&#39;</span>
+</code></pre></div><ul>
+<li>Run the Sysdig secure-inline-scan container image.</li>
+</ul>
+<p>When running the scanner there are multiple execution possibilities available:</p>
+<ul>
+<li>Scan a local image build (<code>storage-type=&quot;docker-daemon</code>)</li>
+<li>Scan a image tarball (<code>storage-type=&quot;docker-archive</code>)</li>
+<li>Scan a OCI tarball (<code>storage-type=&quot;oci-archive</code>)</li>
+<li>Scan a OCI directory (<code>storage-type=&quot;oci-dir</code>)</li>
+</ul>
+<p>In the previous step we built a docker image, so we&rsquo;re going to choose to scan a local image build, which means that the <code>storage-type</code> attribute needs to be set to <code>docker-daemon</code>.</p>
+<p>Also when scanning a local image build, as in our case, mounting the host Docker socket is required.</p>
+<p>The <code>sysdig-token</code> is a token from the Sysdig API  that can be retrieved from the SaaS itself, and the <code>sysdig-url</code> is the url of your Sysdig instance.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
+  <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Check vulnerabilities</span>
+  <span style="color:#f92672">inputs</span>:
+    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+    <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
+</span><span style="color:#e6db74">      docker run --rm \
+</span><span style="color:#e6db74">        -v /var/run/docker.sock:/var/run/docker.sock \
+</span><span style="color:#e6db74">        sysdiglabs/secure-inline-scan:2 \
+</span><span style="color:#e6db74">        --sysdig-url $(SYSDIG_URL) \
+</span><span style="color:#e6db74">        --sysdig-token $(SYSDIG_API_TOKEN) \
+</span><span style="color:#e6db74">        --storage-type docker-daemon \
+</span><span style="color:#e6db74">        --storage-path /var/run/docker.sock \
+</span><span style="color:#e6db74">        ${{ lower(variables.appName) }}:$(tag)</span>      
+</code></pre></div><p>When the inline scanner has completed the image analysis, it will send the result to the Sysdig SaaS to perform the policy evaluation step. <br>
+If the Policy evaluation fails the pipeline will break, otherwise the pipeline will go on and now you can add an extra step that pushes the image into your trusted repository.</p>
+<h1 id="4--aquasec-trivy">4- AquaSec Trivy</h1>
+<p>Trivy is an OSS vulnerability scanner for containers and other artifacts, using it with <code>Azure Pipelines</code> it&rsquo;s really simple and straightforward.</p>
+<p>Here&rsquo;s a code snippet showing how you can run the Trivy scanner with <code>Azure Pipelines</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">trigger</span>:
+  <span style="color:#f92672">branches</span>:
+    <span style="color:#f92672">include</span>:
+    - <span style="color:#ae81ff">master</span>
+  <span style="color:#f92672">paths</span>:
+    <span style="color:#f92672">exclude</span>:
+    - <span style="color:#ae81ff">pipelines/*</span>
+    - <span style="color:#ae81ff">test/*</span>
+    - <span style="color:#ae81ff">README.md</span>
+    - <span style="color:#ae81ff">.dockerignore</span>
+    - <span style="color:#ae81ff">.gitignore</span>
+
+<span style="color:#f92672">variables</span>:
+- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">appName</span>
+  <span style="color:#f92672">value</span>: <span style="color:#e6db74">&#39;ScanApp&#39;</span>
+- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">tag</span>
+  <span style="color:#f92672">value</span>: <span style="color:#e6db74">&#39;$(Build.BuildId)&#39;</span> 
+
+<span style="color:#f92672">pool</span>:
+  <span style="color:#f92672">vmImage</span>: <span style="color:#e6db74">&#39;ubuntu-latest&#39;</span>
+
+<span style="color:#f92672">steps</span>:
+- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
+  <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Create application image</span>
+  <span style="color:#f92672">inputs</span>:
+    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+    <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
+</span><span style="color:#e6db74">      </span>      <span style="color:#ae81ff">docker build -t  ${{ lower(variables.appName) }}:$(tag) .</span>
+    <span style="color:#f92672">workingDirectory</span>: <span style="color:#e6db74">&#39;$(System.DefaultWorkingDirectory)&#39;</span>
+- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
+  <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Download Trivy Scanner</span>
+  <span style="color:#f92672">inputs</span>:
+    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+    <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
+</span><span style="color:#e6db74">      </span>      <span style="color:#ae81ff">curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin</span>
+- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
+  <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Scan image</span>
+  <span style="color:#f92672">inputs</span>:
+    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+    <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
+</span><span style="color:#e6db74">      trivy --exit-code 0 --severity LOW,MEDIUM,HIGH --no-progress ${{ lower(variables.appName) }}:$(tag)
+</span><span style="color:#e6db74">      trivy --exit-code 1 --severity CRITICAL --no-progress ${{ lower(variables.appName) }}:$(tag)    </span>      
+</code></pre></div><p>Let&rsquo;s review the pipeline steps.</p>
+<ul>
+<li>Create the image of your app.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
+  <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Create application image</span>
+  <span style="color:#f92672">inputs</span>:
+    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+    <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
+</span><span style="color:#e6db74">      </span>      <span style="color:#ae81ff">docker build -t  ${{ lower(variables.appName) }}:$(tag) .</span>
+    <span style="color:#f92672">workingDirectory</span>: <span style="color:#e6db74">&#39;$(System.DefaultWorkingDirectory)&#39;</span>
+</code></pre></div><ul>
+<li>Download and install the scanner.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
+  <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Download Trivy Scanner</span>
+  <span style="color:#f92672">inputs</span>:
+    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+    <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
+</span><span style="color:#e6db74">      </span>      <span style="color:#ae81ff">curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin</span>
+</code></pre></div><ul>
+<li>Run the scanner.</li>
+</ul>
+<p>By default, Trivy exits with code 0 even when vulnerabilities are detected. Use the <code>--exit-code option</code> if you want to exit with a non-zero exit code.<br>
+In this step the scan will ran twice,  but it will break the pipeline with an exit code 1 only when a critical vulnerability is found.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
+  <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Scan image</span>
+  <span style="color:#f92672">inputs</span>:
+    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+    <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
+</span><span style="color:#e6db74">      trivy --exit-code 0 --severity LOW,MEDIUM,HIGH --no-progress ${{ lower(variables.appName) }}:$(tag)
+</span><span style="color:#e6db74">      trivy --exit-code 1 --severity CRITICAL --no-progress ${{ lower(variables.appName) }}:$(tag) </span>      
+</code></pre></div><p>As I stated before if the scanner finds any critical vulnerability the script will exit with an exit code 1 and the pipeline will break, otherwise the pipeline will go on and now you can add another step to push the image into your trusted repository.</p>
+<h1 id="useful-links">Useful links</h1>
+<ul>
+<li><a href="https://docs.microsoft.com/en-us/azure/security-center/defender-for-container-registries-introduction">https://docs.microsoft.com/en-us/azure/security-center/defender-for-container-registries-introduction</a></li>
+<li><a href="https://techcommunity.microsoft.com/t5/azure-security-center/enhance-your-ci-cd-deployment-by-using-vulnerability-assessments/ba-p/2102516">https://techcommunity.microsoft.com/t5/azure-security-center/enhance-your-ci-cd-deployment-by-using-vulnerability-assessments/ba-p/2102516</a></li>
+<li><a href="https://medium.com/@sahangunathilaka/scan-docker-images-in-amazon-ecr-and-retrieve-scan-findings-e5a3fe4e7afa">https://medium.com/@sahangunathilaka/scan-docker-images-in-amazon-ecr-and-retrieve-scan-findings-e5a3fe4e7afa</a></li>
+<li><a href="https://www.winopsdba.com/blog/azure-cloud-container-build-scan-publish.html">https://www.winopsdba.com/blog/azure-cloud-container-build-scan-publish.html</a></li>
+<li><a href="https://github.com/Azure/Azure-Security-Center/tree/main/Container%20Image%20Scan%20Vulnerability%20Assessment">https://github.com/Azure/Azure-Security-Center/tree/main/Container%20Image%20Scan%20Vulnerability%20Assessment</a></li>
+<li><a href="https://docs.sysdig.com/en/docs/sysdig-secure/scanning/integrate-with-cicd-tools/">https://docs.sysdig.com/en/docs/sysdig-secure/scanning/integrate-with-cicd-tools/</a></li>
+</ul>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://www.mytechramblings.com/posts/running-a-sonarqube-scan-when-building-docker-image/">
+                  <span class="button__text">Setting up the SonarQube scanner when building a .NET Core container image</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2021 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>Theme created by <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://www.mytechramblings.com/assets/main.js"></script>
+<script src="https://www.mytechramblings.com/assets/prism.js"></script>
+<script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="carlospons" data-description="Support me on Buy me a coffee!" data-message="If you find my blog useful, please consider buying me a cup of coffee. Thank you!" data-color="#FF5F5F" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
+
+      
+    </div>
+
+    
+      
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-170300931-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+    
+  </body>
+</html>
