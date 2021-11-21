@@ -145,11 +145,7 @@
 
       <div class="post-content">
         
-          
-            A pretty common scenario in complex .NET applications is having them splitted in multiple csharp projects inside a single solution, even with the proliferation of microservices is pretty common seeing the client and the business logic decoupled in multiple projects inside a single solution.
-And that behaviour is even more common if you’re using some kind of software architecture like “Domain Driven Design”, “Hexagonal Architecture” or “Clean Architecture”.
-A common problem that usually appears when the number of projects begins to pile up inside a single solution is mantaining consistency between nuget versions, and quite some times you end up with every project using a different version of the same package.
-          
+          In this post I want to show you some of the different options available when you want to centrally manage NuGet versions within a solution.
         
       </div>
       
@@ -198,11 +194,7 @@ A common problem that usually appears when the number of projects begins to pile
 
       <div class="post-content">
         
-          
-            Let’s go for a quick post this time.
-Imagine you’re trying to create a Docker image from an application and it is using some custom nugets. Those custom nugets are hosted in your private Azure DevOps Feed. And when you try to build the image you get one of the following errors:
-/src/MyConsoleApplication.csproj : error NU1101: Unable to find package MyOwn.EmailService. No packages exist with this id in source(s): nuget.org Failed to restore /src/MyConsoleApplication.
-          
+          In this post I&rsquo;ll show you how to restore NuGet packages from an Azure DevOps private feed when building a Docker image.
         
       </div>
       

@@ -28,9 +28,7 @@
         
         
         
-          Let&amp;rsquo;s go for a quick post this time.
-Imagine you&amp;rsquo;re trying to create a Docker image from an application and it is using some custom nugets. Those custom nugets are hosted in your private Azure DevOps Feed. And when you try to build the image you get one of the following errors:
-/src/MyConsoleApplication.csproj : error NU1101: Unable to find package MyOwn.EmailService. No packages exist with this id in source(s): nuget.org Failed to restore /src/MyConsoleApplication.
+          In this post I&#39;ll show you how to restore NuGet packages from an Azure DevOps private feed when building a Docker image.
           
         
         </description>

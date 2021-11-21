@@ -9,32 +9,10 @@
     <description>Recent content in containers on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 27 Oct 2021 09:05:14 +0200</lastBuildDate>
+    <lastBuildDate>Tue, 14 Sep 2021 10:05:00 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/containers/index.xml" rel="self" type="application/rss+xml" />
     
-    
-    <item>
-      <title>Testing how to use some container vulnerabilities scanners with Azure Pipelines</title>
-      <link>https://www.mytechramblings.com/posts/testing-container-vulnerabilities-scanners-using-azure-pipelines/</link>
-      <pubDate>Wed, 27 Oct 2021 09:05:14 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/posts/testing-container-vulnerabilities-scanners-using-azure-pipelines/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          Just show me the code
-As always if you don’t care about the post I have upload the source code on my Github.
- A big part of any organization’s risk assessment process is to be aware of and gain visibility into vulnerabilities in the software being used. Vulnerability scanning allows us to review the security state of the container images and take actions to fix issues identified during the scan, resulting in more secure deployments.
-          
-        
-        </description>
-    </item>
     
     <item>
       <title>Setting up the SonarQube scanner when building a .NET Core container image</title>
@@ -50,9 +28,7 @@ As always if you don’t care about the post I have upload the source code on my
         
         
         
-          Just show me the code
-As always if you don’t care about the post I have upload the source code on my Github.
- SonarQube is one of the most well-known code review tools in the dotnet space. It is used mainly to detect bugs, vulnerabilities and code smells in your codebase and it can be integrated with any workflow to enable a continuous code inspection across multiple branches and pull requests.
+          If you&#39;re using containers quite probably you&#39;re doing the build, test and analysis steps inside the Dockerfile, and setting up the SonarQube scanner when building the image can be a little more cumbersome than usual, and that&#39;s why I wanted to write a little bit about it.
           
         
         </description>
@@ -72,10 +48,7 @@ As always if you don’t care about the post I have upload the source code on my
         
         
         
-          Just show me the code
-As always if you don’t care about the post I have upload a few examples on my Github.
- Nowadays creating a new dotnet gRPC application is pretty straightforward. From the developer standpoint the experience of creating a gRPC app it&amp;rsquo;s quite similar to creating an API, furthermore, Visual Studio also offers Intellisense support for gRPC services and proto files.
-As I stated before developing a dotnet gRPC app right now is an easy feat, but when you try to deploy it in some cloud provider that&amp;rsquo;s when some wrinkles might appear.
+          Lately I&#39;ve been deploying a sizable amount of gRPC services to AWS ECS so I thought it might be useful to talk a little bit about some gotchas I have encountered. Some of the problems I&#39;ll be talking about on this post are specific of the .NET implementation of gRPC and another ones are from the AWS side.
           
         
         </description>
@@ -95,9 +68,7 @@ As I stated before developing a dotnet gRPC app right now is an easy feat, but w
         
         
         
-          These past couple of weeks I&amp;rsquo;ve been tinkering with AWS ECS Fargate and after losing some time tackling different approaches I thought it might be useful to write down what I ended up building.
-My goal was trying to build an AWS ECS Fargate cluster and deploy apps on it using Azure DevOps Pipelines and I had 3 clear objectives I wanted to achieve.
- All the infrastructure in AWS must be created using IaC (infrastructure-as-code) and must be created using an Azure DevOps pipeline.
+          These past couple of weeks I&#39;ve been tinkering with AWS ECS Fargate and after losing some time tackling different approaches I thought it might be useful to write down what I ended up building, so without further ado let&#39;s dig in.
           
         
         </description>
@@ -117,9 +88,7 @@ My goal was trying to build an AWS ECS Fargate cluster and deploy apps on it usi
         
         
         
-          Let&amp;rsquo;s go for a quick post this time.
-Imagine you&amp;rsquo;re trying to create a Docker image from an application and it is using some custom nugets. Those custom nugets are hosted in your private Azure DevOps Feed. And when you try to build the image you get one of the following errors:
-/src/MyConsoleApplication.csproj : error NU1101: Unable to find package MyOwn.EmailService. No packages exist with this id in source(s): nuget.org Failed to restore /src/MyConsoleApplication.
+          In this post I&#39;ll show you how to restore NuGet packages from an Azure DevOps private feed when building a Docker image.
           
         
         </description>

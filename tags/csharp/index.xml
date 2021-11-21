@@ -28,9 +28,7 @@
         
         
         
-          Just show me the code
-As always if you don’t care about the post I have upload the source code on my Github.
- SonarQube is one of the most well-known code review tools in the dotnet space. It is used mainly to detect bugs, vulnerabilities and code smells in your codebase and it can be integrated with any workflow to enable a continuous code inspection across multiple branches and pull requests.
+          If you&#39;re using containers quite probably you&#39;re doing the build, test and analysis steps inside the Dockerfile, and setting up the SonarQube scanner when building the image can be a little more cumbersome than usual, and that&#39;s why I wanted to write a little bit about it.
           
         
         </description>
@@ -50,10 +48,7 @@ As always if you don’t care about the post I have upload the source code on my
         
         
         
-          Just show me the code
-As always if you don’t care about the post I have upload the source code on my Github.
- In today&amp;rsquo;s post I want to talk about how you can secure a .NET graphQL API using Azure Active Directory (AAD).
-If you want to build a graphQL API in .NET right now, the most well-known options available are the graphQL.NET implementation (https://graphql-dotnet.github.io/) and the HotChocolate one (https://chillicream.
+          In today&#39;s post I want to talk about how you can secure a .NET graphQL API that uses HotChocolate (https://chillicream.com/) with Azure Active Directory.
           
         
         </description>
@@ -73,9 +68,7 @@ If you want to build a graphQL API in .NET right now, the most well-known option
         
         
         
-          This is a 2 part-series.
- Part 1: Key concepts that you should know when creating a .NET template. If you want to read it, click here Part 2: How to convert a few .NET apps into .NET templates, package them together in a single NuGet pack and use them as templates within Visual Studio.   Just show me the code
-As always if you don’t care about the post I have upload the source code on my Github.
+          This is a 2 part-series post. In part 2 I&#39;ll show you how to convert a few .NET apps into .NET templates, package them together in a single NuGet pack and use them as templates within Visual Studio.
           
         
         </description>
@@ -95,8 +88,7 @@ As always if you don’t care about the post I have upload the source code on my
         
         
         
-          This is a 2 part-series.
- Part 1: Key concepts that you should know when creating a .NET template. Part 2: How to convert a few .NET apps into .NET templates, package them together in a single NuGet pack and use them as templates within Visual Studio. If you want to read it, click here   When you install the .NET SDK you receive a handful of built-in templates for creating projects like console apps, web apis, class libraries, unit test projects, etc.
+          This is a 2 part-series post. In part 1 I&#39;ll be talking about a few key concepts that you should know when creating a .NET template.
           
         
         </description>
@@ -116,10 +108,7 @@ As always if you don’t care about the post I have upload the source code on my
         
         
         
-          Show me the code
-If you don&amp;rsquo;t care about the post I have upload the code on my Github
- A few months ago the first stable version of the OpenTelemetry client for dotnet was released and since then I have wanted to write a little bit about it.
-OpenTelemetry is a set of APIs, SDKs, tooling and integrations that are designed for the creation and management of telemetry data such as traces, metrics, and logs.
+          OpenTelemetry is a set of APIs, SDKs, tooling and integrations that are designed for the creation and management of telemetry data such as traces, metrics, and logs. On today&#39;s post I&#39;m going to show you how you can start using OTEL and distributed tracing with .NET Core.
           
         
         </description>
@@ -139,8 +128,7 @@ OpenTelemetry is a set of APIs, SDKs, tooling and integrations that are designed
         
         
         
-          Roslyn Analyzers are extensions that analyze source code and report violations. Some analyzers are built-into VS (like the IDE analyzers that report style issues) and some are third party ones which can be installed (like StyleCopyAnalyzers, FxCopAnalyzers, etc.).
-Analyzers can be configurated using file(s) to allow end users to control the behavior of each analyzer and severity of reported diagnostics. This may be via an editorconfig or a ruleset file or even completely custom format specific to the third party analyzer package.
+          Roslyn Analyzers are extensions that analyze source code and report violations. Some analyzers are built-into VS and some are third party ones which can be installed (like StyleCopyAnalyzers, FxCopAnalyzers, etc.). On today&#39;s post I will show you how you can configure your custom roslyn analyzers with an .editorconfig file.
           
         
         </description>
@@ -160,9 +148,7 @@ Analyzers can be configurated using file(s) to allow end users to control the be
         
         
         
-          A pretty common scenario in complex .NET applications is having them splitted in multiple csharp projects inside a single solution, even with the proliferation of microservices is pretty common seeing the client and the business logic decoupled in multiple projects inside a single solution.
-And that behaviour is even more common if you&amp;rsquo;re using some kind of software architecture like &amp;ldquo;Domain Driven Design&amp;rdquo;, &amp;ldquo;Hexagonal Architecture&amp;rdquo; or &amp;ldquo;Clean Architecture&amp;rdquo;.
-A common problem that usually appears when the number of projects begins to pile up inside a single solution is mantaining consistency between nuget versions, and quite some times you end up with every project using a different version of the same package.
+          In this post I want to show you some of the different options available when you want to centrally manage NuGet versions within a solution.
           
         
         </description>
@@ -182,9 +168,7 @@ A common problem that usually appears when the number of projects begins to pile
         
         
         
-          Let&amp;rsquo;s go for a quick post this time.
-Imagine you&amp;rsquo;re trying to create a Docker image from an application and it is using some custom nugets. Those custom nugets are hosted in your private Azure DevOps Feed. And when you try to build the image you get one of the following errors:
-/src/MyConsoleApplication.csproj : error NU1101: Unable to find package MyOwn.EmailService. No packages exist with this id in source(s): nuget.org Failed to restore /src/MyConsoleApplication.
+          In this post I&#39;ll show you how to restore NuGet packages from an Azure DevOps private feed when building a Docker image.
           
         
         </description>
@@ -204,7 +188,7 @@ Imagine you&amp;rsquo;re trying to create a Docker image from an application and
         
         
         
-          Nowadays no one on his right mind is going to create a WCF from scratch. It really makes no sense to do it. It&amp;rsquo;s a deprecated technology, it does not work with .NET Core, only works on Windows OS and personally I found the configuration confusing as hell, every time I need to modify an existing one I have to spend a good amount of time trying to figure out what everything means.
+          What I wanted to talk in these post is how easy is to add a healthcheck endpoint in a WCF application, and how you can use it in case you want to move the application into the Cloud in the near future.
           
         
         </description>
@@ -224,9 +208,7 @@ Imagine you&amp;rsquo;re trying to create a Docker image from an application and
         
         
         
-          In these past few years Microsoft has kept a steady flow of new .NET Core versions: .NET Core 1.0, 1.1, 2.0, 2.1, 2.2 and so on and so forth.
-If you have hundreds of applications in your company, it&amp;rsquo;s almost impossible to keep them updated to the most recent version of the framework, so most probably you&amp;rsquo;re going to end up having multiple versions running at the same time.
-When trying to choose which versions are you going to support in your company a factor to consider is that only a few of those versions are long-time support (LTS).
+          In these past few years Microsoft has kept a steady flow of new .NET Core versions, and if you have hundreds of applications in your company it&#39;s almost impossible to keep them updated to the most recent version of the framework. If you want to enforce that everyone on your company is using the correct framework version when they create a new application you can use a Roslyn Analyzer.
           
         
         </description>

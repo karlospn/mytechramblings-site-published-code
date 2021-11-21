@@ -29,16 +29,12 @@ A common problem that usually appears when the number of projects begins to pile
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="How to centrally manage NuGet package versions within your solution"/>
-<meta name="twitter:description" content="A pretty common scenario in complex .NET applications is having them splitted in multiple csharp projects inside a single solution, even with the proliferation of microservices is pretty common seeing the client and the business logic decoupled in multiple projects inside a single solution.
-And that behaviour is even more common if you&rsquo;re using some kind of software architecture like &ldquo;Domain Driven Design&rdquo;, &ldquo;Hexagonal Architecture&rdquo; or &ldquo;Clean Architecture&rdquo;.
-A common problem that usually appears when the number of projects begins to pile up inside a single solution is mantaining consistency between nuget versions, and quite some times you end up with every project using a different version of the same package."/>
+<meta name="twitter:description" content="In this post I want to show you some of the different options available when you want to centrally manage NuGet versions within a solution."/>
 
 
 
 <meta property="og:title" content="How to centrally manage NuGet package versions within your solution" />
-<meta property="og:description" content="A pretty common scenario in complex .NET applications is having them splitted in multiple csharp projects inside a single solution, even with the proliferation of microservices is pretty common seeing the client and the business logic decoupled in multiple projects inside a single solution.
-And that behaviour is even more common if you&rsquo;re using some kind of software architecture like &ldquo;Domain Driven Design&rdquo;, &ldquo;Hexagonal Architecture&rdquo; or &ldquo;Clean Architecture&rdquo;.
-A common problem that usually appears when the number of projects begins to pile up inside a single solution is mantaining consistency between nuget versions, and quite some times you end up with every project using a different version of the same package." />
+<meta property="og:description" content="In this post I want to show you some of the different options available when you want to centrally manage NuGet versions within a solution." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://www.mytechramblings.com/posts/centrally-manage-nuget-versions/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2020-09-02T10:01:20+02:00" />
@@ -162,7 +158,7 @@ And that behaviour is even more common if you&rsquo;re using some kind of softwa
 And that problem is even worse if there are multiple applications inside a single solution and those applications are sharing projects between them, at that point it becomes a nightmare trying to maintain a consistent package version across all projects because when you try to update a package you might be affecting multiple applications without even knowing.</p>
 <p>That&rsquo;s why in most cases I like to manage the package versions in a central point inside my solution and if the solution contains multiple applications then <strong>every application uses the same nuget version</strong> and every application is affected when I modify the package version but at least I don&rsquo;t have to navigate between the dependency mesh of multiples projects being referenced between them.<br>
 Also in case that I have multiple applications inside a single solution and I want to update a package version of only one of them I tend to move the application that I want to modify and place it in a new solution just by itself.</p>
-<p>Anyways, in these post I want to show you some of the different options available when you want to centrally manage nuget versions within a solution.</p>
+<p>Anyways, in this post I want to show you some of the different options available when you want to centrally manage nuget versions within a solution.</p>
 <h1 id="option-1--using-the-microsoftbuildcentralpackageversions-sdk-project">Option 1 : Using the Microsoft.Build.CentralPackageVersions SDK project</h1>
 <p><em><strong>Source code</strong></em>: <a href="https://github.com/microsoft/MSBuildSdks/tree/master/src/CentralPackageVersions">https://github.com/microsoft/MSBuildSdks/tree/master/src/CentralPackageVersions</a></p>
 <p><strong>Microsoft.Build.CentralPackageVersions</strong> it&rsquo;s a project SDK built by Microsoft themself.<br>

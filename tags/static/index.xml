@@ -28,11 +28,7 @@
         
         
         
-          If you only care about the end result, I upload the final result in this GitHub repository: github-link
-This repository contains the entire blog source code.
-In the &amp;quot;/infrastructure&amp;quot; folder you can find an ARM template that is used to create the static web app.
-In the /.github/workflows folder you can find a couple of github actions:
- The infrastructure.yml file is a github action that creates the resources on Azure.
+          I been wanting to try Azure Static Web Apps for quite some time and I thought that instead of deploying some dummy static site I could use my blog as a test subject, so let&#39;s do it!
           
         
         </description>

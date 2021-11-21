@@ -28,10 +28,7 @@
         
         
         
-          Show me the code
-If you don&amp;rsquo;t care about my writings I have upload the code on my Github
- On today&amp;rsquo;s post I want to try to automate the setup of an Azure DevOps organization using the Azure DevOps Terraform provider.
- You might also be interested in these post I wrote a few months ago about automating the AAD App Registration process using the Terraform Azure Active Directory provider.
+          On today&#39;s post I want to test the Azure DevOps Terraform provider and that&#39;s why I&#39;ll be trying to automate the setup of an Azure DevOps organization using it.
           
         
         </description>
@@ -51,10 +48,7 @@ If you don&amp;rsquo;t care about my writings I have upload the code on my Githu
         
         
         
-          &amp;gt; Updated content:
-I wrote the original post almost 6 months ago and since then the AAD Terraform provider has been updated several times.
-When I wrote the post I used the version 0.11 and right now the provider is on version 1.1.1, that&amp;rsquo;s a considerable version bump so some people asked me if I could update this post.
-Without further ado let&amp;rsquo;s rebuild this example using the 1.1.1 version.
+          Today I want to try to use Terraform to automate the app registration process in Azure Active Directory.
           
         
         </description>

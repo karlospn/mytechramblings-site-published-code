@@ -107,61 +107,6 @@
   <div class="posts">
     
     <div class="post on-list">
-      <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/testing-container-vulnerabilities-scanners-using-azure-pipelines/">Testing how to use some container vulnerabilities scanners with Azure Pipelines</a></h1>
-      <div class="post-meta">
-        
-          <span class="post-date">
-            2021-10-27
-          </span>
-
-          
-            
-
-
-
-          
-        
-        
-        
-          <span class="post-read-time">— 17 min read</span>
-        
-      </div>
-
-      
-        <span class="post-tags">
-          
-            #<a href="https://www.mytechramblings.com/tags/docker/">docker</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/devops/">devops</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/azure/">azure</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/aws/">aws</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/security/">security</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/containers/">containers</a>&nbsp;
-          
-        </span>
-      
-
-      
-
-      <div class="post-content">
-        
-          
-            Just show me the code
-As always if you don’t care about the post I have upload the source code on my Github.
-A big part of any organization’s risk assessment process is to be aware of and gain visibility into vulnerabilities in the software being used. Vulnerability scanning allows us to review the security state of the container images and take actions to fix issues identified during the scan, resulting in more secure deployments.
-          
-        
-      </div>
-      
-        <div><a class="read-more button" href="/posts/testing-container-vulnerabilities-scanners-using-azure-pipelines/">Read more →</a></div>
-      
-    </div>
-    
-    <div class="post on-list">
       <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/securing-dotnet-graphql-api-with-aad/">Securing a graphQL API with Azure Active Directory</a></h1>
       <div class="post-meta">
         
@@ -202,12 +147,7 @@ A big part of any organization’s risk assessment process is to be aware of and
 
       <div class="post-content">
         
-          
-            Just show me the code
-As always if you don’t care about the post I have upload the source code on my Github.
-In today’s post I want to talk about how you can secure a .NET graphQL API using Azure Active Directory (AAD).
-If you want to build a graphQL API in .NET right now, the most well-known options available are the graphQL.NET implementation (<a href="https://graphql-dotnet.github.io/">https://graphql-dotnet.github.io/</a>) and the HotChocolate one (https://chillicream.
-          
+          In today&rsquo;s post I want to talk about how you can secure a .NET graphQL API that uses HotChocolate (<a href="https://chillicream.com/">https://chillicream.com/</a>) with Azure Active Directory.
         
       </div>
       
@@ -254,12 +194,7 @@ If you want to build a graphQL API in .NET right now, the most well-known option
 
       <div class="post-content">
         
-          
-            Show me the code
-If you don’t care about my writings I have upload the code on my Github
-On today’s post I want to try to automate the setup of an Azure DevOps organization using the Azure DevOps Terraform provider.
-You might also be interested in these post I wrote a few months ago about automating the AAD App Registration process using the Terraform Azure Active Directory provider.
-          
+          On today&rsquo;s post I want to test the Azure DevOps Terraform provider and that&rsquo;s why I&rsquo;ll be trying to automate the setup of an Azure DevOps organization using it.
         
       </div>
       
@@ -308,13 +243,7 @@ You might also be interested in these post I wrote a few months ago about automa
 
       <div class="post-content">
         
-          
-            If you only care about the end result, I upload the final result in this GitHub repository: github-link
-This repository contains the entire blog source code.
-In the &quot;/infrastructure&quot; folder you can find an ARM template that is used to create the static web app.
-In the /.github/workflows folder you can find a couple of github actions:
-The infrastructure.yml file is a github action that creates the resources on Azure.
-          
+          I been wanting to try Azure Static Web Apps for quite some time and I thought that instead of deploying some dummy static site I could use my blog as a test subject, so let&rsquo;s do it!
         
       </div>
       
@@ -367,11 +296,7 @@ The infrastructure.yml file is a github action that creates the resources on Azu
 
       <div class="post-content">
         
-          
-            These past couple of weeks I’ve been tinkering with AWS ECS Fargate and after losing some time tackling different approaches I thought it might be useful to write down what I ended up building.
-My goal was trying to build an AWS ECS Fargate cluster and deploy apps on it using Azure DevOps Pipelines and I had 3 clear objectives I wanted to achieve.
-All the infrastructure in AWS must be created using IaC (infrastructure-as-code) and must be created using an Azure DevOps pipeline.
-          
+          These past couple of weeks I&rsquo;ve been tinkering with AWS ECS Fargate and after losing some time tackling different approaches I thought it might be useful to write down what I ended up building, so without further ado let&rsquo;s dig in.
         
       </div>
       
@@ -418,10 +343,7 @@ All the infrastructure in AWS must be created using IaC (infrastructure-as-code)
 
       <div class="post-content">
         
-          
-            These past years I worked with a few companies that uses Azure Active Directory to perform authentication and authorization on their line-of-business (LOB) applications and from time to time I get questions about how to register apps on AAD.
-Those questions are always pretty similar and most of the time the problem lies in some misconception, so I thought it might be a good idea to try to answer some of them and at the same time write them down in this post.
-          
+          These past years I worked with a few companies that uses Azure Active Directory to perform authentication and authorization on their line-of-business (LOB) applications and from time to time I get questions about how to register apps on AAD. Those questions are always pretty similar and most of the time the problem lies in some misconception, so I thought it might be a good idea to try to answer some of them and at the same time write them down in this post.
         
       </div>
       
@@ -468,9 +390,7 @@ Those questions are always pretty similar and most of the time the problem lies 
 
       <div class="post-content">
         
-          
-            Introduction First of all let me tell you that I’m huge proponent of Terraform as a framework for defining infrastructure in code. One of the things that I like most about Terraform is that not only every major cloud provider (AWS, Azure, GCP) offers their own provider but each day more and more companies are starting to offer their own Terraform providers, and those are great news because with Terraform I can create almost any cloud infrastructure that I want and also a huge array of varied resources such as: VMware vSphere Virtual Machines, RabbitMq Queues, Grafana dashboards amongst many many others.
-          
+          In today&rsquo;s post I will show you how you can deploy an AWS CDK application using Azure DevOps.
         
       </div>
       
@@ -519,11 +439,7 @@ Those questions are always pretty similar and most of the time the problem lies 
 
       <div class="post-content">
         
-          
-            GitOps is a term introduced by WeaveWorks a few years ago (<a href="https://www.weave.works/blog/gitops-operations-by-pull-request">https://www.weave.works/blog/gitops-operations-by-pull-request</a>)
-GitOps is a way of implementing Continuous Deployment. The core idea of GitOps is having a Git repository that always contains declarative descriptions of the infrastructure currently desired in the production environment and an automated process to make the production environment match the described state in the repository.
-If you want to deploy a new application or update an existing one, you only need to update the repository - the automated process handles everything else.
-          
+          GitOps is a way of implementing Continuous Deployment. The core idea of GitOps is having a Git repository that always contains declarative descriptions of the desired infrastructure, and in this post I&rsquo;ll be building a practical example of GitOps using Azure.
         
       </div>
       
@@ -576,12 +492,7 @@ If you want to deploy a new application or update an existing one, you only need
 
       <div class="post-content">
         
-          
-            &gt; Updated content:
-I wrote the original post almost 6 months ago and since then the AAD Terraform provider has been updated several times.
-When I wrote the post I used the version 0.11 and right now the provider is on version 1.1.1, that’s a considerable version bump so some people asked me if I could update this post.
-Without further ado let’s rebuild this example using the 1.1.1 version.
-          
+          Today I want to try to use Terraform to automate the app registration process in Azure Active Directory.
         
       </div>
       
@@ -634,9 +545,7 @@ Without further ado let’s rebuild this example using the 1.1.1 version.
 
       <div class="post-content">
         
-          
-            Nowadays no one on his right mind is going to create a WCF from scratch. It really makes no sense to do it. It’s a deprecated technology, it does not work with .NET Core, only works on Windows OS and personally I found the configuration confusing as hell, every time I need to modify an existing one I have to spend a good amount of time trying to figure out what everything means.
-          
+          What I wanted to talk in these post is how easy is to add a healthcheck endpoint in a WCF application, and how you can use it in case you want to move the application into the Cloud in the near future.
         
       </div>
       

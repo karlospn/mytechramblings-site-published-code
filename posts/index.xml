@@ -9,32 +9,10 @@
     <description>Recent content in Posts on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 27 Oct 2021 09:05:14 +0200</lastBuildDate>
+    <lastBuildDate>Tue, 14 Sep 2021 10:05:00 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/posts/index.xml" rel="self" type="application/rss+xml" />
     
-    
-    <item>
-      <title>Testing how to use some container vulnerabilities scanners with Azure Pipelines</title>
-      <link>https://www.mytechramblings.com/posts/testing-container-vulnerabilities-scanners-using-azure-pipelines/</link>
-      <pubDate>Wed, 27 Oct 2021 09:05:14 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/posts/testing-container-vulnerabilities-scanners-using-azure-pipelines/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          Just show me the code
-As always if you don’t care about the post I have upload the source code on my Github.
- A big part of any organization’s risk assessment process is to be aware of and gain visibility into vulnerabilities in the software being used. Vulnerability scanning allows us to review the security state of the container images and take actions to fix issues identified during the scan, resulting in more secure deployments.
-          
-        
-        </description>
-    </item>
     
     <item>
       <title>Setting up the SonarQube scanner when building a .NET Core container image</title>
@@ -50,9 +28,7 @@ As always if you don’t care about the post I have upload the source code on my
         
         
         
-          Just show me the code
-As always if you don’t care about the post I have upload the source code on my Github.
- SonarQube is one of the most well-known code review tools in the dotnet space. It is used mainly to detect bugs, vulnerabilities and code smells in your codebase and it can be integrated with any workflow to enable a continuous code inspection across multiple branches and pull requests.
+          If you&#39;re using containers quite probably you&#39;re doing the build, test and analysis steps inside the Dockerfile, and setting up the SonarQube scanner when building the image can be a little more cumbersome than usual, and that&#39;s why I wanted to write a little bit about it.
           
         
         </description>
@@ -72,10 +48,7 @@ As always if you don’t care about the post I have upload the source code on my
         
         
         
-          Just show me the code
-As always if you don’t care about the post I have upload the source code on my Github.
- In today&amp;rsquo;s post I want to talk about how you can secure a .NET graphQL API using Azure Active Directory (AAD).
-If you want to build a graphQL API in .NET right now, the most well-known options available are the graphQL.NET implementation (https://graphql-dotnet.github.io/) and the HotChocolate one (https://chillicream.
+          In today&#39;s post I want to talk about how you can secure a .NET graphQL API that uses HotChocolate (https://chillicream.com/) with Azure Active Directory.
           
         
         </description>
@@ -95,10 +68,7 @@ If you want to build a graphQL API in .NET right now, the most well-known option
         
         
         
-          Just show me the code
-As always if you don’t care about the post I have upload a few examples on my Github.
- Nowadays creating a new dotnet gRPC application is pretty straightforward. From the developer standpoint the experience of creating a gRPC app it&amp;rsquo;s quite similar to creating an API, furthermore, Visual Studio also offers Intellisense support for gRPC services and proto files.
-As I stated before developing a dotnet gRPC app right now is an easy feat, but when you try to deploy it in some cloud provider that&amp;rsquo;s when some wrinkles might appear.
+          Lately I&#39;ve been deploying a sizable amount of gRPC services to AWS ECS so I thought it might be useful to talk a little bit about some gotchas I have encountered. Some of the problems I&#39;ll be talking about on this post are specific of the .NET implementation of gRPC and another ones are from the AWS side.
           
         
         </description>
@@ -118,9 +88,7 @@ As I stated before developing a dotnet gRPC app right now is an easy feat, but w
         
         
         
-          This is a 2 part-series.
- Part 1: Key concepts that you should know when creating a .NET template. If you want to read it, click here Part 2: How to convert a few .NET apps into .NET templates, package them together in a single NuGet pack and use them as templates within Visual Studio.   Just show me the code
-As always if you don’t care about the post I have upload the source code on my Github.
+          This is a 2 part-series post. In part 2 I&#39;ll show you how to convert a few .NET apps into .NET templates, package them together in a single NuGet pack and use them as templates within Visual Studio.
           
         
         </description>
@@ -140,8 +108,7 @@ As always if you don’t care about the post I have upload the source code on my
         
         
         
-          This is a 2 part-series.
- Part 1: Key concepts that you should know when creating a .NET template. Part 2: How to convert a few .NET apps into .NET templates, package them together in a single NuGet pack and use them as templates within Visual Studio. If you want to read it, click here   When you install the .NET SDK you receive a handful of built-in templates for creating projects like console apps, web apis, class libraries, unit test projects, etc.
+          This is a 2 part-series post. In part 1 I&#39;ll be talking about a few key concepts that you should know when creating a .NET template.
           
         
         </description>
@@ -161,11 +128,7 @@ As always if you don’t care about the post I have upload the source code on my
         
         
         
-          Show me the code
-If you don&amp;rsquo;t care about the post I have upload the code on my Github
- I already talked in some of my post about AWS CDK, but for those unaware of AWS CDK is a framework that allows us to define cloud infrastructure in code.
-AWS CDK is available in a bunch of different languages:
- JavaScript TypeScript Python Java .NET Core  I already shared my thoughts about AWS CDK in some of my older posts so in this one I will cut to the chase and I will focus on showing you some of the options available when you want to deploy a .
+          In today&#39;s post I want to show you 4 available options for deploying a .NET Core lambda with AWS CDK.
           
         
         </description>
@@ -185,10 +148,7 @@ AWS CDK is available in a bunch of different languages:
         
         
         
-          Show me the code
-If you don&amp;rsquo;t care about the post I have upload the code on my Github
- A few months ago the first stable version of the OpenTelemetry client for dotnet was released and since then I have wanted to write a little bit about it.
-OpenTelemetry is a set of APIs, SDKs, tooling and integrations that are designed for the creation and management of telemetry data such as traces, metrics, and logs.
+          OpenTelemetry is a set of APIs, SDKs, tooling and integrations that are designed for the creation and management of telemetry data such as traces, metrics, and logs. On today&#39;s post I&#39;m going to show you how you can start using OTEL and distributed tracing with .NET Core.
           
         
         </description>
@@ -208,10 +168,7 @@ OpenTelemetry is a set of APIs, SDKs, tooling and integrations that are designed
         
         
         
-          Show me the code
-If you don&amp;rsquo;t care about my writings I have upload the code on my Github
- On today&amp;rsquo;s post I want to try to automate the setup of an Azure DevOps organization using the Azure DevOps Terraform provider.
- You might also be interested in these post I wrote a few months ago about automating the AAD App Registration process using the Terraform Azure Active Directory provider.
+          On today&#39;s post I want to test the Azure DevOps Terraform provider and that&#39;s why I&#39;ll be trying to automate the setup of an Azure DevOps organization using it.
           
         
         </description>
@@ -231,8 +188,7 @@ If you don&amp;rsquo;t care about my writings I have upload the code on my Githu
         
         
         
-          Roslyn Analyzers are extensions that analyze source code and report violations. Some analyzers are built-into VS (like the IDE analyzers that report style issues) and some are third party ones which can be installed (like StyleCopyAnalyzers, FxCopAnalyzers, etc.).
-Analyzers can be configurated using file(s) to allow end users to control the behavior of each analyzer and severity of reported diagnostics. This may be via an editorconfig or a ruleset file or even completely custom format specific to the third party analyzer package.
+          Roslyn Analyzers are extensions that analyze source code and report violations. Some analyzers are built-into VS and some are third party ones which can be installed (like StyleCopyAnalyzers, FxCopAnalyzers, etc.). On today&#39;s post I will show you how you can configure your custom roslyn analyzers with an .editorconfig file.
           
         
         </description>
@@ -252,11 +208,7 @@ Analyzers can be configurated using file(s) to allow end users to control the be
         
         
         
-          If you only care about the end result, I upload the final result in this GitHub repository: github-link
-This repository contains the entire blog source code.
-In the &amp;quot;/infrastructure&amp;quot; folder you can find an ARM template that is used to create the static web app.
-In the /.github/workflows folder you can find a couple of github actions:
- The infrastructure.yml file is a github action that creates the resources on Azure.
+          I been wanting to try Azure Static Web Apps for quite some time and I thought that instead of deploying some dummy static site I could use my blog as a test subject, so let&#39;s do it!
           
         
         </description>
@@ -276,9 +228,7 @@ In the /.github/workflows folder you can find a couple of github actions:
         
         
         
-          These past couple of weeks I&amp;rsquo;ve been tinkering with AWS ECS Fargate and after losing some time tackling different approaches I thought it might be useful to write down what I ended up building.
-My goal was trying to build an AWS ECS Fargate cluster and deploy apps on it using Azure DevOps Pipelines and I had 3 clear objectives I wanted to achieve.
- All the infrastructure in AWS must be created using IaC (infrastructure-as-code) and must be created using an Azure DevOps pipeline.
+          These past couple of weeks I&#39;ve been tinkering with AWS ECS Fargate and after losing some time tackling different approaches I thought it might be useful to write down what I ended up building, so without further ado let&#39;s dig in.
           
         
         </description>
@@ -298,8 +248,7 @@ My goal was trying to build an AWS ECS Fargate cluster and deploy apps on it usi
         
         
         
-          These past years I worked with a few companies that uses Azure Active Directory to perform authentication and authorization on their line-of-business (LOB) applications and from time to time I get questions about how to register apps on AAD.
-Those questions are always pretty similar and most of the time the problem lies in some misconception, so I thought it might be a good idea to try to answer some of them and at the same time write them down in this post.
+          These past years I worked with a few companies that uses Azure Active Directory to perform authentication and authorization on their line-of-business (LOB) applications and from time to time I get questions about how to register apps on AAD. Those questions are always pretty similar and most of the time the problem lies in some misconception, so I thought it might be a good idea to try to answer some of them and at the same time write them down in this post.
           
         
         </description>
@@ -319,7 +268,7 @@ Those questions are always pretty similar and most of the time the problem lies 
         
         
         
-          Introduction First of all let me tell you that I&amp;rsquo;m huge proponent of Terraform as a framework for defining infrastructure in code. One of the things that I like most about Terraform is that not only every major cloud provider (AWS, Azure, GCP) offers their own provider but each day more and more companies are starting to offer their own Terraform providers, and those are great news because with Terraform I can create almost any cloud infrastructure that I want and also a huge array of varied resources such as: VMware vSphere Virtual Machines, RabbitMq Queues, Grafana dashboards amongst many many others.
+          In today&#39;s post I will show you how you can deploy an AWS CDK application using Azure DevOps.
           
         
         </description>
@@ -339,9 +288,7 @@ Those questions are always pretty similar and most of the time the problem lies 
         
         
         
-          A pretty common scenario in complex .NET applications is having them splitted in multiple csharp projects inside a single solution, even with the proliferation of microservices is pretty common seeing the client and the business logic decoupled in multiple projects inside a single solution.
-And that behaviour is even more common if you&amp;rsquo;re using some kind of software architecture like &amp;ldquo;Domain Driven Design&amp;rdquo;, &amp;ldquo;Hexagonal Architecture&amp;rdquo; or &amp;ldquo;Clean Architecture&amp;rdquo;.
-A common problem that usually appears when the number of projects begins to pile up inside a single solution is mantaining consistency between nuget versions, and quite some times you end up with every project using a different version of the same package.
+          In this post I want to show you some of the different options available when you want to centrally manage NuGet versions within a solution.
           
         
         </description>
@@ -361,9 +308,7 @@ A common problem that usually appears when the number of projects begins to pile
         
         
         
-          GitOps is a term introduced by WeaveWorks a few years ago (https://www.weave.works/blog/gitops-operations-by-pull-request)
-GitOps is a way of implementing Continuous Deployment. The core idea of GitOps is having a Git repository that always contains declarative descriptions of the infrastructure currently desired in the production environment and an automated process to make the production environment match the described state in the repository.
-If you want to deploy a new application or update an existing one, you only need to update the repository - the automated process handles everything else.
+          GitOps is a way of implementing Continuous Deployment. The core idea of GitOps is having a Git repository that always contains declarative descriptions of the desired infrastructure, and in this post I&#39;ll be building a practical example of GitOps using Azure.
           
         
         </description>
@@ -383,10 +328,7 @@ If you want to deploy a new application or update an existing one, you only need
         
         
         
-          &amp;gt; Updated content:
-I wrote the original post almost 6 months ago and since then the AAD Terraform provider has been updated several times.
-When I wrote the post I used the version 0.11 and right now the provider is on version 1.1.1, that&amp;rsquo;s a considerable version bump so some people asked me if I could update this post.
-Without further ado let&amp;rsquo;s rebuild this example using the 1.1.1 version.
+          Today I want to try to use Terraform to automate the app registration process in Azure Active Directory.
           
         
         </description>
@@ -406,9 +348,7 @@ Without further ado let&amp;rsquo;s rebuild this example using the 1.1.1 version
         
         
         
-          Let&amp;rsquo;s go for a quick post this time.
-Imagine you&amp;rsquo;re trying to create a Docker image from an application and it is using some custom nugets. Those custom nugets are hosted in your private Azure DevOps Feed. And when you try to build the image you get one of the following errors:
-/src/MyConsoleApplication.csproj : error NU1101: Unable to find package MyOwn.EmailService. No packages exist with this id in source(s): nuget.org Failed to restore /src/MyConsoleApplication.
+          In this post I&#39;ll show you how to restore NuGet packages from an Azure DevOps private feed when building a Docker image.
           
         
         </description>
@@ -428,7 +368,7 @@ Imagine you&amp;rsquo;re trying to create a Docker image from an application and
         
         
         
-          Nowadays no one on his right mind is going to create a WCF from scratch. It really makes no sense to do it. It&amp;rsquo;s a deprecated technology, it does not work with .NET Core, only works on Windows OS and personally I found the configuration confusing as hell, every time I need to modify an existing one I have to spend a good amount of time trying to figure out what everything means.
+          What I wanted to talk in these post is how easy is to add a healthcheck endpoint in a WCF application, and how you can use it in case you want to move the application into the Cloud in the near future.
           
         
         </description>
@@ -448,9 +388,7 @@ Imagine you&amp;rsquo;re trying to create a Docker image from an application and
         
         
         
-          In these past few years Microsoft has kept a steady flow of new .NET Core versions: .NET Core 1.0, 1.1, 2.0, 2.1, 2.2 and so on and so forth.
-If you have hundreds of applications in your company, it&amp;rsquo;s almost impossible to keep them updated to the most recent version of the framework, so most probably you&amp;rsquo;re going to end up having multiple versions running at the same time.
-When trying to choose which versions are you going to support in your company a factor to consider is that only a few of those versions are long-time support (LTS).
+          In these past few years Microsoft has kept a steady flow of new .NET Core versions, and if you have hundreds of applications in your company it&#39;s almost impossible to keep them updated to the most recent version of the framework. If you want to enforce that everyone on your company is using the correct framework version when they create a new application you can use a Roslyn Analyzer.
           
         
         </description>
@@ -470,10 +408,7 @@ When trying to choose which versions are you going to support in your company a 
         
         
         
-          Do you want to start a blog and don&amp;rsquo;t want to lose a lot of time setting everything up?
-That was exactly my thought! I wanted to build a blog to write about my ramblings, but I didn&amp;rsquo;t want to spend long hours settings things up.
-After doing a little of research about what options are available nowadays I found that Hugo could be a good fit.
-What&amp;rsquo;s Hugo? Hugo is a static HTML and CSS website generator, it is written in Golang and it relies on markdown files and I like how few steps you need to do to have a site ready to rock.
+          Do you want to start a blog and don&#39;t want to lose a lot of time setting everything up?  That exactly why I&#39;m going to show you how to build a blog site with Hugo and GitHub Pages.
           
         
         </description>

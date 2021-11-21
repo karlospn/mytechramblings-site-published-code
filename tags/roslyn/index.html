@@ -145,10 +145,7 @@
 
       <div class="post-content">
         
-          
-            Roslyn Analyzers are extensions that analyze source code and report violations. Some analyzers are built-into VS (like the IDE analyzers that report style issues) and some are third party ones which can be installed (like StyleCopyAnalyzers, FxCopAnalyzers, etc.).
-Analyzers can be configurated using file(s) to allow end users to control the behavior of each analyzer and severity of reported diagnostics. This may be via an editorconfig or a ruleset file or even completely custom format specific to the third party analyzer package.
-          
+          Roslyn Analyzers are extensions that analyze source code and report violations. Some analyzers are built-into VS and some are third party ones which can be installed (like StyleCopyAnalyzers, FxCopAnalyzers, etc.). On today&rsquo;s post I will show you how you can configure your custom roslyn analyzers with an .editorconfig file.
         
       </div>
       
@@ -199,11 +196,7 @@ Analyzers can be configurated using file(s) to allow end users to control the be
 
       <div class="post-content">
         
-          
-            In these past few years Microsoft has kept a steady flow of new .NET Core versions: .NET Core 1.0, 1.1, 2.0, 2.1, 2.2 and so on and so forth.
-If you have hundreds of applications in your company, it’s almost impossible to keep them updated to the most recent version of the framework, so most probably you’re going to end up having multiple versions running at the same time.
-When trying to choose which versions are you going to support in your company a factor to consider is that only a few of those versions are long-time support (LTS).
-          
+          In these past few years Microsoft has kept a steady flow of new .NET Core versions, and if you have hundreds of applications in your company it&rsquo;s almost impossible to keep them updated to the most recent version of the framework. If you want to enforce that everyone on your company is using the correct framework version when they create a new application you can use a Roslyn Analyzer.
         
       </div>
       

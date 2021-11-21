@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-	<meta name="generator" content="Hugo 0.89.2" />
+	<meta name="generator" content="Hugo 0.89.4" />
     
       <title>my tech ramblings — A blog for writing about my techie ramblings</title>
     
@@ -117,61 +117,6 @@
   <div class="posts">
     
     <div class="post on-list">
-      <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/testing-container-vulnerabilities-scanners-using-azure-pipelines/">Testing how to use some container vulnerabilities scanners with Azure Pipelines</a></h1>
-      <div class="post-meta">
-        
-          <span class="post-date">
-            2021-10-27
-          </span>
-
-          
-            
-
-
-
-          
-        
-        
-        
-          <span class="post-read-time">— 17 min read</span>
-        
-      </div>
-
-      
-        <span class="post-tags">
-          
-            #<a href="https://www.mytechramblings.com/tags/docker/">docker</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/devops/">devops</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/azure/">azure</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/aws/">aws</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/security/">security</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/containers/">containers</a>&nbsp;
-          
-        </span>
-      
-
-      
-
-      <div class="post-content">
-        
-          
-            Just show me the code
-As always if you don’t care about the post I have upload the source code on my Github.
-A big part of any organization’s risk assessment process is to be aware of and gain visibility into vulnerabilities in the software being used. Vulnerability scanning allows us to review the security state of the container images and take actions to fix issues identified during the scan, resulting in more secure deployments.
-          
-        
-      </div>
-      
-        <div><a class="read-more button" href="/posts/testing-container-vulnerabilities-scanners-using-azure-pipelines/">Read more →</a></div>
-      
-    </div>
-    
-    <div class="post on-list">
       <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/running-a-sonarqube-scan-when-building-docker-image/">Setting up the SonarQube scanner when building a .NET Core container image</a></h1>
       <div class="post-meta">
         
@@ -212,11 +157,7 @@ A big part of any organization’s risk assessment process is to be aware of and
 
       <div class="post-content">
         
-          
-            Just show me the code
-As always if you don’t care about the post I have upload the source code on my Github.
-SonarQube is one of the most well-known code review tools in the dotnet space. It is used mainly to detect bugs, vulnerabilities and code smells in your codebase and it can be integrated with any workflow to enable a continuous code inspection across multiple branches and pull requests.
-          
+          If you&rsquo;re using containers quite probably you&rsquo;re doing the build, test and analysis steps inside the Dockerfile, and setting up the SonarQube scanner when building the image can be a little more cumbersome than usual, and that&rsquo;s why I wanted to write a little bit about it.
         
       </div>
       
@@ -265,12 +206,7 @@ SonarQube is one of the most well-known code review tools in the dotnet space. I
 
       <div class="post-content">
         
-          
-            Just show me the code
-As always if you don’t care about the post I have upload the source code on my Github.
-In today’s post I want to talk about how you can secure a .NET graphQL API using Azure Active Directory (AAD).
-If you want to build a graphQL API in .NET right now, the most well-known options available are the graphQL.NET implementation (<a href="https://graphql-dotnet.github.io/">https://graphql-dotnet.github.io/</a>) and the HotChocolate one (https://chillicream.
-          
+          In today&rsquo;s post I want to talk about how you can secure a .NET graphQL API that uses HotChocolate (<a href="https://chillicream.com/">https://chillicream.com/</a>) with Azure Active Directory.
         
       </div>
       
@@ -319,12 +255,7 @@ If you want to build a graphQL API in .NET right now, the most well-known option
 
       <div class="post-content">
         
-          
-            Just show me the code
-As always if you don’t care about the post I have upload a few examples on my Github.
-Nowadays creating a new dotnet gRPC application is pretty straightforward. From the developer standpoint the experience of creating a gRPC app it’s quite similar to creating an API, furthermore, Visual Studio also offers Intellisense support for gRPC services and proto files.
-As I stated before developing a dotnet gRPC app right now is an easy feat, but when you try to deploy it in some cloud provider that’s when some wrinkles might appear.
-          
+          Lately I&rsquo;ve been deploying a sizable amount of gRPC services to AWS ECS so I thought it might be useful to talk a little bit about some gotchas I have encountered. Some of the problems I&rsquo;ll be talking about on this post are specific of the .NET implementation of gRPC and another ones are from the AWS side.
         
       </div>
       
@@ -375,15 +306,62 @@ As I stated before developing a dotnet gRPC app right now is an easy feat, but w
 
       <div class="post-content">
         
-          
-            This is a 2 part-series.
-Part 1: Key concepts that you should know when creating a .NET template. If you want to read it, click here Part 2: How to convert a few .NET apps into .NET templates, package them together in a single NuGet pack and use them as templates within Visual Studio.   Just show me the code
-As always if you don’t care about the post I have upload the source code on my Github.
-          
+          This is a 2 part-series post. In part 2 I&rsquo;ll show you how to convert a few .NET apps into .NET templates, package them together in a single NuGet pack and use them as templates within Visual Studio.
         
       </div>
       
         <div><a class="read-more button" href="/posts/create-dotnet-templates-for-visual-studio-part-2/">Read more →</a></div>
+      
+    </div>
+    
+    <div class="post on-list">
+      <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/create-dotnet-templates-for-visual-studio-part-1/">How to build a .NET template and use it within Visual Studio. Part 1: Key concepts</a></h1>
+      <div class="post-meta">
+        
+          <span class="post-date">
+            2021-06-14
+          </span>
+
+          
+            
+
+
+
+          
+        
+        
+        
+          <span class="post-read-time">— 10 min read</span>
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+            #<a href="https://www.mytechramblings.com/tags/dotnet/">dotnet</a>&nbsp;
+          
+            #<a href="https://www.mytechramblings.com/tags/csharp/">csharp</a>&nbsp;
+          
+            #<a href="https://www.mytechramblings.com/tags/templates/">templates</a>&nbsp;
+          
+            #<a href="https://www.mytechramblings.com/tags/vs/">vs</a>&nbsp;
+          
+            #<a href="https://www.mytechramblings.com/tags/visual/">visual</a>&nbsp;
+          
+            #<a href="https://www.mytechramblings.com/tags/studio/">studio</a>&nbsp;
+          
+        </span>
+      
+
+      
+
+      <div class="post-content">
+        
+          This is a 2 part-series post. In part 1 I&rsquo;ll be talking about a few key concepts that you should know when creating a .NET template.
+        
+      </div>
+      
+        <div><a class="read-more button" href="/posts/create-dotnet-templates-for-visual-studio-part-1/">Read more →</a></div>
       
     </div>
     

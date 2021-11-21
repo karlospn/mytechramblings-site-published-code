@@ -28,10 +28,7 @@
         
         
         
-          Show me the code
-If you don&amp;rsquo;t care about the post I have upload the code on my Github
- A few months ago the first stable version of the OpenTelemetry client for dotnet was released and since then I have wanted to write a little bit about it.
-OpenTelemetry is a set of APIs, SDKs, tooling and integrations that are designed for the creation and management of telemetry data such as traces, metrics, and logs.
+          OpenTelemetry is a set of APIs, SDKs, tooling and integrations that are designed for the creation and management of telemetry data such as traces, metrics, and logs. On today&#39;s post I&#39;m going to show you how you can start using OTEL and distributed tracing with .NET Core.
           
         
         </description>

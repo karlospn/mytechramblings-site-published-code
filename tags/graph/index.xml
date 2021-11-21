@@ -28,10 +28,7 @@
         
         
         
-          &amp;gt; Updated content:
-I wrote the original post almost 6 months ago and since then the AAD Terraform provider has been updated several times.
-When I wrote the post I used the version 0.11 and right now the provider is on version 1.1.1, that&amp;rsquo;s a considerable version bump so some people asked me if I could update this post.
-Without further ado let&amp;rsquo;s rebuild this example using the 1.1.1 version.
+          Today I want to try to use Terraform to automate the app registration process in Azure Active Directory.
           
         
         </description>

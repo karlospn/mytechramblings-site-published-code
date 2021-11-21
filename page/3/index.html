@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-	<meta name="generator" content="Hugo 0.89.2" />
+	<meta name="generator" content="Hugo 0.89.4" />
     
       <title>my tech ramblings — A blog for writing about my techie ramblings</title>
     
@@ -117,61 +117,6 @@
   <div class="posts">
     
     <div class="post on-list">
-      <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/moving-this-blog-to-azure-static-webapps/">Testing out the Azure Static Web Apps service. Let&rsquo;s try to deploy this blog into an static web app</a></h1>
-      <div class="post-meta">
-        
-          <span class="post-date">
-            2020-11-24
-          </span>
-
-          
-            
-
-
-
-          
-        
-        
-        
-          <span class="post-read-time">— 8 min read</span>
-        
-      </div>
-
-      
-        <span class="post-tags">
-          
-            #<a href="https://www.mytechramblings.com/tags/azure/">azure</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/static/">static</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/webapps/">webapps</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/github/">github</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/action/">action</a>&nbsp;
-          
-        </span>
-      
-
-      
-
-      <div class="post-content">
-        
-          
-            If you only care about the end result, I upload the final result in this GitHub repository: github-link
-This repository contains the entire blog source code.
-In the &quot;/infrastructure&quot; folder you can find an ARM template that is used to create the static web app.
-In the /.github/workflows folder you can find a couple of github actions:
-The infrastructure.yml file is a github action that creates the resources on Azure.
-          
-        
-      </div>
-      
-        <div><a class="read-more button" href="/posts/moving-this-blog-to-azure-static-webapps/">Read more →</a></div>
-      
-    </div>
-    
-    <div class="post on-list">
       <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/create-an-ecs-cluster-and-deploy-apps-using-azure-devops/">An opinionated approach about how to create an AWS ECS Fargate cluster and deploy apps on it using Azure DevOps Pipelines</a></h1>
       <div class="post-meta">
         
@@ -216,11 +161,7 @@ The infrastructure.yml file is a github action that creates the resources on Azu
 
       <div class="post-content">
         
-          
-            These past couple of weeks I’ve been tinkering with AWS ECS Fargate and after losing some time tackling different approaches I thought it might be useful to write down what I ended up building.
-My goal was trying to build an AWS ECS Fargate cluster and deploy apps on it using Azure DevOps Pipelines and I had 3 clear objectives I wanted to achieve.
-All the infrastructure in AWS must be created using IaC (infrastructure-as-code) and must be created using an Azure DevOps pipeline.
-          
+          These past couple of weeks I&rsquo;ve been tinkering with AWS ECS Fargate and after losing some time tackling different approaches I thought it might be useful to write down what I ended up building, so without further ado let&rsquo;s dig in.
         
       </div>
       
@@ -267,10 +208,7 @@ All the infrastructure in AWS must be created using IaC (infrastructure-as-code)
 
       <div class="post-content">
         
-          
-            These past years I worked with a few companies that uses Azure Active Directory to perform authentication and authorization on their line-of-business (LOB) applications and from time to time I get questions about how to register apps on AAD.
-Those questions are always pretty similar and most of the time the problem lies in some misconception, so I thought it might be a good idea to try to answer some of them and at the same time write them down in this post.
-          
+          These past years I worked with a few companies that uses Azure Active Directory to perform authentication and authorization on their line-of-business (LOB) applications and from time to time I get questions about how to register apps on AAD. Those questions are always pretty similar and most of the time the problem lies in some misconception, so I thought it might be a good idea to try to answer some of them and at the same time write them down in this post.
         
       </div>
       
@@ -317,9 +255,7 @@ Those questions are always pretty similar and most of the time the problem lies 
 
       <div class="post-content">
         
-          
-            Introduction First of all let me tell you that I’m huge proponent of Terraform as a framework for defining infrastructure in code. One of the things that I like most about Terraform is that not only every major cloud provider (AWS, Azure, GCP) offers their own provider but each day more and more companies are starting to offer their own Terraform providers, and those are great news because with Terraform I can create almost any cloud infrastructure that I want and also a huge array of varied resources such as: VMware vSphere Virtual Machines, RabbitMq Queues, Grafana dashboards amongst many many others.
-          
+          In today&rsquo;s post I will show you how you can deploy an AWS CDK application using Azure DevOps.
         
       </div>
       
@@ -366,15 +302,60 @@ Those questions are always pretty similar and most of the time the problem lies 
 
       <div class="post-content">
         
-          
-            A pretty common scenario in complex .NET applications is having them splitted in multiple csharp projects inside a single solution, even with the proliferation of microservices is pretty common seeing the client and the business logic decoupled in multiple projects inside a single solution.
-And that behaviour is even more common if you’re using some kind of software architecture like “Domain Driven Design”, “Hexagonal Architecture” or “Clean Architecture”.
-A common problem that usually appears when the number of projects begins to pile up inside a single solution is mantaining consistency between nuget versions, and quite some times you end up with every project using a different version of the same package.
-          
+          In this post I want to show you some of the different options available when you want to centrally manage NuGet versions within a solution.
         
       </div>
       
         <div><a class="read-more button" href="/posts/centrally-manage-nuget-versions/">Read more →</a></div>
+      
+    </div>
+    
+    <div class="post on-list">
+      <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/gitops-with-azure-devops-helm-acr-flux-and-k8s/">A practical example of GitOps using Azure DevOps, Azure Container Registry, Helm, Flux and Kubernetes</a></h1>
+      <div class="post-meta">
+        
+          <span class="post-date">
+            2020-07-29
+          </span>
+
+          
+            
+
+
+
+          
+        
+        
+        
+          <span class="post-read-time">— 10 min read</span>
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+            #<a href="https://www.mytechramblings.com/tags/azure/">azure</a>&nbsp;
+          
+            #<a href="https://www.mytechramblings.com/tags/acr/">acr</a>&nbsp;
+          
+            #<a href="https://www.mytechramblings.com/tags/kubernetes/">kubernetes</a>&nbsp;
+          
+            #<a href="https://www.mytechramblings.com/tags/gitops/">gitops</a>&nbsp;
+          
+            #<a href="https://www.mytechramblings.com/tags/helm/">helm</a>&nbsp;
+          
+        </span>
+      
+
+      
+
+      <div class="post-content">
+        
+          GitOps is a way of implementing Continuous Deployment. The core idea of GitOps is having a Git repository that always contains declarative descriptions of the desired infrastructure, and in this post I&rsquo;ll be building a practical example of GitOps using Azure.
+        
+      </div>
+      
+        <div><a class="read-more button" href="/posts/gitops-with-azure-devops-helm-acr-flux-and-k8s/">Read more →</a></div>
       
     </div>
     

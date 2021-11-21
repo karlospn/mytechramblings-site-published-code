@@ -29,16 +29,12 @@ If you want to deploy a new application or update an existing one, you only need
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="A practical example of GitOps using Azure DevOps, Azure Container Registry, Helm, Flux and Kubernetes"/>
-<meta name="twitter:description" content="GitOps is a term introduced by WeaveWorks a few years ago (https://www.weave.works/blog/gitops-operations-by-pull-request)
-GitOps is a way of implementing Continuous Deployment. The core idea of GitOps is having a Git repository that always contains declarative descriptions of the infrastructure currently desired in the production environment and an automated process to make the production environment match the described state in the repository.
-If you want to deploy a new application or update an existing one, you only need to update the repository - the automated process handles everything else."/>
+<meta name="twitter:description" content="GitOps is a way of implementing Continuous Deployment. The core idea of GitOps is having a Git repository that always contains declarative descriptions of the desired infrastructure, and in this post I&#39;ll be building a practical example of GitOps using Azure."/>
 
 
 
 <meta property="og:title" content="A practical example of GitOps using Azure DevOps, Azure Container Registry, Helm, Flux and Kubernetes" />
-<meta property="og:description" content="GitOps is a term introduced by WeaveWorks a few years ago (https://www.weave.works/blog/gitops-operations-by-pull-request)
-GitOps is a way of implementing Continuous Deployment. The core idea of GitOps is having a Git repository that always contains declarative descriptions of the infrastructure currently desired in the production environment and an automated process to make the production environment match the described state in the repository.
-If you want to deploy a new application or update an existing one, you only need to update the repository - the automated process handles everything else." />
+<meta property="og:description" content="GitOps is a way of implementing Continuous Deployment. The core idea of GitOps is having a Git repository that always contains declarative descriptions of the desired infrastructure, and in this post I&#39;ll be building a practical example of GitOps using Azure." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://www.mytechramblings.com/posts/gitops-with-azure-devops-helm-acr-flux-and-k8s/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2020-07-29T22:10:21+02:00" />
@@ -161,7 +157,7 @@ If you want to deploy a new application or update an existing one, you only need
       <p>GitOps is a term introduced by WeaveWorks a few years ago (<a href="https://www.weave.works/blog/gitops-operations-by-pull-request">https://www.weave.works/blog/gitops-operations-by-pull-request</a>)</p>
 <p>GitOps is a way of implementing Continuous Deployment. The core idea of GitOps is having a Git repository that always contains declarative descriptions of the infrastructure currently desired in the production environment and an automated process to make the production environment match the described state in the repository.<br>
 If you want to deploy a new application or update an existing one, you only need to update the repository - the automated process handles everything else.</p>
-<p>In these post I want to build a practical example of GitOps, it&rsquo;s not going to be a production-ready example but nonetheless it&rsquo;s going to be an interesting proof of concept, so let&rsquo;s try it.</p>
+<p>In this post I want to build a practical example of GitOps, it&rsquo;s not going to be a production-ready example but nonetheless it&rsquo;s going to be an interesting proof of concept, so let&rsquo;s try it.</p>
 <h2 id="components">Components</h2>
 <hr>
 <p>I&rsquo;m going to use the following components:</p>

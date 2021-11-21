@@ -28,8 +28,7 @@
         
         
         
-          Roslyn Analyzers are extensions that analyze source code and report violations. Some analyzers are built-into VS (like the IDE analyzers that report style issues) and some are third party ones which can be installed (like StyleCopyAnalyzers, FxCopAnalyzers, etc.).
-Analyzers can be configurated using file(s) to allow end users to control the behavior of each analyzer and severity of reported diagnostics. This may be via an editorconfig or a ruleset file or even completely custom format specific to the third party analyzer package.
+          Roslyn Analyzers are extensions that analyze source code and report violations. Some analyzers are built-into VS and some are third party ones which can be installed (like StyleCopyAnalyzers, FxCopAnalyzers, etc.). On today&#39;s post I will show you how you can configure your custom roslyn analyzers with an .editorconfig file.
           
         
         </description>

@@ -28,7 +28,7 @@
         
         
         
-          Nowadays no one on his right mind is going to create a WCF from scratch. It really makes no sense to do it. It&amp;rsquo;s a deprecated technology, it does not work with .NET Core, only works on Windows OS and personally I found the configuration confusing as hell, every time I need to modify an existing one I have to spend a good amount of time trying to figure out what everything means.
+          What I wanted to talk in these post is how easy is to add a healthcheck endpoint in a WCF application, and how you can use it in case you want to move the application into the Cloud in the near future.
           
         
         </description>

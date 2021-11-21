@@ -28,9 +28,7 @@
         
         
         
-          A pretty common scenario in complex .NET applications is having them splitted in multiple csharp projects inside a single solution, even with the proliferation of microservices is pretty common seeing the client and the business logic decoupled in multiple projects inside a single solution.
-And that behaviour is even more common if you&amp;rsquo;re using some kind of software architecture like &amp;ldquo;Domain Driven Design&amp;rdquo;, &amp;ldquo;Hexagonal Architecture&amp;rdquo; or &amp;ldquo;Clean Architecture&amp;rdquo;.
-A common problem that usually appears when the number of projects begins to pile up inside a single solution is mantaining consistency between nuget versions, and quite some times you end up with every project using a different version of the same package.
+          In this post I want to show you some of the different options available when you want to centrally manage NuGet versions within a solution.
           
         
         </description>
@@ -50,7 +48,7 @@ A common problem that usually appears when the number of projects begins to pile
         
         
         
-          Nowadays no one on his right mind is going to create a WCF from scratch. It really makes no sense to do it. It&amp;rsquo;s a deprecated technology, it does not work with .NET Core, only works on Windows OS and personally I found the configuration confusing as hell, every time I need to modify an existing one I have to spend a good amount of time trying to figure out what everything means.
+          What I wanted to talk in these post is how easy is to add a healthcheck endpoint in a WCF application, and how you can use it in case you want to move the application into the Cloud in the near future.
           
         
         </description>
@@ -70,9 +68,7 @@ A common problem that usually appears when the number of projects begins to pile
         
         
         
-          In these past few years Microsoft has kept a steady flow of new .NET Core versions: .NET Core 1.0, 1.1, 2.0, 2.1, 2.2 and so on and so forth.
-If you have hundreds of applications in your company, it&amp;rsquo;s almost impossible to keep them updated to the most recent version of the framework, so most probably you&amp;rsquo;re going to end up having multiple versions running at the same time.
-When trying to choose which versions are you going to support in your company a factor to consider is that only a few of those versions are long-time support (LTS).
+          In these past few years Microsoft has kept a steady flow of new .NET Core versions, and if you have hundreds of applications in your company it&#39;s almost impossible to keep them updated to the most recent version of the framework. If you want to enforce that everyone on your company is using the correct framework version when they create a new application you can use a Roslyn Analyzer.
           
         
         </description>
