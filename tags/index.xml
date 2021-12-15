@@ -9,17 +9,17 @@
     <description>Recent content in Tags on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 25 Oct 2021 10:45:14 +0200</lastBuildDate>
+    <lastBuildDate>Wed, 15 Dec 2021 11:20:04 +0100</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>aws</title>
-      <link>https://www.mytechramblings.com/tags/aws/</link>
-      <pubDate>Mon, 25 Oct 2021 10:45:14 +0200</pubDate>
+      <title>azure</title>
+      <link>https://www.mytechramblings.com/tags/azure/</link>
+      <pubDate>Wed, 15 Dec 2021 11:20:04 +0100</pubDate>
       
-      <guid>https://www.mytechramblings.com/tags/aws/</guid>
+      <guid>https://www.mytechramblings.com/tags/azure/</guid>
       <description>
         
           
@@ -35,11 +35,71 @@
     </item>
     
     <item>
-      <title>azure</title>
-      <link>https://www.mytechramblings.com/tags/azure/</link>
+      <title>functions</title>
+      <link>https://www.mytechramblings.com/tags/functions/</link>
+      <pubDate>Wed, 15 Dec 2021 11:20:04 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/functions/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>python</title>
+      <link>https://www.mytechramblings.com/tags/python/</link>
+      <pubDate>Wed, 15 Dec 2021 11:20:04 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/python/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>serverless</title>
+      <link>https://www.mytechramblings.com/tags/serverless/</link>
+      <pubDate>Wed, 15 Dec 2021 11:20:04 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/serverless/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>aws</title>
+      <link>https://www.mytechramblings.com/tags/aws/</link>
       <pubDate>Mon, 25 Oct 2021 10:45:14 +0200</pubDate>
       
-      <guid>https://www.mytechramblings.com/tags/azure/</guid>
+      <guid>https://www.mytechramblings.com/tags/aws/</guid>
       <description>
         
           

@@ -2,10 +2,31 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://www.mytechramblings.com/tags/aws/</loc>
-    <lastmod>2021-10-25T10:45:14+02:00</lastmod>
-  </url><url>
     <loc>https://www.mytechramblings.com/tags/azure/</loc>
+    <lastmod>2021-12-15T11:20:04+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/building-an-async-http-api-with-durable-functions-and-python/</loc>
+    <lastmod>2021-12-15T11:20:04+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/functions/</loc>
+    <lastmod>2021-12-15T11:20:04+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/</loc>
+    <lastmod>2021-12-15T11:20:04+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/</loc>
+    <lastmod>2021-12-15T11:20:04+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/python/</loc>
+    <lastmod>2021-12-15T11:20:04+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/serverless/</loc>
+    <lastmod>2021-12-15T11:20:04+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/</loc>
+    <lastmod>2021-12-15T11:20:04+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/aws/</loc>
     <lastmod>2021-10-25T10:45:14+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/containers/</loc>
@@ -17,16 +38,7 @@
     <loc>https://www.mytechramblings.com/tags/docker/</loc>
     <lastmod>2021-10-25T10:45:14+02:00</lastmod>
   </url><url>
-    <loc>https://www.mytechramblings.com/</loc>
-    <lastmod>2021-10-25T10:45:14+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/posts/</loc>
-    <lastmod>2021-10-25T10:45:14+02:00</lastmod>
-  </url><url>
     <loc>https://www.mytechramblings.com/tags/security/</loc>
-    <lastmod>2021-10-25T10:45:14+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/</loc>
     <lastmod>2021-10-25T10:45:14+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/posts/testing-container-vulnerabilities-scanners-using-azure-pipelines/</loc>

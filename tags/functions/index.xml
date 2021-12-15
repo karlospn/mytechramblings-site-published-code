@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>functions on my tech ramblings</title>
+    
+    
+    
+    <link>https://www.mytechramblings.com/tags/functions/</link>
+    <description>Recent content in functions on my tech ramblings</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 15 Dec 2021 11:20:04 +0100</lastBuildDate>
+    
+	<atom:link href="https://www.mytechramblings.com/tags/functions/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Building an Async HTTP Api with Azure Durable Functions and Python</title>
+      <link>https://www.mytechramblings.com/posts/building-an-async-http-api-with-durable-functions-and-python/</link>
+      <pubDate>Wed, 15 Dec 2021 11:20:04 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/building-an-async-http-api-with-durable-functions-and-python/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          The async HTTP API pattern addresses the problem of coordinating the state of long-running operations with external clients. Azure Durable Functions provides built-in support for this pattern and in this post I&#39;m going to show you how to implement it using Python.
+          
+        
+        </description>
+    </item>
+    
+  </channel>
+</rss>
