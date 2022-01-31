@@ -9,10 +9,30 @@
     <description>Recent content in dotnet on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 14 Sep 2021 10:05:00 +0200</lastBuildDate>
+    <lastBuildDate>Mon, 31 Jan 2022 10:10:12 +0100</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/dotnet/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Testing distributed tracing with AWS Distro for OpenTelemetry and .NET. Part 1: Setting up the AWS OTEL Collector</title>
+      <link>https://www.mytechramblings.com/posts/testing-aws-distro-for-otel-with-dotnet-apps-part-1/</link>
+      <pubDate>Mon, 31 Jan 2022 10:10:12 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/testing-aws-distro-for-otel-with-dotnet-apps-part-1/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          This is a 2 part-series post. In part 1 I’ll be talking about what is the AWS OpenTelemetry Collector and how to set it up for ingesting and exporting traces to AWS X-Ray.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>Setting up the SonarQube scanner when building a .NET Core container image</title>

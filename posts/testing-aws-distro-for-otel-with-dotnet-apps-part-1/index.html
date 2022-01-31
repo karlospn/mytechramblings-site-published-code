@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>Testing distributed tracing with AWS Distro for OpenTelemetry and .NET. Part 1: Setting up the AWS OTEL Collector :: my tech ramblings — A blog for writing about my techie ramblings</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="This is a 2 part-series post.
+ Part 1: What is the AWS OpenTelemetry Collector and how to setup it up for ingesting and exporting tracing data to AWS X-Ray. Part 2: How to build and configure properly a few distributed .NET apps that will send traces to the AWS OTEL Collector, and also how to analyze those traces in AWS X-Ray.   Introduction A few months ago I wrote a post about how to start using OpenTelemetry with ."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://www.mytechramblings.com/posts/testing-aws-distro-for-otel-with-dotnet-apps-part-1/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/assets/style.css">
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.mytechramblings.com/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://www.mytechramblings.com/img/favicon.png">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Testing distributed tracing with AWS Distro for OpenTelemetry and .NET. Part 1: Setting up the AWS OTEL Collector"/>
+<meta name="twitter:description" content="This is a 2 part-series post. In part 1 I’ll be talking about what is the AWS OpenTelemetry Collector and how to set it up for ingesting and exporting traces to AWS X-Ray."/>
+
+
+
+<meta property="og:title" content="Testing distributed tracing with AWS Distro for OpenTelemetry and .NET. Part 1: Setting up the AWS OTEL Collector" />
+<meta property="og:description" content="This is a 2 part-series post. In part 1 I’ll be talking about what is the AWS OpenTelemetry Collector and how to set it up for ingesting and exporting traces to AWS X-Ray." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.mytechramblings.com/posts/testing-aws-distro-for-otel-with-dotnet-apps-part-1/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-01-31T10:10:12+01:00" />
+<meta property="article:modified_time" content="2022-01-31T10:10:12+01:00" /><meta property="og:site_name" content="my tech ramblings" />
+
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://www.mytechramblings.com/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">my tech ramblings</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/testing-aws-distro-for-otel-with-dotnet-apps-part-1/">Testing distributed tracing with AWS Distro for OpenTelemetry and .NET. Part 1: Setting up the AWS OTEL Collector</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2022-01-31
+        </span>
+
+        
+          
+            
+
+
+
+          
+        
+      
+
+      
+      
+        <span class="post-read-time">— 6 min read</span>
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          #<a href="https://www.mytechramblings.com/tags/aws/">AWS</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/dotnet/">dotnet</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/opentelemetry/">OpenTelemetry</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <blockquote>
+<p>This is a 2 part-series post.</p>
+<ul>
+<li><strong>Part 1</strong>: What is the AWS OpenTelemetry Collector and how to setup it up for ingesting and exporting tracing data to AWS X-Ray.</li>
+<li><strong>Part 2</strong>: How to build and configure properly a few distributed .NET apps that will send traces to the AWS OTEL Collector, and also how to analyze those traces in AWS X-Ray.</li>
+</ul>
+</blockquote>
+<h1 id="introduction">Introduction</h1>
+<p>A few months ago I wrote a post about how to start using OpenTelemetry with .NET, if you&rsquo;re interested you can read more about it <a href="https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-and-dotnet-core/">here</a>.<br>
+In that post I talked a little bit about the main concepts around OpenTelemetry and also I showed how to instrument a few .NET apps with the .NET OpenTelemetry client.</p>
+<p>In this post I&rsquo;m going to get back to OpenTelemetry and .NET, but this time I&rsquo;m planning to focus on testing the <strong>AWS Distro for OpenTelemetry</strong>.</p>
+<p>I&rsquo;m not going to repeat myself talking about what&rsquo;s an Activity or a Span or a Propagator, you can go read my other post.<br>
+I&rsquo;m sure there&rsquo;s going to be some overlap with my previous post, but I&rsquo;ll try it to keep it to a minimum.</p>
+<p>In this 2 part-series post I&rsquo;m planning to be talking about the following topics:</p>
+<ul>
+<li>What is the AWS OpenTelemetry Collector and how to setup it up for ingesting and exporting traces to AWS X-Ray.</li>
+<li>How to build and configure properly a few distributed .NET apps that will send traces to the AWS OTEL Collector.</li>
+<li>How to use AWS X-Ray to view the traces sent by the Collector.</li>
+</ul>
+<p>But first of all:</p>
+<ul>
+<li><em>What&rsquo;s the AWS Distro for OpenTelemetry?</em></li>
+</ul>
+<p>The AWS Distro for OpenTelemetry is an AWS-supported distribution of the OpenTelemetry project.</p>
+<p>With the AWS Distro for OpenTelemetry you can instrument your application to send metrics and traces to multiple AWS solutions such as AWS CloudWatch, Amazon Managed Service for Prometheus, AWS X-Ray or Amazon OpenSearch Service.</p>
+<p>It can also collect metadata from your AWS resources and managed services, so you can correlate application data with infrastructure data.</p>
+<p>The main component of the AWS Distro for OpenTelemetry is the AWS OpenTelemetry Collector which is capable of ingesting metrics and traces sent by the apps, process them and export them into multiple AWS solutions.</p>
+<h1 id="aws-opentelemetry-collector">AWS OpenTelemetry Collector</h1>
+<p>The OpenTelemetry Collector is a standalone process designed to receive, process and export telemetry data.<br>
+It removes the need to run, operate and maintain multiple agents/collectors in order to support open-source telemetry data formats (e.g. Jaeger, Prometheus, Zipkin, etc.) sending to multiple open-source or commercial back-ends.</p>
+<p>The Collector has two different deployment strategies: either running as an agent alongside a service, or as a remote application. <br>
+In general, using both is recommended: the agent would be deployed with your service and run as a sidecar; meanwhile, the remote app would be deployed separately, as its own application running in a container or virtual machine.</p>
+<p>Here&rsquo;s a diagram showing the collector architecture:</p>
+<p><img src="/img/otel-collector-diagram.png" alt="otel-collector-diagram"></p>
+<p>Apart from traces, the AWS OTEL Collector is capable of ingesting metrics and send them to AWS Cloudwatch Metrics, but in this post I&rsquo;ll be focusing solely on tracing data.</p>
+<p>It&rsquo;s worth mentioning that there are 2 Collectors: the &ldquo;official&rdquo; OpenTelemetry Collector and the AWS OpenTelemtry Collector.</p>
+<p>AWS instead of using directly the &ldquo;official&rdquo; OpenTelemetry Collector has decided to implement their own Collector.</p>
+<p>The AWS OTEL Collector is built on top of the &ldquo;official&rdquo; OpenTelemetry Collector but they have added AWS-specific exporters to send data to AWS services including AWS X-Ray, Amazon CloudWatch or Amazon Managed Service for Prometheus.</p>
+<p>In this post series we are not going to use the &ldquo;official&rdquo; OpenTelemetry Collector, instead of that we will be using the AWS OpenTelemetry Collector.<br>
+I could use the &ldquo;oficial&rdquo; OpenTelemetry Collector with the AWS exporters and it would work, but using the AWS one is simpler and faster to setup, so I decided to ran with it.</p>
+<h1 id="configuring-the-aws-opentelemetry-collector">Configuring the AWS OpenTelemetry Collector</h1>
+<p>If you want to configure it, you need to know that the configuration contains three main components:</p>
+<ul>
+<li><strong>Receivers</strong>: They can be push or pull based and is how data gets into the Collector.</li>
+<li><strong>Exporters</strong>: They can be push or pull based and is how you send data to one or more backends/destinations.</li>
+<li><strong>Processors</strong>: They run on the data between being received and being exported. Processors are optional.</li>
+</ul>
+<p>In our demo the apps will be sending traces to the Collector and the Collector will export them into X-Ray.</p>
+<p>To build the demo we are going need the following receivers, exporters and processors:</p>
+<ul>
+<li><strong>Receivers</strong>:
+<ul>
+<li><strong>OTEL gRPC Receiver</strong>: The .NET apps will send the tracing data to the OTLP gRPC receiver endpoint. This receiver receives data via gRPC using the OTLP format. <br>
+We could use the OTEL HTTP receiver, but the gRPC one is more performant. The HTTP receiver receives data via HTTP in JSON format.</li>
+</ul>
+</li>
+<li><strong>Exporters</strong>:
+<ul>
+<li><strong>X-Ray Exporter</strong>: This exporter converts the AWS X-Ray OTLP formatted trace data to the AWS X-Ray format and then exports this data to the AWS X-Ray service.</li>
+<li><strong>Logging Exporter</strong>: This exporter writes the OTLP traces to console. This exporter is not needed, but it&rsquo;s quite useful for reviewing what data are the apps sending to the Collector.</li>
+</ul>
+</li>
+<li><strong>Processors</strong>:
+<ul>
+<li><strong>Memory limiter Processor</strong>: This processor ensures that the Collector does not goes crazy using memory.<br>
+This processor is really useful if you deploy the Collector as a sidecar along your application, because it will ensure that the Collector does not use up memory needed by your application.</li>
+<li><strong>Batch Processor</strong>: This processor accepts spans, metrics, or logs and places them into batches. Batching helps better compress the data and reduce the number of outgoing connections required to transmit the data.</li>
+</ul>
+</li>
+</ul>
+<p>If you&rsquo;re curious about the logging exporter, here&rsquo;s an example of how the output looks like:</p>
+<p><img src="/img/aws-otel-collector-logging-output.png" alt="otel-collector-logging-output"></p>
+<p>And here&rsquo;s how we&rsquo;re going to configure the Collector:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">receivers</span>:
+  <span style="color:#f92672">otlp</span>:
+    <span style="color:#f92672">protocols</span>:
+      <span style="color:#f92672">grpc</span>:
+        <span style="color:#f92672">endpoint</span>: <span style="color:#ae81ff">0.0.0.0</span>:<span style="color:#ae81ff">4317</span>
+
+<span style="color:#f92672">processors</span>:
+  <span style="color:#f92672">memory_limiter</span>:
+    <span style="color:#f92672">limit_mib</span>: <span style="color:#ae81ff">50</span>
+    <span style="color:#f92672">check_interval</span>: <span style="color:#ae81ff">1s</span>
+  <span style="color:#f92672">batch/traces</span>:
+    <span style="color:#f92672">timeout</span>: <span style="color:#ae81ff">1s</span>
+    <span style="color:#f92672">send_batch_size</span>: <span style="color:#ae81ff">50</span>
+
+<span style="color:#f92672">exporters</span>:
+  <span style="color:#f92672">logging</span>:
+    <span style="color:#f92672">loglevel</span>: <span style="color:#ae81ff">debug</span>
+  <span style="color:#f92672">awsxray</span>:
+    <span style="color:#f92672">region</span>: <span style="color:#ae81ff">eu-west-1</span>
+
+<span style="color:#f92672">service</span>:
+  <span style="color:#f92672">pipelines</span>:
+    <span style="color:#f92672">traces</span>:
+      <span style="color:#f92672">receivers</span>:
+        - <span style="color:#ae81ff">otlp</span>
+      <span style="color:#f92672">processors</span>:
+        - <span style="color:#ae81ff">memory_limiter</span>
+        - <span style="color:#ae81ff">batch/traces</span>
+      <span style="color:#f92672">exporters</span>:
+        - <span style="color:#ae81ff">logging</span>
+        - <span style="color:#ae81ff">awsxray</span>
+</code></pre></div><h1 id="configuring-permissions-for-the-aws-opentelemetry-collector">Configuring permissions for the AWS OpenTelemetry Collector</h1>
+<ul>
+<li><em>All the AWS Access Keys and Secret Keys from this post are fake, so don&rsquo;t bother trying them out.</em></li>
+</ul>
+<p>I&rsquo;ll be running the Collector on my local machine using docker-compose, that requires that you specify a valid <code>AWS_ACCESS_KEY</code> and <code>AWS_SECRET_ACCESS_KEY</code>.</p>
+<p>Here&rsquo;s a snippet from the docker-compose file where the Collector is configured:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">  <span style="color:#f92672">otel</span>:
+    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">amazon/aws-otel-collector:latest</span>
+    <span style="color:#f92672">command</span>: --<span style="color:#ae81ff">config /config/config.yml</span>
+    <span style="color:#f92672">volumes</span>:
+      - <span style="color:#ae81ff">./aws-otel-collector-config:/config</span>
+    <span style="color:#f92672">environment</span>:
+      - <span style="color:#ae81ff">AWS_ACCESS_KEY_ID=AKIA5S6L5S6L5S6L5S6L</span>
+      - <span style="color:#ae81ff">AWS_SECRET_ACCESS_KEY=GO7BvT9IBLb4NudL0aGO7BvT9IBLb4NudL0a</span>
+      - <span style="color:#ae81ff">AWS_REGION=eu-west-1</span>
+    <span style="color:#f92672">ports</span>:
+      - <span style="color:#ae81ff">4317</span>:<span style="color:#ae81ff">4317</span>
+    <span style="color:#f92672">networks</span>:
+      - <span style="color:#ae81ff">tracing</span>
+</code></pre></div><p>The user requires at least permissions for AWS CloudWatch Logs for metric publishing, and for AWS X-Ray for sending traces.</p>
+<p>So, I&rsquo;ll be using this IAM policy for the Collector:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">Copy</span>
+{
+    <span style="color:#f92672">&#34;Version&#34;: </span><span style="color:#e6db74">&#34;2012-10-17&#34;</span>,
+    <span style="color:#f92672">&#34;Statement&#34;: </span>[
+        {
+            <span style="color:#f92672">&#34;Effect&#34;: </span><span style="color:#e6db74">&#34;Allow&#34;</span>,
+            <span style="color:#f92672">&#34;Action&#34;: </span>[
+                <span style="color:#e6db74">&#34;logs:PutLogEvents&#34;</span>,
+                <span style="color:#e6db74">&#34;logs:CreateLogGroup&#34;</span>,
+                <span style="color:#e6db74">&#34;logs:CreateLogStream&#34;</span>,
+                <span style="color:#e6db74">&#34;logs:DescribeLogStreams&#34;</span>,
+                <span style="color:#e6db74">&#34;logs:DescribeLogGroups&#34;</span>,
+                <span style="color:#e6db74">&#34;xray:*&#34;</span>,
+                <span style="color:#e6db74">&#34;ssm:GetParameters&#34;</span>
+            ],
+            <span style="color:#f92672">&#34;Resource&#34;: </span><span style="color:#e6db74">&#34;*&#34;</span>
+        }
+    ]
+}
+</code></pre></div><p>After setting up the AWS OTEL Collector, I&rsquo;m ready to begin building the apps, but it won’t be right now. <br>
+<strong>See you in part 2</strong></p>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://www.mytechramblings.com/posts/building-an-async-http-api-with-durable-functions-and-python/">
+                  <span class="button__text">Building an Async HTTP Api with Azure Durable Functions and Python</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2022 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>Theme created by <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://www.mytechramblings.com/assets/main.js"></script>
+<script src="https://www.mytechramblings.com/assets/prism.js"></script>
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('carlospons', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Donate',
+    'floating-chat.donateButton.background-color': '#ff5f5f',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
+
+      
+    </div>
+
+    
+      
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-170300931-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+    
+  </body>
+</html>

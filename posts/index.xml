@@ -9,10 +9,30 @@
     <description>Recent content in Posts on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 15 Dec 2021 11:20:04 +0100</lastBuildDate>
+    <lastBuildDate>Mon, 31 Jan 2022 10:10:12 +0100</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Testing distributed tracing with AWS Distro for OpenTelemetry and .NET. Part 1: Setting up the AWS OTEL Collector</title>
+      <link>https://www.mytechramblings.com/posts/testing-aws-distro-for-otel-with-dotnet-apps-part-1/</link>
+      <pubDate>Mon, 31 Jan 2022 10:10:12 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/testing-aws-distro-for-otel-with-dotnet-apps-part-1/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          This is a 2 part-series post. In part 1 I’ll be talking about what is the AWS OpenTelemetry Collector and how to set it up for ingesting and exporting traces to AWS X-Ray.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>Building an Async HTTP Api with Azure Durable Functions and Python</title>
