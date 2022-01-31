@@ -15,11 +15,11 @@
     
     
     <item>
-      <title>Testing distributed tracing with AWS Distro for OpenTelemetry and .NET. Part 1: Setting up the AWS OTEL Collector</title>
-      <link>https://www.mytechramblings.com/posts/testing-aws-distro-for-otel-with-dotnet-apps-part-1/</link>
+      <title>Getting started with AWS Distro for OpenTelemetry and distributed tracing using .NET. Part 1: Setting up the AWS OTEL Collector</title>
+      <link>https://www.mytechramblings.com/posts/getting-started-with-aws-distro-for-otel-and-dotnet-part-1/</link>
       <pubDate>Mon, 31 Jan 2022 10:10:12 +0100</pubDate>
       
-      <guid>https://www.mytechramblings.com/posts/testing-aws-distro-for-otel-with-dotnet-apps-part-1/</guid>
+      <guid>https://www.mytechramblings.com/posts/getting-started-with-aws-distro-for-otel-and-dotnet-part-1/</guid>
       <description>
         
           

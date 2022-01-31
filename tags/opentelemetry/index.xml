@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>opentelemetry on my tech ramblings</title>
+    <title>OpenTelemetry on my tech ramblings</title>
     
     
     
     <link>https://www.mytechramblings.com/tags/opentelemetry/</link>
-    <description>Recent content in opentelemetry on my tech ramblings</description>
+    <description>Recent content in OpenTelemetry on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Mon, 31 Jan 2022 10:10:12 +0100</lastBuildDate>
@@ -15,11 +15,11 @@
     
     
     <item>
-      <title>Testing distributed tracing with AWS Distro for OpenTelemetry and .NET. Part 1: Setting up the AWS OTEL Collector</title>
-      <link>https://www.mytechramblings.com/posts/testing-aws-distro-for-otel-with-dotnet-apps-part-1/</link>
+      <title>Getting started with AWS Distro for OpenTelemetry and distributed tracing using .NET. Part 1: Setting up the AWS OTEL Collector</title>
+      <link>https://www.mytechramblings.com/posts/getting-started-with-aws-distro-for-otel-and-dotnet-part-1/</link>
       <pubDate>Mon, 31 Jan 2022 10:10:12 +0100</pubDate>
       
-      <guid>https://www.mytechramblings.com/posts/testing-aws-distro-for-otel-with-dotnet-apps-part-1/</guid>
+      <guid>https://www.mytechramblings.com/posts/getting-started-with-aws-distro-for-otel-and-dotnet-part-1/</guid>
       <description>
         
           
