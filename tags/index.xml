@@ -9,7 +9,7 @@
     <description>Recent content in Tags on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 31 Jan 2022 10:10:12 +0100</lastBuildDate>
+    <lastBuildDate>Tue, 01 Feb 2022 10:00:12 +0100</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/index.xml" rel="self" type="application/rss+xml" />
     
@@ -17,7 +17,7 @@
     <item>
       <title>aws</title>
       <link>https://www.mytechramblings.com/tags/aws/</link>
-      <pubDate>Mon, 31 Jan 2022 10:10:12 +0100</pubDate>
+      <pubDate>Tue, 01 Feb 2022 10:00:12 +0100</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/aws/</guid>
       <description>
@@ -37,7 +37,7 @@
     <item>
       <title>dotnet</title>
       <link>https://www.mytechramblings.com/tags/dotnet/</link>
-      <pubDate>Mon, 31 Jan 2022 10:10:12 +0100</pubDate>
+      <pubDate>Tue, 01 Feb 2022 10:00:12 +0100</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/dotnet/</guid>
       <description>
@@ -57,7 +57,7 @@
     <item>
       <title>OpenTelemetry</title>
       <link>https://www.mytechramblings.com/tags/opentelemetry/</link>
-      <pubDate>Mon, 31 Jan 2022 10:10:12 +0100</pubDate>
+      <pubDate>Tue, 01 Feb 2022 10:00:12 +0100</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/opentelemetry/</guid>
       <description>
