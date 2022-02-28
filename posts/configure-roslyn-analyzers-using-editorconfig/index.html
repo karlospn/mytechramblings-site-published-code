@@ -174,53 +174,53 @@ However, editorconfig files offer additional ways to configure rules too:</p>
 <p>More info here: <a href="https://docs.microsoft.com/es-es/dotnet/fundamentals/code-analysis/style-rules/ide0065#csharp_using_directive_placement">https://docs.microsoft.com/es-es/dotnet/fundamentals/code-analysis/style-rules/ide0065#csharp_using_directive_placement</a></p>
 </blockquote>
 <p>As I said previously with rule <strong>IDE0065</strong> you can enforce if a &ldquo;using&rdquo; statement should be inside or outside a namespace with the following editorconfig attribute:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">csharp_using_directive_placement = inside_namespace:error</span>
-<span style="color:#ae81ff">csharp_using_directive_placement = outside_namespace:error</span>
-</code></pre></div><p>So if you want to enforce that all your &ldquo;usings&rdquo; are always placed inside a namespace you can use the &ldquo;inside_namespace&rdquo; value and viceversa.<br>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ae81ff">csharp_using_directive_placement = inside_namespace:error</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">csharp_using_directive_placement = outside_namespace:error</span>
+</span></span></code></pre></div><p>So if you want to enforce that all your &ldquo;usings&rdquo; are always placed inside a namespace you can use the &ldquo;inside_namespace&rdquo; value and viceversa.<br>
 Let me show a practical test.</p>
 <ul>
 <li><strong>Example 1</strong>: If we configure the analyzer <strong>IDE0065</strong> via editorconfig like this:</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">root = true</span>
-[<span style="color:#75715e">*.cs]</span>
-<span style="color:#ae81ff">csharp_using_directive_placement = inside_namespace:error</span>
-</code></pre></div><p>This block of code will report an error:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// csharp_using_directive_placement = outside_namespace
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">using</span> System;
-
-<span style="color:#66d9ef">namespace</span> Convention2
-{
-    ...
-}
-</code></pre></div><p>But this one won&rsquo;t report any error</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// csharp_using_directive_placement = inside_namespace
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">namespace</span> Convention1
-{
-    <span style="color:#66d9ef">using</span> System;
-    ...
-}
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ae81ff">root = true</span>
+</span></span><span style="display:flex;"><span>[<span style="color:#75715e">*.cs]</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">csharp_using_directive_placement = inside_namespace:error</span>
+</span></span></code></pre></div><p>This block of code will report an error:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// csharp_using_directive_placement = outside_namespace</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> Convention2
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    ...
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>But this one won&rsquo;t report any error</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// csharp_using_directive_placement = inside_namespace</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> Convention1
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">using</span> System;
+</span></span><span style="display:flex;"><span>    ...
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
 <li><strong>Example 2</strong>: If we configure the analyzer <strong>IDE0065</strong> via editorconfig like this:</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">root = true</span>
-[<span style="color:#75715e">*.cs]</span>
-<span style="color:#ae81ff">csharp_using_directive_placement = outside_namespace:error</span>
-</code></pre></div><p>This block of code will report an error:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// csharp_using_directive_placement = inside_namespace
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">namespace</span> Convention1
-{
-    <span style="color:#66d9ef">using</span> System;
-    ...
-}
-</code></pre></div><p>But this one won&rsquo;t report any error</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// csharp_using_directive_placement = outside_namespace
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">using</span> System;
-
-<span style="color:#66d9ef">namespace</span> Convention2
-{
-    ...
-}
-</code></pre></div><p><strong>In this example we&rsquo;re using the &ldquo;csharp_using_directive_placement&rdquo; attribute to enforce our own code-style.</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ae81ff">root = true</span>
+</span></span><span style="display:flex;"><span>[<span style="color:#75715e">*.cs]</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">csharp_using_directive_placement = outside_namespace:error</span>
+</span></span></code></pre></div><p>This block of code will report an error:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// csharp_using_directive_placement = inside_namespace</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> Convention1
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">using</span> System;
+</span></span><span style="display:flex;"><span>    ...
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>But this one won&rsquo;t report any error</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// csharp_using_directive_placement = outside_namespace</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> Convention2
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    ...
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>In this example we&rsquo;re using the &ldquo;csharp_using_directive_placement&rdquo; attribute to enforce our own code-style.</strong></p>
 <p>And that&rsquo;s <strong>EXACTLY</strong> what I want to talk in this post.</p>
 <p><strong>Given a roslyn analyzer how we can add support for different code styles using the editorconfig file.</strong> <br>
 That&rsquo;s a cool feature to add on your own Roslyn analyzers and it&rsquo;s super easy to do it. <br>
@@ -232,69 +232,69 @@ To do this we have the <strong>AnalyzerConfigOptionsProvider Roslyn API</strong>
 <p>Let me show you how you can use it.</p>
 <h1 id="building-a-roslyn-analyzer-that-uses-the-analyzerconfigoptionsprovider-api">Building a Roslyn Analyzer that uses the AnalyzerConfigOptionsProvider API</h1>
 <p>First of all I have built a roslyn analyzer that reports an error if a csharp file contains more than one namespace. Here&rsquo;s the code:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis;
-<span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis.CSharp;
-<span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis.CSharp.Syntax;
-<span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis.Diagnostics;
-<span style="color:#66d9ef">using</span> System;
-<span style="color:#66d9ef">using</span> System.Collections.Immutable;
-
-<span style="color:#66d9ef">namespace</span> MyOwn.Analyzer
-{
-<span style="color:#a6e22e">    [DiagnosticAnalyzer(LanguageNames.CSharp)]</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyOwnAnalyzerAnalyzer</span> : DiagnosticAnalyzer
-    {
-        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> DiagnosticId = <span style="color:#e6db74">&#34;MyRules0001&#34;</span>;
-
-        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> LocalizableString Title = <span style="color:#66d9ef">new</span> LocalizableResourceString(nameof(Resources.AnalyzerTitle), Resources.ResourceManager, <span style="color:#66d9ef">typeof</span>(Resources));
-        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> LocalizableString MessageFormat = <span style="color:#66d9ef">new</span> LocalizableResourceString(nameof(Resources.AnalyzerMessageFormat), Resources.ResourceManager, <span style="color:#66d9ef">typeof</span>(Resources));
-        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> LocalizableString Description = <span style="color:#66d9ef">new</span> LocalizableResourceString(nameof(Resources.AnalyzerDescription), Resources.ResourceManager, <span style="color:#66d9ef">typeof</span>(Resources));
-        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> Category = <span style="color:#e6db74">&#34;Naming&#34;</span>;
-
-        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> DiagnosticDescriptor Rule = <span style="color:#66d9ef">new</span> DiagnosticDescriptor(DiagnosticId, 
-            Title, 
-            MessageFormat, 
-            Category, 
-            DiagnosticSeverity.Error, 
-            <span style="color:#66d9ef">true</span>, 
-            Description);
-
-        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> ImmutableArray&lt;DiagnosticDescriptor&gt; SupportedDiagnostics =&gt; ImmutableArray.Create(Rule);
-
-        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">void</span> Initialize(AnalysisContext context)
-        {
-            context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
-            context.EnableConcurrentExecution();
-            context.RegisterSyntaxTreeAction(AnalyzeAction);
-        }
-
-        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> AnalyzeAction(SyntaxTreeAnalysisContext context)
-        {
-           
-            <span style="color:#66d9ef">var</span> syntaxRoot = context.Tree.GetRoot(context.CancellationToken);
-
-            <span style="color:#66d9ef">var</span> descentNodes = syntaxRoot.
-                DescendantNodes(node =&gt; node != <span style="color:#66d9ef">null</span> &amp;&amp; !node.IsKind(SyntaxKind.ClassDeclaration));
-
-            <span style="color:#66d9ef">var</span> foundNode = <span style="color:#66d9ef">false</span>;
-            <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> node <span style="color:#66d9ef">in</span> descentNodes)
-            {
-                <span style="color:#66d9ef">if</span> (node.IsKind(SyntaxKind.NamespaceDeclaration))
-                {
-                    <span style="color:#66d9ef">if</span> (foundNode)
-                    {
-                        context.ReportDiagnostic(Diagnostic.Create(Rule, Location.None));
-                    }
-                    <span style="color:#66d9ef">else</span>
-                    {
-                        foundNode = <span style="color:#66d9ef">true</span>;
-                    }
-                }
-            }
-        }
-    }
-}
-</code></pre></div><p>So if you have more than one namespace in a single csharp file that analyzer is going to report an error.<br>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis.CSharp;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis.CSharp.Syntax;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis.Diagnostics;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.Collections.Immutable;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> MyOwn.Analyzer
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [DiagnosticAnalyzer(LanguageNames.CSharp)]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyOwnAnalyzerAnalyzer</span> : DiagnosticAnalyzer
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> DiagnosticId = <span style="color:#e6db74">&#34;MyRules0001&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> LocalizableString Title = <span style="color:#66d9ef">new</span> LocalizableResourceString(nameof(Resources.AnalyzerTitle), Resources.ResourceManager, <span style="color:#66d9ef">typeof</span>(Resources));
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> LocalizableString MessageFormat = <span style="color:#66d9ef">new</span> LocalizableResourceString(nameof(Resources.AnalyzerMessageFormat), Resources.ResourceManager, <span style="color:#66d9ef">typeof</span>(Resources));
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> LocalizableString Description = <span style="color:#66d9ef">new</span> LocalizableResourceString(nameof(Resources.AnalyzerDescription), Resources.ResourceManager, <span style="color:#66d9ef">typeof</span>(Resources));
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> Category = <span style="color:#e6db74">&#34;Naming&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> DiagnosticDescriptor Rule = <span style="color:#66d9ef">new</span> DiagnosticDescriptor(DiagnosticId, 
+</span></span><span style="display:flex;"><span>            Title, 
+</span></span><span style="display:flex;"><span>            MessageFormat, 
+</span></span><span style="display:flex;"><span>            Category, 
+</span></span><span style="display:flex;"><span>            DiagnosticSeverity.Error, 
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">true</span>, 
+</span></span><span style="display:flex;"><span>            Description);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> ImmutableArray&lt;DiagnosticDescriptor&gt; SupportedDiagnostics =&gt; ImmutableArray.Create(Rule);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">void</span> Initialize(AnalysisContext context)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
+</span></span><span style="display:flex;"><span>            context.EnableConcurrentExecution();
+</span></span><span style="display:flex;"><span>            context.RegisterSyntaxTreeAction(AnalyzeAction);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> AnalyzeAction(SyntaxTreeAnalysisContext context)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>           
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> syntaxRoot = context.Tree.GetRoot(context.CancellationToken);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> descentNodes = syntaxRoot.
+</span></span><span style="display:flex;"><span>                DescendantNodes(node =&gt; node != <span style="color:#66d9ef">null</span> &amp;&amp; !node.IsKind(SyntaxKind.ClassDeclaration));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> foundNode = <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> node <span style="color:#66d9ef">in</span> descentNodes)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (node.IsKind(SyntaxKind.NamespaceDeclaration))
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">if</span> (foundNode)
+</span></span><span style="display:flex;"><span>                    {
+</span></span><span style="display:flex;"><span>                        context.ReportDiagnostic(Diagnostic.Create(Rule, Location.None));
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>                    {
+</span></span><span style="display:flex;"><span>                        foundNode = <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>So if you have more than one namespace in a single csharp file that analyzer is going to report an error.<br>
 But it would be kind of cool if <strong>the end-user was capable of choosing if a csharp file can contain more than one namespace or not</strong>.</p>
 <p>And that&rsquo;s exactly what are we going to build right now, we are going to use a new editorconfig attribute that allows us to choose which behaviour we want to enforce.</p>
 <p>First we need to create a new attribute on the editorconfig.</p>
@@ -302,160 +302,160 @@ But it would be kind of cool if <strong>the end-user was capable of choosing if 
 <p>Beware that you <strong>NEED</strong> to follow this pattern: dotnet_diagnostic.&lt;RULE_ID&gt;.&lt;ATTRIBUTE_NAME&gt;</p>
 </blockquote>
 <p>I decided that the attribute will be:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">dotnet_diagnostic.MyRules0001.use_multiple_namespaces_in_a_single_file = false</span>
-</code></pre></div><p>And now I need to add the code on my analyzer that reads this new attribute and acts accordingly. Here&rsquo;s the result:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis;
-<span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis.CSharp;
-<span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis.CSharp.Syntax;
-<span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis.Diagnostics;
-<span style="color:#66d9ef">using</span> System;
-<span style="color:#66d9ef">using</span> System.Collections.Immutable;
-
-<span style="color:#66d9ef">namespace</span> MyOwn.Analyzer
-{
-<span style="color:#a6e22e">    [DiagnosticAnalyzer(LanguageNames.CSharp)]</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyOwnAnalyzerAnalyzer</span> : DiagnosticAnalyzer
-    {
-        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> DiagnosticId = <span style="color:#e6db74">&#34;MyRules0001&#34;</span>;
-
-        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> LocalizableString Title = <span style="color:#66d9ef">new</span> LocalizableResourceString(nameof(Resources.AnalyzerTitle), Resources.ResourceManager, <span style="color:#66d9ef">typeof</span>(Resources));
-        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> LocalizableString MessageFormat = <span style="color:#66d9ef">new</span> LocalizableResourceString(nameof(Resources.AnalyzerMessageFormat), Resources.ResourceManager, <span style="color:#66d9ef">typeof</span>(Resources));
-        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> LocalizableString Description = <span style="color:#66d9ef">new</span> LocalizableResourceString(nameof(Resources.AnalyzerDescription), Resources.ResourceManager, <span style="color:#66d9ef">typeof</span>(Resources));
-        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> Category = <span style="color:#e6db74">&#34;Naming&#34;</span>;
-
-        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> DiagnosticDescriptor Rule = <span style="color:#66d9ef">new</span> DiagnosticDescriptor(DiagnosticId, 
-            Title, 
-            MessageFormat, 
-            Category, 
-            DiagnosticSeverity.Error, 
-            <span style="color:#66d9ef">true</span>, 
-            Description);
-
-        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> ImmutableArray&lt;DiagnosticDescriptor&gt; SupportedDiagnostics =&gt; ImmutableArray.Create(Rule);
-
-        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">void</span> Initialize(AnalysisContext context)
-        {
-            context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
-            context.EnableConcurrentExecution();
-            context.RegisterSyntaxTreeAction(AnalyzeAction);
-        }
-
-        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> AnalyzeAction(SyntaxTreeAnalysisContext context)
-        {
-            <span style="color:#66d9ef">var</span> config = context.Options.AnalyzerConfigOptionsProvider.GetOptions(context.Tree);
-            config.TryGetValue(<span style="color:#e6db74">&#34;dotnet_diagnostic.MyRules0001.use_multiple_namespaces_in_a_file&#34;</span>, <span style="color:#66d9ef">out</span> <span style="color:#66d9ef">var</span> configValue);
-           
-            <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">string</span>.IsNullOrEmpty(configValue))
-            {
-                <span style="color:#66d9ef">return</span>;
-            }
-
-            <span style="color:#66d9ef">var</span> syntaxRoot = context.Tree.GetRoot(context.CancellationToken);
-
-            <span style="color:#66d9ef">var</span> descentNodes = syntaxRoot.
-                DescendantNodes(node =&gt; node != <span style="color:#66d9ef">null</span> &amp;&amp; !node.IsKind(SyntaxKind.ClassDeclaration));
-            <span style="color:#66d9ef">var</span> foundNode = <span style="color:#66d9ef">false</span>;
-
-            <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> node <span style="color:#66d9ef">in</span> descentNodes)
-            {
-                <span style="color:#66d9ef">if</span> (node.IsKind(SyntaxKind.NamespaceDeclaration))
-                {
-                    <span style="color:#66d9ef">if</span> (foundNode)
-                    {
-                        <span style="color:#66d9ef">if</span> (configValue.Equals(<span style="color:#e6db74">&#34;false&#34;</span>, StringComparison.InvariantCultureIgnoreCase))                       
-                        {
-                            context.ReportDiagnostic(Diagnostic.Create(Rule, Location.None));
-                        }
-                    }
-                    <span style="color:#66d9ef">else</span>
-                    {
-                        foundNode = <span style="color:#66d9ef">true</span>;
-                    }
-                }
-            }
-        }
-    }
-}
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ae81ff">dotnet_diagnostic.MyRules0001.use_multiple_namespaces_in_a_single_file = false</span>
+</span></span></code></pre></div><p>And now I need to add the code on my analyzer that reads this new attribute and acts accordingly. Here&rsquo;s the result:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis.CSharp;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis.CSharp.Syntax;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis.Diagnostics;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.Collections.Immutable;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> MyOwn.Analyzer
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [DiagnosticAnalyzer(LanguageNames.CSharp)]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyOwnAnalyzerAnalyzer</span> : DiagnosticAnalyzer
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> DiagnosticId = <span style="color:#e6db74">&#34;MyRules0001&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> LocalizableString Title = <span style="color:#66d9ef">new</span> LocalizableResourceString(nameof(Resources.AnalyzerTitle), Resources.ResourceManager, <span style="color:#66d9ef">typeof</span>(Resources));
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> LocalizableString MessageFormat = <span style="color:#66d9ef">new</span> LocalizableResourceString(nameof(Resources.AnalyzerMessageFormat), Resources.ResourceManager, <span style="color:#66d9ef">typeof</span>(Resources));
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> LocalizableString Description = <span style="color:#66d9ef">new</span> LocalizableResourceString(nameof(Resources.AnalyzerDescription), Resources.ResourceManager, <span style="color:#66d9ef">typeof</span>(Resources));
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> Category = <span style="color:#e6db74">&#34;Naming&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> DiagnosticDescriptor Rule = <span style="color:#66d9ef">new</span> DiagnosticDescriptor(DiagnosticId, 
+</span></span><span style="display:flex;"><span>            Title, 
+</span></span><span style="display:flex;"><span>            MessageFormat, 
+</span></span><span style="display:flex;"><span>            Category, 
+</span></span><span style="display:flex;"><span>            DiagnosticSeverity.Error, 
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">true</span>, 
+</span></span><span style="display:flex;"><span>            Description);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> ImmutableArray&lt;DiagnosticDescriptor&gt; SupportedDiagnostics =&gt; ImmutableArray.Create(Rule);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">void</span> Initialize(AnalysisContext context)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
+</span></span><span style="display:flex;"><span>            context.EnableConcurrentExecution();
+</span></span><span style="display:flex;"><span>            context.RegisterSyntaxTreeAction(AnalyzeAction);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> AnalyzeAction(SyntaxTreeAnalysisContext context)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> config = context.Options.AnalyzerConfigOptionsProvider.GetOptions(context.Tree);
+</span></span><span style="display:flex;"><span>            config.TryGetValue(<span style="color:#e6db74">&#34;dotnet_diagnostic.MyRules0001.use_multiple_namespaces_in_a_file&#34;</span>, <span style="color:#66d9ef">out</span> <span style="color:#66d9ef">var</span> configValue);
+</span></span><span style="display:flex;"><span>           
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">string</span>.IsNullOrEmpty(configValue))
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> syntaxRoot = context.Tree.GetRoot(context.CancellationToken);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> descentNodes = syntaxRoot.
+</span></span><span style="display:flex;"><span>                DescendantNodes(node =&gt; node != <span style="color:#66d9ef">null</span> &amp;&amp; !node.IsKind(SyntaxKind.ClassDeclaration));
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> foundNode = <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> node <span style="color:#66d9ef">in</span> descentNodes)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (node.IsKind(SyntaxKind.NamespaceDeclaration))
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">if</span> (foundNode)
+</span></span><span style="display:flex;"><span>                    {
+</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">if</span> (configValue.Equals(<span style="color:#e6db74">&#34;false&#34;</span>, StringComparison.InvariantCultureIgnoreCase))                       
+</span></span><span style="display:flex;"><span>                        {
+</span></span><span style="display:flex;"><span>                            context.ReportDiagnostic(Diagnostic.Create(Rule, Location.None));
+</span></span><span style="display:flex;"><span>                        }
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>                    {
+</span></span><span style="display:flex;"><span>                        foundNode = <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
 <li>As you can see it&rsquo;s really easy to implement, but let me break down the key aspects:</li>
 </ul>
 <p>I begin by reading the value from the editorconfig file using the AnalyzerConfigOptionsProvider API.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> config = context.Options.AnalyzerConfigOptionsProvider.GetOptions(context.Tree);
-config.TryGetValue(<span style="color:#e6db74">&#34;dotnet_diagnostic.MyRules0001.use_multiple_namespaces_in_a_file&#34;</span>, <span style="color:#66d9ef">out</span> <span style="color:#66d9ef">var</span> configValue);
-</code></pre></div><p>In my case I have implemented a default behaviour, so if the end-user do not set the value on the editorconfig I assume that we can have more than one namespace in the same file.<br>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> config = context.Options.AnalyzerConfigOptionsProvider.GetOptions(context.Tree);
+</span></span><span style="display:flex;"><span>config.TryGetValue(<span style="color:#e6db74">&#34;dotnet_diagnostic.MyRules0001.use_multiple_namespaces_in_a_file&#34;</span>, <span style="color:#66d9ef">out</span> <span style="color:#66d9ef">var</span> configValue);
+</span></span></code></pre></div><p>In my case I have implemented a default behaviour, so if the end-user do not set the value on the editorconfig I assume that we can have more than one namespace in the same file.<br>
 That&rsquo;s the reason why I&rsquo;m breaking the code execution in case that the value is null or empty.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">string</span>.IsNullOrEmpty(configValue))
-{
-    <span style="color:#66d9ef">return</span>;
-}
-</code></pre></div><p>Only report a diagnostic if we have found more than one namespace on the same file and the &ldquo;use_multiple_namespaces_in_a_file&rdquo; value is set to false</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">if</span> (foundNode)
-{
-    <span style="color:#66d9ef">if</span> (configValue.Equals(<span style="color:#e6db74">&#34;false&#34;</span>, StringComparison.InvariantCultureIgnoreCase))
-    {
-        context.ReportDiagnostic(Diagnostic.Create(Rule, Location.None));
-    }
-}
-<span style="color:#66d9ef">else</span>
-{
-    foundNode = <span style="color:#66d9ef">true</span>;
-}
-</code></pre></div><h1 id="testing-our-analyzer">Testing our analyzer</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">string</span>.IsNullOrEmpty(configValue))
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Only report a diagnostic if we have found more than one namespace on the same file and the &ldquo;use_multiple_namespaces_in_a_file&rdquo; value is set to false</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> (foundNode)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (configValue.Equals(<span style="color:#e6db74">&#34;false&#34;</span>, StringComparison.InvariantCultureIgnoreCase))
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        context.ReportDiagnostic(Diagnostic.Create(Rule, Location.None));
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    foundNode = <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="testing-our-analyzer">Testing our analyzer</h1>
 <p>As a last step let&rsquo;s test the analyzer.</p>
 <ul>
 <li><strong>Test 1</strong></li>
 </ul>
 <p>I created the following editorconfig file:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">root = true</span>
-
-<span style="color:#75715e"># C# files</span>
-[<span style="color:#75715e">*.cs]</span>
-
-<span style="color:#ae81ff">dotnet_diagnostic.MyRules0001.severity = error</span>
-<span style="color:#ae81ff">dotnet_diagnostic.MyRules0001.use_multiple_namespaces_in_a_file = false</span>
-</code></pre></div><p>Also I have created a new console program that contains my analyzer. <br>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ae81ff">root = true</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># C# files</span>
+</span></span><span style="display:flex;"><span>[<span style="color:#75715e">*.cs]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">dotnet_diagnostic.MyRules0001.severity = error</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">dotnet_diagnostic.MyRules0001.use_multiple_namespaces_in_a_file = false</span>
+</span></span></code></pre></div><p>Also I have created a new console program that contains my analyzer. <br>
 The <em>Program.cs</em> file looks like this:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">//program.cs
-</span><span style="color:#75715e"></span>
-<span style="color:#66d9ef">using</span> System;
-
-<span style="color:#66d9ef">namespace</span> ConsoleApp3
-{
-    <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Program</span>
-    {
-        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args)
-        {
-            <span style="color:#66d9ef">var</span> stud = <span style="color:#66d9ef">new</span> StudentNs.Student();
-            stud.PrintStudentName(<span style="color:#e6db74">&#34;Carlos&#34;</span>);        
-        }
-    }
-}
-
-
-<span style="color:#66d9ef">namespace</span> StudentNs
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Student</span>
-    {
-       <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> PrintStudentName(<span style="color:#66d9ef">string</span> name)
-       {
-            Console.WriteLine(<span style="color:#e6db74">$&#34;Your name is: {name}&#34;</span>);
-       }
-    }
-}
-</code></pre></div><p>As you can see VS shows an error:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">//program.cs</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> ConsoleApp3
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Program</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> stud = <span style="color:#66d9ef">new</span> StudentNs.Student();
+</span></span><span style="display:flex;"><span>            stud.PrintStudentName(<span style="color:#e6db74">&#34;Carlos&#34;</span>);        
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> StudentNs
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Student</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>       <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> PrintStudentName(<span style="color:#66d9ef">string</span> name)
+</span></span><span style="display:flex;"><span>       {
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">$&#34;Your name is: {name}&#34;</span>);
+</span></span><span style="display:flex;"><span>       }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>As you can see VS shows an error:</p>
 <p><img src="/img/roslyn-analyzer-error-ns.png" alt="ns-error"></p>
 <ul>
 <li><strong>Test 2</strong></li>
 </ul>
 <p>Now if I modify the editorconfig file to look like this:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">root = true</span>
-
-<span style="color:#75715e"># C# files</span>
-[<span style="color:#75715e">*.cs]</span>
-
-<span style="color:#ae81ff">dotnet_diagnostic.MyRules0001.severity = error</span>
-<span style="color:#ae81ff">dotnet_diagnostic.MyRules0001.use_multiple_namespaces_in_a_file = true</span>
-</code></pre></div><p>And I&rsquo;m using the same program.cs as the previous test.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ae81ff">root = true</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># C# files</span>
+</span></span><span style="display:flex;"><span>[<span style="color:#75715e">*.cs]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">dotnet_diagnostic.MyRules0001.severity = error</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">dotnet_diagnostic.MyRules0001.use_multiple_namespaces_in_a_file = true</span>
+</span></span></code></pre></div><p>And I&rsquo;m using the same program.cs as the previous test.</p>
 <p>Now Visual Studio doesn&rsquo;t show any error, because now we are allowing to use multiple namespaces in a single file.</p>
 <h1 id="useful-resources">Useful Resources</h1>
 <ul>

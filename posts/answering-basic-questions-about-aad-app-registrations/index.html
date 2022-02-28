@@ -216,21 +216,20 @@ If we request an access token using the .default scope our users will be asked t
 <p>I have register an app with the following permissions:</p>
 <p><img src="/img/default-scope-permissions-1.png" alt="default-scope-permissions-1"></p>
 <p>And if I request an access token using the .default scope</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#a6e22e">https</span><span style="color:#f92672">:</span><span style="color:#75715e">//login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/oauth2/v2.0/authorize
-</span><span style="color:#75715e"></span><span style="color:#f92672">?</span><span style="color:#a6e22e">client_id</span><span style="color:#f92672">=</span><span style="color:#ae81ff">5833</span><span style="color:#a6e22e">d6c7</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span><span style="color:#a6e22e">ba5</span><span style="color:#f92672">-</span><span style="color:#ae81ff">4184</span><span style="color:#f92672">-</span><span style="color:#ae81ff">9</span><span style="color:#a6e22e">b14</span><span style="color:#f92672">-</span><span style="color:#ae81ff">050</span><span style="color:#a6e22e">a6b5ed212</span>
-<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">redirect_uri</span><span style="color:#f92672">=</span><span style="color:#a6e22e">https</span><span style="color:#f92672">:</span><span style="color:#75715e">//oidcdebugger.com/debug
-</span><span style="color:#75715e"></span><span style="color:#f92672">&amp;</span><span style="color:#a6e22e">scope</span><span style="color:#f92672">=</span><span style="color:#a6e22e">https</span><span style="color:#f92672">:</span><span style="color:#75715e">//graph.microsoft.com/.default
-</span><span style="color:#75715e"></span><span style="color:#f92672">&amp;</span><span style="color:#a6e22e">response_type</span><span style="color:#f92672">=</span><span style="color:#a6e22e">token</span>
-<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">response_mode</span><span style="color:#f92672">=</span><span style="color:#a6e22e">form_post</span>
-<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">nonce</span><span style="color:#f92672">=</span><span style="color:#a6e22e">yj8o2c250eq</span>
-</code></pre></div><p>I get an access token containing all the scopes that where present on the permissions section</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">{
-   ...
-   <span style="color:#e6db74">&#34;scp&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;AccessReview.Read.All Agreement.Read.All Calendars.Read Device.Read.All profile openid email&#34;</span>,
-   ...
-}
-
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#a6e22e">https</span><span style="color:#f92672">:</span><span style="color:#75715e">//login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/oauth2/v2.0/authorize
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">?</span><span style="color:#a6e22e">client_id</span><span style="color:#f92672">=</span><span style="color:#ae81ff">5833</span><span style="color:#a6e22e">d6c7</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span><span style="color:#a6e22e">ba5</span><span style="color:#f92672">-</span><span style="color:#ae81ff">4184</span><span style="color:#f92672">-</span><span style="color:#ae81ff">9</span><span style="color:#a6e22e">b14</span><span style="color:#f92672">-</span><span style="color:#ae81ff">050</span><span style="color:#a6e22e">a6b5ed212</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&amp;</span><span style="color:#a6e22e">redirect_uri</span><span style="color:#f92672">=</span><span style="color:#a6e22e">https</span><span style="color:#f92672">:</span><span style="color:#75715e">//oidcdebugger.com/debug
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">&amp;</span><span style="color:#a6e22e">scope</span><span style="color:#f92672">=</span><span style="color:#a6e22e">https</span><span style="color:#f92672">:</span><span style="color:#75715e">//graph.microsoft.com/.default
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">&amp;</span><span style="color:#a6e22e">response_type</span><span style="color:#f92672">=</span><span style="color:#a6e22e">token</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&amp;</span><span style="color:#a6e22e">response_mode</span><span style="color:#f92672">=</span><span style="color:#a6e22e">form_post</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&amp;</span><span style="color:#a6e22e">nonce</span><span style="color:#f92672">=</span><span style="color:#a6e22e">yj8o2c250eq</span>
+</span></span></code></pre></div><p>I get an access token containing all the scopes that where present on the permissions section</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>   ...
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;scp&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;AccessReview.Read.All Agreement.Read.All Calendars.Read Device.Read.All profile openid email&#34;</span>,
+</span></span><span style="display:flex;"><span>   ...
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
 <li>
 <h2 id="example-2">Example 2:</h2>
 </li>
@@ -240,20 +239,20 @@ If we request an access token using the .default scope our users will be asked t
 <p>The Booking app has the following permissions for the payment app:</p>
 <p><img src="/img/default-scope-permissions-3.png" alt="default-scope-permissions-3"></p>
 <p>If I request an access token using the .default scope</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#a6e22e">https</span><span style="color:#f92672">:</span><span style="color:#75715e">//login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/oauth2/v2.0/authorize
-</span><span style="color:#75715e"></span><span style="color:#f92672">?</span><span style="color:#a6e22e">client_id</span><span style="color:#f92672">=</span><span style="color:#a6e22e">c3b8b95f</span><span style="color:#f92672">-</span><span style="color:#ae81ff">922</span><span style="color:#a6e22e">b</span><span style="color:#f92672">-</span><span style="color:#ae81ff">4384</span><span style="color:#f92672">-</span><span style="color:#ae81ff">8</span><span style="color:#a6e22e">ab2</span><span style="color:#f92672">-</span><span style="color:#a6e22e">a1215a9fc295</span>
-<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">redirect_uri</span><span style="color:#f92672">=</span><span style="color:#a6e22e">https</span><span style="color:#f92672">:</span><span style="color:#75715e">//oidcdebugger.com/debug
-</span><span style="color:#75715e"></span><span style="color:#f92672">&amp;</span><span style="color:#a6e22e">scope</span><span style="color:#f92672">=</span><span style="color:#a6e22e">api</span><span style="color:#f92672">:</span><span style="color:#75715e">//payment/.default
-</span><span style="color:#75715e"></span><span style="color:#f92672">&amp;</span><span style="color:#a6e22e">response_type</span><span style="color:#f92672">=</span><span style="color:#a6e22e">token</span>
-<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">response_mode</span><span style="color:#f92672">=</span><span style="color:#a6e22e">form_post</span>
-<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">nonce</span><span style="color:#f92672">=</span><span style="color:#a6e22e">wq2vzi24b5</span>
-</code></pre></div><p>I get an access token containing all the scopes for the payment api that where present on the permissions section</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">{
-   ...
-   <span style="color:#e6db74">&#34;scp&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;payment.read payment.write&#34;</span>,
-   ...
-}
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#a6e22e">https</span><span style="color:#f92672">:</span><span style="color:#75715e">//login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/oauth2/v2.0/authorize
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">?</span><span style="color:#a6e22e">client_id</span><span style="color:#f92672">=</span><span style="color:#a6e22e">c3b8b95f</span><span style="color:#f92672">-</span><span style="color:#ae81ff">922</span><span style="color:#a6e22e">b</span><span style="color:#f92672">-</span><span style="color:#ae81ff">4384</span><span style="color:#f92672">-</span><span style="color:#ae81ff">8</span><span style="color:#a6e22e">ab2</span><span style="color:#f92672">-</span><span style="color:#a6e22e">a1215a9fc295</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&amp;</span><span style="color:#a6e22e">redirect_uri</span><span style="color:#f92672">=</span><span style="color:#a6e22e">https</span><span style="color:#f92672">:</span><span style="color:#75715e">//oidcdebugger.com/debug
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">&amp;</span><span style="color:#a6e22e">scope</span><span style="color:#f92672">=</span><span style="color:#a6e22e">api</span><span style="color:#f92672">:</span><span style="color:#75715e">//payment/.default
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">&amp;</span><span style="color:#a6e22e">response_type</span><span style="color:#f92672">=</span><span style="color:#a6e22e">token</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&amp;</span><span style="color:#a6e22e">response_mode</span><span style="color:#f92672">=</span><span style="color:#a6e22e">form_post</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&amp;</span><span style="color:#a6e22e">nonce</span><span style="color:#f92672">=</span><span style="color:#a6e22e">wq2vzi24b5</span>
+</span></span></code></pre></div><p>I get an access token containing all the scopes for the payment api that where present on the permissions section</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>   ...
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;scp&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;payment.read payment.write&#34;</span>,
+</span></span><span style="display:flex;"><span>   ...
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><blockquote>
 <p>You can find a more flesh out explanation to this question right here: <a href="https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-permissions-and-consent">https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-permissions-and-consent</a></p>
 </blockquote>
 <h1 id="q7-i-have-built-a-webapi-using-csharp-and-i-want-to-add-authentication-and-authorization-using-aad-what-library-should-i-use-adalnet-msalnet-or-microsoftidentityweb">Q7: I have built a WebApi using csharp and I want to add authentication and authorization using AAD. What library should I use? ADAL.NET, MSAL.NET or Microsoft.Identity.Web?</h1>
@@ -297,75 +296,73 @@ The SPA has to make authenticated requests to the WebApi and also the middle-tie
 <ul>
 <li>On the WebApi 1 project:</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> Microsoft.Identity.Web;
-
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Startup</span>
-{
-   <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
-   {
-      services.AddMicrosoftIdentityWebApiAuthentication(Configuration)
-            .EnableTokenAcquisitionToCallDownstreamApi()
-            .AddDownstreamWebApi(<span style="color:#e6db74">&#34;WebApi2&#34;</span>, Configuration.GetSection(<span style="color:#e6db74">&#34;WebApi2&#34;</span>))
-            .AddInMemoryTokenCaches();
-
-      services.AddControllers();
-   }
-}
-
-</code></pre></div><p>WebApi 1 needs to acquire a token for the downstream API (WebApi 2). You specify it by adding the <em>.EnableTokenAcquisitionToCallDownstreamApi()</em> line after <em>.AddMicrosoftIdentityWebApi(Configuration)</em>.<br>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Microsoft.Identity.Web;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Startup</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
+</span></span><span style="display:flex;"><span>   {
+</span></span><span style="display:flex;"><span>      services.AddMicrosoftIdentityWebApiAuthentication(Configuration)
+</span></span><span style="display:flex;"><span>            .EnableTokenAcquisitionToCallDownstreamApi()
+</span></span><span style="display:flex;"><span>            .AddDownstreamWebApi(<span style="color:#e6db74">&#34;WebApi2&#34;</span>, Configuration.GetSection(<span style="color:#e6db74">&#34;WebApi2&#34;</span>))
+</span></span><span style="display:flex;"><span>            .AddInMemoryTokenCaches();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      services.AddControllers();
+</span></span><span style="display:flex;"><span>   }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>WebApi 1 needs to acquire a token for the downstream API (WebApi 2). You specify it by adding the <em>.EnableTokenAcquisitionToCallDownstreamApi()</em> line after <em>.AddMicrosoftIdentityWebApi(Configuration)</em>.<br>
 You can call the downstream API without adding the extension <em>.AddDownstreamWebApi()</em> but it&rsquo;s really useful because now I can directly inject an <em>IDownstreamWebApi</em> service in my controller and use it to call the WebApi 2 app without the need to build an HttpClient.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">
-</span><span style="color:#a6e22e">[ApiController]</span>
-<span style="color:#a6e22e">[Authorize]</span>
-<span style="color:#a6e22e">[Route(&#34;api/invoke&#34;)]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">InvokeController</span> : ControllerBase
-{
-
-   <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger&lt;InvokeController&gt; <span style="color:#ae81ff">_l</span>ogger;
-   <span style="color:#66d9ef">private</span> IDownstreamWebApi <span style="color:#ae81ff">_d</span>ownstreamWebApi;
-
-   <span style="color:#66d9ef">public</span> InvokeController(ILogger&lt;InvokeController&gt; logger, 
-      IDownstreamWebApi downstreamWebApi)
-   {
-      <span style="color:#ae81ff">_l</span>ogger = logger;
-      <span style="color:#ae81ff">_d</span>ownstreamWebApi = downstreamWebApi;
-   }
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">   [HttpGet]</span>
-   <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;ActionResult&gt; Get()
-   {
-      <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">&#34;Trying to call a downstream Api&#34;</span>);
-      <span style="color:#66d9ef">var</span> <span style="color:#66d9ef">value</span> = <span style="color:#66d9ef">await</span> <span style="color:#ae81ff">_d</span>ownstreamWebApi.CallWebApiForUserAsync(
-            <span style="color:#e6db74">&#34;WebApi2&#34;</span>,
-            options =&gt;
-            {
-               options.HttpMethod = HttpMethod.Get;
-               options.RelativePath = <span style="color:#e6db74">&#34;api/downstream&#34;</span>;
-            });
-
-            <span style="color:#66d9ef">return</span> Ok(<span style="color:#66d9ef">value</span>);
-        }
-    }
-
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">[ApiController]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Authorize]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Route(&#34;api/invoke&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">InvokeController</span> : ControllerBase
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger&lt;InvokeController&gt; <span style="color:#ae81ff">_l</span>ogger;
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">private</span> IDownstreamWebApi <span style="color:#ae81ff">_d</span>ownstreamWebApi;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">public</span> InvokeController(ILogger&lt;InvokeController&gt; logger, 
+</span></span><span style="display:flex;"><span>      IDownstreamWebApi downstreamWebApi)
+</span></span><span style="display:flex;"><span>   {
+</span></span><span style="display:flex;"><span>      <span style="color:#ae81ff">_l</span>ogger = logger;
+</span></span><span style="display:flex;"><span>      <span style="color:#ae81ff">_d</span>ownstreamWebApi = downstreamWebApi;
+</span></span><span style="display:flex;"><span>   }
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">   [HttpGet]</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;ActionResult&gt; Get()
+</span></span><span style="display:flex;"><span>   {
+</span></span><span style="display:flex;"><span>      <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">&#34;Trying to call a downstream Api&#34;</span>);
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">var</span> <span style="color:#66d9ef">value</span> = <span style="color:#66d9ef">await</span> <span style="color:#ae81ff">_d</span>ownstreamWebApi.CallWebApiForUserAsync(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;WebApi2&#34;</span>,
+</span></span><span style="display:flex;"><span>            options =&gt;
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>               options.HttpMethod = HttpMethod.Get;
+</span></span><span style="display:flex;"><span>               options.RelativePath = <span style="color:#e6db74">&#34;api/downstream&#34;</span>;
+</span></span><span style="display:flex;"><span>            });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> Ok(<span style="color:#66d9ef">value</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><ul>
 <li>On the WebApi 2 project:</li>
 </ul>
 <p>We simply need to add <em>.AddMicrosoftIdentityWebApiAuthentication()</em> on the <em>Startup.cs</em>.<br>
 This method enables your WebAPI to be protected using the Microsoft identity platform. This includes validating the token in all scenarios (single- and multi-tenant applications).</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
-{
-   services.AddMicrosoftIdentityWebApiAuthentication(Configuration);
-   services.AddControllers();
-}
-</code></pre></div><h1 id="q9-can-i-define-custom-scopes-and-have-them-returned-when-using-the-client-credential-flow-in-azure-ad">Q9: Can I define custom scopes and have them returned when using the client credential flow in Azure AD?</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>   services.AddMicrosoftIdentityWebApiAuthentication(Configuration);
+</span></span><span style="display:flex;"><span>   services.AddControllers();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="q9-can-i-define-custom-scopes-and-have-them-returned-when-using-the-client-credential-flow-in-azure-ad">Q9: Can I define custom scopes and have them returned when using the client credential flow in Azure AD?</h1>
 <p>No, you can&rsquo;t.
 What you can do is define appRoles and have them returned via the client credential flow. Also you need to specify the .default scope in a client credentials flow, you cannot specify a concrete scope.</p>
 <p>Just like this:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#a6e22e">curl</span> <span style="color:#f92672">-</span><span style="color:#a6e22e">X</span> <span style="color:#a6e22e">POST</span> <span style="color:#a6e22e">https</span><span style="color:#f92672">:</span><span style="color:#75715e">//login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/oauth2/v2.0/token 
-</span><span style="color:#75715e"></span><span style="color:#f92672">-</span><span style="color:#a6e22e">H</span> <span style="color:#e6db74">&#39;Cache-Control: no-cache&#39;</span> 
-<span style="color:#f92672">-</span><span style="color:#a6e22e">H</span> <span style="color:#e6db74">&#39;Content-Type: application/x-www-form-urlencoded&#39;</span> 
-<span style="color:#f92672">-</span><span style="color:#a6e22e">d</span> <span style="color:#e6db74">&#39;grant_type=client_credentials&amp;client_id=c3b8b9 5f-922b-4384-8ab2-a1215a9fc295&amp;client_secret=e-M2va9la3O1pl~x1HPQNVXKSrK-a9_iRK&amp;scope=api://payment/.default&#39;</span>
-</code></pre></div><h1 id="q10-i-have-registered-2-apps-on-my-aad-and-im-having-some-trouble-validating-the-issuer-attribute-from-the-access-tokens-the-value-of-the-issuer-attribute-in-an-access-token-issued-for-the-app1-is-loginmicrosoftonlinecom-and-the-value-of-the-issuer-attribute-in-an-access-token-issued-for-the-app2-is-stswindowsnet-whats-happening">Q10: I have registered 2 apps on my AAD and I&rsquo;m having some trouble validating the issuer attribute from the access tokens. The value of the issuer attribute in an access token issued for the app1 is &ldquo;login.microsoftonline.com&rdquo; and the value of the issuer attribute in an access token issued for the app2 is &ldquo;sts.windows.net&rdquo;. What&rsquo;s happening?</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#a6e22e">curl</span> <span style="color:#f92672">-</span><span style="color:#a6e22e">X</span> <span style="color:#a6e22e">POST</span> <span style="color:#a6e22e">https</span><span style="color:#f92672">:</span><span style="color:#75715e">//login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/oauth2/v2.0/token 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">-</span><span style="color:#a6e22e">H</span> <span style="color:#e6db74">&#39;Cache-Control: no-cache&#39;</span> 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">-</span><span style="color:#a6e22e">H</span> <span style="color:#e6db74">&#39;Content-Type: application/x-www-form-urlencoded&#39;</span> 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">-</span><span style="color:#a6e22e">d</span> <span style="color:#e6db74">&#39;grant_type=client_credentials&amp;client_id=c3b8b9 5f-922b-4384-8ab2-a1215a9fc295&amp;client_secret=e-M2va9la3O1pl~x1HPQNVXKSrK-a9_iRK&amp;scope=api://payment/.default&#39;</span>
+</span></span></code></pre></div><h1 id="q10-i-have-registered-2-apps-on-my-aad-and-im-having-some-trouble-validating-the-issuer-attribute-from-the-access-tokens-the-value-of-the-issuer-attribute-in-an-access-token-issued-for-the-app1-is-loginmicrosoftonlinecom-and-the-value-of-the-issuer-attribute-in-an-access-token-issued-for-the-app2-is-stswindowsnet-whats-happening">Q10: I have registered 2 apps on my AAD and I&rsquo;m having some trouble validating the issuer attribute from the access tokens. The value of the issuer attribute in an access token issued for the app1 is &ldquo;login.microsoftonline.com&rdquo; and the value of the issuer attribute in an access token issued for the app2 is &ldquo;sts.windows.net&rdquo;. What&rsquo;s happening?</h1>
 <p>Imagine that you are building a protected WebApi and you want to validate the access tokens. <br>
 Two of the attributes you could validate are the &ldquo;Issuer&rdquo; and the &ldquo;Audience&rdquo;.<br>
 The issuer attribute (iss) identifies the security token service (STS) that constructs and returns the token and also the Azure AD tenant in which the user was authenticated.<br>
@@ -373,7 +370,7 @@ The audience attribute (aud) identifies the intended recipient of the token.</p>
 <p>But you need to know that the issuer and the audience attributes have <strong>different values</strong> depending if the access token is issued by the Azure Active Directory V1 endpoint or the Azure Active Directory V2 endpoint.</p>
 <p>And probably the first thing that comes into your mind after reading up to this point:</p>
 <ul>
-<li><em>&ldquo;Nowadays no one is using the AAD V1 endpoint anymore, why should I care about it?&quot;</em></li>
+<li><em>&ldquo;Nowadays no one is using the AAD V1 endpoint anymore, why should I care about it?&rdquo;</em></li>
 </ul>
 <p>But here comes the catch: <strong>The AAD V2 endpoint is capable of issuing tokens in V1 and V2 format. And by default is issuing tokens in V1 format.</strong></p>
 <p>The parameter that allows you to switch between tokens formats is called <strong>&ldquo;accessTokenAcceptedVersion&rdquo;</strong> and you can find it in the application manifest (<a href="https://docs.microsoft.com/es-es/azure/active-directory/develop/reference-app-manifest">https://docs.microsoft.com/es-es/azure/active-directory/develop/reference-app-manifest</a>)<br>
@@ -385,62 +382,62 @@ You&rsquo;re going to run in some troubles if you&rsquo;re try to validate the i
 <li>Let me show you what I&rsquo;m trying to explain with an example:</li>
 </ul>
 <p>Here&rsquo;s an access token that has been issued when the attribute &ldquo;accesstokenAcceptedVersion&rdquo; is set to <strong>null</strong> or <strong>1</strong>:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">{
-   <span style="color:#e6db74">&#34;aud&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;api://42216d82-c01b-45c6-8bcf-511d472900b1&#34;</span>,
-   <span style="color:#e6db74">&#34;iss&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;https://sts.windows.net/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/&#34;</span>,
-   <span style="color:#e6db74">&#34;iat&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1602591474</span>,
-   <span style="color:#e6db74">&#34;nbf&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1602591474</span>,
-   <span style="color:#e6db74">&#34;exp&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1602595374</span>,
-   <span style="color:#e6db74">&#34;acr&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;1&#34;</span>,
-   <span style="color:#e6db74">&#34;aio&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;AVQAq/8RAAAA2p8+WYcyz9UuytxuBb6mjh6aVBnvgFIZgPeLy3qshHe2H6ffBuyTZ7KLLnG125Tpc9qtO9fvGy2hAVQKa4c1qoe1VcYYWlu+V43D3m5Q5OI=&#34;</span>,
-   <span style="color:#e6db74">&#34;amr&#34;</span><span style="color:#f92672">:</span> [
-      <span style="color:#e6db74">&#34;pwd&#34;</span>
-   ],
-   <span style="color:#e6db74">&#34;appid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;42216d82-c01b-45c6-8bcf-511d472900b1&#34;</span>,
-   <span style="color:#e6db74">&#34;appidacr&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;0&#34;</span>,
-   <span style="color:#e6db74">&#34;email&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;cpn@outlook.com&#34;</span>,
-   <span style="color:#e6db74">&#34;family_name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;p&#34;</span>,
-   <span style="color:#e6db74">&#34;given_name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;c&#34;</span>,
-   <span style="color:#e6db74">&#34;idp&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;live.com&#34;</span>,
-   <span style="color:#e6db74">&#34;ipaddr&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;10.10.10.10&#34;</span>,
-   <span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;cpn&#34;</span>,
-   <span style="color:#e6db74">&#34;oid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;221f4ba1-8bf4-4083-bd22-ba078fd56580&#34;</span>,
-   <span style="color:#e6db74">&#34;rh&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;0.AR8A4nEGijA6ME2cua1wm5x0SoJtIUIbwMZFi89RHUcpALEfALk.&#34;</span>,
-   <span style="color:#e6db74">&#34;scp&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;api1.read&#34;</span>,
-   <span style="color:#e6db74">&#34;sub&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;LFctpniExhuoNWlwh52C_SRnQN4Z74hkUZu1AhceU6s&#34;</span>,
-   <span style="color:#e6db74">&#34;tid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;8a0671e2-3a30-4d30-9cb9-ad709b9c744a&#34;</span>,
-   <span style="color:#e6db74">&#34;unique_name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;live.com#cpn@outlook.com&#34;</span>,
-   <span style="color:#e6db74">&#34;uti&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;hx1a4jDUAkyucKxfwaE-AA&#34;</span>,
-   <span style="color:#e6db74">&#34;ver&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;1.0&#34;</span>
-}
-</code></pre></div><p>And here&rsquo;s an access token that has been issued when the attribute &ldquo;accesstokenAcceptedVersion&rdquo; is set to <strong>2</strong>:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">{
-   <span style="color:#e6db74">&#34;aud&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;42216d82-c01b-45c6-8bcf-511d472900b1&#34;</span>,
-   <span style="color:#e6db74">&#34;iss&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;https://login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/v2.0&#34;</span>,
-   <span style="color:#e6db74">&#34;iat&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1602594547</span>,
-   <span style="color:#e6db74">&#34;nbf&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1602594547</span>,
-   <span style="color:#e6db74">&#34;exp&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1602598447</span>,
-   <span style="color:#e6db74">&#34;aio&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;AWQAm/8RAAAACGs+Od0VxVRWvsNt4b463+iPnuLt0uHgEKFB+Zh6BCIp4RooCkDrxdnGKIp+ku+QahSYbBTHCXnOzk+gO6rj4DIpWdsMSULPmyBdBJKpHzhqdpX8Xcmexa9axdA3CRj7&#34;</span>,
-   <span style="color:#e6db74">&#34;azp&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;42216d82-c01b-45c6-8bcf-511d472900b1&#34;</span>,
-   <span style="color:#e6db74">&#34;azpacr&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;0&#34;</span>,
-   <span style="color:#e6db74">&#34;idp&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;live.com&#34;</span>,
-   <span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;cpn&#34;</span>,
-   <span style="color:#e6db74">&#34;oid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;221f4ba1-8bf4-4083-bd22-ba078fd56580&#34;</span>,
-   <span style="color:#e6db74">&#34;preferred_username&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;cpn@outlook.com&#34;</span>,
-   <span style="color:#e6db74">&#34;rh&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;0.AR8A4nEGijA6ME2cua1wm5x0SoJtIUIbwMZFi89RHUcpALEfALk.&#34;</span>,
-   <span style="color:#e6db74">&#34;scp&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;api1.read&#34;</span>,
-   <span style="color:#e6db74">&#34;sub&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;LFctpniExhuoNWlwh52C_SRnQN4Z74hkUZu1AhceU6s&#34;</span>,
-   <span style="color:#e6db74">&#34;tid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;8a0671e2-3a30-4d30-9cb9-ad709b9c744a&#34;</span>,
-   <span style="color:#e6db74">&#34;uti&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;uAv96bNnUkqogjeo0nFuAA&#34;</span>,
-   <span style="color:#e6db74">&#34;ver&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2.0&#34;</span>
-}
-</code></pre></div><p>As you can see both the issuer and the audience values are completely different, so be mindful if you do some kind of token validations like this one:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">app.UseWindowsAzureActiveDirectoryBearerAuthentication(
-   <span style="color:#66d9ef">new</span> WindowsAzureActiveDirectoryBearerAuthenticationOptions
-   {
-         Audience = <span style="color:#e6db74">&#34;https://sts.windows.net/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/&#34;</span>
-   });
-</code></pre></div><p>Because it only would work if the attribute &ldquo;accessTokenAcceptedVersion&rdquo; is set to 1 or null.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;aud&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;api://42216d82-c01b-45c6-8bcf-511d472900b1&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;iss&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;https://sts.windows.net/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;iat&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1602591474</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;nbf&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1602591474</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;exp&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1602595374</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;acr&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;1&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;aio&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;AVQAq/8RAAAA2p8+WYcyz9UuytxuBb6mjh6aVBnvgFIZgPeLy3qshHe2H6ffBuyTZ7KLLnG125Tpc9qtO9fvGy2hAVQKa4c1qoe1VcYYWlu+V43D3m5Q5OI=&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;amr&#34;</span><span style="color:#f92672">:</span> [
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;pwd&#34;</span>
+</span></span><span style="display:flex;"><span>   ],
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;appid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;42216d82-c01b-45c6-8bcf-511d472900b1&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;appidacr&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;0&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;email&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;cpn@outlook.com&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;family_name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;p&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;given_name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;c&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;idp&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;live.com&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;ipaddr&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;10.10.10.10&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;cpn&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;oid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;221f4ba1-8bf4-4083-bd22-ba078fd56580&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;rh&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;0.AR8A4nEGijA6ME2cua1wm5x0SoJtIUIbwMZFi89RHUcpALEfALk.&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;scp&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;api1.read&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;sub&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;LFctpniExhuoNWlwh52C_SRnQN4Z74hkUZu1AhceU6s&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;tid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;8a0671e2-3a30-4d30-9cb9-ad709b9c744a&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;unique_name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;live.com#cpn@outlook.com&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;uti&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;hx1a4jDUAkyucKxfwaE-AA&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;ver&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;1.0&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>And here&rsquo;s an access token that has been issued when the attribute &ldquo;accesstokenAcceptedVersion&rdquo; is set to <strong>2</strong>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;aud&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;42216d82-c01b-45c6-8bcf-511d472900b1&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;iss&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;https://login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/v2.0&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;iat&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1602594547</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;nbf&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1602594547</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;exp&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1602598447</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;aio&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;AWQAm/8RAAAACGs+Od0VxVRWvsNt4b463+iPnuLt0uHgEKFB+Zh6BCIp4RooCkDrxdnGKIp+ku+QahSYbBTHCXnOzk+gO6rj4DIpWdsMSULPmyBdBJKpHzhqdpX8Xcmexa9axdA3CRj7&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;azp&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;42216d82-c01b-45c6-8bcf-511d472900b1&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;azpacr&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;0&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;idp&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;live.com&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;cpn&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;oid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;221f4ba1-8bf4-4083-bd22-ba078fd56580&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;preferred_username&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;cpn@outlook.com&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;rh&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;0.AR8A4nEGijA6ME2cua1wm5x0SoJtIUIbwMZFi89RHUcpALEfALk.&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;scp&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;api1.read&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;sub&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;LFctpniExhuoNWlwh52C_SRnQN4Z74hkUZu1AhceU6s&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;tid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;8a0671e2-3a30-4d30-9cb9-ad709b9c744a&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;uti&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;uAv96bNnUkqogjeo0nFuAA&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;ver&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2.0&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>As you can see both the issuer and the audience values are completely different, so be mindful if you do some kind of token validations like this one:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>app.UseWindowsAzureActiveDirectoryBearerAuthentication(
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">new</span> WindowsAzureActiveDirectoryBearerAuthenticationOptions
+</span></span><span style="display:flex;"><span>   {
+</span></span><span style="display:flex;"><span>         Audience = <span style="color:#e6db74">&#34;https://sts.windows.net/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/&#34;</span>
+</span></span><span style="display:flex;"><span>   });
+</span></span></code></pre></div><p>Because it only would work if the attribute &ldquo;accessTokenAcceptedVersion&rdquo; is set to 1 or null.</p>
 
     </div>
     

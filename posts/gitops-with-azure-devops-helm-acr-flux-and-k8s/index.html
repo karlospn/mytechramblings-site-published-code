@@ -204,42 +204,41 @@ If you want to deploy a new application or update an existing one, you only need
 <li>The app also needs to have a <em>/chart</em> folder. That folder is going to contain all the Kubernetes definition files that the application needs.</li>
 </ul>
 <p>An example of the application structure would be something like this:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">.
-│   .gitignore
-│   azure-pipelines.yml
-│   README.md
-│
-└───AppA.WebApi
-    │   .dockerignore
-    │   AppA.WebApi.csproj
-    │   AppA.WebApi.sln
-    │   appsettings.Development.json
-    │   appsettings.json
-    │   Dockerfile
-    │   Dockerfile.develop
-    │   Program.cs
-    │   Startup.cs
-    │   WeatherForecast.cs
-    │
-    ├───chart
-    │   │   .helmignore
-    │   │   Chart.yaml
-    │   │   values.yaml
-    │   │
-    │   └───templates
-    │           deployment.yaml
-    │           ingress.yaml
-    │           secrets.yaml
-    │           service.yaml
-    │           _helpers.tpl
-    │
-    ├───Controllers
-    │       WeatherForecastController.cs
-    │
-    └───Properties
-            launchSettings.json
-
-</code></pre></div><p>As I pointed out the app contains a Dockerfile and also a <em>/chart</em> folder.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>.
+</span></span><span style="display:flex;"><span>│   .gitignore
+</span></span><span style="display:flex;"><span>│   azure-pipelines.yml
+</span></span><span style="display:flex;"><span>│   README.md
+</span></span><span style="display:flex;"><span>│
+</span></span><span style="display:flex;"><span>└───AppA.WebApi
+</span></span><span style="display:flex;"><span>    │   .dockerignore
+</span></span><span style="display:flex;"><span>    │   AppA.WebApi.csproj
+</span></span><span style="display:flex;"><span>    │   AppA.WebApi.sln
+</span></span><span style="display:flex;"><span>    │   appsettings.Development.json
+</span></span><span style="display:flex;"><span>    │   appsettings.json
+</span></span><span style="display:flex;"><span>    │   Dockerfile
+</span></span><span style="display:flex;"><span>    │   Dockerfile.develop
+</span></span><span style="display:flex;"><span>    │   Program.cs
+</span></span><span style="display:flex;"><span>    │   Startup.cs
+</span></span><span style="display:flex;"><span>    │   WeatherForecast.cs
+</span></span><span style="display:flex;"><span>    │
+</span></span><span style="display:flex;"><span>    ├───chart
+</span></span><span style="display:flex;"><span>    │   │   .helmignore
+</span></span><span style="display:flex;"><span>    │   │   Chart.yaml
+</span></span><span style="display:flex;"><span>    │   │   values.yaml
+</span></span><span style="display:flex;"><span>    │   │
+</span></span><span style="display:flex;"><span>    │   └───templates
+</span></span><span style="display:flex;"><span>    │           deployment.yaml
+</span></span><span style="display:flex;"><span>    │           ingress.yaml
+</span></span><span style="display:flex;"><span>    │           secrets.yaml
+</span></span><span style="display:flex;"><span>    │           service.yaml
+</span></span><span style="display:flex;"><span>    │           _helpers.tpl
+</span></span><span style="display:flex;"><span>    │
+</span></span><span style="display:flex;"><span>    ├───Controllers
+</span></span><span style="display:flex;"><span>    │       WeatherForecastController.cs
+</span></span><span style="display:flex;"><span>    │
+</span></span><span style="display:flex;"><span>    └───Properties
+</span></span><span style="display:flex;"><span>            launchSettings.json
+</span></span></code></pre></div><p>As I pointed out the app contains a Dockerfile and also a <em>/chart</em> folder.</p>
 <p>After seeing that you could argue that maybe I should not place the Kubernetes files / Chart files within the application code and maybe I should place it directly in the centralized repository, and that&rsquo;s totally legit, but I prefer to have the application code and the application kubernetes definitions all in the same place.</p>
 <h2 id="step-2---building-an-azure-pipeline">Step 2 - Building an Azure Pipeline</h2>
 <hr>
@@ -251,68 +250,67 @@ If you want to deploy a new application or update an existing one, you only need
 <li>Push the helm chart into an existing ACR</li>
 </ul>
 <p>That&rsquo;s the pipeline:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-YAML" data-lang="YAML"><span style="color:#f92672">trigger</span>:
-- <span style="color:#ae81ff">master</span>
-
-<span style="color:#f92672">resources</span>:
-- <span style="color:#f92672">repo</span>: <span style="color:#ae81ff">self</span>
-
-<span style="color:#f92672">variables</span>:
-  <span style="color:#f92672">HELM_EXPERIMENTAL_OCI</span>: <span style="color:#ae81ff">1</span>
-  <span style="color:#f92672">registryName</span>: <span style="color:#e6db74">&#39;acrgitopsdev&#39;</span>
-  <span style="color:#f92672">imageName</span>: <span style="color:#e6db74">&#39;appawebapi&#39;</span>
-  <span style="color:#f92672">BuildId</span>: <span style="color:#e6db74">&#39;$(Build.BuildId)&#39;</span>
-  <span style="color:#f92672">tag</span>: <span style="color:#e6db74">&#39;$(Build.BuildId)&#39;</span>
-
-<span style="color:#f92672">steps</span>:
-- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AzureCLI@2</span>
-  <span style="color:#f92672">inputs</span>:
-    <span style="color:#f92672">azureSubscription</span>: <span style="color:#e6db74">&#39;azure-dev-subscription&#39;</span>
-    <span style="color:#f92672">scriptType</span>: <span style="color:#e6db74">&#39;bash&#39;</span>
-    <span style="color:#f92672">scriptLocation</span>: <span style="color:#e6db74">&#39;inlineScript&#39;</span>
-    <span style="color:#f92672">inlineScript</span>: <span style="color:#e6db74">&#39;az acr login --name $(registryName)&#39;</span>
-    
-- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AzureCLI@2</span>
-  <span style="color:#f92672">inputs</span>:
-    <span style="color:#f92672">azureSubscription</span>: <span style="color:#e6db74">&#39;azure-dev-subscription&#39;</span>
-    <span style="color:#f92672">scriptType</span>: <span style="color:#e6db74">&#39;bash&#39;</span>
-    <span style="color:#f92672">scriptLocation</span>: <span style="color:#e6db74">&#39;inlineScript&#39;</span>
-    <span style="color:#f92672">inlineScript</span>: <span style="color:#e6db74">&#39;az acr build --image $(imageName):$(BuildId) --registry $(registryName) --file Dockerfile .&#39;</span>
-    <span style="color:#f92672">useGlobalConfig</span>: <span style="color:#66d9ef">true</span>
-    <span style="color:#f92672">workingDirectory</span>: <span style="color:#e6db74">&#39;$(Build.SourcesDirectory)/AppA.WebApi&#39;</span>
-
-- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">HelmInstaller@1</span>
-  <span style="color:#f92672">inputs</span>:
-    <span style="color:#f92672">helmVersionToInstall</span>: <span style="color:#e6db74">&#39;latest&#39;</span>
-
-- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">replacetokens@3</span>
-  <span style="color:#f92672">inputs</span>:
-    <span style="color:#f92672">targetFiles</span>: <span style="color:#e6db74">&#39;**/*.yaml&#39;</span>
-    <span style="color:#f92672">encoding</span>: <span style="color:#e6db74">&#39;auto&#39;</span>
-    <span style="color:#f92672">writeBOM</span>: <span style="color:#66d9ef">true</span>
-    <span style="color:#f92672">actionOnMissing</span>: <span style="color:#e6db74">&#39;warn&#39;</span>
-    <span style="color:#f92672">keepToken</span>: <span style="color:#66d9ef">false</span>
-    <span style="color:#f92672">tokenPrefix</span>: <span style="color:#e6db74">&#39;#{&#39;</span>
-    <span style="color:#f92672">tokenSuffix</span>: <span style="color:#e6db74">&#39;}#&#39;</span>
-    <span style="color:#f92672">useLegacyPattern</span>: <span style="color:#66d9ef">false</span>
-    <span style="color:#f92672">enableTelemetry</span>: <span style="color:#66d9ef">true</span>
-       
-- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
-  <span style="color:#f92672">inputs</span>:
-    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
-    <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
-</span><span style="color:#e6db74">      </span>      <span style="color:#ae81ff">helm package --destination $(Build.ArtifactStagingDirectory)/ --version $(BuildId).0.0 ./chart/ </span>
-    <span style="color:#f92672">workingDirectory</span>: <span style="color:#e6db74">&#39;$(Build.SourcesDirectory)/AppA.WebApi&#39;</span>
-
-- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AzureCLI@2</span>
-  <span style="color:#f92672">inputs</span>:
-    <span style="color:#f92672">azureSubscription</span>: <span style="color:#e6db74">&#39;azure-dev-subscription&#39;</span>
-    <span style="color:#f92672">scriptType</span>: <span style="color:#e6db74">&#39;bash&#39;</span>
-    <span style="color:#f92672">scriptLocation</span>: <span style="color:#e6db74">&#39;inlineScript&#39;</span>
-    <span style="color:#f92672">inlineScript</span>: <span style="color:#e6db74">&#39;az acr helm push -n $(registryName) $(Build.ArtifactStagingDirectory)/*.tgz&#39;</span>
-    <span style="color:#f92672">useGlobalConfig</span>: <span style="color:#66d9ef">true</span>
-
-</code></pre></div><p>Helm 3 needs the environment variable &ldquo;HELM_EXPERIMENTAL_OCI: 1&rdquo; defined or it won&rsquo;t work, so just put it there&hellip;</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-YAML" data-lang="YAML"><span style="display:flex;"><span><span style="color:#f92672">trigger</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#ae81ff">master</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">resources</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">repo</span>: <span style="color:#ae81ff">self</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">variables</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">HELM_EXPERIMENTAL_OCI</span>: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">registryName</span>: <span style="color:#e6db74">&#39;acrgitopsdev&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">imageName</span>: <span style="color:#e6db74">&#39;appawebapi&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">BuildId</span>: <span style="color:#e6db74">&#39;$(Build.BuildId)&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">tag</span>: <span style="color:#e6db74">&#39;$(Build.BuildId)&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">steps</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AzureCLI@2</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">azureSubscription</span>: <span style="color:#e6db74">&#39;azure-dev-subscription&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">scriptType</span>: <span style="color:#e6db74">&#39;bash&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">scriptLocation</span>: <span style="color:#e6db74">&#39;inlineScript&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">inlineScript</span>: <span style="color:#e6db74">&#39;az acr login --name $(registryName)&#39;</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AzureCLI@2</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">azureSubscription</span>: <span style="color:#e6db74">&#39;azure-dev-subscription&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">scriptType</span>: <span style="color:#e6db74">&#39;bash&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">scriptLocation</span>: <span style="color:#e6db74">&#39;inlineScript&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">inlineScript</span>: <span style="color:#e6db74">&#39;az acr build --image $(imageName):$(BuildId) --registry $(registryName) --file Dockerfile .&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">useGlobalConfig</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">workingDirectory</span>: <span style="color:#e6db74">&#39;$(Build.SourcesDirectory)/AppA.WebApi&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">HelmInstaller@1</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">helmVersionToInstall</span>: <span style="color:#e6db74">&#39;latest&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">replacetokens@3</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">targetFiles</span>: <span style="color:#e6db74">&#39;**/*.yaml&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">encoding</span>: <span style="color:#e6db74">&#39;auto&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">writeBOM</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">actionOnMissing</span>: <span style="color:#e6db74">&#39;warn&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">keepToken</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">tokenPrefix</span>: <span style="color:#e6db74">&#39;#{&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">tokenSuffix</span>: <span style="color:#e6db74">&#39;}#&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">useLegacyPattern</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">enableTelemetry</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>       
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      </span>      <span style="color:#ae81ff">helm package --destination $(Build.ArtifactStagingDirectory)/ --version $(BuildId).0.0 ./chart/ </span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">workingDirectory</span>: <span style="color:#e6db74">&#39;$(Build.SourcesDirectory)/AppA.WebApi&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AzureCLI@2</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">azureSubscription</span>: <span style="color:#e6db74">&#39;azure-dev-subscription&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">scriptType</span>: <span style="color:#e6db74">&#39;bash&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">scriptLocation</span>: <span style="color:#e6db74">&#39;inlineScript&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">inlineScript</span>: <span style="color:#e6db74">&#39;az acr helm push -n $(registryName) $(Build.ArtifactStagingDirectory)/*.tgz&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">useGlobalConfig</span>: <span style="color:#66d9ef">true</span>
+</span></span></code></pre></div><p>Helm 3 needs the environment variable &ldquo;HELM_EXPERIMENTAL_OCI: 1&rdquo; defined or it won&rsquo;t work, so just put it there&hellip;</p>
 <p>I&rsquo;m using the Azure Pipeline <strong>BuildId</strong> to tag the docker image and also to set the Helm Chart version.<br>
 That&rsquo;s a simple Helm versioning strategy, using a 1-1 versioning just keeps the chart version in sync with the application. That approach makes version bumping very easy (you bump everything up) and also allows you to quickly track what application version is deployed on your cluster (same as chart version).<br>
 If you&rsquo;re interested in helm versioning strategies you can read it more here: <a href="https://codefresh.io/docs/docs/new-helm/helm-best-practices/">https://codefresh.io/docs/docs/new-helm/helm-best-practices/</a></p>
@@ -329,10 +327,10 @@ If you&rsquo;re interested in helm versioning strategies you can read it more he
 <p><em>Why I&rsquo;m using the Replace Tokens task in my pipeline?</em> (<a href="https://marketplace.visualstudio.com/items?itemName=qetza.replacetokens">https://marketplace.visualstudio.com/items?itemName=qetza.replacetokens</a>)<br>
 That&rsquo;s because in the Kubernetes Deployment YAML file I defined the image i&rsquo;m using like this:</p>
 </blockquote>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">    <span style="color:#f92672">containers</span>:
-    - <span style="color:#f92672">name</span>: {{ <span style="color:#ae81ff">.Chart.Name }}</span>
-        <span style="color:#f92672">image</span>: <span style="color:#e6db74">&#34;{{ .Values.image.repository }}:#{tag}#&#34;</span> 
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>    <span style="color:#f92672">containers</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: {{ <span style="color:#ae81ff">.Chart.Name }}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">image</span>: <span style="color:#e6db74">&#34;{{ .Values.image.repository }}:#{tag}#&#34;</span> 
+</span></span></code></pre></div><blockquote>
 <p>As I previously said I&rsquo;m using the Azure Pipelines <strong>BuildId</strong> as my image tag and I only know the value <strong>after the pipeline has started</strong>, so I&rsquo;m using the replace tokens task to replace the <em>#{tag}#</em> placeholder with the BuildId while the Azure Pipeline is running.</p>
 </blockquote>
 <h2 id="step-3---installing-flux-and-the-helm-operator">Step 3 - Installing Flux and the Helm Operator</h2>
@@ -344,14 +342,14 @@ That&rsquo;s because in the Kubernetes Deployment YAML file I defined the image 
 <p><img src="/img/fluxcd-helm-operator-diagram.png" alt="flux-helm-diagram"></p>
 <p>I&rsquo;m going to enumerate the steps required to install both Flux and the Helm Operator into the Kubernetes cluster.</p>
 <p>1 - Create the Flux namespace:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl create ns flux
-</code></pre></div><p>2 - Add the Flux repository</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">helm repo add fluxcd https://charts.fluxcd.io
-</code></pre></div><p>3 - Apply the Helm Operator CRD</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/fluxcd/helm-operator/master/deploy/crds.yaml
-</code></pre></div><p>4 - Install Flux</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">helm upgrade -i flux fluxcd/flux --set git.url<span style="color:#f92672">=</span>git@ssh.dev.azure.com:v3/cpn/Provisioning/Manifests  --set registry.acr.enabled<span style="color:#f92672">=</span>true --namespace flux
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl create ns flux
+</span></span></code></pre></div><p>2 - Add the Flux repository</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>helm repo add fluxcd https://charts.fluxcd.io
+</span></span></code></pre></div><p>3 - Apply the Helm Operator CRD</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl apply -f https://raw.githubusercontent.com/fluxcd/helm-operator/master/deploy/crds.yaml
+</span></span></code></pre></div><p>4 - Install Flux</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>helm upgrade -i flux fluxcd/flux --set git.url<span style="color:#f92672">=</span>git@ssh.dev.azure.com:v3/cpn/Provisioning/Manifests  --set registry.acr.enabled<span style="color:#f92672">=</span>true --namespace flux
+</span></span></code></pre></div><ul>
 <li>
 <p>The <strong>git.url</strong> attribute needs to be the <strong>Azure DevOps Repository URL</strong> that we want Flux to monitor. Flux is going to connect to the Git repo through <strong>SSH</strong>.</p>
 </li>
@@ -363,8 +361,8 @@ That&rsquo;s because in the Kubernetes Deployment YAML file I defined the image 
 <p>In the previous step we told Flux which Azure DevOps git repository should monitor. Now we need to give Flux access to the git repository.<br>
 This is pretty straight-forward as Flux generates a SSH key at startup.</p>
 <p>To get the SSH public key generated by Flux you need to run:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl -n flux logs deployment/flux | grep identity.pub | cut -d <span style="color:#e6db74">&#39;&#34;&#39;</span> -f2
-</code></pre></div><p>And in order to sync Flux with your Git repository you need to add the key as an SSH public key in your Azure DevOps account settings.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl -n flux logs deployment/flux | grep identity.pub | cut -d <span style="color:#e6db74">&#39;&#34;&#39;</span> -f2
+</span></span></code></pre></div><p>And in order to sync Flux with your Git repository you need to add the key as an SSH public key in your Azure DevOps account settings.</p>
 <p><img src="/img/flux-ados-ssh.png" alt="Azure DevOps flux SSH key"></p>
 <p>6 - Install the Flux Operator</p>
 <p>That step is the most problematic one, that&rsquo;s because there are some authentication problems between the Flux Operator and ACR.</p>
@@ -378,64 +376,62 @@ This is pretty straight-forward as Flux generates a SSH key at startup.</p>
 <li>The url of your ACR Helm endpoint. It must end with a slash.</li>
 </ul>
 <p>So the command is going to be something like:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">helm upgrade -i helm-operator fluxcd/helm-operator --set git.ssh.secretName<span style="color:#f92672">=</span>flux-git-deploy --set helm.versions<span style="color:#f92672">=</span>v3 --namespace flux --set configureRepositories.enable<span style="color:#f92672">=</span>true --set configureRepositories.repositories<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span>.name<span style="color:#f92672">=</span>acrgitopsdev,configureRepositories.repositories<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span>.url<span style="color:#f92672">=</span>https://acrgitopsdev.azurecr.io/helm/v1/repo,configureRepositories.repositories<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span>.username<span style="color:#f92672">=</span>put-your-sp-id-here,configureRepositories.repositories<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span>.password<span style="color:#f92672">=</span>put-your-sp-password-here
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>helm upgrade -i helm-operator fluxcd/helm-operator --set git.ssh.secretName<span style="color:#f92672">=</span>flux-git-deploy --set helm.versions<span style="color:#f92672">=</span>v3 --namespace flux --set configureRepositories.enable<span style="color:#f92672">=</span>true --set configureRepositories.repositories<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span>.name<span style="color:#f92672">=</span>acrgitopsdev,configureRepositories.repositories<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span>.url<span style="color:#f92672">=</span>https://acrgitopsdev.azurecr.io/helm/v1/repo,configureRepositories.repositories<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span>.username<span style="color:#f92672">=</span>put-your-sp-id-here,configureRepositories.repositories<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span>.password<span style="color:#f92672">=</span>put-your-sp-password-here
+</span></span></code></pre></div><blockquote>
 <p>You can do all those steps manually or create an Azure Pipelines to orchestrate all those commands.<br>
 To be honest, it&rsquo;s really easy to build the pipeline once you know all the commands you need to execute, so i&rsquo;m not going to waste time doing it.</p>
 </blockquote>
 <h2 id="step-4---creating-the-application-config-file">Step 4 - Creating the application config file</h2>
 <hr>
 <p>The last step is to create the application config file, push it into the &ldquo;<strong>Manifests</strong>&rdquo; repository and see if Flux is capable of deploying our application in our Kubernetes cluster.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">
-<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">helm.fluxcd.io/v1</span>
-<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">HelmRelease</span>
-<span style="color:#f92672">metadata</span>:
-  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">appa</span>
-<span style="color:#f92672">spec</span>:
-  <span style="color:#f92672">chart</span>:
-    <span style="color:#f92672">repository</span>: <span style="color:#ae81ff">https://acrgitopsdev.azurecr.io/helm/v1/repo/</span>
-    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">appawebapi</span>
-    <span style="color:#f92672">version</span>: <span style="color:#ae81ff">158.0.0</span>
-  <span style="color:#f92672">values</span>:
-    <span style="color:#f92672">imagePullSecrets</span>:
-      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">acr-gitdevops</span>
-
-</code></pre></div><p>The only thing you need to specify in the  file is the Chart repository URL, the Chart name and the Chart version to deploy.<br>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">helm.fluxcd.io/v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">HelmRelease</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">appa</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">chart</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">repository</span>: <span style="color:#ae81ff">https://acrgitopsdev.azurecr.io/helm/v1/repo/</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">appawebapi</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">version</span>: <span style="color:#ae81ff">158.0.0</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">values</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">imagePullSecrets</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">acr-gitdevops</span>
+</span></span></code></pre></div><p>The only thing you need to specify in the  file is the Chart repository URL, the Chart name and the Chart version to deploy.<br>
 There are more options available when creating the config file, if you&rsquo;re interested you can read about it here: <a href="https://docs.fluxcd.io/projects/helm-operator/en/1.0.0-rc9/references/helmrelease-custom-resource.html">https://docs.fluxcd.io/projects/helm-operator/en/1.0.0-rc9/references/helmrelease-custom-resource.html</a></p>
 <p>In my case I need to define a secret and that&rsquo;s because Kubernetes uses an image pull secret to store information needed to authenticate to the container registry. <strong>If you&rsquo;re using AKS you don&rsquo;t need to do it.</strong><br>
 If you want to read more about it: <a href="https://docs.microsoft.com/es-es/azure/container-registry/container-registry-auth-kubernetes">https://docs.microsoft.com/es-es/azure/container-registry/container-registry-auth-kubernetes</a></p>
 <p>And that&rsquo;s it, we are done! Flux has deployed the app into our cluster.<br>
 Let&rsquo;s test it a little bit. If we change the chart version and commit the file again:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">
-<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">helm.fluxcd.io/v1</span>
-<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">HelmRelease</span>
-<span style="color:#f92672">metadata</span>:
-  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">appa</span>
-<span style="color:#f92672">spec</span>:
-  <span style="color:#f92672">chart</span>:
-    <span style="color:#f92672">repository</span>: <span style="color:#ae81ff">https://acrgitopsdev.azurecr.io/helm/v1/repo/</span>
-    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">appawebapi</span>
-    <span style="color:#f92672">version</span>: <span style="color:#ae81ff">160.0.0</span>
-  <span style="color:#f92672">values</span>:
-    <span style="color:#f92672">imagePullSecrets</span>:
-      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">acr-gitdevops</span>
-
-</code></pre></div><p>Flux automatically picks the change (with a 5 minutes delay) and replaces the application with the old version with the new one.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">helm.fluxcd.io/v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">HelmRelease</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">appa</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">chart</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">repository</span>: <span style="color:#ae81ff">https://acrgitopsdev.azurecr.io/helm/v1/repo/</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">appawebapi</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">version</span>: <span style="color:#ae81ff">160.0.0</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">values</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">imagePullSecrets</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">acr-gitdevops</span>
+</span></span></code></pre></div><p>Flux automatically picks the change (with a 5 minutes delay) and replaces the application with the old version with the new one.</p>
 <p>Next we create a new application and push a new config file into the centralized repository, like this:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">
-<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">helm.fluxcd.io/v1</span>
-<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">HelmRelease</span>
-<span style="color:#f92672">metadata</span>:
-  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">appb</span>
-<span style="color:#f92672">spec</span>:
-  <span style="color:#f92672">chart</span>:
-    <span style="color:#f92672">repository</span>: <span style="color:#ae81ff">https://acrgitopsdev.azurecr.io/helm/v1/repo/</span>
-    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">appbwebapi</span>
-    <span style="color:#f92672">version</span>: <span style="color:#ae81ff">164.0.0</span>
-  <span style="color:#f92672">values</span>:
-    <span style="color:#f92672">imagePullSecrets</span>:
-      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">acr-gitdevops</span>
-</code></pre></div><p>Flux automatically picks the change (with a 5 minutes delay) and deploy the new application.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">helm.fluxcd.io/v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">HelmRelease</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">appb</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">chart</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">repository</span>: <span style="color:#ae81ff">https://acrgitopsdev.azurecr.io/helm/v1/repo/</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">appbwebapi</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">version</span>: <span style="color:#ae81ff">164.0.0</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">values</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">imagePullSecrets</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">acr-gitdevops</span>
+</span></span></code></pre></div><p>Flux automatically picks the change (with a 5 minutes delay) and deploy the new application.</p>
 <p>So overall our process is working quite well, any new or modified config file we push inside our centralized repository it is going to be reflected in the Kubernetes cluster.</p>
 <h2 id="conclusion">Conclusion</h2>
 <hr>

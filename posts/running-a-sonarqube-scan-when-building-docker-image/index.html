@@ -204,170 +204,170 @@ As always if you don’t care about the post I have upload the source code on my
 </li>
 </ul>
 <p>Here&rsquo;s how the final Dockerfile looks like:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">#############</span>
-<span style="color:#75715e">## Stage 1 ##</span>
-<span style="color:#75715e">#############</span>
-<span style="color:#ae81ff">FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS build-env</span>
-<span style="color:#ae81ff">WORKDIR /app</span>
-
-<span style="color:#75715e">## Arguments for setting the Sonarqube Token and the Project Key</span>
-<span style="color:#ae81ff">ARG SONAR_TOKEN</span>
-<span style="color:#ae81ff">ARG SONAR_PRJ_KEY</span>
-
-<span style="color:#75715e">## Setting the Sonarqube Organization and Uri</span>
-<span style="color:#ae81ff">ENV SONAR_ORG &#34;karlospn&#34;</span>
-<span style="color:#ae81ff">ENV SONAR_HOST &#34;https://sonarcloud.io&#34;</span>
-
-<span style="color:#75715e">## Install Java, because the sonarscanner needs it.</span>
-<span style="color:#ae81ff">RUN mkdir /usr/share/man/man1/</span>
-<span style="color:#ae81ff">RUN apt-get update &amp;&amp; apt-get dist-upgrade -y &amp;&amp; apt-get install -y openjdk-11-jre</span>
-
-<span style="color:#75715e">## Install sonarscanner</span>
-<span style="color:#ae81ff">RUN dotnet tool install --global dotnet-sonarscanner --version 5.3.1</span>
-
-<span style="color:#75715e">## Install report generator</span>
-<span style="color:#ae81ff">RUN dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.8.12</span>
-
-<span style="color:#75715e">## Set the dotnet tools folder in the PATH env variable</span>
-<span style="color:#ae81ff">ENV PATH=&#34;${PATH}:/root/.dotnet/tools&#34;</span>
-
-<span style="color:#75715e">## Start scanner</span>
-<span style="color:#ae81ff">RUN dotnet sonarscanner begin \</span>
-	<span style="color:#ae81ff">/o:&#34;$SONAR_ORG&#34; \</span>
-	<span style="color:#ae81ff">/k:&#34;$SONAR_PRJ_KEY&#34; \</span>
-	<span style="color:#ae81ff">/d:sonar.host.url=&#34;$SONAR_HOST&#34; \</span>
-	<span style="color:#ae81ff">/d:sonar.login=&#34;$SONAR_TOKEN&#34; \ </span>
-	<span style="color:#ae81ff">/d:sonar.coverageReportPaths=&#34;coverage/SonarQube.xml&#34;</span>
-
-<span style="color:#75715e">## Copy the applications .csproj</span>
-<span style="color:#ae81ff">COPY /src/WebApp/*.csproj ./src/WebApp/</span>
-
-<span style="color:#75715e">## Restore packages</span>
-<span style="color:#ae81ff">RUN dotnet restore &#34;./src/WebApp/WebApp.csproj&#34; -s &#34;https://api.nuget.org/v3/index.json&#34;</span>
-
-<span style="color:#75715e">## Copy everything else</span>
-<span style="color:#ae81ff">COPY . ./</span>
-
-<span style="color:#75715e">## Build the app</span>
-<span style="color:#ae81ff">RUN dotnet build &#34;./src/WebApp/WebApp.csproj&#34; -c Release --no-restore</span>
-
-<span style="color:#75715e">## Run dotnet test setting the output on the /coverage folder</span>
-<span style="color:#ae81ff">RUN dotnet test test/WebApp.Tests/*.csproj --collect:&#34;XPlat Code Coverage&#34; --results-directory ./coverage</span>
-
-<span style="color:#75715e">## Create the code coverage file in sonarqube format using the cobertura file generated from the dotnet test command</span>
-<span style="color:#ae81ff">RUN reportgenerator &#34;-reports:./coverage/*/coverage.cobertura.xml&#34; &#34;-targetdir:coverage&#34; &#34;-reporttypes:SonarQube&#34;</span>
-
-<span style="color:#75715e">## Publish the app</span>
-<span style="color:#ae81ff">RUN dotnet publish src/WebApp/*.csproj -c Release -o /app/publish --no-build --no-restore</span>
-
-<span style="color:#75715e">## Stop scanner</span>
-<span style="color:#ae81ff">RUN dotnet sonarscanner end /d:sonar.login=&#34;$SONAR_TOKEN&#34;</span>
-
-<span style="color:#75715e">#############</span>
-<span style="color:#75715e">## Stage 2 ##</span>
-<span style="color:#75715e">#############</span>
-<span style="color:#ae81ff">FROM mcr.microsoft.com/dotnet/aspnet:5.0-buster-slim</span>
-<span style="color:#ae81ff">WORKDIR /app</span>
-<span style="color:#ae81ff">COPY --from=build-env /app/publish .</span>
-<span style="color:#ae81ff">ENTRYPOINT [&#34;dotnet&#34;, &#34;WebApp.dll&#34;]</span>
-</code></pre></div><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e">#############</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Stage 1 ##</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#############</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS build-env</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">WORKDIR /app</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Arguments for setting the Sonarqube Token and the Project Key</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">ARG SONAR_TOKEN</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">ARG SONAR_PRJ_KEY</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Setting the Sonarqube Organization and Uri</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">ENV SONAR_ORG &#34;karlospn&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">ENV SONAR_HOST &#34;https://sonarcloud.io&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Install Java, because the sonarscanner needs it.</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN mkdir /usr/share/man/man1/</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN apt-get update &amp;&amp; apt-get dist-upgrade -y &amp;&amp; apt-get install -y openjdk-11-jre</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Install sonarscanner</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet tool install --global dotnet-sonarscanner --version 5.3.1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Install report generator</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.8.12</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Set the dotnet tools folder in the PATH env variable</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">ENV PATH=&#34;${PATH}:/root/.dotnet/tools&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Start scanner</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet sonarscanner begin \</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">/o:&#34;$SONAR_ORG&#34; \</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">/k:&#34;$SONAR_PRJ_KEY&#34; \</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">/d:sonar.host.url=&#34;$SONAR_HOST&#34; \</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">/d:sonar.login=&#34;$SONAR_TOKEN&#34; \ </span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">/d:sonar.coverageReportPaths=&#34;coverage/SonarQube.xml&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Copy the applications .csproj</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY /src/WebApp/*.csproj ./src/WebApp/</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Restore packages</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet restore &#34;./src/WebApp/WebApp.csproj&#34; -s &#34;https://api.nuget.org/v3/index.json&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Copy everything else</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY . ./</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Build the app</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet build &#34;./src/WebApp/WebApp.csproj&#34; -c Release --no-restore</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Run dotnet test setting the output on the /coverage folder</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet test test/WebApp.Tests/*.csproj --collect:&#34;XPlat Code Coverage&#34; --results-directory ./coverage</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Create the code coverage file in sonarqube format using the cobertura file generated from the dotnet test command</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN reportgenerator &#34;-reports:./coverage/*/coverage.cobertura.xml&#34; &#34;-targetdir:coverage&#34; &#34;-reporttypes:SonarQube&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Publish the app</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet publish src/WebApp/*.csproj -c Release -o /app/publish --no-build --no-restore</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Stop scanner</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet sonarscanner end /d:sonar.login=&#34;$SONAR_TOKEN&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#############</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Stage 2 ##</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#############</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">FROM mcr.microsoft.com/dotnet/aspnet:5.0-buster-slim</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">WORKDIR /app</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY --from=build-env /app/publish .</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">ENTRYPOINT [&#34;dotnet&#34;, &#34;WebApp.dll&#34;]</span>
+</span></span></code></pre></div><hr>
 <p>Now let me explain bit by bit what the Dockerfile is doing.</p>
 <ul>
 <li><strong>Step 1:</strong>  Define which arguments should be passed at runtime and which not.</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">## Arguments for setting the Sonarqube Token and the Project Key</span>
-<span style="color:#ae81ff">ARG SONAR_TOKEN</span>
-<span style="color:#ae81ff">ARG SONAR_PRJ_KEY</span>
-
-<span style="color:#75715e">## Setting the Sonarqube Organization and Uri</span>
-<span style="color:#ae81ff">ENV SONAR_ORG &#34;karlospn&#34;</span>
-<span style="color:#ae81ff">ENV SONAR_HOST &#34;https://sonarcloud.io&#34;</span>
-</code></pre></div><p>The <code>&quot;SONAR_TOKEN&quot;</code> argument contains the SonarQube server credentials, so it should not be hardcoded into the Dockerfile.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e">## Arguments for setting the Sonarqube Token and the Project Key</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">ARG SONAR_TOKEN</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">ARG SONAR_PRJ_KEY</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Setting the Sonarqube Organization and Uri</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">ENV SONAR_ORG &#34;karlospn&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">ENV SONAR_HOST &#34;https://sonarcloud.io&#34;</span>
+</span></span></code></pre></div><p>The <code>&quot;SONAR_TOKEN&quot;</code> argument contains the SonarQube server credentials, so it should not be hardcoded into the Dockerfile.</p>
 <p>The <code>&quot;SONAR_PRJ_KEY</code> argument contains the project key name.</p>
 <p>The <code>&quot;SONAR_ORG&quot;</code> and <code>SONAR_HOST</code> parameters don&rsquo;t contain sensitive data and are not going to change so I can set both of them as environment variables.</p>
 <ul>
 <li><strong>Step 2:</strong> Install Java.</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">## Install Java, because the sonarscanner needs it.</span>
-<span style="color:#ae81ff">RUN mkdir /usr/share/man/man1/</span>
-<span style="color:#ae81ff">RUN apt-get update &amp;&amp; apt-get dist-upgrade -y &amp;&amp; apt-get install -y openjdk-11-jre</span>
-</code></pre></div><p>This is a must, because the sonar scanner won&rsquo;t work without it.</p>
-<p>I&rsquo;m using <code>mcr.microsoft.com/dotnet/sdk:5.0-buster-slim</code> as a base image, this image is based on Debian 10 and if you try to install a Java Runtime Environment package, you' ll get this error:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">Errors were encountered <span style="color:#66d9ef">while</span> processing:
- openjdk-11-jre-headless:amd64
- openjdk-11-jre:amd64
- default-jre
-E: Sub-process /usr/bin/dpkg returned an error code <span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>
-</code></pre></div><p>To fix the issue you need execute the command <code>mkdir -p /usr/share/man/man1</code>. It seems that java packages require that folder to exist. Installing the man package doesn&rsquo;t fix the issue, you need to create the folder manually.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e">## Install Java, because the sonarscanner needs it.</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN mkdir /usr/share/man/man1/</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN apt-get update &amp;&amp; apt-get dist-upgrade -y &amp;&amp; apt-get install -y openjdk-11-jre</span>
+</span></span></code></pre></div><p>This is a must, because the sonar scanner won&rsquo;t work without it.</p>
+<p>I&rsquo;m using <code>mcr.microsoft.com/dotnet/sdk:5.0-buster-slim</code> as a base image, this image is based on Debian 10 and if you try to install a Java Runtime Environment package, you&rsquo; ll get this error:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Errors were encountered <span style="color:#66d9ef">while</span> processing:
+</span></span><span style="display:flex;"><span> openjdk-11-jre-headless:amd64
+</span></span><span style="display:flex;"><span> openjdk-11-jre:amd64
+</span></span><span style="display:flex;"><span> default-jre
+</span></span><span style="display:flex;"><span>E: Sub-process /usr/bin/dpkg returned an error code <span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>
+</span></span></code></pre></div><p>To fix the issue you need execute the command <code>mkdir -p /usr/share/man/man1</code>. It seems that java packages require that folder to exist. Installing the man package doesn&rsquo;t fix the issue, you need to create the folder manually.</p>
 <ul>
 <li><strong>Step 3:</strong> Install <code>dotnet-sonarscanner</code> and <code>dotnet-reportgenerator-globaltool</code></li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">## Install sonarscanner</span>
-<span style="color:#ae81ff">RUN dotnet tool install --global dotnet-sonarscanner --version 5.3.1</span>
-
-<span style="color:#75715e">## Install report generator</span>
-<span style="color:#ae81ff">RUN dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.8.12</span>
-
-<span style="color:#75715e">## Set the dotnet tools folder in the PATH env variable</span>
-<span style="color:#ae81ff">ENV PATH=&#34;${PATH}:/root/.dotnet/tools&#34;</span>
-</code></pre></div><p>The <code>dotnet-sonarscanner</code> global tool is the recommended way to launch an analysis for projects using the dotnet command line as a build tool.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e">## Install sonarscanner</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet tool install --global dotnet-sonarscanner --version 5.3.1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Install report generator</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.8.12</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Set the dotnet tools folder in the PATH env variable</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">ENV PATH=&#34;${PATH}:/root/.dotnet/tools&#34;</span>
+</span></span></code></pre></div><p>The <code>dotnet-sonarscanner</code> global tool is the recommended way to launch an analysis for projects using the dotnet command line as a build tool.</p>
 <p>The <code>dotnet-reportgenerator-globaltool</code>  global tool converts coverage reports generated by coverlet, OpenCover, dotCover, Visual Studio, NCover, Cobertura, JaCoCo, Clover, gcov or lcov into another formats, and one of this formats is the SonarQube format.</p>
 <ul>
 <li><strong>Step 4:</strong>  Start Sonar Scanner.</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">## Start scanner</span>
-<span style="color:#ae81ff">RUN dotnet sonarscanner begin \</span>
-        <span style="color:#ae81ff">/o:&#34;$SONAR_ORG&#34; \</span>
-        <span style="color:#ae81ff">/k:&#34;$SONAR_PRJ_KEY&#34; \</span>
-        <span style="color:#ae81ff">/d:sonar.host.url=&#34;$SONAR_HOST&#34; \</span>
-        <span style="color:#ae81ff">/d:sonar.login=&#34;$SONAR_TOKEN&#34; \ </span>
-        <span style="color:#ae81ff">/d:sonar.coverageReportPaths=&#34;coverage/SonarQube.xml&#34;</span>
-</code></pre></div><p>The <code>coverageReportPaths</code> attribute needs to point to the code coverage report. <em>(More info on Step 6)</em></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e">## Start scanner</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet sonarscanner begin \</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">/o:&#34;$SONAR_ORG&#34; \</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">/k:&#34;$SONAR_PRJ_KEY&#34; \</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">/d:sonar.host.url=&#34;$SONAR_HOST&#34; \</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">/d:sonar.login=&#34;$SONAR_TOKEN&#34; \ </span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">/d:sonar.coverageReportPaths=&#34;coverage/SonarQube.xml&#34;</span>
+</span></span></code></pre></div><p>The <code>coverageReportPaths</code> attribute needs to point to the code coverage report. <em>(More info on Step 6)</em></p>
 <ul>
 <li><strong>Step 5:</strong>  Copy the <code>.csproj</code> files, restore, build and run the tests.</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">## Copy the applications .csproj</span>
-<span style="color:#ae81ff">COPY /src/WebApp/*.csproj ./src/WebApp/</span>
-
-<span style="color:#75715e">## Restore packages</span>
-<span style="color:#ae81ff">RUN dotnet restore &#34;./src/WebApp/WebApp.csproj&#34; -s &#34;https://api.nuget.org/v3/index.json&#34;</span>
-
-<span style="color:#75715e">## Copy everything else</span>
-<span style="color:#ae81ff">COPY . ./</span>
-
-<span style="color:#75715e">## Build the app</span>
-<span style="color:#ae81ff">RUN dotnet build &#34;./src/WebApp/WebApp.csproj&#34; -c Release --no-restore</span>
-
-<span style="color:#75715e">## Run dotnet test setting the output on the /coverage folder</span>
-<span style="color:#ae81ff">RUN dotnet test test/WebApp.Tests/*.csproj --collect:&#34;XPlat Code Coverage&#34; --results-directory ./coverage</span>
-</code></pre></div><p>When running the  <code>dotnet test</code> command you need to specify the &ldquo;XPlat Code Coverage&rdquo; argument, this argument is a friendly name that enables the Coverlet data collector and it will output a <code>coverage.cobertura.xml</code> file in the <code>results-directory</code> folder.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e">## Copy the applications .csproj</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY /src/WebApp/*.csproj ./src/WebApp/</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Restore packages</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet restore &#34;./src/WebApp/WebApp.csproj&#34; -s &#34;https://api.nuget.org/v3/index.json&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Copy everything else</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY . ./</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Build the app</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet build &#34;./src/WebApp/WebApp.csproj&#34; -c Release --no-restore</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Run dotnet test setting the output on the /coverage folder</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet test test/WebApp.Tests/*.csproj --collect:&#34;XPlat Code Coverage&#34; --results-directory ./coverage</span>
+</span></span></code></pre></div><p>When running the  <code>dotnet test</code> command you need to specify the &ldquo;XPlat Code Coverage&rdquo; argument, this argument is a friendly name that enables the Coverlet data collector and it will output a <code>coverage.cobertura.xml</code> file in the <code>results-directory</code> folder.</p>
 <p>As an alternative, you could use the MSBuild package if your build system already makes use of MSBuild. In this case you need run the tests using the <code>dotnet test/WebApp.Tests/*.csproj /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura</code>  command</p>
 <ul>
 <li><strong>Step 6:</strong> Generate the code coverage report in a format compatible for SonarQube.</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">## Create the code coverage file in sonarqube format using the cobertura file generated from the dotnet test command</span>
-<span style="color:#ae81ff">RUN reportgenerator &#34;-reports:./coverage/*/coverage.cobertura.xml&#34; &#34;-targetdir:coverage&#34; &#34;-reporttypes:SonarQube&#34;</span>
-</code></pre></div><p>The code coverage file generated by the <code>dotnet test</code> command is not compatible with SonarQube, with the report generator tool we&rsquo;re converting the Coverlet code coverage report into a compatible SonarQube report.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e">## Create the code coverage file in sonarqube format using the cobertura file generated from the dotnet test command</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN reportgenerator &#34;-reports:./coverage/*/coverage.cobertura.xml&#34; &#34;-targetdir:coverage&#34; &#34;-reporttypes:SonarQube&#34;</span>
+</span></span></code></pre></div><p>The code coverage file generated by the <code>dotnet test</code> command is not compatible with SonarQube, with the report generator tool we&rsquo;re converting the Coverlet code coverage report into a compatible SonarQube report.</p>
 <p>The <code>targetdir</code> attribute specifies the folder where the resulting report will be placed.</p>
 <ul>
 <li><strong>Step 7:</strong> Publish the application and stop the SonarQube scanner</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">## Publish the app</span>
-RUN dotnet publish src/WebApp/*.csproj -c Release -o /app/publish --no-build --no-restore
-
-<span style="color:#75715e">## Stop scanner</span>
-RUN dotnet sonarscanner end /d:sonar.login<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$SONAR_TOKEN<span style="color:#e6db74">&#34;</span>
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">## Publish the app</span>
+</span></span><span style="display:flex;"><span>RUN dotnet publish src/WebApp/*.csproj -c Release -o /app/publish --no-build --no-restore
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Stop scanner</span>
+</span></span><span style="display:flex;"><span>RUN dotnet sonarscanner end /d:sonar.login<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$SONAR_TOKEN<span style="color:#e6db74">&#34;</span>
+</span></span></code></pre></div><ul>
 <li><strong>Step 8:</strong> Get the artifact from the stage 1 and execute the run command.</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#############</span>
-<span style="color:#75715e">## Stage 2 ##</span>
-<span style="color:#75715e">#############</span>
-FROM mcr.microsoft.com/dotnet/aspnet:5.0-buster-slim
-WORKDIR /app
-COPY --from<span style="color:#f92672">=</span>build-env /app/publish .
-ENTRYPOINT <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;dotnet&#34;</span>, <span style="color:#e6db74">&#34;WebApp.dll&#34;</span><span style="color:#f92672">]</span>
-</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#############</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Stage 2 ##</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#############</span>
+</span></span><span style="display:flex;"><span>FROM mcr.microsoft.com/dotnet/aspnet:5.0-buster-slim
+</span></span><span style="display:flex;"><span>WORKDIR /app
+</span></span><span style="display:flex;"><span>COPY --from<span style="color:#f92672">=</span>build-env /app/publish .
+</span></span><span style="display:flex;"><span>ENTRYPOINT <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;dotnet&#34;</span>, <span style="color:#e6db74">&#34;WebApp.dll&#34;</span><span style="color:#f92672">]</span>
+</span></span></code></pre></div>
     </div>
     
       

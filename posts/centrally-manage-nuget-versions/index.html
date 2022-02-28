@@ -174,39 +174,36 @@ MSBuild 15.0 introduced the concept of the <em>&ldquo;project SDK&rdquo;</em>, w
 </ul>
 </blockquote>
 <p>To get started, you need to create an MSBuild project at the root of your solution named <em>&ldquo;Packages.props&rdquo;</em> that declares the version of the packages you&rsquo;re going to use.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">
-&lt;?xml version=<span style="color:#e6db74">&#34;1.0&#34;</span> encoding=<span style="color:#e6db74">&#34;utf-8&#34;</span>?&gt;
-&lt;Project xmlns=<span style="color:#e6db74">&#34;http://schemas.microsoft.com/developer/msbuild/2003&#34;</span>&gt;  
-  &lt;ItemGroup Label=<span style="color:#e6db74">&#34;Microsoft Nugets&#34;</span>&gt;
-    &lt;PackageReference Update=<span style="color:#e6db74">&#34;Microsoft.Extensions.Configuration&#34;</span> Version=<span style="color:#e6db74">&#34;2.1.1&#34;</span> /&gt;
-    &lt;PackageReference Update=<span style="color:#e6db74">&#34;Microsoft.Extensions.DependencyInjection.Abstractions&#34;</span> Version=<span style="color:#e6db74">&#34;2.1.1&#34;</span> /&gt;
-    &lt;PackageReference Update=<span style="color:#e6db74">&#34;Microsoft.Extensions.Http&#34;</span> Version=<span style="color:#e6db74">&#34;2.1.1&#34;</span> /&gt;
-    &lt;PackageReference Update=<span style="color:#e6db74">&#34;Microsoft.Extensions.Options.ConfigurationExtensions&#34;</span> Version=<span style="color:#e6db74">&#34;2.1.1&#34;</span> /&gt;
-    &lt;PackageReference Update=<span style="color:#e6db74">&#34;Microsoft.Extensions.Http.Polly&#34;</span> Version=<span style="color:#e6db74">&#34;2.1.1&#34;</span> /&gt;
-  &lt;/ItemGroup&gt;
-&lt;/Project&gt;
-
-</code></pre></div><p>In each project (csproj) you must add the Sdk and also you must add the packages you&rsquo;re going to use but without specifying the versions.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">&lt;Project Sdk=<span style="color:#e6db74">&#34;Microsoft.NET.Sdk&#34;</span>&gt;
-  &lt;Sdk Name=<span style="color:#e6db74">&#34;Microsoft.Build.CentralPackageVersions&#34;</span> Version=<span style="color:#e6db74">&#34;2.0.1&#34;</span> /&gt;
-  
-  &lt;PropertyGroup&gt;
-    &lt;TargetFramework&gt;netstandard2.<span style="color:#ae81ff">0</span>&lt;/TargetFramework&gt;
-  &lt;/PropertyGroup&gt;
-
-  &lt;ItemGroup&gt;
-    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.Configuration&#34;</span> /&gt;
-    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.DependencyInjection.Abstractions&#34;</span> /&gt;
-    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.Http&#34;</span> /&gt;
-    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.Options.ConfigurationExtensions&#34;</span> /&gt;
-    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.Http.Polly&#34;</span> /&gt;
-  &lt;/ItemGroup&gt;
-&lt;/Project&gt;
-
-</code></pre></div><p>If someone attempts to add a version inside a csproj, he will get a build error:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">The package reference <span style="color:#960050;background-color:#1e0010">&#39;</span>Microsoft.Extensions.Configuration<span style="color:#960050;background-color:#1e0010">&#39;</span> should not specify a version.  Please specify the version <span style="color:#66d9ef">in</span> <span style="color:#960050;background-color:#1e0010">&#39;</span>C:<span style="color:#960050;background-color:#1e0010">\</span>git<span style="color:#960050;background-color:#1e0010">\</span>mysolution<span style="color:#960050;background-color:#1e0010">\</span>Packages.props<span style="color:#960050;background-color:#1e0010">&#39;</span> or <span style="color:#66d9ef">set</span> VersionOverride to <span style="color:#66d9ef">override</span> the centrally defined version.
-
-</code></pre></div><p>I have very few complaints about that solution and that&rsquo;s what I&rsquo;m using nowadays in most of my projects.   <br>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;?xml version=<span style="color:#e6db74">&#34;1.0&#34;</span> encoding=<span style="color:#e6db74">&#34;utf-8&#34;</span>?&gt;
+</span></span><span style="display:flex;"><span>&lt;Project xmlns=<span style="color:#e6db74">&#34;http://schemas.microsoft.com/developer/msbuild/2003&#34;</span>&gt;  
+</span></span><span style="display:flex;"><span>  &lt;ItemGroup Label=<span style="color:#e6db74">&#34;Microsoft Nugets&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;PackageReference Update=<span style="color:#e6db74">&#34;Microsoft.Extensions.Configuration&#34;</span> Version=<span style="color:#e6db74">&#34;2.1.1&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>    &lt;PackageReference Update=<span style="color:#e6db74">&#34;Microsoft.Extensions.DependencyInjection.Abstractions&#34;</span> Version=<span style="color:#e6db74">&#34;2.1.1&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>    &lt;PackageReference Update=<span style="color:#e6db74">&#34;Microsoft.Extensions.Http&#34;</span> Version=<span style="color:#e6db74">&#34;2.1.1&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>    &lt;PackageReference Update=<span style="color:#e6db74">&#34;Microsoft.Extensions.Options.ConfigurationExtensions&#34;</span> Version=<span style="color:#e6db74">&#34;2.1.1&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>    &lt;PackageReference Update=<span style="color:#e6db74">&#34;Microsoft.Extensions.Http.Polly&#34;</span> Version=<span style="color:#e6db74">&#34;2.1.1&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>  &lt;/ItemGroup&gt;
+</span></span><span style="display:flex;"><span>&lt;/Project&gt;
+</span></span></code></pre></div><p>In each project (csproj) you must add the Sdk and also you must add the packages you&rsquo;re going to use but without specifying the versions.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>&lt;Project Sdk=<span style="color:#e6db74">&#34;Microsoft.NET.Sdk&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;Sdk Name=<span style="color:#e6db74">&#34;Microsoft.Build.CentralPackageVersions&#34;</span> Version=<span style="color:#e6db74">&#34;2.0.1&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  &lt;PropertyGroup&gt;
+</span></span><span style="display:flex;"><span>    &lt;TargetFramework&gt;netstandard2.<span style="color:#ae81ff">0</span>&lt;/TargetFramework&gt;
+</span></span><span style="display:flex;"><span>  &lt;/PropertyGroup&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  &lt;ItemGroup&gt;
+</span></span><span style="display:flex;"><span>    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.Configuration&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.DependencyInjection.Abstractions&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.Http&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.Options.ConfigurationExtensions&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.Http.Polly&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>  &lt;/ItemGroup&gt;
+</span></span><span style="display:flex;"><span>&lt;/Project&gt;
+</span></span></code></pre></div><p>If someone attempts to add a version inside a csproj, he will get a build error:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>The package reference <span style="color:#960050;background-color:#1e0010">&#39;</span>Microsoft.Extensions.Configuration<span style="color:#960050;background-color:#1e0010">&#39;</span> should not specify a version.  Please specify the version <span style="color:#66d9ef">in</span> <span style="color:#960050;background-color:#1e0010">&#39;</span>C:<span style="color:#960050;background-color:#1e0010">\</span>git<span style="color:#960050;background-color:#1e0010">\</span>mysolution<span style="color:#960050;background-color:#1e0010">\</span>Packages.props<span style="color:#960050;background-color:#1e0010">&#39;</span> or <span style="color:#66d9ef">set</span> VersionOverride to <span style="color:#66d9ef">override</span> the centrally defined version.
+</span></span></code></pre></div><p>I have very few complaints about that solution and that&rsquo;s what I&rsquo;m using nowadays in most of my projects.   <br>
 The only &ldquo;minor&rdquo; issue I have found is when trying to add or update a nuget package using the dotnet CLI or the Visual Studio Package Manager.<br>
 Visual Studio Package Manager is capable of showing me which nuget version is using every csproj but when I try to update or add a new package using the Package Manager it installs the nuget into the target csproj instead of the props file.</p>
 <p>The same behaviour happens if you try to add a nuget using the dotnet CLI.</p>
@@ -220,65 +217,61 @@ When MSBuild runs, <strong>Microsoft.Common.props</strong> searches your directo
 <p>If you want to know more about <strong>Directory.Build.Targets</strong> and <strong>Directory.Build.props</strong>, read here: <a href="https://docs.microsoft.com/en-us/visualstudio/msbuild/customize-your-build?view=vs-2017">https://docs.microsoft.com/en-us/visualstudio/msbuild/customize-your-build?view=vs-2017</a></p>
 </blockquote>
 <p>To get started, you need to create a file named <strong>Directory.Build.targets</strong> at the root of your solution that declares which packages and which version you&rsquo;re going to use.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">
-&lt;Project&gt;
-  &lt;ItemGroup&gt;
-    &lt;PackageReference Update=<span style="color:#e6db74">&#34;Microsoft.Extensions.Configuration&#34;</span> Version=<span style="color:#e6db74">&#34;2.1.1&#34;</span> /&gt;
-    &lt;PackageReference Update=<span style="color:#e6db74">&#34;Microsoft.Extensions.DependencyInjection.Abstractions&#34;</span> Version=<span style="color:#e6db74">&#34;2.1.1&#34;</span>/&gt;
-    &lt;PackageReference Update=<span style="color:#e6db74">&#34;Microsoft.Extensions.Http&#34;</span> Version=<span style="color:#e6db74">&#34;2.1.1&#34;</span>/&gt;
-    &lt;PackageReference Update=<span style="color:#e6db74">&#34;Microsoft.Extensions.Options.ConfigurationExtensions&#34;</span> Version=<span style="color:#e6db74">&#34;2.1.1&#34;</span>/&gt;
-    &lt;PackageReference Update=<span style="color:#e6db74">&#34;Microsoft.Extensions.Http.Polly&#34;</span> Version=<span style="color:#e6db74">&#34;2.1.1&#34;</span>/&gt;
-  &lt;/ItemGroup&gt;
-&lt;/Project&gt;
-
-</code></pre></div><p>In each project (csproj) you must add the packages you&rsquo;re going to use but without specifying the versions.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">&lt;Project Sdk=<span style="color:#e6db74">&#34;Microsoft.NET.Sdk&#34;</span>&gt;
-  
-  &lt;PropertyGroup&gt;
-    &lt;TargetFramework&gt;netstandard2.<span style="color:#ae81ff">0</span>&lt;/TargetFramework&gt;
-  &lt;/PropertyGroup&gt;
-
-  &lt;ItemGroup&gt;
-    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.Configuration&#34;</span> /&gt;
-    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.DependencyInjection.Abstractions&#34;</span> /&gt;
-    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.Http&#34;</span> /&gt;
-    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.Options.ConfigurationExtensions&#34;</span> /&gt;
-    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.Http.Polly&#34;</span> /&gt;
-  &lt;/ItemGroup&gt;
-&lt;/Project&gt;
-
-</code></pre></div><p>As you can see both option 1 and option 2 seems almost identical, even shares the same issue  when you try to use the .targets file in conjunction with the Visual Studio Package Manager or dotnet CLI.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;Project&gt;
+</span></span><span style="display:flex;"><span>  &lt;ItemGroup&gt;
+</span></span><span style="display:flex;"><span>    &lt;PackageReference Update=<span style="color:#e6db74">&#34;Microsoft.Extensions.Configuration&#34;</span> Version=<span style="color:#e6db74">&#34;2.1.1&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>    &lt;PackageReference Update=<span style="color:#e6db74">&#34;Microsoft.Extensions.DependencyInjection.Abstractions&#34;</span> Version=<span style="color:#e6db74">&#34;2.1.1&#34;</span>/&gt;
+</span></span><span style="display:flex;"><span>    &lt;PackageReference Update=<span style="color:#e6db74">&#34;Microsoft.Extensions.Http&#34;</span> Version=<span style="color:#e6db74">&#34;2.1.1&#34;</span>/&gt;
+</span></span><span style="display:flex;"><span>    &lt;PackageReference Update=<span style="color:#e6db74">&#34;Microsoft.Extensions.Options.ConfigurationExtensions&#34;</span> Version=<span style="color:#e6db74">&#34;2.1.1&#34;</span>/&gt;
+</span></span><span style="display:flex;"><span>    &lt;PackageReference Update=<span style="color:#e6db74">&#34;Microsoft.Extensions.Http.Polly&#34;</span> Version=<span style="color:#e6db74">&#34;2.1.1&#34;</span>/&gt;
+</span></span><span style="display:flex;"><span>  &lt;/ItemGroup&gt;
+</span></span><span style="display:flex;"><span>&lt;/Project&gt;
+</span></span></code></pre></div><p>In each project (csproj) you must add the packages you&rsquo;re going to use but without specifying the versions.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>&lt;Project Sdk=<span style="color:#e6db74">&#34;Microsoft.NET.Sdk&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  &lt;PropertyGroup&gt;
+</span></span><span style="display:flex;"><span>    &lt;TargetFramework&gt;netstandard2.<span style="color:#ae81ff">0</span>&lt;/TargetFramework&gt;
+</span></span><span style="display:flex;"><span>  &lt;/PropertyGroup&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  &lt;ItemGroup&gt;
+</span></span><span style="display:flex;"><span>    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.Configuration&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.DependencyInjection.Abstractions&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.Http&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.Options.ConfigurationExtensions&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.Http.Polly&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>  &lt;/ItemGroup&gt;
+</span></span><span style="display:flex;"><span>&lt;/Project&gt;
+</span></span></code></pre></div><p>As you can see both option 1 and option 2 seems almost identical, even shares the same issue  when you try to use the .targets file in conjunction with the Visual Studio Package Manager or dotnet CLI.</p>
 <p>Nonetheless I prefer using the CentralPackageVersions SDK project because you have nuget validations out-of-the-box. If someone tries to add the version of a package in the csproj file instead of the .targets file the compilation won&rsquo;t throw an error.</p>
 <h1 id="option-3---using-the-managepackageversionscentrally-project-attribute-and-the-directorypackagesprops-file">Option 3 - Using the ManagePackageVersionsCentrally project attribute and the Directory.Packages.props file</h1>
 <p>That&rsquo;s the most recent iteration about how to manage centrally nuget package versions.</p>
 <p>It works almost exactly the same way as option 1 and option 2. You have to create a <strong>Directory.Packages.props</strong>  file at the root of the solution where you define the packages versions.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">
-&lt;Project&gt;
-  &lt;ItemGroup&gt;
-    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.Configuration&#34;</span> Version=<span style="color:#e6db74">&#34;2.1.1&#34;</span> /&gt;
-    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.DependencyInjection.Abstractions&#34;</span> Version=<span style="color:#e6db74">&#34;2.1.1&#34;</span>/&gt;
-    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.Http&#34;</span> Version=<span style="color:#e6db74">&#34;2.1.1&#34;</span>/&gt;
-    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.Options.ConfigurationExtensions&#34;</span> Version=<span style="color:#e6db74">&#34;2.1.1&#34;</span>/&gt;
-    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.Http.Polly&#34;</span> Version=<span style="color:#e6db74">&#34;2.1.1&#34;</span>/&gt;
-  &lt;/ItemGroup&gt;
-&lt;/Project&gt;
-
-</code></pre></div><p>In each project (csproj) you must add the packages you&rsquo;re going to use but without specifying the nuget versions. Also you need to add the attribute <strong><em>&ldquo;ManagePackageVersionsCentrally&rdquo;</em></strong></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">&lt;Project Sdk=<span style="color:#e6db74">&#34;Microsoft.NET.Sdk&#34;</span>&gt;
-  &lt;PropertyGroup&gt;
-    &lt;TargetFramework&gt;netstandard2.<span style="color:#ae81ff">0</span>&lt;/TargetFramework&gt;
-    &lt;ManagePackageVersionsCentrally&gt;<span style="color:#66d9ef">true</span>&lt;/ManagePackageVersionsCentrally&gt;
-  &lt;/PropertyGroup&gt;
-  &lt;ItemGroup&gt;
-    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.Configuration&#34;</span> /&gt;
-    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.DependencyInjection.Abstractions&#34;</span> /&gt;
-    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.Http&#34;</span> /&gt;
-    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.Options.ConfigurationExtensions&#34;</span> /&gt;
-    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.Http.Polly&#34;</span> /&gt;
-  &lt;/ItemGroup&gt;
-&lt;/Project&gt;
-
-</code></pre></div><p>When I tried that feature in my machine at first it didn&rsquo;t work, that&rsquo;s because the feature seems to be still <strong>in preview</strong> and you need to use <strong>.NET Core SDK 3.1.300</strong> and <strong>VS 2019.6</strong> (<a href="https://github.com/NuGet/Home/issues/6764">https://github.com/NuGet/Home/issues/6764</a>)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;Project&gt;
+</span></span><span style="display:flex;"><span>  &lt;ItemGroup&gt;
+</span></span><span style="display:flex;"><span>    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.Configuration&#34;</span> Version=<span style="color:#e6db74">&#34;2.1.1&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.DependencyInjection.Abstractions&#34;</span> Version=<span style="color:#e6db74">&#34;2.1.1&#34;</span>/&gt;
+</span></span><span style="display:flex;"><span>    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.Http&#34;</span> Version=<span style="color:#e6db74">&#34;2.1.1&#34;</span>/&gt;
+</span></span><span style="display:flex;"><span>    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.Options.ConfigurationExtensions&#34;</span> Version=<span style="color:#e6db74">&#34;2.1.1&#34;</span>/&gt;
+</span></span><span style="display:flex;"><span>    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.Http.Polly&#34;</span> Version=<span style="color:#e6db74">&#34;2.1.1&#34;</span>/&gt;
+</span></span><span style="display:flex;"><span>  &lt;/ItemGroup&gt;
+</span></span><span style="display:flex;"><span>&lt;/Project&gt;
+</span></span></code></pre></div><p>In each project (csproj) you must add the packages you&rsquo;re going to use but without specifying the nuget versions. Also you need to add the attribute <strong><em>&ldquo;ManagePackageVersionsCentrally&rdquo;</em></strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>&lt;Project Sdk=<span style="color:#e6db74">&#34;Microsoft.NET.Sdk&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;PropertyGroup&gt;
+</span></span><span style="display:flex;"><span>    &lt;TargetFramework&gt;netstandard2.<span style="color:#ae81ff">0</span>&lt;/TargetFramework&gt;
+</span></span><span style="display:flex;"><span>    &lt;ManagePackageVersionsCentrally&gt;<span style="color:#66d9ef">true</span>&lt;/ManagePackageVersionsCentrally&gt;
+</span></span><span style="display:flex;"><span>  &lt;/PropertyGroup&gt;
+</span></span><span style="display:flex;"><span>  &lt;ItemGroup&gt;
+</span></span><span style="display:flex;"><span>    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.Configuration&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.DependencyInjection.Abstractions&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.Http&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.Options.ConfigurationExtensions&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>    &lt;PackageReference Include=<span style="color:#e6db74">&#34;Microsoft.Extensions.Http.Polly&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>  &lt;/ItemGroup&gt;
+</span></span><span style="display:flex;"><span>&lt;/Project&gt;
+</span></span></code></pre></div><p>When I tried that feature in my machine at first it didn&rsquo;t work, that&rsquo;s because the feature seems to be still <strong>in preview</strong> and you need to use <strong>.NET Core SDK 3.1.300</strong> and <strong>VS 2019.6</strong> (<a href="https://github.com/NuGet/Home/issues/6764">https://github.com/NuGet/Home/issues/6764</a>)</p>
 <p>Reading through the documentation (<a href="https://github.com/NuGet/Home/wiki/Centrally-managing-NuGet-package-versions">https://github.com/NuGet/Home/wiki/Centrally-managing-NuGet-package-versions</a>) I can see that they are planning to <strong>add support with Visual Studio Package Manager and also dotnet CLI</strong>, but as of today it still doesn&rsquo;t work.</p>
 <h1 id="option-4---using-visual-studio-package-manager">Option 4 - Using Visual Studio Package Manager</h1>
 <p>That&rsquo;s the most simple option. If you&rsquo;re using Visual Studio you&rsquo;re good to go.

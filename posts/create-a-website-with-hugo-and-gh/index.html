@@ -176,40 +176,40 @@ After doing a little of research about what options are available nowadays I fou
 <p>Chocolatey it&rsquo;s just a package manager for Windows if you are interested in learning more about check it out its website:  <a href="https://chocolatey.org/">https://chocolatey.org/</a></p>
 </blockquote>
 <p>You can install Hugo with the following one-liner:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">choco install hugo -confirm
-</code></pre></div><p>If you use another OS just check out the official docs about how to install it:<br>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>choco install hugo -confirm
+</span></span></code></pre></div><p>If you use another OS just check out the official docs about how to install it:<br>
 <a href="https://gohugo.io/getting-started/installing/">https://gohugo.io/getting-started/installing/</a></p>
 <p>After you install Hugo, you can use it via the command line, just type <em>hugo -help</em> to list all the options available.</p>
 <h2 id="create-a-new-site">Create a new site</h2>
 <p>We are going to create a new Hugo site in a folder named <strong>dotnetramblings</strong>.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">hugo new site dotnetramblings
-</code></pre></div><h2 id="add-a-theme">Add a theme</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>hugo new site dotnetramblings
+</span></span></code></pre></div><h2 id="add-a-theme">Add a theme</h2>
 <p>Next step is to style our site.<br>
 We choose an existing theme from the website: <a href="https://themes.gohugo.io/">https://themes.gohugo.io/</a> <br>
 I pick the <strong>hello-friend</strong> theme and add it into the project as a submodule. You have to place the submodule in the themes folder.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cd dotnetramblings
-git submodule add https://github.com/panr/hugo-theme-hello-friend.git themes/hello-friend
-</code></pre></div><p>You can see how your website currently looks by typing:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">hugo server -D
-</code></pre></div><h2 id="create-a-github-repository-and-modify-the-configtoml-file">Create a GitHub repository and modify the config.toml file</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cd dotnetramblings
+</span></span><span style="display:flex;"><span>git submodule add https://github.com/panr/hugo-theme-hello-friend.git themes/hello-friend
+</span></span></code></pre></div><p>You can see how your website currently looks by typing:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>hugo server -D
+</span></span></code></pre></div><h2 id="create-a-github-repository-and-modify-the-configtoml-file">Create a GitHub repository and modify the config.toml file</h2>
 <p>Go to GitHub and create a new repository.<br>
 In my case I&rsquo;m going to create the repository <strong>dotnetramblings</strong>.</p>
 <p>Once the repository is created you <strong>HAVE</strong> to modify the config.toml file found on the root directory of your site. You need to modify the baseUrl property to point to your GitHub Page.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml"><span style="color:#a6e22e">baseurl</span> = <span style="color:#e6db74">&#34;https://myuser.github.io/dotnetramblings/&#34;</span>
-</code></pre></div><h2 id="build-your-site">Build your site</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-toml" data-lang="toml"><span style="display:flex;"><span><span style="color:#a6e22e">baseurl</span> = <span style="color:#e6db74">&#34;https://myuser.github.io/dotnetramblings/&#34;</span>
+</span></span></code></pre></div><h2 id="build-your-site">Build your site</h2>
 <p>If you want you can tweak the theme options until you&rsquo;re satisfied with it, after that the next step is to build the site.<br>
 We execute:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">hugo
-</code></pre></div><p>The output of the build will be put in the <strong>./public/</strong> directory. The public directory is what we are going to publish into GitHub.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>hugo
+</span></span></code></pre></div><p>The output of the build will be put in the <strong>./public/</strong> directory. The public directory is what we are going to publish into GitHub.</p>
 <h2 id="push-your-code-into-github">Push your code into GitHub</h2>
 <p>It&rsquo;s time to upload the contents of the <strong>./public</strong> directory into the GitHub repository.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cd dotnetramblings/public
-git init
-git remote add origin https://github.com/myuser/dotnetramblings.git
-git add .
-git commit -m <span style="color:#e6db74">&#34;Initial commit&#34;</span>
-git push --set-upstream origin master
-</code></pre></div><p>After pushing the code into GitHub you still need to modify the Repository settings.<br>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cd dotnetramblings/public
+</span></span><span style="display:flex;"><span>git init
+</span></span><span style="display:flex;"><span>git remote add origin https://github.com/myuser/dotnetramblings.git
+</span></span><span style="display:flex;"><span>git add .
+</span></span><span style="display:flex;"><span>git commit -m <span style="color:#e6db74">&#34;Initial commit&#34;</span>
+</span></span><span style="display:flex;"><span>git push --set-upstream origin master
+</span></span></code></pre></div><p>After pushing the code into GitHub you still need to modify the Repository settings.<br>
 Change the setting found in: <strong>Settings &gt; Options &gt; GitHub pages &gt; Source</strong>  to <strong>&ldquo;master branch&rdquo;</strong></p>
 <h2 id="test-your-webpage">Test your webpage</h2>
 <p>Just wait a couple of minutes for the page to refresh and browse to: <a href="https://myuser.github.io/dotnetramblings">https://myuser.github.io/dotnetramblings</a> and you will see your website up and running.</p>
@@ -226,50 +226,48 @@ Change the setting found in: <strong>Settings &gt; Options &gt; GitHub pages &gt
 </ul>
 <p>First of all I&rsquo;m creating a .gitignore file because I don&rsquo;t want to push the <strong>./public</strong> folder into GitHub. Remember that the <strong>public</strong> folder contains the output of the Hugo build.<br>
 After that I push everything into the <strong>dotnetrambligs_source</strong> repository.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cd dotnetramblings
-echo <span style="color:#e6db74">&#34;public/&#34;</span> &gt;&gt; .gitignore
-git init
-git remote add origin https://github.com/myuser/dotnetramblings_source.git
-git add .
-git commit -m <span style="color:#e6db74">&#34;Add site files&#34;</span>
-git push --set-upstream origin master
-
-</code></pre></div><p>The last step is to build a GitHub Action.<br>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cd dotnetramblings
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;public/&#34;</span> &gt;&gt; .gitignore
+</span></span><span style="display:flex;"><span>git init
+</span></span><span style="display:flex;"><span>git remote add origin https://github.com/myuser/dotnetramblings_source.git
+</span></span><span style="display:flex;"><span>git add .
+</span></span><span style="display:flex;"><span>git commit -m <span style="color:#e6db74">&#34;Add site files&#34;</span>
+</span></span><span style="display:flex;"><span>git push --set-upstream origin master
+</span></span></code></pre></div><p>The last step is to build a GitHub Action.<br>
 The GitHub Action is going to grab the content from the <strong>dotnetramblings_source</strong> repository, build it using Hugo and push the output into the <strong>dotnetramblings</strong> repository.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">
-<span style="color:#f92672">name</span>: <span style="color:#ae81ff">hugo CI</span>
-
-<span style="color:#f92672">on</span>:
-  <span style="color:#f92672">push</span>:
-    <span style="color:#f92672">branches</span>: [ <span style="color:#ae81ff">master ]</span>
-
-<span style="color:#f92672">jobs</span>:
-  <span style="color:#f92672">build</span>:
-    <span style="color:#f92672">runs-on</span>: <span style="color:#ae81ff">ubuntu-latest</span>
-
-    <span style="color:#f92672">steps</span>:
-      - <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">actions/checkout@v2</span>
-        <span style="color:#f92672">with</span>:
-          <span style="color:#f92672">submodules</span>: <span style="color:#66d9ef">true</span> 
-          <span style="color:#f92672">fetch-depth</span>: <span style="color:#ae81ff">1</span>   
-
-      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Setup Hugo</span>
-        <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">peaceiris/actions-hugo@v2</span>
-        <span style="color:#f92672">with</span>:
-          <span style="color:#f92672">hugo-version</span>: <span style="color:#e6db74">&#39;latest&#39;</span>
-
-      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Build</span>
-        <span style="color:#f92672">run</span>: <span style="color:#ae81ff">hugo</span>
-
-      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Deploy</span>
-        <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">peaceiris/actions-gh-pages@v3</span>
-        <span style="color:#f92672">with</span>:
-          <span style="color:#f92672">personal_token</span>: <span style="color:#ae81ff">${{ secrets.PERSONAL_TOKEN }}</span>
-          <span style="color:#f92672">external_repository</span>: <span style="color:#ae81ff">myuser/dotnetramblings</span>
-          <span style="color:#f92672">publish_branch</span>: <span style="color:#ae81ff">master</span>
-          <span style="color:#f92672">publish_dir</span>: <span style="color:#ae81ff">./public</span>
-
-</code></pre></div><p>And we are good to go! With less than 30 minutes we have achieved:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">name</span>: <span style="color:#ae81ff">hugo CI</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">on</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">push</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">branches</span>: [ <span style="color:#ae81ff">master ]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">jobs</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">build</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">runs-on</span>: <span style="color:#ae81ff">ubuntu-latest</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">steps</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">actions/checkout@v2</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">with</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">submodules</span>: <span style="color:#66d9ef">true</span> 
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">fetch-depth</span>: <span style="color:#ae81ff">1</span>   
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Setup Hugo</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">peaceiris/actions-hugo@v2</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">with</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">hugo-version</span>: <span style="color:#e6db74">&#39;latest&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Build</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">run</span>: <span style="color:#ae81ff">hugo</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Deploy</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">peaceiris/actions-gh-pages@v3</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">with</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">personal_token</span>: <span style="color:#ae81ff">${{ secrets.PERSONAL_TOKEN }}</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">external_repository</span>: <span style="color:#ae81ff">myuser/dotnetramblings</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">publish_branch</span>: <span style="color:#ae81ff">master</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">publish_dir</span>: <span style="color:#ae81ff">./public</span>
+</span></span></code></pre></div><p>And we are good to go! With less than 30 minutes we have achieved:</p>
 <ul>
 <li>A running static website hosted with GitHub Pages on our main repository.</li>
 <li>A secondary repository where we put all the site source code and a pipeline to compile and deploy the site source code into the main repository in an automatic way.</li>

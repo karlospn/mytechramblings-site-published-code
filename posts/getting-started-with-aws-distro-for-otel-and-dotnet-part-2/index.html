@@ -194,18 +194,18 @@ The key part of this demo is that the apps are communicating between them and al
 </ul>
 <h1 id="required-net-packages">Required .NET packages</h1>
 <p>To get started we’re going to need the following packages:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">    <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;OpenTelemetry&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.2.0-rc1&#34;</span> <span style="color:#f92672">/&gt;</span>
-    <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;OpenTelemetry.Exporter.OpenTelemetryProtocol&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.2.0-rc1&#34;</span> <span style="color:#f92672">/&gt;</span>
-    <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;OpenTelemetry.Extensions.Hosting&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.0.0-rc8&#34;</span> <span style="color:#f92672">/&gt;</span>
-    <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;OpenTelemetry.Instrumentation.AspNetCore&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.0.0-rc8&#34;</span> <span style="color:#f92672">/&gt;</span>
-    <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;OpenTelemetry.Instrumentation.Http&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.0.0-rc8&#34;</span> <span style="color:#f92672">/&gt;</span>
-    <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;OpenTelemetry.Contrib.Extensions.AWSXRay&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.1.0&#34;</span> <span style="color:#f92672">/&gt;</span>
-    <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;OpenTelemetry.Contrib.Instrumentation.AWS&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.0.1&#34;</span> <span style="color:#f92672">/&gt;</span>
-    <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;AWSSDK.Extensions.NETCore.Setup&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;3.7.1&#34;</span> <span style="color:#f92672">/&gt;</span>
-    <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;AWSSDK.S3&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;3.7.7.14&#34;</span> <span style="color:#f92672">/&gt;</span>
-    <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;AWSSDK.SQS&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;3.7.2.14&#34;</span> <span style="color:#f92672">/&gt;</span>
-    <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;AWSSDK.DynamoDBv2&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;3.7.2.12&#34;</span> <span style="color:#f92672">/&gt;</span>
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;OpenTelemetry&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.2.0-rc1&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;OpenTelemetry.Exporter.OpenTelemetryProtocol&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.2.0-rc1&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;OpenTelemetry.Extensions.Hosting&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.0.0-rc8&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;OpenTelemetry.Instrumentation.AspNetCore&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.0.0-rc8&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;OpenTelemetry.Instrumentation.Http&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.0.0-rc8&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;OpenTelemetry.Contrib.Extensions.AWSXRay&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.1.0&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;OpenTelemetry.Contrib.Instrumentation.AWS&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.0.1&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;AWSSDK.Extensions.NETCore.Setup&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;3.7.1&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;AWSSDK.S3&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;3.7.7.14&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;AWSSDK.SQS&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;3.7.2.14&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;AWSSDK.DynamoDBv2&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;3.7.2.12&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span></code></pre></div><ul>
 <li>The <code>OpenTelemetry package</code> is the core OTEL library.</li>
 <li>The <code>OpenTelemetry.Exporter.OpenTelemetryProtocol</code> package allows us to export the traces to a gRPC or HTTP compatible endpoint. We will use this package to send the traces to the AWS OTEL Collector.</li>
 <li>The <code>OpenTelemetry.Extensions.Hosting</code> package contains some extensions for the OpenTelemetry client for .NET to integrate with .NET Core configuration and dependency injection frameworks.</li>
@@ -222,21 +222,21 @@ The key part of this demo is that the apps are communicating between them and al
 </ul>
 <h1 id="add-and-configure-opentelemetry-on-app1">Add and configure OpenTelemetry on App1</h1>
 <h3 id="1-setup-the-opentelemetry-library"><strong>1. Setup the OpenTelemetry library</strong></h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">services.AddOpenTelemetryTracing(builder =&gt;
-{
-  builder.AddAspNetCoreInstrumentation()
-      .AddXRayTraceId()
-      .AddHttpClientInstrumentation()
-      .AddSource(nameof(PublishMessageController))
-      .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(<span style="color:#e6db74">&#34;App1&#34;</span>))
-      .AddOtlpExporter(opts =&gt;
-      {
-          opts.Endpoint = <span style="color:#66d9ef">new</span> Uri(Configuration[<span style="color:#e6db74">&#34;Otlp:Endpoint&#34;</span>]);
-      });
-});
-
-Sdk.SetDefaultTextMapPropagator(<span style="color:#66d9ef">new</span> AWSXRayPropagator());
-</code></pre></div><p>As you can see it&rsquo;s a pretty straightforward configuration.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>services.AddOpenTelemetryTracing(builder =&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  builder.AddAspNetCoreInstrumentation()
+</span></span><span style="display:flex;"><span>      .AddXRayTraceId()
+</span></span><span style="display:flex;"><span>      .AddHttpClientInstrumentation()
+</span></span><span style="display:flex;"><span>      .AddSource(nameof(PublishMessageController))
+</span></span><span style="display:flex;"><span>      .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(<span style="color:#e6db74">&#34;App1&#34;</span>))
+</span></span><span style="display:flex;"><span>      .AddOtlpExporter(opts =&gt;
+</span></span><span style="display:flex;"><span>      {
+</span></span><span style="display:flex;"><span>          opts.Endpoint = <span style="color:#66d9ef">new</span> Uri(Configuration[<span style="color:#e6db74">&#34;Otlp:Endpoint&#34;</span>]);
+</span></span><span style="display:flex;"><span>      });
+</span></span><span style="display:flex;"><span>});
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Sdk.SetDefaultTextMapPropagator(<span style="color:#66d9ef">new</span> AWSXRayPropagator());
+</span></span></code></pre></div><p>As you can see it&rsquo;s a pretty straightforward configuration.</p>
 <ul>
 <li>The  <code>AddXRayTraceId()</code> method converts the OTEL trace ID into an AWS X-Ray compliant trace ID, without this method X-Ray is incapable of interpreting the application traces.</li>
 <li>The <code>AddHttpClientInstrumentation()</code> method enables HTTP auto-instrumentation. App1 makes an HTTP request to App2, if we want to trace the HTTP call between these 2 apps we can do it simply by adding this extension method.</li>
@@ -261,115 +261,115 @@ Later in App2 we&rsquo;ll extract the trace information from the message header 
 <p>In the previous section when setting up the OpenTelemetry client for this app we added the following command: <code>Sdk.SetDefaultTextMapPropagator(new AWSXRayPropagator())</code>.<br>
 This method overrides the value of the <code>Propagators.DefaultTextMapPropagator</code> with <code>AWSXRayPropagator</code>.<br>
 So now, we can get an instance of the <code>AWSXRayPropagator</code> propagator like this: <code>var propagator = Propagators.DefaultTextMapPropagator</code></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[ApiController]</span>
-<span style="color:#a6e22e">[Route(&#34;publish-message&#34;)]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PublishMessageController</span> : ControllerBase
-{
-  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> ActivitySource Activity = <span style="color:#66d9ef">new</span>(nameof(PublishMessageController));
-
-  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger&lt;PublishMessageController&gt; <span style="color:#ae81ff">_l</span>ogger;
-  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IConfiguration <span style="color:#ae81ff">_</span>configuration;
-
-  <span style="color:#66d9ef">public</span> PublishMessageController(
-      ILogger&lt;PublishMessageController&gt; logger,
-      IConfiguration configuration)
-  {
-      <span style="color:#ae81ff">_l</span>ogger = logger;
-      <span style="color:#ae81ff">_</span>configuration = configuration;
-  }
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">  [HttpGet]</span>
-  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Get()
-  {
-      <span style="color:#66d9ef">try</span>
-      {
-          <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> activity = Activity.StartActivity(<span style="color:#e6db74">&#34;RabbitMq Publish&#34;</span>, ActivityKind.Producer))
-          {
-              <span style="color:#66d9ef">var</span> factory = <span style="color:#66d9ef">new</span> ConnectionFactory
-              {
-                  HostName = <span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;RabbitMq:Host&#34;</span>],
-                  UserName = <span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;RabbitMq:Username&#34;</span>],
-                  Password = <span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;RabbitMq:Password&#34;</span>],
-                  Ssl = <span style="color:#66d9ef">new</span> SslOption
-                  {
-                      Enabled = <span style="color:#66d9ef">true</span>,
-                      Version = SslProtocols.None,
-                      CertificateValidationCallback = (<span style="color:#ae81ff">_</span>, <span style="color:#ae81ff">_</span>, <span style="color:#ae81ff">_</span>, <span style="color:#ae81ff">_</span>) =&gt; <span style="color:#66d9ef">true</span>
-                  }
-              };
-
-              <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> connection = factory.CreateConnection())
-              <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> channel = connection.CreateModel())
-              {
-                  <span style="color:#66d9ef">var</span> props = channel.CreateBasicProperties();
-
-                  AddActivityToHeader(activity, props);
-
-                  channel.QueueDeclare(queue: <span style="color:#e6db74">&#34;sample&#34;</span>,
-                      durable: <span style="color:#66d9ef">false</span>,
-                      exclusive: <span style="color:#66d9ef">false</span>,
-                      autoDelete: <span style="color:#66d9ef">false</span>,
-                      arguments: <span style="color:#66d9ef">null</span>);
-
-                  <span style="color:#66d9ef">var</span> body = Encoding.UTF8.GetBytes(<span style="color:#e6db74">&#34;I am app1&#34;</span>);
-
-                  <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">&#34;Publishing message to queue&#34;</span>);
-
-                  channel.BasicPublish(exchange: <span style="color:#e6db74">&#34;&#34;</span>,
-                      routingKey: <span style="color:#e6db74">&#34;sample&#34;</span>,
-                      basicProperties: props,
-                      body: body);
-              }
-          }
-      }
-      <span style="color:#66d9ef">catch</span> (Exception e)
-      {
-          <span style="color:#ae81ff">_l</span>ogger.LogError(<span style="color:#e6db74">&#34;Error trying to publish a message&#34;</span>, e);
-          <span style="color:#66d9ef">throw</span>;
-      }
-  }
-
-  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> AddActivityToHeader(Activity activity, IBasicProperties props)
-  {
-      <span style="color:#66d9ef">var</span> propagator = Propagators.DefaultTextMapPropagator;
-      propagator.Inject(<span style="color:#66d9ef">new</span> PropagationContext(activity.Context, Baggage.Current), props, InjectContextIntoHeader);
-      activity?.SetTag(<span style="color:#e6db74">&#34;messaging.system&#34;</span>, <span style="color:#e6db74">&#34;rabbitmq&#34;</span>);
-      activity?.SetTag(<span style="color:#e6db74">&#34;messaging.destination_kind&#34;</span>, <span style="color:#e6db74">&#34;queue&#34;</span>);
-      activity?.SetTag(<span style="color:#e6db74">&#34;messaging.rabbitmq.queue&#34;</span>, <span style="color:#e6db74">&#34;sample&#34;</span>);
-  }
-
-  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> InjectContextIntoHeader(IBasicProperties props, <span style="color:#66d9ef">string</span> key, <span style="color:#66d9ef">string</span> <span style="color:#66d9ef">value</span>)
-  {
-      <span style="color:#66d9ef">try</span>
-      {
-          props.Headers ??= <span style="color:#66d9ef">new</span> Dictionary&lt;<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">object</span>&gt;();
-          props.Headers[key] = <span style="color:#66d9ef">value</span>;
-      }
-      <span style="color:#66d9ef">catch</span> (Exception ex)
-      {
-          <span style="color:#ae81ff">_l</span>ogger.LogError(ex, <span style="color:#e6db74">&#34;Failed to inject trace context.&#34;</span>);
-      }
-  }
-}
-</code></pre></div><h1 id="add-and-configure-opentelemetry-on-app2">Add and configure OpenTelemetry on App2</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[ApiController]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Route(&#34;publish-message&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PublishMessageController</span> : ControllerBase
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> ActivitySource Activity = <span style="color:#66d9ef">new</span>(nameof(PublishMessageController));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger&lt;PublishMessageController&gt; <span style="color:#ae81ff">_l</span>ogger;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IConfiguration <span style="color:#ae81ff">_</span>configuration;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">public</span> PublishMessageController(
+</span></span><span style="display:flex;"><span>      ILogger&lt;PublishMessageController&gt; logger,
+</span></span><span style="display:flex;"><span>      IConfiguration configuration)
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>      <span style="color:#ae81ff">_l</span>ogger = logger;
+</span></span><span style="display:flex;"><span>      <span style="color:#ae81ff">_</span>configuration = configuration;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">  [HttpGet]</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Get()
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>      {
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> activity = Activity.StartActivity(<span style="color:#e6db74">&#34;RabbitMq Publish&#34;</span>, ActivityKind.Producer))
+</span></span><span style="display:flex;"><span>          {
+</span></span><span style="display:flex;"><span>              <span style="color:#66d9ef">var</span> factory = <span style="color:#66d9ef">new</span> ConnectionFactory
+</span></span><span style="display:flex;"><span>              {
+</span></span><span style="display:flex;"><span>                  HostName = <span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;RabbitMq:Host&#34;</span>],
+</span></span><span style="display:flex;"><span>                  UserName = <span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;RabbitMq:Username&#34;</span>],
+</span></span><span style="display:flex;"><span>                  Password = <span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;RabbitMq:Password&#34;</span>],
+</span></span><span style="display:flex;"><span>                  Ssl = <span style="color:#66d9ef">new</span> SslOption
+</span></span><span style="display:flex;"><span>                  {
+</span></span><span style="display:flex;"><span>                      Enabled = <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>                      Version = SslProtocols.None,
+</span></span><span style="display:flex;"><span>                      CertificateValidationCallback = (<span style="color:#ae81ff">_</span>, <span style="color:#ae81ff">_</span>, <span style="color:#ae81ff">_</span>, <span style="color:#ae81ff">_</span>) =&gt; <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>                  }
+</span></span><span style="display:flex;"><span>              };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>              <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> connection = factory.CreateConnection())
+</span></span><span style="display:flex;"><span>              <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> channel = connection.CreateModel())
+</span></span><span style="display:flex;"><span>              {
+</span></span><span style="display:flex;"><span>                  <span style="color:#66d9ef">var</span> props = channel.CreateBasicProperties();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                  AddActivityToHeader(activity, props);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                  channel.QueueDeclare(queue: <span style="color:#e6db74">&#34;sample&#34;</span>,
+</span></span><span style="display:flex;"><span>                      durable: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>                      exclusive: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>                      autoDelete: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>                      arguments: <span style="color:#66d9ef">null</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                  <span style="color:#66d9ef">var</span> body = Encoding.UTF8.GetBytes(<span style="color:#e6db74">&#34;I am app1&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                  <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">&#34;Publishing message to queue&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                  channel.BasicPublish(exchange: <span style="color:#e6db74">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>                      routingKey: <span style="color:#e6db74">&#34;sample&#34;</span>,
+</span></span><span style="display:flex;"><span>                      basicProperties: props,
+</span></span><span style="display:flex;"><span>                      body: body);
+</span></span><span style="display:flex;"><span>              }
+</span></span><span style="display:flex;"><span>          }
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">catch</span> (Exception e)
+</span></span><span style="display:flex;"><span>      {
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">_l</span>ogger.LogError(<span style="color:#e6db74">&#34;Error trying to publish a message&#34;</span>, e);
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">throw</span>;
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> AddActivityToHeader(Activity activity, IBasicProperties props)
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">var</span> propagator = Propagators.DefaultTextMapPropagator;
+</span></span><span style="display:flex;"><span>      propagator.Inject(<span style="color:#66d9ef">new</span> PropagationContext(activity.Context, Baggage.Current), props, InjectContextIntoHeader);
+</span></span><span style="display:flex;"><span>      activity?.SetTag(<span style="color:#e6db74">&#34;messaging.system&#34;</span>, <span style="color:#e6db74">&#34;rabbitmq&#34;</span>);
+</span></span><span style="display:flex;"><span>      activity?.SetTag(<span style="color:#e6db74">&#34;messaging.destination_kind&#34;</span>, <span style="color:#e6db74">&#34;queue&#34;</span>);
+</span></span><span style="display:flex;"><span>      activity?.SetTag(<span style="color:#e6db74">&#34;messaging.rabbitmq.queue&#34;</span>, <span style="color:#e6db74">&#34;sample&#34;</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> InjectContextIntoHeader(IBasicProperties props, <span style="color:#66d9ef">string</span> key, <span style="color:#66d9ef">string</span> <span style="color:#66d9ef">value</span>)
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>      {
+</span></span><span style="display:flex;"><span>          props.Headers ??= <span style="color:#66d9ef">new</span> Dictionary&lt;<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">object</span>&gt;();
+</span></span><span style="display:flex;"><span>          props.Headers[key] = <span style="color:#66d9ef">value</span>;
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">catch</span> (Exception ex)
+</span></span><span style="display:flex;"><span>      {
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">_l</span>ogger.LogError(ex, <span style="color:#e6db74">&#34;Failed to inject trace context.&#34;</span>);
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="add-and-configure-opentelemetry-on-app2">Add and configure OpenTelemetry on App2</h1>
 <h3 id="1-setup-the-opentelemetry-library-1"><strong>1. Setup the OpenTelemetry library</strong></h3>
 <p>The App2 is a console app so we have to setup the OpenTelemetry library in a different way.<br>
 Instead of using an <code>IServiceCollection</code> extension method we’re creating a <code>TraceProvider</code>, apart from that, the setup looks almost the same as the previous one.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> provider = Sdk.CreateTracerProviderBuilder()
-    .AddXRayTraceId()
-    .AddHttpClientInstrumentation()
-    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(<span style="color:#e6db74">&#34;App2&#34;</span>))
-    .AddSource(nameof(Program))
-    .AddOtlpExporter(opts =&gt;
-    {
-        opts.Endpoint = <span style="color:#66d9ef">new</span> Uri(<span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;Otlp:Endpoint&#34;</span>]);
-    })
-    .Build();
-
-Sdk.SetDefaultTextMapPropagator(<span style="color:#66d9ef">new</span> AWSXRayPropagator());
-
-<span style="color:#66d9ef">return</span> provider;
-</code></pre></div><h3 id="2-instrument-the-call-to-amazonmq-rabbitmq-1"><strong>2. Instrument the call to AmazonMQ RabbitMQ</strong></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> provider = Sdk.CreateTracerProviderBuilder()
+</span></span><span style="display:flex;"><span>    .AddXRayTraceId()
+</span></span><span style="display:flex;"><span>    .AddHttpClientInstrumentation()
+</span></span><span style="display:flex;"><span>    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(<span style="color:#e6db74">&#34;App2&#34;</span>))
+</span></span><span style="display:flex;"><span>    .AddSource(nameof(Program))
+</span></span><span style="display:flex;"><span>    .AddOtlpExporter(opts =&gt;
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        opts.Endpoint = <span style="color:#66d9ef">new</span> Uri(<span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;Otlp:Endpoint&#34;</span>]);
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>    .Build();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Sdk.SetDefaultTextMapPropagator(<span style="color:#66d9ef">new</span> AWSXRayPropagator());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">return</span> provider;
+</span></span></code></pre></div><h3 id="2-instrument-the-call-to-amazonmq-rabbitmq-1"><strong>2. Instrument the call to AmazonMQ RabbitMQ</strong></h3>
 <p>This app retrieves a message from an ActiveMQ RabbitMQ queue and makes an Http Request to App3.</p>
 <p>The HTTP call is being instrumented automatically by the <code>AddHttpClientInstrumentation()</code> extension method, but the Rabbit part needs to be instrumented manually.</p>
 <p>The code is pretty much the same as the one I have showed you on App1, but there are 2 differences.</p>
@@ -397,172 +397,172 @@ Sdk.SetDefaultTextMapPropagator(<span style="color:#66d9ef">new</span> AWSXRayPr
 <li>The second span (&ldquo;Publish message&rdquo; span) is the one we created manually.</li>
 </ul>
 <p>Remember this issue, because we&rsquo;re going to face it again on App4.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"> <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">async</span> Task ProcessMessage(BasicDeliverEventArgs ea,
-            HttpClient httpClient,
-            IModel rabbitMqChannel)
-{
-  <span style="color:#66d9ef">try</span>
-  {
-      <span style="color:#66d9ef">var</span> propagator = Propagators.DefaultTextMapPropagator;
-      <span style="color:#66d9ef">var</span> parentContext = propagator.Extract(<span style="color:#66d9ef">default</span>, ea.BasicProperties, ExtractTraceContextFromBasicProperties);
-      Baggage.Current = parentContext.Baggage;
-
-      <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> activity = Activity.StartActivity(<span style="color:#e6db74">&#34;Process Message&#34;</span>, ActivityKind.Server, parentContext.ActivityContext))
-      {
-
-          <span style="color:#66d9ef">var</span> body = ea.Body.ToArray();
-          <span style="color:#66d9ef">var</span> message = Encoding.UTF8.GetString(body);
-          AddActivityTags(activity);
-
-          <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">&#34;Message Received: &#34;</span> + message);
-
-          <span style="color:#ae81ff">_</span> = <span style="color:#66d9ef">await</span> httpClient.PostAsync(<span style="color:#e6db74">&#34;/s3-to-event&#34;</span>,
-              <span style="color:#66d9ef">new</span> StringContent(JsonSerializer.Serialize(message),
-                  Encoding.UTF8,
-                  <span style="color:#e6db74">&#34;application/json&#34;</span>));
-
-          rabbitMqChannel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: <span style="color:#66d9ef">false</span>);
-      }
-
-  }
-  <span style="color:#66d9ef">catch</span> (Exception ex)
-  {
-      <span style="color:#ae81ff">_l</span>ogger.LogError(<span style="color:#e6db74">$&#34;There was an error processing the message: {ex} &#34;</span>);
-  }
-}
-
-<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> IEnumerable&lt;<span style="color:#66d9ef">string</span>&gt; ExtractTraceContextFromBasicProperties(IBasicProperties props, <span style="color:#66d9ef">string</span> key)
-{
-  <span style="color:#66d9ef">try</span>
-  {
-      <span style="color:#66d9ef">if</span> (props.Headers.TryGetValue(key, <span style="color:#66d9ef">out</span> <span style="color:#66d9ef">var</span> <span style="color:#66d9ef">value</span>))
-      {
-          <span style="color:#66d9ef">var</span> bytes = <span style="color:#66d9ef">value</span> <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">byte</span>[];
-          <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span>[] { Encoding.UTF8.GetString(bytes) };
-      }
-  }
-  <span style="color:#66d9ef">catch</span> (Exception ex)
-  {
-      <span style="color:#ae81ff">_l</span>ogger.LogError(<span style="color:#e6db74">$&#34;Failed to extract trace context: {ex}&#34;</span>);
-  }
-
-  <span style="color:#66d9ef">return</span> Enumerable.Empty&lt;<span style="color:#66d9ef">string</span>&gt;();
-}
-
-<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> AddActivityTags(Activity activity)
-{
-  activity?.SetTag(<span style="color:#e6db74">&#34;messaging.system&#34;</span>, <span style="color:#e6db74">&#34;rabbitmq&#34;</span>);
-  activity?.SetTag(<span style="color:#e6db74">&#34;messaging.destination_kind&#34;</span>, <span style="color:#e6db74">&#34;queue&#34;</span>);
-  activity?.SetTag(<span style="color:#e6db74">&#34;messaging.rabbitmq.queue&#34;</span>, <span style="color:#e6db74">&#34;sample&#34;</span>);
-}
-</code></pre></div><h1 id="add-and-configure-opentelemetry-on-app3">Add and configure OpenTelemetry on App3</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span> <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">async</span> Task ProcessMessage(BasicDeliverEventArgs ea,
+</span></span><span style="display:flex;"><span>            HttpClient httpClient,
+</span></span><span style="display:flex;"><span>            IModel rabbitMqChannel)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">var</span> propagator = Propagators.DefaultTextMapPropagator;
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">var</span> parentContext = propagator.Extract(<span style="color:#66d9ef">default</span>, ea.BasicProperties, ExtractTraceContextFromBasicProperties);
+</span></span><span style="display:flex;"><span>      Baggage.Current = parentContext.Baggage;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> activity = Activity.StartActivity(<span style="color:#e6db74">&#34;Process Message&#34;</span>, ActivityKind.Server, parentContext.ActivityContext))
+</span></span><span style="display:flex;"><span>      {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">var</span> body = ea.Body.ToArray();
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">var</span> message = Encoding.UTF8.GetString(body);
+</span></span><span style="display:flex;"><span>          AddActivityTags(activity);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">&#34;Message Received: &#34;</span> + message);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">_</span> = <span style="color:#66d9ef">await</span> httpClient.PostAsync(<span style="color:#e6db74">&#34;/s3-to-event&#34;</span>,
+</span></span><span style="display:flex;"><span>              <span style="color:#66d9ef">new</span> StringContent(JsonSerializer.Serialize(message),
+</span></span><span style="display:flex;"><span>                  Encoding.UTF8,
+</span></span><span style="display:flex;"><span>                  <span style="color:#e6db74">&#34;application/json&#34;</span>));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>          rabbitMqChannel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: <span style="color:#66d9ef">false</span>);
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">catch</span> (Exception ex)
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>      <span style="color:#ae81ff">_l</span>ogger.LogError(<span style="color:#e6db74">$&#34;There was an error processing the message: {ex} &#34;</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> IEnumerable&lt;<span style="color:#66d9ef">string</span>&gt; ExtractTraceContextFromBasicProperties(IBasicProperties props, <span style="color:#66d9ef">string</span> key)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> (props.Headers.TryGetValue(key, <span style="color:#66d9ef">out</span> <span style="color:#66d9ef">var</span> <span style="color:#66d9ef">value</span>))
+</span></span><span style="display:flex;"><span>      {
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">var</span> bytes = <span style="color:#66d9ef">value</span> <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">byte</span>[];
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span>[] { Encoding.UTF8.GetString(bytes) };
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">catch</span> (Exception ex)
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>      <span style="color:#ae81ff">_l</span>ogger.LogError(<span style="color:#e6db74">$&#34;Failed to extract trace context: {ex}&#34;</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> Enumerable.Empty&lt;<span style="color:#66d9ef">string</span>&gt;();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> AddActivityTags(Activity activity)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  activity?.SetTag(<span style="color:#e6db74">&#34;messaging.system&#34;</span>, <span style="color:#e6db74">&#34;rabbitmq&#34;</span>);
+</span></span><span style="display:flex;"><span>  activity?.SetTag(<span style="color:#e6db74">&#34;messaging.destination_kind&#34;</span>, <span style="color:#e6db74">&#34;queue&#34;</span>);
+</span></span><span style="display:flex;"><span>  activity?.SetTag(<span style="color:#e6db74">&#34;messaging.rabbitmq.queue&#34;</span>, <span style="color:#e6db74">&#34;sample&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="add-and-configure-opentelemetry-on-app3">Add and configure OpenTelemetry on App3</h1>
 <h3 id="1-setup-the-opentelemetry-library-2"><strong>1. Setup the OpenTelemetry library</strong></h3>
 <p>App3 is a Web API that makes some calls to AWS S3 and AWS SQS.<br>
 The setup of the OTEL client looks almost identical as the other ones, but with one difference:</p>
 <ul>
 <li>The <code>AddAWSInstrumentation()</code> method from the <code>OpenTelemetry.Contrib.Instrumentation.AWS</code> package is used to auto-instrument the downstream calls made by the AWS.SDK clients.</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">services.AddOpenTelemetryTracing(builder =&gt;
-{
-    builder.AddAspNetCoreInstrumentation()
-        .AddXRayTraceId()
-        .AddAWSInstrumentation()
-        .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(<span style="color:#e6db74">&#34;App3&#34;</span>))
-        .AddOtlpExporter(opts =&gt;
-        {
-            opts.Endpoint = <span style="color:#66d9ef">new</span> Uri(Configuration[<span style="color:#e6db74">&#34;Otlp:Endpoint&#34;</span>]);
-        });
-
-    Sdk.SetDefaultTextMapPropagator(<span style="color:#66d9ef">new</span> AWSXRayPropagator());
-});
-</code></pre></div><h3 id="2-instrument-the-calls-to-aws-s3-and-aws-sqs"><strong>2. Instrument the calls to AWS S3 and AWS SQS</strong></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>services.AddOpenTelemetryTracing(builder =&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    builder.AddAspNetCoreInstrumentation()
+</span></span><span style="display:flex;"><span>        .AddXRayTraceId()
+</span></span><span style="display:flex;"><span>        .AddAWSInstrumentation()
+</span></span><span style="display:flex;"><span>        .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(<span style="color:#e6db74">&#34;App3&#34;</span>))
+</span></span><span style="display:flex;"><span>        .AddOtlpExporter(opts =&gt;
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            opts.Endpoint = <span style="color:#66d9ef">new</span> Uri(Configuration[<span style="color:#e6db74">&#34;Otlp:Endpoint&#34;</span>]);
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Sdk.SetDefaultTextMapPropagator(<span style="color:#66d9ef">new</span> AWSXRayPropagator());
+</span></span><span style="display:flex;"><span>});
+</span></span></code></pre></div><h3 id="2-instrument-the-calls-to-aws-s3-and-aws-sqs"><strong>2. Instrument the calls to AWS S3 and AWS SQS</strong></h3>
 <p>App3 receives a message from App2 and uploads the contents of the message into an S3 bucket.</p>
 <p>In the next code snippet you&rsquo;ll see that there is nothing related to OpenTelemetry, we&rsquo;re simply using the <code>AWSSDK.S3</code> client to upload the contents of the message into the S3 bucket.</p>
 <p>That&rsquo;s because the  <code>AddAWSInstrumentation()</code> extension method auto-instruments all the downstream calls made by the <code>AWSSDK.S3</code> client.</p>
 <p>The auto-instrumentation will create an activity of <code>Kind=Activity.Client</code> for every downstream call made to S3, and it will also add some tags to the activity, those tags will contain metadata about the AWS services being invoked.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">S3Repository</span> : IS3Repository
-{
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IAmazonS3 <span style="color:#ae81ff">_</span>s3Client;
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger&lt;S3Repository&gt; <span style="color:#ae81ff">_l</span>ogger;
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IConfiguration <span style="color:#ae81ff">_</span>configuration;
-
-    <span style="color:#66d9ef">public</span> S3Repository(IAmazonS3 s3Client, 
-        ILogger&lt;S3Repository&gt; logger, 
-        IConfiguration configuration)
-    {
-        <span style="color:#ae81ff">_</span>s3Client = s3Client;
-        <span style="color:#ae81ff">_l</span>ogger = logger;
-        <span style="color:#ae81ff">_</span>configuration = configuration;
-    }
-
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task Persist(<span style="color:#66d9ef">string</span> message)
-    {
-        <span style="color:#66d9ef">try</span>
-        {
-            <span style="color:#66d9ef">using</span> var ms = <span style="color:#66d9ef">new</span> MemoryStream(Encoding.UTF8.GetBytes(message));
-            <span style="color:#66d9ef">var</span> uploadRequest = <span style="color:#66d9ef">new</span> TransferUtilityUploadRequest
-            {
-                InputStream = ms,
-                Key = <span style="color:#e6db74">$&#34;file-{DateTime.UtcNow}&#34;</span>,
-                BucketName = <span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;S3:BucketName&#34;</span>]
-            };
-
-            <span style="color:#66d9ef">var</span> fileTransferUtility = <span style="color:#66d9ef">new</span> TransferUtility(<span style="color:#ae81ff">_</span>s3Client);
-            <span style="color:#66d9ef">await</span> fileTransferUtility.UploadAsync(uploadRequest);
-        } 
-        <span style="color:#66d9ef">catch</span> (Exception ex)
-        {
-            <span style="color:#ae81ff">_l</span>ogger.LogError(<span style="color:#e6db74">&#34;Error trying to upload file to S3 bucket&#34;</span>, ex);
-            <span style="color:#66d9ef">throw</span>;          
-        }
-    }
-}
-</code></pre></div><p>App3 also queues the message received into an Amazon SQS.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">S3Repository</span> : IS3Repository
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IAmazonS3 <span style="color:#ae81ff">_</span>s3Client;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger&lt;S3Repository&gt; <span style="color:#ae81ff">_l</span>ogger;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IConfiguration <span style="color:#ae81ff">_</span>configuration;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> S3Repository(IAmazonS3 s3Client, 
+</span></span><span style="display:flex;"><span>        ILogger&lt;S3Repository&gt; logger, 
+</span></span><span style="display:flex;"><span>        IConfiguration configuration)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">_</span>s3Client = s3Client;
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">_l</span>ogger = logger;
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">_</span>configuration = configuration;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task Persist(<span style="color:#66d9ef">string</span> message)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">using</span> var ms = <span style="color:#66d9ef">new</span> MemoryStream(Encoding.UTF8.GetBytes(message));
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> uploadRequest = <span style="color:#66d9ef">new</span> TransferUtilityUploadRequest
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                InputStream = ms,
+</span></span><span style="display:flex;"><span>                Key = <span style="color:#e6db74">$&#34;file-{DateTime.UtcNow}&#34;</span>,
+</span></span><span style="display:flex;"><span>                BucketName = <span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;S3:BucketName&#34;</span>]
+</span></span><span style="display:flex;"><span>            };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> fileTransferUtility = <span style="color:#66d9ef">new</span> TransferUtility(<span style="color:#ae81ff">_</span>s3Client);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">await</span> fileTransferUtility.UploadAsync(uploadRequest);
+</span></span><span style="display:flex;"><span>        } 
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">catch</span> (Exception ex)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">_l</span>ogger.LogError(<span style="color:#e6db74">&#34;Error trying to upload file to S3 bucket&#34;</span>, ex);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">throw</span>;          
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>App3 also queues the message received into an Amazon SQS.</p>
 <p>In the next code snippet there is also nothing related to OpenTelemetry because the  <code>AddAWSInstrumentation()</code> extension method auto-instruments all the downstream calls made by the <code>AWSSDK.SQS</code> client.</p>
 <p>There is one thing worth mentioning when working with Amazon SQS and the <code>OpenTelemetry.Contrib.Instrumentation.AWS</code> package, and that is that the <code>AWSTraceHeader</code> attribute is going to be added into any message queued into SQS.  <br>
 The <code>AWSTraceHeader</code> is a message system attribute reserved by Amazon SQS to carry the X-Ray trace header.</p>
 <p>This header is important (more about it in the next section).</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SqsRepository</span>: ISqsRepository
-{
-
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IAmazonSQS <span style="color:#ae81ff">_</span>client;
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IConfiguration <span style="color:#ae81ff">_</span>configuration;
-
-    <span style="color:#66d9ef">public</span> SqsRepository(IAmazonSQS client, 
-        IConfiguration configuration)
-    {
-        <span style="color:#ae81ff">_</span>client = client;
-        <span style="color:#ae81ff">_</span>configuration = configuration;
-    }
-
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task Publish(IEvent evt)
-    {
-        <span style="color:#66d9ef">await</span> <span style="color:#ae81ff">_</span>client.SendMessageAsync(<span style="color:#66d9ef">new</span> SendMessageRequest
-            {
-                MessageBody = (evt <span style="color:#66d9ef">as</span> MessagePersistedEvent)?.Message,
-                QueueUrl = <span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;Sqs:Uri&#34;</span>],
-            });      
-    }
-}
-</code></pre></div><h1 id="add-and-configure-opentelemetry-on-app4">Add and configure OpenTelemetry on App4</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SqsRepository</span>: ISqsRepository
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IAmazonSQS <span style="color:#ae81ff">_</span>client;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IConfiguration <span style="color:#ae81ff">_</span>configuration;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> SqsRepository(IAmazonSQS client, 
+</span></span><span style="display:flex;"><span>        IConfiguration configuration)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">_</span>client = client;
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">_</span>configuration = configuration;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task Publish(IEvent evt)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">await</span> <span style="color:#ae81ff">_</span>client.SendMessageAsync(<span style="color:#66d9ef">new</span> SendMessageRequest
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                MessageBody = (evt <span style="color:#66d9ef">as</span> MessagePersistedEvent)?.Message,
+</span></span><span style="display:flex;"><span>                QueueUrl = <span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;Sqs:Uri&#34;</span>],
+</span></span><span style="display:flex;"><span>            });      
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="add-and-configure-opentelemetry-on-app4">Add and configure OpenTelemetry on App4</h1>
 <h3 id="1-setup-the-opentelemetry-library-3"><strong>1. Setup the OpenTelemetry library</strong></h3>
 <p>App4 is a Worker Service that uses Amazon SQS and Amazon DynamoDb.</p>
 <p>Nothing to comment here, the setup of the OTEL client is exactly the same as the one on App3.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">services.AddOpenTelemetryTracing(builder =&gt;
-{
-    builder.AddAspNetCoreInstrumentation()
-        .AddXRayTraceId()
-        .AddAWSInstrumentation()
-        .AddSource(nameof(Worker))
-        .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(<span style="color:#e6db74">&#34;App4&#34;</span>))
-        .AddOtlpExporter(opts =&gt;
-        {
-            opts.Endpoint = <span style="color:#66d9ef">new</span> Uri(hostContext.Configuration[<span style="color:#e6db74">&#34;Otlp:Endpoint&#34;</span>]);
-        });
-
-    Sdk.SetDefaultTextMapPropagator(<span style="color:#66d9ef">new</span> AWSXRayPropagator());
-});
-</code></pre></div><h3 id="2-instrument-the-call-to-aws-sqs-and-aws-dynamodb"><strong>2. Instrument the call to AWS SQS and AWS DynamoDb</strong></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>services.AddOpenTelemetryTracing(builder =&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    builder.AddAspNetCoreInstrumentation()
+</span></span><span style="display:flex;"><span>        .AddXRayTraceId()
+</span></span><span style="display:flex;"><span>        .AddAWSInstrumentation()
+</span></span><span style="display:flex;"><span>        .AddSource(nameof(Worker))
+</span></span><span style="display:flex;"><span>        .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(<span style="color:#e6db74">&#34;App4&#34;</span>))
+</span></span><span style="display:flex;"><span>        .AddOtlpExporter(opts =&gt;
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            opts.Endpoint = <span style="color:#66d9ef">new</span> Uri(hostContext.Configuration[<span style="color:#e6db74">&#34;Otlp:Endpoint&#34;</span>]);
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Sdk.SetDefaultTextMapPropagator(<span style="color:#66d9ef">new</span> AWSXRayPropagator());
+</span></span><span style="display:flex;"><span>});
+</span></span></code></pre></div><h3 id="2-instrument-the-call-to-aws-sqs-and-aws-dynamodb"><strong>2. Instrument the call to AWS SQS and AWS DynamoDb</strong></h3>
 <p>As I stated before the <code>OpenTelemetry.Contrib.Instrumentation.AWS</code> package auto-instruments the downstream calls that are being made by the AWS SDK clients, but for this app we need more than that, we need to link the Activity from App3 with the Activity from App4, and the only way to do it is by hand.</p>
 <p>In the previous section I talked a little bit about the <code>AWSTraceHeader</code> attribute and how it was injected into each message sent to SQS and that the attribute contains the X-Ray trace header. We&rsquo;re going to use this attribute to link both activities.</p>
 <p>In the next code snippet the Worker Service runs on an infinite loop and keeps pulling messages using the <code>ReceiveMessageAsync(request, stoppingToken)</code> method.<br>
@@ -571,119 +571,119 @@ This is because Amazon SQS is not push-based like RabbitMQ, instead of that you 
 <p>The <code>ProcessMessage()</code> method creates a new Activity, extracts the <code>AWSTraceHeader</code> from the SQS message using the <code>XRayPropagator</code> propagator and links both producer and consumer activities.</p>
 <p>The instrumentation of DynamoDb is much more simpler, there is no need to do any extra leg work, the auto-instrumentation from the <code>OpenTelemetry.Contrib.Instrumentation.AWS</code> package will take care of it.</p>
 <p>To instrument the call to delete the message from the SQS queue,  there is no need to do any extra leg work here either, the auto-instrumentation will do it for us.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Worker</span> : BackgroundService
-{
-  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> ActivitySource Activity = <span style="color:#66d9ef">new</span>(nameof(Worker));
-
-  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger&lt;Worker&gt; <span style="color:#ae81ff">_l</span>ogger;
-  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IConfiguration <span style="color:#ae81ff">_</span>configuration;
-  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IAmazonSQS <span style="color:#ae81ff">_</span>sqs;
-  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IAmazonDynamoDB <span style="color:#ae81ff">_d</span>ynamoDb;
-
-  <span style="color:#66d9ef">public</span> Worker(ILogger&lt;Worker&gt; logger,
-      IConfiguration configuration, 
-      IAmazonSQS sqs, 
-      IAmazonDynamoDB dynamoDb)
-  {
-      <span style="color:#ae81ff">_l</span>ogger = logger;
-      <span style="color:#ae81ff">_</span>configuration = configuration;
-      <span style="color:#ae81ff">_</span>sqs = sqs;
-      <span style="color:#ae81ff">_d</span>ynamoDb = dynamoDb;
-  }
-
-  <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">async</span> Task ExecuteAsync(CancellationToken stoppingToken)
-  {
-      <span style="color:#66d9ef">while</span> (!stoppingToken.IsCancellationRequested)
-      {
-          <span style="color:#66d9ef">try</span>
-          {
-              <span style="color:#66d9ef">var</span> request = <span style="color:#66d9ef">new</span> ReceiveMessageRequest
-              {
-                  QueueUrl = <span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;SQS:URI&#34;</span>],
-                  MaxNumberOfMessages = <span style="color:#ae81ff">1</span>,
-                  WaitTimeSeconds = <span style="color:#ae81ff">5</span>,
-                  AttributeNames = <span style="color:#66d9ef">new</span> List&lt;<span style="color:#66d9ef">string</span>&gt; { <span style="color:#e6db74">&#34;All&#34;</span> }
-              };
-
-              <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">await</span> <span style="color:#ae81ff">_</span>sqs.ReceiveMessageAsync(request, stoppingToken);
-
-              <span style="color:#66d9ef">if</span> (result.Messages.Any())
-              {
-                  <span style="color:#66d9ef">await</span> ProcessMessage(result.Messages[<span style="color:#ae81ff">0</span>], stoppingToken);
-              }
-          }
-          <span style="color:#66d9ef">catch</span> (Exception ex)
-          {
-              <span style="color:#ae81ff">_l</span>ogger.LogError(ex.ToString());
-          }
-
-          <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">&#34;Worker running at: {time}&#34;</span>, DateTime.UtcNow);
-          Thread.Sleep(<span style="color:#ae81ff">10000</span>);
-      }
-  }
-
-  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">async</span> Task ProcessMessage(Message msg, CancellationToken cancellationToken)
-  {
-      <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">&#34;Processing messages from SQS&#34;</span>);
-
-      <span style="color:#66d9ef">var</span> propagator = Propagators.DefaultTextMapPropagator;
-      <span style="color:#66d9ef">var</span> parentContext = propagator.Extract(<span style="color:#66d9ef">default</span>,
-              msg,
-              ActivityHelper.ExtractTraceContextFromMessage);
-
-      Baggage.Current = parentContext.Baggage;
-
-      <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> activity = Activity.StartActivity(<span style="color:#e6db74">&#34;Process SQS Message&#34;</span>, 
-          ActivityKind.Server, 
-          parentContext.ActivityContext))
-      {
-          ActivityHelper.AddActivityTags(activity);
-          
-          <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">&#34;Add item to DynamoDb&#34;</span>);
-
-          <span style="color:#66d9ef">var</span> items = Table.LoadTable(<span style="color:#ae81ff">_d</span>ynamoDb, <span style="color:#e6db74">&#34;Items&#34;</span>);
-          
-          <span style="color:#66d9ef">var</span> doc = <span style="color:#66d9ef">new</span> Document
-          {
-<span style="color:#a6e22e">              [&#34;Id&#34;]</span> = Guid.NewGuid(),
-<span style="color:#a6e22e">              [&#34;Message&#34;]</span> = msg.Body
-          };
-
-          <span style="color:#66d9ef">await</span> items.PutItemAsync(doc, cancellationToken);
-
-          <span style="color:#66d9ef">await</span> <span style="color:#ae81ff">_</span>sqs.DeleteMessageAsync(<span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;SQS:URI&#34;</span>], msg.ReceiptHandle, cancellationToken);
-          
-      }
-  }
-}
-</code></pre></div><p>There is an extra thing worth mentioning on App4.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Worker</span> : BackgroundService
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> ActivitySource Activity = <span style="color:#66d9ef">new</span>(nameof(Worker));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger&lt;Worker&gt; <span style="color:#ae81ff">_l</span>ogger;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IConfiguration <span style="color:#ae81ff">_</span>configuration;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IAmazonSQS <span style="color:#ae81ff">_</span>sqs;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IAmazonDynamoDB <span style="color:#ae81ff">_d</span>ynamoDb;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">public</span> Worker(ILogger&lt;Worker&gt; logger,
+</span></span><span style="display:flex;"><span>      IConfiguration configuration, 
+</span></span><span style="display:flex;"><span>      IAmazonSQS sqs, 
+</span></span><span style="display:flex;"><span>      IAmazonDynamoDB dynamoDb)
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>      <span style="color:#ae81ff">_l</span>ogger = logger;
+</span></span><span style="display:flex;"><span>      <span style="color:#ae81ff">_</span>configuration = configuration;
+</span></span><span style="display:flex;"><span>      <span style="color:#ae81ff">_</span>sqs = sqs;
+</span></span><span style="display:flex;"><span>      <span style="color:#ae81ff">_d</span>ynamoDb = dynamoDb;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">async</span> Task ExecuteAsync(CancellationToken stoppingToken)
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">while</span> (!stoppingToken.IsCancellationRequested)
+</span></span><span style="display:flex;"><span>      {
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>          {
+</span></span><span style="display:flex;"><span>              <span style="color:#66d9ef">var</span> request = <span style="color:#66d9ef">new</span> ReceiveMessageRequest
+</span></span><span style="display:flex;"><span>              {
+</span></span><span style="display:flex;"><span>                  QueueUrl = <span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;SQS:URI&#34;</span>],
+</span></span><span style="display:flex;"><span>                  MaxNumberOfMessages = <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>                  WaitTimeSeconds = <span style="color:#ae81ff">5</span>,
+</span></span><span style="display:flex;"><span>                  AttributeNames = <span style="color:#66d9ef">new</span> List&lt;<span style="color:#66d9ef">string</span>&gt; { <span style="color:#e6db74">&#34;All&#34;</span> }
+</span></span><span style="display:flex;"><span>              };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>              <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">await</span> <span style="color:#ae81ff">_</span>sqs.ReceiveMessageAsync(request, stoppingToken);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>              <span style="color:#66d9ef">if</span> (result.Messages.Any())
+</span></span><span style="display:flex;"><span>              {
+</span></span><span style="display:flex;"><span>                  <span style="color:#66d9ef">await</span> ProcessMessage(result.Messages[<span style="color:#ae81ff">0</span>], stoppingToken);
+</span></span><span style="display:flex;"><span>              }
+</span></span><span style="display:flex;"><span>          }
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">catch</span> (Exception ex)
+</span></span><span style="display:flex;"><span>          {
+</span></span><span style="display:flex;"><span>              <span style="color:#ae81ff">_l</span>ogger.LogError(ex.ToString());
+</span></span><span style="display:flex;"><span>          }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">&#34;Worker running at: {time}&#34;</span>, DateTime.UtcNow);
+</span></span><span style="display:flex;"><span>          Thread.Sleep(<span style="color:#ae81ff">10000</span>);
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">async</span> Task ProcessMessage(Message msg, CancellationToken cancellationToken)
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>      <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">&#34;Processing messages from SQS&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">var</span> propagator = Propagators.DefaultTextMapPropagator;
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">var</span> parentContext = propagator.Extract(<span style="color:#66d9ef">default</span>,
+</span></span><span style="display:flex;"><span>              msg,
+</span></span><span style="display:flex;"><span>              ActivityHelper.ExtractTraceContextFromMessage);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      Baggage.Current = parentContext.Baggage;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> activity = Activity.StartActivity(<span style="color:#e6db74">&#34;Process SQS Message&#34;</span>, 
+</span></span><span style="display:flex;"><span>          ActivityKind.Server, 
+</span></span><span style="display:flex;"><span>          parentContext.ActivityContext))
+</span></span><span style="display:flex;"><span>      {
+</span></span><span style="display:flex;"><span>          ActivityHelper.AddActivityTags(activity);
+</span></span><span style="display:flex;"><span>          
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">&#34;Add item to DynamoDb&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">var</span> items = Table.LoadTable(<span style="color:#ae81ff">_d</span>ynamoDb, <span style="color:#e6db74">&#34;Items&#34;</span>);
+</span></span><span style="display:flex;"><span>          
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">var</span> doc = <span style="color:#66d9ef">new</span> Document
+</span></span><span style="display:flex;"><span>          {
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">              [&#34;Id&#34;]</span> = Guid.NewGuid(),
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">              [&#34;Message&#34;]</span> = msg.Body
+</span></span><span style="display:flex;"><span>          };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">await</span> items.PutItemAsync(doc, cancellationToken);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">await</span> <span style="color:#ae81ff">_</span>sqs.DeleteMessageAsync(<span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;SQS:URI&#34;</span>], msg.ReceiptHandle, cancellationToken);
+</span></span><span style="display:flex;"><span>          
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>There is an extra thing worth mentioning on App4.</p>
 <p>Previously I stated that the <code>ProcessMessage()</code> method creates a new Activity, uses the <code>XRayPropagator</code> to extract the <code>AWSTraceHeader</code> from the message and links the producer and consumer activities. <br>
 But the <code>XRayPropagator</code> is built to extract the <code>X-Amzn-Trace-Id</code> header not the <code>AWSTraceHeader</code>, if you want to extract another header you&rsquo;ll need to specify it on the getter delegate, like this:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ActivityHelper</span>
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> IEnumerable&lt;<span style="color:#66d9ef">string</span>&gt; ExtractTraceContextFromMessage(Message msg, <span style="color:#66d9ef">string</span> key)
-    {
-        <span style="color:#66d9ef">try</span>
-        {
-            <span style="color:#66d9ef">if</span> (msg.Attributes.TryGetValue(<span style="color:#e6db74">&#34;AWSTraceHeader&#34;</span>, <span style="color:#66d9ef">out</span> <span style="color:#66d9ef">var</span> <span style="color:#66d9ef">value</span>))
-            {
-                <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span>[] { <span style="color:#66d9ef">value</span> };
-            }
-        }
-        <span style="color:#66d9ef">catch</span> (Exception ex)
-        {
-            Console.WriteLine(<span style="color:#e6db74">$&#34;Failed to extract trace context: {ex}&#34;</span>);
-        }
-
-        <span style="color:#66d9ef">return</span> Enumerable.Empty&lt;<span style="color:#66d9ef">string</span>&gt;();
-    }
-
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> AddActivityTags(Activity activity)
-    {
-        activity?.SetTag(<span style="color:#e6db74">&#34;messaging.system&#34;</span>, <span style="color:#e6db74">&#34;sqs&#34;</span>);
-    }
-}
-</code></pre></div><h1 id="aws-x-ray-output">AWS X-Ray output</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ActivityHelper</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> IEnumerable&lt;<span style="color:#66d9ef">string</span>&gt; ExtractTraceContextFromMessage(Message msg, <span style="color:#66d9ef">string</span> key)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (msg.Attributes.TryGetValue(<span style="color:#e6db74">&#34;AWSTraceHeader&#34;</span>, <span style="color:#66d9ef">out</span> <span style="color:#66d9ef">var</span> <span style="color:#66d9ef">value</span>))
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span>[] { <span style="color:#66d9ef">value</span> };
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">catch</span> (Exception ex)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">$&#34;Failed to extract trace context: {ex}&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> Enumerable.Empty&lt;<span style="color:#66d9ef">string</span>&gt;();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> AddActivityTags(Activity activity)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        activity?.SetTag(<span style="color:#e6db74">&#34;messaging.system&#34;</span>, <span style="color:#e6db74">&#34;sqs&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="aws-x-ray-output">AWS X-Ray output</h1>
 <p>After instrumenting these 4 apps we are going to generate some traffic and afterwards access X-Ray to start analyzing the traces that the apps are sending.</p>
 <p>First let&rsquo;s invoke App1 <code>/publish-message</code> endpoint and take a look at an entire trace, this is how it looks on X-Ray:</p>
 <p><img src="/img/xray-fulltrace.png" alt="xray-fulltrace"></p>
@@ -694,10 +694,10 @@ But the <code>XRayPropagator</code> is built to extract the <code>X-Amzn-Trace-I
 <p>If we drill down into one of the spans that were auto-generated by the <code>OpenTelemetry.Contrib.Instrumentation.AWS</code> package, we can see that some AWS metadata is added into the span.</p>
 <p><img src="/img/xray-fulltrace-dynamo-subsegment-resources.png" alt="xray-fulltrace-dynamo-subsegment-resources"></p>
 <p>Also, do you remember that in App1 we added some extra Tags on the Activity?</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">activity?.SetTag(<span style="color:#e6db74">&#34;messaging.system&#34;</span>, <span style="color:#e6db74">&#34;rabbitmq&#34;</span>);
-activity?.SetTag(<span style="color:#e6db74">&#34;messaging.destination_kind&#34;</span>, <span style="color:#e6db74">&#34;queue&#34;</span>);
-activity?.SetTag(<span style="color:#e6db74">&#34;messaging.rabbitmq.queue&#34;</span>, <span style="color:#e6db74">&#34;sample&#34;</span>);
-</code></pre></div><p>You&rsquo;ll find them on X-Ray too if you drill down on the <em>&ldquo;Publish Message&rdquo;</em> span</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>activity?.SetTag(<span style="color:#e6db74">&#34;messaging.system&#34;</span>, <span style="color:#e6db74">&#34;rabbitmq&#34;</span>);
+</span></span><span style="display:flex;"><span>activity?.SetTag(<span style="color:#e6db74">&#34;messaging.destination_kind&#34;</span>, <span style="color:#e6db74">&#34;queue&#34;</span>);
+</span></span><span style="display:flex;"><span>activity?.SetTag(<span style="color:#e6db74">&#34;messaging.rabbitmq.queue&#34;</span>, <span style="color:#e6db74">&#34;sample&#34;</span>);
+</span></span></code></pre></div><p>You&rsquo;ll find them on X-Ray too if you drill down on the <em>&ldquo;Publish Message&rdquo;</em> span</p>
 <p><img src="/img/x-ray-fulltrace-tags-annotations.png" alt="x-ray-fulltrace-tags-annotations"></p>
 <p>To end this, let&rsquo;s also invoke the <code>/http</code> endpoint from App1 and see an entire trace on XRay.<br>
 Here it is:</p>
@@ -728,26 +728,26 @@ Also, we&rsquo;ll need to create a couple of extra ActivitySources:</p>
 <li>The &ldquo;Dynamo.PutItem&rdquo; ActivitySource will be used for instrumenting the call to Dynamo.</li>
 <li>The &ldquo;SQS.DeleteMessage&rdquo; ActivitySource will be used for instrumenting the call to SQS.</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"> services.AddOpenTelemetryTracing(builder =&gt;
-{
-    <span style="color:#66d9ef">var</span> provider = services.BuildServiceProvider();
-    IConfiguration config = provider
-            .GetRequiredService&lt;IConfiguration&gt;();
-
-    builder.AddAspNetCoreInstrumentation()
-        .AddXRayTraceId()
-        .AddSource(nameof(Worker))
-        .AddSource(<span style="color:#e6db74">&#34;Dynamo.PutItem&#34;</span>)
-        .AddSource(<span style="color:#e6db74">&#34;SQS.DeleteMessage&#34;</span>)
-        .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(<span style="color:#e6db74">&#34;App4&#34;</span>))
-        .AddOtlpExporter(opts =&gt;
-        {
-            opts.Endpoint = <span style="color:#66d9ef">new</span> Uri(hostContext.Configuration[<span style="color:#e6db74">&#34;Otlp:Endpoint&#34;</span>]);
-        });
-});
-
-Sdk.SetDefaultTextMapPropagator(<span style="color:#66d9ef">new</span> AWSXRayPropagator());
-</code></pre></div><p>Inside the <code>Process SQS Message</code> Activity we&rsquo;re going to create 2 new activities.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span> services.AddOpenTelemetryTracing(builder =&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> provider = services.BuildServiceProvider();
+</span></span><span style="display:flex;"><span>    IConfiguration config = provider
+</span></span><span style="display:flex;"><span>            .GetRequiredService&lt;IConfiguration&gt;();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    builder.AddAspNetCoreInstrumentation()
+</span></span><span style="display:flex;"><span>        .AddXRayTraceId()
+</span></span><span style="display:flex;"><span>        .AddSource(nameof(Worker))
+</span></span><span style="display:flex;"><span>        .AddSource(<span style="color:#e6db74">&#34;Dynamo.PutItem&#34;</span>)
+</span></span><span style="display:flex;"><span>        .AddSource(<span style="color:#e6db74">&#34;SQS.DeleteMessage&#34;</span>)
+</span></span><span style="display:flex;"><span>        .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(<span style="color:#e6db74">&#34;App4&#34;</span>))
+</span></span><span style="display:flex;"><span>        .AddOtlpExporter(opts =&gt;
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            opts.Endpoint = <span style="color:#66d9ef">new</span> Uri(hostContext.Configuration[<span style="color:#e6db74">&#34;Otlp:Endpoint&#34;</span>]);
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>});
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Sdk.SetDefaultTextMapPropagator(<span style="color:#66d9ef">new</span> AWSXRayPropagator());
+</span></span></code></pre></div><p>Inside the <code>Process SQS Message</code> Activity we&rsquo;re going to create 2 new activities.</p>
 <ul>
 <li>The <code>Dynamo.PutItem</code> Activity, that wraps the calls to DynamoDb.</li>
 <li>The <code>SQS.DeleteMessage</code> Activity, that wraps the call to the SQS <code>DeleteMessageAsync</code> method.</li>
@@ -755,156 +755,156 @@ Sdk.SetDefaultTextMapPropagator(<span style="color:#66d9ef">new</span> AWSXRayPr
 <p>Those 2 activities will have the <code>Process SQS Message</code> Activity as their Parent Activity.</p>
 <p>Also, we need to set a series of metadata tags if we want X-Ray to recognize each Activity as an AWS Service.</p>
 <p>For the <code>Dynamo.PutItem</code> Activity will set the following tags:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">dynamoActivity?.SetTag(<span style="color:#e6db74">&#34;aws.service&#34;</span>, <span style="color:#e6db74">&#34;DynamoDbV2&#34;</span>);
-dynamoActivity?.SetTag(<span style="color:#e6db74">&#34;aws.operation&#34;</span>, <span style="color:#e6db74">&#34;PutItem&#34;</span>);
-dynamoActivity?.SetTag(<span style="color:#e6db74">&#34;aws.table_name&#34;</span>, <span style="color:#e6db74">&#34;Items&#34;</span>);
-dynamoActivity?.SetTag(<span style="color:#e6db74">&#34;aws.region&#34;</span>, <span style="color:#e6db74">&#34;eu-west-1&#34;</span>);
-</code></pre></div><p>For the <code>SQS.DeleteMessage</code> Activity will set the following tags:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">sqsActivity?.SetTag(<span style="color:#e6db74">&#34;aws.service&#34;</span>, <span style="color:#e6db74">&#34;SQS&#34;</span>);
-sqsActivity?.SetTag(<span style="color:#e6db74">&#34;aws.operation&#34;</span>, <span style="color:#e6db74">&#34;DeleteMessage&#34;</span>);
-sqsActivity?.SetTag(<span style="color:#e6db74">&#34;aws.queue_url&#34;</span>, <span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;SQS:URI&#34;</span>]);
-sqsActivity?.SetTag(<span style="color:#e6db74">&#34;aws.region&#34;</span>, <span style="color:#e6db74">&#34;eu-west-1&#34;</span>);
-<span style="color:#66d9ef">var</span> response = <span style="color:#66d9ef">await</span> <span style="color:#ae81ff">_</span>sqs.DeleteMessageAsync(<span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;SQS:URI&#34;</span>], msg.ReceiptHandle, cancellationToken);
-sqsActivity?.SetTag(<span style="color:#e6db74">&#34;aws.requestId&#34;</span>, response.ResponseMetadata.RequestId);
-sqsActivity?.SetTag(<span style="color:#e6db74">&#34;http.status_code&#34;</span>, (<span style="color:#66d9ef">int</span>)response.HttpStatusCode);
-</code></pre></div><p>Here&rsquo;s how the Worker Service looks like after making those changes:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Worker</span> : BackgroundService
-{
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> ActivitySource Activity = <span style="color:#66d9ef">new</span>(nameof(Worker));
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> ActivitySource ActivityDynamo = <span style="color:#66d9ef">new</span>(<span style="color:#e6db74">&#34;Dynamo.PutItem&#34;</span>);
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> ActivitySource ActivitySQSDelete = <span style="color:#66d9ef">new</span>(<span style="color:#e6db74">&#34;SQS.DeleteMessage&#34;</span>);
-
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger&lt;Worker&gt; <span style="color:#ae81ff">_l</span>ogger;
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IConfiguration <span style="color:#ae81ff">_</span>configuration;
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IAmazonSQS <span style="color:#ae81ff">_</span>sqs;
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IAmazonDynamoDB <span style="color:#ae81ff">_d</span>ynamoDb;
-
-    <span style="color:#66d9ef">public</span> Worker(ILogger&lt;Worker&gt; logger,
-        IConfiguration configuration, 
-        IAmazonSQS sqs, 
-        IAmazonDynamoDB dynamoDb)
-    {
-        <span style="color:#ae81ff">_l</span>ogger = logger;
-        <span style="color:#ae81ff">_</span>configuration = configuration;
-        <span style="color:#ae81ff">_</span>sqs = sqs;
-        <span style="color:#ae81ff">_d</span>ynamoDb = dynamoDb;
-    }
-
-    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">async</span> Task ExecuteAsync(CancellationToken stoppingToken)
-    {
-        <span style="color:#66d9ef">while</span> (!stoppingToken.IsCancellationRequested)
-        {
-            <span style="color:#66d9ef">try</span>
-            {
-                <span style="color:#66d9ef">var</span> request = <span style="color:#66d9ef">new</span> ReceiveMessageRequest
-                {
-                    QueueUrl = <span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;SQS:URI&#34;</span>],
-                    MaxNumberOfMessages = <span style="color:#ae81ff">1</span>,
-                    WaitTimeSeconds = <span style="color:#ae81ff">5</span>,
-                    AttributeNames = <span style="color:#66d9ef">new</span> List&lt;<span style="color:#66d9ef">string</span>&gt; { <span style="color:#e6db74">&#34;All&#34;</span> }
-                };
-
-                <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">await</span> <span style="color:#ae81ff">_</span>sqs.ReceiveMessageAsync(request, stoppingToken);
-
-                <span style="color:#66d9ef">if</span> (result.Messages.Any())
-                {
-                    <span style="color:#66d9ef">await</span> ProcessMessage(result.Messages[<span style="color:#ae81ff">0</span>], stoppingToken);
-                }
-            }
-            <span style="color:#66d9ef">catch</span> (Exception ex)
-            {
-                <span style="color:#ae81ff">_l</span>ogger.LogError(ex.ToString());
-            }
-
-            <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">&#34;Worker running at: {time}&#34;</span>, DateTime.UtcNow);
-            Thread.Sleep(<span style="color:#ae81ff">10000</span>);
-        }
-    }
-
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">async</span> Task ProcessMessage(Message msg, CancellationToken cancellationToken)
-    {
-        <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">&#34;Processing messages from SQS&#34;</span>);
-
-        <span style="color:#66d9ef">var</span> propagator = Propagators.DefaultTextMapPropagator;
-        <span style="color:#66d9ef">var</span> parentContext = propagator.Extract(<span style="color:#66d9ef">default</span>,
-                msg,
-                ActivityHelper.ExtractTraceContextFromMessage);
-
-        Baggage.Current = parentContext.Baggage;
-
-        <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> activity = Activity.StartActivity(<span style="color:#e6db74">&#34;Process SQS Message&#34;</span>, 
-            ActivityKind.Server, 
-            parentContext.ActivityContext))
-        {
-            <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> dynamoActivity = Activity.StartActivity(<span style="color:#e6db74">&#34;Dynamo.PutItem&#34;</span>,
-                        ActivityKind.Client,
-                        activity.Context))
-            {
-                <span style="color:#66d9ef">try</span>
-                {
-                    <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">&#34;Add item to DynamoDb&#34;</span>);
-
-                    dynamoActivity?.SetTag(<span style="color:#e6db74">&#34;aws.service&#34;</span>, <span style="color:#e6db74">&#34;DynamoDbV2&#34;</span>);
-                    dynamoActivity?.SetTag(<span style="color:#e6db74">&#34;aws.operation&#34;</span>, <span style="color:#e6db74">&#34;PutItem&#34;</span>);
-                    dynamoActivity?.SetTag(<span style="color:#e6db74">&#34;aws.table_name&#34;</span>, <span style="color:#e6db74">&#34;Items&#34;</span>);
-                    dynamoActivity?.SetTag(<span style="color:#e6db74">&#34;aws.region&#34;</span>, <span style="color:#e6db74">&#34;eu-west-1&#34;</span>);
-
-                    <span style="color:#66d9ef">var</span> items = Table.LoadTable(<span style="color:#ae81ff">_d</span>ynamoDb, <span style="color:#e6db74">&#34;Items&#34;</span>);
-
-                    <span style="color:#66d9ef">var</span> doc = <span style="color:#66d9ef">new</span> Document
-                    {
-<span style="color:#a6e22e">                        [&#34;Id&#34;]</span> = Guid.NewGuid(),
-<span style="color:#a6e22e">                        [&#34;Message&#34;]</span> = msg.Body
-                    };
-
-                    <span style="color:#66d9ef">await</span> items.PutItemAsync(doc, cancellationToken);
-                }
-                <span style="color:#66d9ef">catch</span> (Exception ex)
-                {
-                    <span style="color:#66d9ef">if</span> (dynamoActivity != <span style="color:#66d9ef">null</span>)
-                    {
-                        ProcessException(dynamoActivity, ex);
-                    }
-                    <span style="color:#66d9ef">throw</span>;
-                }
-            }
-
-            <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> sqsActivity = Activity.StartActivity(<span style="color:#e6db74">&#34;SQS.DeleteMessage&#34;</span>,
-                        ActivityKind.Client,
-                        activity.Context))
-            {
-                <span style="color:#66d9ef">try</span>
-                {
-                     <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">&#34;Delete message from SQS&#34;</span>);
-
-                    sqsActivity?.SetTag(<span style="color:#e6db74">&#34;aws.service&#34;</span>, <span style="color:#e6db74">&#34;SQS&#34;</span>);
-                    sqsActivity?.SetTag(<span style="color:#e6db74">&#34;aws.operation&#34;</span>, <span style="color:#e6db74">&#34;DeleteMessage&#34;</span>);
-                    sqsActivity?.SetTag(<span style="color:#e6db74">&#34;aws.queue_url&#34;</span>, <span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;SQS:URI&#34;</span>]);
-                    sqsActivity?.SetTag(<span style="color:#e6db74">&#34;aws.region&#34;</span>, <span style="color:#e6db74">&#34;eu-west-1&#34;</span>);
-                    <span style="color:#66d9ef">var</span> response = <span style="color:#66d9ef">await</span> <span style="color:#ae81ff">_</span>sqs.DeleteMessageAsync(<span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;SQS:URI&#34;</span>], msg.ReceiptHandle, cancellationToken);
-                    sqsActivity?.SetTag(<span style="color:#e6db74">&#34;aws.requestId&#34;</span>, response.ResponseMetadata.RequestId);
-                    sqsActivity?.SetTag(<span style="color:#e6db74">&#34;http.status_code&#34;</span>, (<span style="color:#66d9ef">int</span>)response.HttpStatusCode);
-              
-                }
-                <span style="color:#66d9ef">catch</span> (Exception ex)
-                {
-                    <span style="color:#66d9ef">if</span> (sqsActivity != <span style="color:#66d9ef">null</span>)
-                    {
-                        ProcessException(sqsActivity, ex);
-                    }
-                    <span style="color:#66d9ef">throw</span>;
-                }
-            }
-        }
-    }
-
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> ProcessException(Activity activity, Exception exception)
-    {
-        activity.RecordException(exception);
-        activity.SetStatus(Status.Error.WithDescription(exception.Message));
-    }
-}
-</code></pre></div><p>After applying those changes if we take a look at X-Ray, we will notice that the extra traces are gone.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>dynamoActivity?.SetTag(<span style="color:#e6db74">&#34;aws.service&#34;</span>, <span style="color:#e6db74">&#34;DynamoDbV2&#34;</span>);
+</span></span><span style="display:flex;"><span>dynamoActivity?.SetTag(<span style="color:#e6db74">&#34;aws.operation&#34;</span>, <span style="color:#e6db74">&#34;PutItem&#34;</span>);
+</span></span><span style="display:flex;"><span>dynamoActivity?.SetTag(<span style="color:#e6db74">&#34;aws.table_name&#34;</span>, <span style="color:#e6db74">&#34;Items&#34;</span>);
+</span></span><span style="display:flex;"><span>dynamoActivity?.SetTag(<span style="color:#e6db74">&#34;aws.region&#34;</span>, <span style="color:#e6db74">&#34;eu-west-1&#34;</span>);
+</span></span></code></pre></div><p>For the <code>SQS.DeleteMessage</code> Activity will set the following tags:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>sqsActivity?.SetTag(<span style="color:#e6db74">&#34;aws.service&#34;</span>, <span style="color:#e6db74">&#34;SQS&#34;</span>);
+</span></span><span style="display:flex;"><span>sqsActivity?.SetTag(<span style="color:#e6db74">&#34;aws.operation&#34;</span>, <span style="color:#e6db74">&#34;DeleteMessage&#34;</span>);
+</span></span><span style="display:flex;"><span>sqsActivity?.SetTag(<span style="color:#e6db74">&#34;aws.queue_url&#34;</span>, <span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;SQS:URI&#34;</span>]);
+</span></span><span style="display:flex;"><span>sqsActivity?.SetTag(<span style="color:#e6db74">&#34;aws.region&#34;</span>, <span style="color:#e6db74">&#34;eu-west-1&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> response = <span style="color:#66d9ef">await</span> <span style="color:#ae81ff">_</span>sqs.DeleteMessageAsync(<span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;SQS:URI&#34;</span>], msg.ReceiptHandle, cancellationToken);
+</span></span><span style="display:flex;"><span>sqsActivity?.SetTag(<span style="color:#e6db74">&#34;aws.requestId&#34;</span>, response.ResponseMetadata.RequestId);
+</span></span><span style="display:flex;"><span>sqsActivity?.SetTag(<span style="color:#e6db74">&#34;http.status_code&#34;</span>, (<span style="color:#66d9ef">int</span>)response.HttpStatusCode);
+</span></span></code></pre></div><p>Here&rsquo;s how the Worker Service looks like after making those changes:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Worker</span> : BackgroundService
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> ActivitySource Activity = <span style="color:#66d9ef">new</span>(nameof(Worker));
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> ActivitySource ActivityDynamo = <span style="color:#66d9ef">new</span>(<span style="color:#e6db74">&#34;Dynamo.PutItem&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> ActivitySource ActivitySQSDelete = <span style="color:#66d9ef">new</span>(<span style="color:#e6db74">&#34;SQS.DeleteMessage&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger&lt;Worker&gt; <span style="color:#ae81ff">_l</span>ogger;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IConfiguration <span style="color:#ae81ff">_</span>configuration;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IAmazonSQS <span style="color:#ae81ff">_</span>sqs;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IAmazonDynamoDB <span style="color:#ae81ff">_d</span>ynamoDb;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> Worker(ILogger&lt;Worker&gt; logger,
+</span></span><span style="display:flex;"><span>        IConfiguration configuration, 
+</span></span><span style="display:flex;"><span>        IAmazonSQS sqs, 
+</span></span><span style="display:flex;"><span>        IAmazonDynamoDB dynamoDb)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">_l</span>ogger = logger;
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">_</span>configuration = configuration;
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">_</span>sqs = sqs;
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">_d</span>ynamoDb = dynamoDb;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">async</span> Task ExecuteAsync(CancellationToken stoppingToken)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> (!stoppingToken.IsCancellationRequested)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">var</span> request = <span style="color:#66d9ef">new</span> ReceiveMessageRequest
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    QueueUrl = <span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;SQS:URI&#34;</span>],
+</span></span><span style="display:flex;"><span>                    MaxNumberOfMessages = <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>                    WaitTimeSeconds = <span style="color:#ae81ff">5</span>,
+</span></span><span style="display:flex;"><span>                    AttributeNames = <span style="color:#66d9ef">new</span> List&lt;<span style="color:#66d9ef">string</span>&gt; { <span style="color:#e6db74">&#34;All&#34;</span> }
+</span></span><span style="display:flex;"><span>                };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">await</span> <span style="color:#ae81ff">_</span>sqs.ReceiveMessageAsync(request, stoppingToken);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (result.Messages.Any())
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">await</span> ProcessMessage(result.Messages[<span style="color:#ae81ff">0</span>], stoppingToken);
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">catch</span> (Exception ex)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#ae81ff">_l</span>ogger.LogError(ex.ToString());
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">&#34;Worker running at: {time}&#34;</span>, DateTime.UtcNow);
+</span></span><span style="display:flex;"><span>            Thread.Sleep(<span style="color:#ae81ff">10000</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">async</span> Task ProcessMessage(Message msg, CancellationToken cancellationToken)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">&#34;Processing messages from SQS&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> propagator = Propagators.DefaultTextMapPropagator;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> parentContext = propagator.Extract(<span style="color:#66d9ef">default</span>,
+</span></span><span style="display:flex;"><span>                msg,
+</span></span><span style="display:flex;"><span>                ActivityHelper.ExtractTraceContextFromMessage);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Baggage.Current = parentContext.Baggage;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> activity = Activity.StartActivity(<span style="color:#e6db74">&#34;Process SQS Message&#34;</span>, 
+</span></span><span style="display:flex;"><span>            ActivityKind.Server, 
+</span></span><span style="display:flex;"><span>            parentContext.ActivityContext))
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> dynamoActivity = Activity.StartActivity(<span style="color:#e6db74">&#34;Dynamo.PutItem&#34;</span>,
+</span></span><span style="display:flex;"><span>                        ActivityKind.Client,
+</span></span><span style="display:flex;"><span>                        activity.Context))
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">&#34;Add item to DynamoDb&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                    dynamoActivity?.SetTag(<span style="color:#e6db74">&#34;aws.service&#34;</span>, <span style="color:#e6db74">&#34;DynamoDbV2&#34;</span>);
+</span></span><span style="display:flex;"><span>                    dynamoActivity?.SetTag(<span style="color:#e6db74">&#34;aws.operation&#34;</span>, <span style="color:#e6db74">&#34;PutItem&#34;</span>);
+</span></span><span style="display:flex;"><span>                    dynamoActivity?.SetTag(<span style="color:#e6db74">&#34;aws.table_name&#34;</span>, <span style="color:#e6db74">&#34;Items&#34;</span>);
+</span></span><span style="display:flex;"><span>                    dynamoActivity?.SetTag(<span style="color:#e6db74">&#34;aws.region&#34;</span>, <span style="color:#e6db74">&#34;eu-west-1&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">var</span> items = Table.LoadTable(<span style="color:#ae81ff">_d</span>ynamoDb, <span style="color:#e6db74">&#34;Items&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">var</span> doc = <span style="color:#66d9ef">new</span> Document
+</span></span><span style="display:flex;"><span>                    {
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">                        [&#34;Id&#34;]</span> = Guid.NewGuid(),
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">                        [&#34;Message&#34;]</span> = msg.Body
+</span></span><span style="display:flex;"><span>                    };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">await</span> items.PutItemAsync(doc, cancellationToken);
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">catch</span> (Exception ex)
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">if</span> (dynamoActivity != <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>                    {
+</span></span><span style="display:flex;"><span>                        ProcessException(dynamoActivity, ex);
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">throw</span>;
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> sqsActivity = Activity.StartActivity(<span style="color:#e6db74">&#34;SQS.DeleteMessage&#34;</span>,
+</span></span><span style="display:flex;"><span>                        ActivityKind.Client,
+</span></span><span style="display:flex;"><span>                        activity.Context))
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                     <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">&#34;Delete message from SQS&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                    sqsActivity?.SetTag(<span style="color:#e6db74">&#34;aws.service&#34;</span>, <span style="color:#e6db74">&#34;SQS&#34;</span>);
+</span></span><span style="display:flex;"><span>                    sqsActivity?.SetTag(<span style="color:#e6db74">&#34;aws.operation&#34;</span>, <span style="color:#e6db74">&#34;DeleteMessage&#34;</span>);
+</span></span><span style="display:flex;"><span>                    sqsActivity?.SetTag(<span style="color:#e6db74">&#34;aws.queue_url&#34;</span>, <span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;SQS:URI&#34;</span>]);
+</span></span><span style="display:flex;"><span>                    sqsActivity?.SetTag(<span style="color:#e6db74">&#34;aws.region&#34;</span>, <span style="color:#e6db74">&#34;eu-west-1&#34;</span>);
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">var</span> response = <span style="color:#66d9ef">await</span> <span style="color:#ae81ff">_</span>sqs.DeleteMessageAsync(<span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;SQS:URI&#34;</span>], msg.ReceiptHandle, cancellationToken);
+</span></span><span style="display:flex;"><span>                    sqsActivity?.SetTag(<span style="color:#e6db74">&#34;aws.requestId&#34;</span>, response.ResponseMetadata.RequestId);
+</span></span><span style="display:flex;"><span>                    sqsActivity?.SetTag(<span style="color:#e6db74">&#34;http.status_code&#34;</span>, (<span style="color:#66d9ef">int</span>)response.HttpStatusCode);
+</span></span><span style="display:flex;"><span>              
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">catch</span> (Exception ex)
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">if</span> (sqsActivity != <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>                    {
+</span></span><span style="display:flex;"><span>                        ProcessException(sqsActivity, ex);
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">throw</span>;
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> ProcessException(Activity activity, Exception exception)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        activity.RecordException(exception);
+</span></span><span style="display:flex;"><span>        activity.SetStatus(Status.Error.WithDescription(exception.Message));
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>After applying those changes if we take a look at X-Ray, we will notice that the extra traces are gone.</p>
 <p>If we invoke the <code>/publish-message</code> endpoint from App1 and take a peek at an entire trace, everything looks good.</p>
 <p><img src="/img/xray-fulltrace-sqs-noise-6.png" alt="xray-fulltrace-sqs-noise-6.png"></p>
 <p>The XRay ServiceMap is still able to recognize that we&rsquo;re doing a series of downstream calls to DynamoDb and SQS thanks to the extra metadata we added on those activies.</p>
@@ -930,96 +930,96 @@ The repository also contains a <strong>docker-compose</strong> file that starts 
 <p>After running the CDK app, you&rsquo;ll find the correct values in the output of the CDK app. Here&rsquo;s an example of how the output of the AWS CDK app looks like:</p>
 <p><img src="/img/aws-otel-cdk-output-censored.png" alt="cdk-app-output-censored"></p>
 <p>And here&rsquo;s an example of how the docker-compose looks like after replacing the placeholder values:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">version</span>: <span style="color:#e6db74">&#39;3.4&#39;</span>
-
-<span style="color:#f92672">networks</span>:
-  <span style="color:#f92672">tracing</span>:
-    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">tracing-network</span>
-    
-<span style="color:#f92672">services</span>:
-
-  <span style="color:#f92672">otel</span>:
-    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">amazon/aws-otel-collector:latest</span>
-    <span style="color:#f92672">command</span>: --<span style="color:#ae81ff">config /config/config.yml</span>
-    <span style="color:#f92672">volumes</span>:
-      - <span style="color:#ae81ff">./aws-otel-collector-config:/config</span>
-    <span style="color:#f92672">environment</span>:
-      - <span style="color:#ae81ff">AWS_ACCESS_KEY_ID=AKIA5S6L5S6L5S6L5S6L</span>
-      - <span style="color:#ae81ff">AWS_SECRET_ACCESS_KEY=GO7BvT9IBLb4NudL0aGO7BvT9IBLb4NudL0a</span>
-      - <span style="color:#ae81ff">AWS_REGION=eu-west-1</span>
-    <span style="color:#f92672">ports</span>:
-      - <span style="color:#ae81ff">4317</span>:<span style="color:#ae81ff">4317</span>
-    <span style="color:#f92672">networks</span>:
-      - <span style="color:#ae81ff">tracing</span>
-
-  <span style="color:#f92672">app1</span>:
-    <span style="color:#f92672">build</span>:
-      <span style="color:#f92672">context</span>: <span style="color:#ae81ff">./App1.WebApi</span>
-    <span style="color:#f92672">ports</span>:
-      - <span style="color:#e6db74">&#34;5000:80&#34;</span>
-    <span style="color:#f92672">networks</span>:
-      - <span style="color:#ae81ff">tracing</span>
-    <span style="color:#f92672">depends_on</span>: 
-      - <span style="color:#ae81ff">otel</span>
-      - <span style="color:#ae81ff">app3</span>
-    <span style="color:#f92672">environment</span>:
-      <span style="color:#f92672">RABBITMQ__HOST</span>: <span style="color:#ae81ff">b-27c79732-ce9d-47dc-8c51-13eec94c267e.mq.eu-west-1.amazonaws.com</span>
-      <span style="color:#f92672">RABBITMQ__USERNAME</span>: <span style="color:#ae81ff">specialguest</span>
-      <span style="color:#f92672">RABBITMQ__PASSWORD</span>: <span style="color:#ae81ff">P@ssw0rd111!</span>
-      <span style="color:#f92672">APP3ENDPOINT</span>: <span style="color:#ae81ff">http://app3/dummy</span>
-      <span style="color:#f92672">OTLP__ENDPOINT</span>: <span style="color:#ae81ff">http://otel:4317</span>
-      <span style="color:#f92672">OTEL_RESOURCE_ATTRIBUTES</span>: <span style="color:#ae81ff">service.name=App1</span>
-
-  <span style="color:#f92672">app2</span>:
-    <span style="color:#f92672">stdin_open</span>: <span style="color:#66d9ef">true</span>
-    <span style="color:#f92672">tty</span>: <span style="color:#66d9ef">true</span>
-    <span style="color:#f92672">build</span>:
-      <span style="color:#f92672">context</span>: <span style="color:#ae81ff">./App2.RabbitConsumer.Console</span>
-    <span style="color:#f92672">networks</span>:
-      - <span style="color:#ae81ff">tracing</span>
-    <span style="color:#f92672">depends_on</span>: 
-      - <span style="color:#ae81ff">otel</span>
-      - <span style="color:#ae81ff">app3</span>
-    <span style="color:#f92672">environment</span>:
-      <span style="color:#f92672">RABBITMQ__HOST</span>: <span style="color:#ae81ff">b-27c79732-ce9d-47dc-8c51-13eec94c267e.mq.eu-west-1.amazonaws.com</span>
-      <span style="color:#f92672">RABBITMQ__USERNAME</span>: <span style="color:#ae81ff">specialguest</span>
-      <span style="color:#f92672">RABBITMQ__PASSWORD</span>: <span style="color:#ae81ff">P@ssw0rd111!</span>
-      <span style="color:#f92672">APP3URIENDPOINT</span>: <span style="color:#ae81ff">http://app3</span>
-      <span style="color:#f92672">OTLP__ENDPOINT</span>: <span style="color:#ae81ff">http://otel:4317</span>
-      <span style="color:#f92672">OTEL_RESOURCE_ATTRIBUTES</span>: <span style="color:#ae81ff">service.name=App2</span>
-
-
-  <span style="color:#f92672">app3</span>:
-    <span style="color:#f92672">build</span>:
-      <span style="color:#f92672">context</span>: <span style="color:#ae81ff">./App3.WebApi</span>
-    <span style="color:#f92672">ports</span>:
-      - <span style="color:#e6db74">&#34;5001:80&#34;</span>
-    <span style="color:#f92672">networks</span>:
-      - <span style="color:#ae81ff">tracing</span>
-    <span style="color:#f92672">depends_on</span>: 
-      - <span style="color:#ae81ff">otel</span>
-    <span style="color:#f92672">environment</span>:
-      <span style="color:#f92672">OTLP__ENDPOINT</span>: <span style="color:#ae81ff">http://otel:4317</span>
-      <span style="color:#f92672">OTEL_RESOURCE_ATTRIBUTES</span>: <span style="color:#ae81ff">service.name=App3</span>
-      <span style="color:#f92672">S3__BUCKETNAME</span>: <span style="color:#ae81ff">aws-otel-demo-s3-bucket-17988</span>
-      <span style="color:#f92672">SQS__URI</span>: <span style="color:#ae81ff">https://sqs.eu-west-1.amazonaws.com/7777777/aws-otel-demo-sqs-queue</span>
-      <span style="color:#f92672">AWS_ACCESS_KEY_ID</span>: <span style="color:#ae81ff">AKIA5S6L5S6L5S6L5S6L</span>
-      <span style="color:#f92672">AWS_SECRET_ACCESS_KEY</span>: <span style="color:#ae81ff">GO7BvT9IBLb4NudL0aGO7BvT9IBLb4NudL0a</span>
-  
-  <span style="color:#f92672">app4</span>:
-    <span style="color:#f92672">build</span>:
-      <span style="color:#f92672">context</span>: <span style="color:#ae81ff">./App4.SqsConsumer.HostedService</span>
-    <span style="color:#f92672">networks</span>:
-      - <span style="color:#ae81ff">tracing</span>
-    <span style="color:#f92672">depends_on</span>: 
-      - <span style="color:#ae81ff">otel</span>
-    <span style="color:#f92672">environment</span>:
-      <span style="color:#f92672">OTLP__ENDPOINT</span>: <span style="color:#ae81ff">http://otel:4317</span>
-      <span style="color:#f92672">OTEL_RESOURCE_ATTRIBUTES</span>: <span style="color:#ae81ff">service.name=App4</span>
-      <span style="color:#f92672">SQS__URI</span>: <span style="color:#ae81ff">https://sqs.eu-west-1.amazonaws.com/7777777/aws-otel-demo-sqs-queue</span>
-      <span style="color:#f92672">AWS_ACCESS_KEY_ID</span>: <span style="color:#ae81ff">AKIA5S6L5S6L5S6L5S6L</span>
-      <span style="color:#f92672">AWS_SECRET_ACCESS_KEY</span>: <span style="color:#ae81ff">GO7BvT9IBLb4NudL0aGO7BvT9IBLb4NudL0a</span>
-</code></pre></div><p>To summarize, if you want to run this demo you&rsquo;ll need to do the following steps:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">version</span>: <span style="color:#e6db74">&#39;3.4&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">tracing</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">tracing-network</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span><span style="color:#f92672">services</span>:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">otel</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">amazon/aws-otel-collector:latest</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">command</span>: --<span style="color:#ae81ff">config /config/config.yml</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">volumes</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">./aws-otel-collector-config:/config</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">environment</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">AWS_ACCESS_KEY_ID=AKIA5S6L5S6L5S6L5S6L</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">AWS_SECRET_ACCESS_KEY=GO7BvT9IBLb4NudL0aGO7BvT9IBLb4NudL0a</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">AWS_REGION=eu-west-1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">4317</span>:<span style="color:#ae81ff">4317</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">tracing</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">app1</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">build</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">context</span>: <span style="color:#ae81ff">./App1.WebApi</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;5000:80&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">tracing</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">depends_on</span>: 
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">otel</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">app3</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">environment</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">RABBITMQ__HOST</span>: <span style="color:#ae81ff">b-27c79732-ce9d-47dc-8c51-13eec94c267e.mq.eu-west-1.amazonaws.com</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">RABBITMQ__USERNAME</span>: <span style="color:#ae81ff">specialguest</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">RABBITMQ__PASSWORD</span>: <span style="color:#ae81ff">P@ssw0rd111!</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">APP3ENDPOINT</span>: <span style="color:#ae81ff">http://app3/dummy</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">OTLP__ENDPOINT</span>: <span style="color:#ae81ff">http://otel:4317</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">OTEL_RESOURCE_ATTRIBUTES</span>: <span style="color:#ae81ff">service.name=App1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">app2</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">stdin_open</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">tty</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">build</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">context</span>: <span style="color:#ae81ff">./App2.RabbitConsumer.Console</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">tracing</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">depends_on</span>: 
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">otel</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">app3</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">environment</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">RABBITMQ__HOST</span>: <span style="color:#ae81ff">b-27c79732-ce9d-47dc-8c51-13eec94c267e.mq.eu-west-1.amazonaws.com</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">RABBITMQ__USERNAME</span>: <span style="color:#ae81ff">specialguest</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">RABBITMQ__PASSWORD</span>: <span style="color:#ae81ff">P@ssw0rd111!</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">APP3URIENDPOINT</span>: <span style="color:#ae81ff">http://app3</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">OTLP__ENDPOINT</span>: <span style="color:#ae81ff">http://otel:4317</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">OTEL_RESOURCE_ATTRIBUTES</span>: <span style="color:#ae81ff">service.name=App2</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">app3</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">build</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">context</span>: <span style="color:#ae81ff">./App3.WebApi</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;5001:80&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">tracing</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">depends_on</span>: 
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">otel</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">environment</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">OTLP__ENDPOINT</span>: <span style="color:#ae81ff">http://otel:4317</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">OTEL_RESOURCE_ATTRIBUTES</span>: <span style="color:#ae81ff">service.name=App3</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">S3__BUCKETNAME</span>: <span style="color:#ae81ff">aws-otel-demo-s3-bucket-17988</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">SQS__URI</span>: <span style="color:#ae81ff">https://sqs.eu-west-1.amazonaws.com/7777777/aws-otel-demo-sqs-queue</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">AWS_ACCESS_KEY_ID</span>: <span style="color:#ae81ff">AKIA5S6L5S6L5S6L5S6L</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">AWS_SECRET_ACCESS_KEY</span>: <span style="color:#ae81ff">GO7BvT9IBLb4NudL0aGO7BvT9IBLb4NudL0a</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">app4</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">build</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">context</span>: <span style="color:#ae81ff">./App4.SqsConsumer.HostedService</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">tracing</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">depends_on</span>: 
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">otel</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">environment</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">OTLP__ENDPOINT</span>: <span style="color:#ae81ff">http://otel:4317</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">OTEL_RESOURCE_ATTRIBUTES</span>: <span style="color:#ae81ff">service.name=App4</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">SQS__URI</span>: <span style="color:#ae81ff">https://sqs.eu-west-1.amazonaws.com/7777777/aws-otel-demo-sqs-queue</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">AWS_ACCESS_KEY_ID</span>: <span style="color:#ae81ff">AKIA5S6L5S6L5S6L5S6L</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">AWS_SECRET_ACCESS_KEY</span>: <span style="color:#ae81ff">GO7BvT9IBLb4NudL0aGO7BvT9IBLb4NudL0a</span>
+</span></span></code></pre></div><p>To summarize, if you want to run this demo you&rsquo;ll need to do the following steps:</p>
 <ul>
 <li>Execute the CDK app on your AWS account.</li>
 <li>Replace the values on the docker-compose.</li>

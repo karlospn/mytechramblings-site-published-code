@@ -177,183 +177,182 @@ Also the <code>GraphQL.WebApi</code> app exposes an scope and the <code>GraphQL.
 <ol>
 <li>On the <code>appsettings.json</code>  configure how the library is going to work with AAD:</li>
 </ol>
-<pre tabindex="0"><code class="language-javascropt" data-lang="javascropt">&quot;AzureAd&quot;: {
-    &quot;Instance&quot;: &quot;https://login.microsoftonline.com/&quot;,
-    &quot;TenantId&quot;: &quot;8a0671e2-3a30-4d30-9cb9-ad709b9c744a&quot;,
-    &quot;Domain&quot;: &quot;carlosponsnoutlook.onmicrosoft.com&quot;,
-    &quot;ClientId&quot;: &quot;2afa13f1-6873-4629-a072-c6a5792e55c3&quot;,
-    &quot;TokenValidationParameters&quot;: {
-      &quot;ValidateIssuer&quot;: true,
-      &quot;ValidIssuer&quot;: &quot;https://sts.windows.net/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/&quot;,
-      &quot;ValidateAudience&quot;: true,
-      &quot;ValidAudiences&quot;: [ &quot;api://2afa13f1-6873-4629-a072-c6a5792e55c3&quot; ]
+<pre tabindex="0"><code class="language-javascropt" data-lang="javascropt">&#34;AzureAd&#34;: {
+    &#34;Instance&#34;: &#34;https://login.microsoftonline.com/&#34;,
+    &#34;TenantId&#34;: &#34;8a0671e2-3a30-4d30-9cb9-ad709b9c744a&#34;,
+    &#34;Domain&#34;: &#34;carlosponsnoutlook.onmicrosoft.com&#34;,
+    &#34;ClientId&#34;: &#34;2afa13f1-6873-4629-a072-c6a5792e55c3&#34;,
+    &#34;TokenValidationParameters&#34;: {
+      &#34;ValidateIssuer&#34;: true,
+      &#34;ValidIssuer&#34;: &#34;https://sts.windows.net/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/&#34;,
+      &#34;ValidateAudience&#34;: true,
+      &#34;ValidAudiences&#34;: [ &#34;api://2afa13f1-6873-4629-a072-c6a5792e55c3&#34; ]
     }
 </code></pre><p>The <code>2afa13f1-6873-4629-a072-c6a5792e55c3</code> GUID is the <code>GraphQL.WebApi</code> clientID. <br>
 Also it is a good practice to always validate the <code>iss</code> and the <code>aud</code> attributes from the JWT Token, that way you can ascertain that the token has been issued by your own identity provider and the target for the token is your API.</p>
 <ol start="2">
 <li>On the <code>Startup.cs</code> register the library dependencies using the <code>AddMicrosoftIdentityWebApi</code> extension method.</li>
 </ol>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
-{
-    ...
-    services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        .AddMicrosoftIdentityWebApi(Configuration);
-    ...
-}
-</code></pre></div><p>With the <code>Microsoft.Web.Identity</code> package put in place the API is capable to authorize your calls using the AAD.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    ...
+</span></span><span style="display:flex;"><span>    services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+</span></span><span style="display:flex;"><span>        .AddMicrosoftIdentityWebApi(Configuration);
+</span></span><span style="display:flex;"><span>    ...
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>With the <code>Microsoft.Web.Identity</code> package put in place the API is capable to authorize your calls using the AAD.</p>
 <ol start="3">
 <li>Now you need to install the <code>HotChocolate.AspNetCore.Authorization</code> nuget package. To install it run the command: <code>dotnet add package HotChocolate.AspNetCore.Authorization --version 11.3.5</code></li>
 </ol>
 <p>This library will allow us to add authorization for our graphQL types, querys and mutations.</p>
 <p>The nice thing about this library is that is built on top of the .NET Core authentication mechanisms, so it will work hand in hand with the <code>Microsoft.Identity.Web</code> library without any extra code.<br>
 Once the <code>HotChocolate.AspNetCore.Authorization</code> is installed you need to register the library dependencies using the <code>AddAuthorization()</code>  extension method:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"> services.AddGraphQLServer()
-         .AddAuthorization();
-</code></pre></div><p>The only thing left is to choose what part of your graphQL API you want to secure. There are 4 options available here:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span> services.AddGraphQLServer()
+</span></span><span style="display:flex;"><span>         .AddAuthorization();
+</span></span></code></pre></div><p>The only thing left is to choose what part of your graphQL API you want to secure. There are 4 options available here:</p>
 <p><strong>Option 1.</strong> You can protect the entire set of queries or mutations. To do it you need to add the <code>Authorize</code> attribute at class level.</p>
 <blockquote>
 <p>Be careful! The <code>Authorize</code> attribute that you need is the one from the <code>HotChocolate.AspNetCore.Authorization</code> assembly. Do not get confused with the other one that comes from the <code>Microsoft.AspNetCore.Authorization</code> assembly.</p>
 </blockquote>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[GraphQLDescription(&#34;Represents the available Book queries.&#34;)]</span>
-<span style="color:#a6e22e">[ExtendObjectType(typeof(Query))]</span>
-<span style="color:#a6e22e">[Authorize]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BookQuery</span>
-{
-    <span style="color:#66d9ef">public</span>  IEnumerable&lt;Book&gt; GetBooks(
-<span style="color:#a6e22e">        [Service]</span> IBookRepository repository)
-    {
-        <span style="color:#66d9ef">return</span> repository.GetBooks();
-    }
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">    [Authorize]</span>
-    <span style="color:#66d9ef">public</span> IEnumerable&lt;Book&gt; GetBooksByAuthor(
-<span style="color:#a6e22e">        [Service]</span> IBookRepository repository,
-        <span style="color:#66d9ef">string</span> author)
-    {
-        <span style="color:#66d9ef">return</span> repository.GetBookByAuthor(author);
-    }
-}
-</code></pre></div><p><strong>Option 2.</strong> You can protect concrete queries or mutations. To do it you need to add the <code>Authorize</code> attribute at method level.<br>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[GraphQLDescription(&#34;Represents the available Book queries.&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[ExtendObjectType(typeof(Query))]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Authorize]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BookQuery</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span>  IEnumerable&lt;Book&gt; GetBooks(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [Service]</span> IBookRepository repository)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> repository.GetBooks();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Authorize]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> IEnumerable&lt;Book&gt; GetBooksByAuthor(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [Service]</span> IBookRepository repository,
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">string</span> author)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> repository.GetBookByAuthor(author);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>Option 2.</strong> You can protect concrete queries or mutations. To do it you need to add the <code>Authorize</code> attribute at method level.<br>
 In this example only the <code>GetBooks</code> query is protected.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[GraphQLDescription(&#34;Represents the available Book queries.&#34;)]</span>
-<span style="color:#a6e22e">[ExtendObjectType(typeof(Query))]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BookQuery</span>
-{
-<span style="color:#a6e22e">    [Authorize]</span>
-    <span style="color:#66d9ef">public</span>  IEnumerable&lt;Book&gt; GetBooks(
-<span style="color:#a6e22e">        [Service]</span> IBookRepository repository)
-    {
-        <span style="color:#66d9ef">return</span> repository.GetBooks();
-    }
-
-    <span style="color:#66d9ef">public</span> IEnumerable&lt;Book&gt; GetBooksByAuthor(
-<span style="color:#a6e22e">        [Service]</span> IBookRepository repository,
-        <span style="color:#66d9ef">string</span> author)
-    {
-        <span style="color:#66d9ef">return</span> repository.GetBookByAuthor(author);
-    }
-}
-</code></pre></div><p><strong>Option 3.</strong> You can protect an object type. In that case you&rsquo;ll need to be authorized only if you want to execute a query that returns this particular object type.<br>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[GraphQLDescription(&#34;Represents the available Book queries.&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[ExtendObjectType(typeof(Query))]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BookQuery</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Authorize]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span>  IEnumerable&lt;Book&gt; GetBooks(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [Service]</span> IBookRepository repository)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> repository.GetBooks();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> IEnumerable&lt;Book&gt; GetBooksByAuthor(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [Service]</span> IBookRepository repository,
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">string</span> author)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> repository.GetBookByAuthor(author);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>Option 3.</strong> You can protect an object type. In that case you&rsquo;ll need to be authorized only if you want to execute a query that returns this particular object type.<br>
 To do it you need to add the <code>Authorize</code> attribute in the object type if you&rsquo;re using an annotation based approach.</p>
 <p>In the example below I&rsquo;m protecting the <code>Book</code> object type. If I try to run a query that returns a list of books without the authorization header it will return an error.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[Authorize]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Book</span>
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Author { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Title { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">double</span> Price { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> NumberOfPages { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-}
-</code></pre></div><p>If you&rsquo;re using a code-first based approach instead of the annotation based approach, you&rsquo;ll need to create a new class inheriting from <code>ObjectType&lt;T&gt;</code> and define it there.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BookType</span> : ObjectType&lt;Book&gt;
-{
-    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">void</span> Configure(IObjectTypeDescriptor&lt;Book&gt; descriptor)
-    {
-        descriptor.Authorize();
-
-        descriptor.Description(<span style="color:#e6db74">&#34;Represents a book entity.&#34;</span>);
-
-        descriptor
-            .Field(c =&gt; c.Author)
-            .Description(<span style="color:#e6db74">&#34;The author of the book.&#34;</span>);
-
-        descriptor
-            .Field(c =&gt; c.Title)
-            .Description(<span style="color:#e6db74">&#34;The title of the book.&#34;</span>);
-
-        descriptor
-            .Field(c =&gt; c.Price)
-            .Description(<span style="color:#e6db74">&#34;Book price on Euros.&#34;</span>);
-
-        descriptor
-            .Field(c =&gt; c.NumberOfPages)
-            .Description(<span style="color:#e6db74">&#34;How many pages the book has.&#34;</span>);
-
-        <span style="color:#66d9ef">base</span>.Configure(descriptor);
-    }
-}
-</code></pre></div><p><strong>Option 4.</strong> You can protect a concrete object attribute. In that case you&rsquo;ll need to be authorized only if you want to execute a query that returns this particular attribute.<br>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[Authorize]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Book</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Author { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Title { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">double</span> Price { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> NumberOfPages { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>If you&rsquo;re using a code-first based approach instead of the annotation based approach, you&rsquo;ll need to create a new class inheriting from <code>ObjectType&lt;T&gt;</code> and define it there.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BookType</span> : ObjectType&lt;Book&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">void</span> Configure(IObjectTypeDescriptor&lt;Book&gt; descriptor)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        descriptor.Authorize();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        descriptor.Description(<span style="color:#e6db74">&#34;Represents a book entity.&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        descriptor
+</span></span><span style="display:flex;"><span>            .Field(c =&gt; c.Author)
+</span></span><span style="display:flex;"><span>            .Description(<span style="color:#e6db74">&#34;The author of the book.&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        descriptor
+</span></span><span style="display:flex;"><span>            .Field(c =&gt; c.Title)
+</span></span><span style="display:flex;"><span>            .Description(<span style="color:#e6db74">&#34;The title of the book.&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        descriptor
+</span></span><span style="display:flex;"><span>            .Field(c =&gt; c.Price)
+</span></span><span style="display:flex;"><span>            .Description(<span style="color:#e6db74">&#34;Book price on Euros.&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        descriptor
+</span></span><span style="display:flex;"><span>            .Field(c =&gt; c.NumberOfPages)
+</span></span><span style="display:flex;"><span>            .Description(<span style="color:#e6db74">&#34;How many pages the book has.&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">base</span>.Configure(descriptor);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>Option 4.</strong> You can protect a concrete object attribute. In that case you&rsquo;ll need to be authorized only if you want to execute a query that returns this particular attribute.<br>
 To do it you need to add the <code>Authorize</code> attribute at attribute level if you&rsquo;re using an annotation based approach.</p>
 <p>In the example below I&rsquo;m protecting the <code>Title</code> attribute of the <code>Book</code> object type. If I try to run a query that returns a list of books without the authorization header and I ask to get back the title field it will return an error. <br>
 If I run the same query but I don&rsquo;t ask for the title field it would work.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Book</span>
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Author { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-<span style="color:#a6e22e">    [Authorize]</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Title { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">double</span> Price { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> NumberOfPages { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-}
-
-</code></pre></div><p>If you&rsquo;re using a code-first based approach instead of the annotation based approach, you&rsquo;ll need to create a new class inheriting from <code>ObjectType&lt;T&gt;</code> and define it there.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BookType</span> : ObjectType&lt;Book&gt;
-{
-    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">void</span> Configure(IObjectTypeDescriptor&lt;Book&gt; descriptor)
-    {
-        descriptor.Description(<span style="color:#e6db74">&#34;Represents a book entity.&#34;</span>);
-
-        descriptor
-            .Field(c =&gt; c.Author)
-            .Description(<span style="color:#e6db74">&#34;The author of the book.&#34;</span>);
-
-        descriptor
-            .Field(c =&gt; c.Title)
-            .Description(<span style="color:#e6db74">&#34;The title of the book.&#34;</span>)
-            .Authorize();
-
-        descriptor
-            .Field(c =&gt; c.Price)
-            .Description(<span style="color:#e6db74">&#34;Book price on Euros.&#34;</span>);
-
-        descriptor
-            .Field(c =&gt; c.NumberOfPages)
-            .Description(<span style="color:#e6db74">&#34;How many pages the book has.&#34;</span>);
-
-        <span style="color:#66d9ef">base</span>.Configure(descriptor);
-    }
-}
-</code></pre></div><h2 id="testing-the-graphql-api">Testing the graphQL API</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Book</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Author { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Authorize]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Title { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">double</span> Price { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> NumberOfPages { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>If you&rsquo;re using a code-first based approach instead of the annotation based approach, you&rsquo;ll need to create a new class inheriting from <code>ObjectType&lt;T&gt;</code> and define it there.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BookType</span> : ObjectType&lt;Book&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">void</span> Configure(IObjectTypeDescriptor&lt;Book&gt; descriptor)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        descriptor.Description(<span style="color:#e6db74">&#34;Represents a book entity.&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        descriptor
+</span></span><span style="display:flex;"><span>            .Field(c =&gt; c.Author)
+</span></span><span style="display:flex;"><span>            .Description(<span style="color:#e6db74">&#34;The author of the book.&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        descriptor
+</span></span><span style="display:flex;"><span>            .Field(c =&gt; c.Title)
+</span></span><span style="display:flex;"><span>            .Description(<span style="color:#e6db74">&#34;The title of the book.&#34;</span>)
+</span></span><span style="display:flex;"><span>            .Authorize();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        descriptor
+</span></span><span style="display:flex;"><span>            .Field(c =&gt; c.Price)
+</span></span><span style="display:flex;"><span>            .Description(<span style="color:#e6db74">&#34;Book price on Euros.&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        descriptor
+</span></span><span style="display:flex;"><span>            .Field(c =&gt; c.NumberOfPages)
+</span></span><span style="display:flex;"><span>            .Description(<span style="color:#e6db74">&#34;How many pages the book has.&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">base</span>.Configure(descriptor);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="testing-the-graphql-api">Testing the graphQL API</h2>
 <p>If we try to invoke the graphQL API without the authorization header:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">curl -g -k -X POST -H <span style="color:#e6db74">&#34;Content-Type: application/json&#34;</span> <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>-d <span style="color:#e6db74">&#39;{&#34;query&#34;:&#34;query{ books { title author}}&#34;}&#39;</span> <span style="color:#ae81ff">\ </span>
-https://localhost:5001/graphql
-</code></pre></div><p>Then the API responds with an error:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;errors&#34;</span>:<span style="color:#f92672">[{</span><span style="color:#e6db74">&#34;message&#34;</span>:<span style="color:#e6db74">&#34;The current user is not authorized to access this resource.&#34;</span>,<span style="color:#e6db74">&#34;locations&#34;</span>:<span style="color:#f92672">[{</span><span style="color:#e6db74">&#34;line&#34;</span>:1,<span style="color:#e6db74">&#34;column&#34;</span>:8<span style="color:#f92672">}]</span>,<span style="color:#e6db74">&#34;path&#34;</span>:<span style="color:#f92672">[</span><span style="color:#e6db74">&#34;books&#34;</span><span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;extensions&#34;</span>:<span style="color:#f92672">{</span><span style="color:#e6db74">&#34;code&#34;</span>:<span style="color:#e6db74">&#34;AUTH_NOT_AUTHENTICATED&#34;</span><span style="color:#f92672">}}]</span>,<span style="color:#e6db74">&#34;data&#34;</span>:<span style="color:#f92672">{</span><span style="color:#e6db74">&#34;books&#34;</span>:null<span style="color:#f92672">}}</span>
-</code></pre></div><p>Now let&rsquo;s fetch a token from the AAD. One of fastest ways to do it is by starting an implicit flow by building the URI.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">https://login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/oauth2/v2.0/authorize
-?client_id<span style="color:#f92672">=</span>a895c416-cfb9-4df0-9051-190febbbdf64
-&amp;redirect_uri<span style="color:#f92672">=</span>https%3A%2F%2Foidcdebugger.com%2Fdebug
-&amp;scope<span style="color:#f92672">=</span>api%3A%2F%2F2afa13f1-6873-4629-a072-c6a5792e55c3%2Fissuer.readwrite
-&amp;response_type<span style="color:#f92672">=</span>token
-&amp;response_mode<span style="color:#f92672">=</span>form_post&amp;nonce<span style="color:#f92672">=</span>w6esugjg4wf
-</code></pre></div><p>And when invoking the API with the Authorization header</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">curl -g -k -X POST -H <span style="color:#e6db74">&#34;Content-Type: application/json&#34;</span> <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>-H <span style="color:#e6db74">&#34;Authorization: Bearer add-your-token-here&#34;</span> <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>-d <span style="color:#e6db74">&#39;{&#34;query&#34;:&#34;query{ books { title author}}&#34;}&#39;</span> <span style="color:#ae81ff">\ </span>
-https://localhost:5001/graphql
-</code></pre></div><p>It responds with the expected result:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;data&#34;</span>:<span style="color:#f92672">{</span><span style="color:#e6db74">&#34;books&#34;</span>:<span style="color:#f92672">[{</span><span style="color:#e6db74">&#34;title&#34;</span>:<span style="color:#e6db74">&#34;Learning Go&#34;</span>,<span style="color:#e6db74">&#34;author&#34;</span>:<span style="color:#e6db74">&#34;Jon Bodner&#34;</span><span style="color:#f92672">}</span>,<span style="color:#f92672">{</span><span style="color:#e6db74">&#34;title&#34;</span>:<span style="color:#e6db74">&#34;Python Crash Course&#34;</span>,<span style="color:#e6db74">&#34;author&#34;</span>:<span style="color:#e6db74">&#34;Eric Matthes&#34;</span><span style="color:#f92672">}</span>,<span style="color:#f92672">{</span><span style="color:#e6db74">&#34;title&#34;</span>:<span style="color:#e6db74">&#34;Clean Architecture&#34;</span>,<span style="color:#e6db74">&#34;author&#34;</span>:<span style="color:#e6db74">&#34;Robert C Martin&#34;</span><span style="color:#f92672">}]}}</span>
-</code></pre></div><h1 id="2-what-are-the-introspection-queries-and-how-to-secure-them">2. What are the introspection queries and how to secure them.</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>curl -g -k -X POST -H <span style="color:#e6db74">&#34;Content-Type: application/json&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-d <span style="color:#e6db74">&#39;{&#34;query&#34;:&#34;query{ books { title author}}&#34;}&#39;</span> <span style="color:#ae81ff">\ </span>
+</span></span><span style="display:flex;"><span>https://localhost:5001/graphql
+</span></span></code></pre></div><p>Then the API responds with an error:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;errors&#34;</span>:<span style="color:#f92672">[{</span><span style="color:#e6db74">&#34;message&#34;</span>:<span style="color:#e6db74">&#34;The current user is not authorized to access this resource.&#34;</span>,<span style="color:#e6db74">&#34;locations&#34;</span>:<span style="color:#f92672">[{</span><span style="color:#e6db74">&#34;line&#34;</span>:1,<span style="color:#e6db74">&#34;column&#34;</span>:8<span style="color:#f92672">}]</span>,<span style="color:#e6db74">&#34;path&#34;</span>:<span style="color:#f92672">[</span><span style="color:#e6db74">&#34;books&#34;</span><span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;extensions&#34;</span>:<span style="color:#f92672">{</span><span style="color:#e6db74">&#34;code&#34;</span>:<span style="color:#e6db74">&#34;AUTH_NOT_AUTHENTICATED&#34;</span><span style="color:#f92672">}}]</span>,<span style="color:#e6db74">&#34;data&#34;</span>:<span style="color:#f92672">{</span><span style="color:#e6db74">&#34;books&#34;</span>:null<span style="color:#f92672">}}</span>
+</span></span></code></pre></div><p>Now let&rsquo;s fetch a token from the AAD. One of fastest ways to do it is by starting an implicit flow by building the URI.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>https://login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/oauth2/v2.0/authorize
+</span></span><span style="display:flex;"><span>?client_id<span style="color:#f92672">=</span>a895c416-cfb9-4df0-9051-190febbbdf64
+</span></span><span style="display:flex;"><span>&amp;redirect_uri<span style="color:#f92672">=</span>https%3A%2F%2Foidcdebugger.com%2Fdebug
+</span></span><span style="display:flex;"><span>&amp;scope<span style="color:#f92672">=</span>api%3A%2F%2F2afa13f1-6873-4629-a072-c6a5792e55c3%2Fissuer.readwrite
+</span></span><span style="display:flex;"><span>&amp;response_type<span style="color:#f92672">=</span>token
+</span></span><span style="display:flex;"><span>&amp;response_mode<span style="color:#f92672">=</span>form_post&amp;nonce<span style="color:#f92672">=</span>w6esugjg4wf
+</span></span></code></pre></div><p>And when invoking the API with the Authorization header</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>curl -g -k -X POST -H <span style="color:#e6db74">&#34;Content-Type: application/json&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-H <span style="color:#e6db74">&#34;Authorization: Bearer add-your-token-here&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-d <span style="color:#e6db74">&#39;{&#34;query&#34;:&#34;query{ books { title author}}&#34;}&#39;</span> <span style="color:#ae81ff">\ </span>
+</span></span><span style="display:flex;"><span>https://localhost:5001/graphql
+</span></span></code></pre></div><p>It responds with the expected result:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;data&#34;</span>:<span style="color:#f92672">{</span><span style="color:#e6db74">&#34;books&#34;</span>:<span style="color:#f92672">[{</span><span style="color:#e6db74">&#34;title&#34;</span>:<span style="color:#e6db74">&#34;Learning Go&#34;</span>,<span style="color:#e6db74">&#34;author&#34;</span>:<span style="color:#e6db74">&#34;Jon Bodner&#34;</span><span style="color:#f92672">}</span>,<span style="color:#f92672">{</span><span style="color:#e6db74">&#34;title&#34;</span>:<span style="color:#e6db74">&#34;Python Crash Course&#34;</span>,<span style="color:#e6db74">&#34;author&#34;</span>:<span style="color:#e6db74">&#34;Eric Matthes&#34;</span><span style="color:#f92672">}</span>,<span style="color:#f92672">{</span><span style="color:#e6db74">&#34;title&#34;</span>:<span style="color:#e6db74">&#34;Clean Architecture&#34;</span>,<span style="color:#e6db74">&#34;author&#34;</span>:<span style="color:#e6db74">&#34;Robert C Martin&#34;</span><span style="color:#f92672">}]}}</span>
+</span></span></code></pre></div><h1 id="2-what-are-the-introspection-queries-and-how-to-secure-them">2. What are the introspection queries and how to secure them.</h1>
 <p>The introspection query enables anyone to query a GraphQL server for information about the  schema.<br>
 With this query you can gain information about the directives, available types, and available operation types.</p>
 <p>The introspection query is used primary as a discovery mechanism.</p>
@@ -363,60 +362,60 @@ With this query you can gain information about the directives, available types, 
 <p><strong>Option 1. Protect the introspection query using a custom header.</strong></p>
 <p>With this option we&rsquo;re allowing introspection queries only if the request contains a certain custom header.</p>
 <p>You&rsquo;ll need to build a custom interceptor that intercepts any Http request and inspects if the header is present or not. Here&rsquo;s how it looks.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ConditionalIntrospectionHttpRequestInterceptor</span> : DefaultHttpRequestInterceptor
-{
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IConfiguration <span style="color:#ae81ff">_</span>configuration;
-
-    <span style="color:#66d9ef">public</span> ConditionalIntrospectionHttpRequestInterceptor(IConfiguration configuration)
-    {
-        <span style="color:#ae81ff">_</span>configuration = configuration;
-    }
-
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">async</span> ValueTask OnCreateAsync(HttpContext context,
-        IRequestExecutor requestExecutor,
-        IQueryRequestBuilder requestBuilder,
-        CancellationToken cancellationToken)
-    {
-        <span style="color:#66d9ef">string</span> header = context.Request.Headers[<span style="color:#e6db74">&#34;X-INTROSPECTION-QUERY&#34;</span>];
-        <span style="color:#66d9ef">var</span> key = <span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;IntrospectionKey&#34;</span>];
-
-        <span style="color:#66d9ef">if</span> (header != <span style="color:#66d9ef">null</span> &amp;&amp;
-            key != <span style="color:#66d9ef">null</span> &amp;&amp;
-            header.Equals(key, StringComparison.InvariantCultureIgnoreCase))
-            requestBuilder.AllowIntrospection();
-        <span style="color:#66d9ef">else</span>
-            requestBuilder.SetIntrospectionNotAllowedMessage(<span style="color:#e6db74">$&#34;The introspection query has been disabled.&#34;</span>);
-
-        <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">base</span>.OnCreateAsync(context, requestExecutor, requestBuilder, cancellationToken);
-    }
-}
-</code></pre></div><p>Also you need the register the dependencies like these:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">services.AddGraphQLServer()
-            .AddIntrospectionAllowedRule()
-            .AddHttpRequestInterceptor(<span style="color:#ae81ff">_</span> =&gt; <span style="color:#66d9ef">new</span> ConditionalIntrospectionHttpRequestInterceptor(configuration));
-</code></pre></div><p>The <code>AddIntrospectionAllowedRule()</code> extension method is blocking each and every one of the introspection queries that the server receives. And with the <code>ConditionalIntrospectionHttpRequestInterceptor</code> we are only letting through the introspection queries that contains our custom header.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ConditionalIntrospectionHttpRequestInterceptor</span> : DefaultHttpRequestInterceptor
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IConfiguration <span style="color:#ae81ff">_</span>configuration;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> ConditionalIntrospectionHttpRequestInterceptor(IConfiguration configuration)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">_</span>configuration = configuration;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">async</span> ValueTask OnCreateAsync(HttpContext context,
+</span></span><span style="display:flex;"><span>        IRequestExecutor requestExecutor,
+</span></span><span style="display:flex;"><span>        IQueryRequestBuilder requestBuilder,
+</span></span><span style="display:flex;"><span>        CancellationToken cancellationToken)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">string</span> header = context.Request.Headers[<span style="color:#e6db74">&#34;X-INTROSPECTION-QUERY&#34;</span>];
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> key = <span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;IntrospectionKey&#34;</span>];
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (header != <span style="color:#66d9ef">null</span> &amp;&amp;
+</span></span><span style="display:flex;"><span>            key != <span style="color:#66d9ef">null</span> &amp;&amp;
+</span></span><span style="display:flex;"><span>            header.Equals(key, StringComparison.InvariantCultureIgnoreCase))
+</span></span><span style="display:flex;"><span>            requestBuilder.AllowIntrospection();
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>            requestBuilder.SetIntrospectionNotAllowedMessage(<span style="color:#e6db74">$&#34;The introspection query has been disabled.&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">base</span>.OnCreateAsync(context, requestExecutor, requestBuilder, cancellationToken);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Also you need the register the dependencies like these:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>services.AddGraphQLServer()
+</span></span><span style="display:flex;"><span>            .AddIntrospectionAllowedRule()
+</span></span><span style="display:flex;"><span>            .AddHttpRequestInterceptor(<span style="color:#ae81ff">_</span> =&gt; <span style="color:#66d9ef">new</span> ConditionalIntrospectionHttpRequestInterceptor(configuration));
+</span></span></code></pre></div><p>The <code>AddIntrospectionAllowedRule()</code> extension method is blocking each and every one of the introspection queries that the server receives. And with the <code>ConditionalIntrospectionHttpRequestInterceptor</code> we are only letting through the introspection queries that contains our custom header.</p>
 <p><strong>Option 2. Protect the introspection query with AAD.</strong></p>
 <p>This is more of a side effect when trying to protect the entire query set. In the previous section I have showed you that you could protect the entire query or mutation set by placing the <code>Authorize</code> attribute at class level. Like this:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[GraphQLDescription(&#34;Represents the available Book queries.&#34;)]</span>
-<span style="color:#a6e22e">[ExtendObjectType(typeof(Query))]</span>
-<span style="color:#a6e22e">[Authorize]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BookQuery</span>
-{
-    <span style="color:#66d9ef">public</span>  IEnumerable&lt;Book&gt; GetBooks(
-<span style="color:#a6e22e">        [Service]</span> IBookRepository repository)
-    {
-        <span style="color:#66d9ef">return</span> repository.GetBooks();
-    }
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">    [Authorize]</span>
-    <span style="color:#66d9ef">public</span> IEnumerable&lt;Book&gt; GetBooksByAuthor(
-<span style="color:#a6e22e">        [Service]</span> IBookRepository repository,
-        <span style="color:#66d9ef">string</span> author)
-    {
-        <span style="color:#66d9ef">return</span> repository.GetBookByAuthor(author);
-    }
-}
-</code></pre></div><p>Placing the <code>Authorize</code> attribute at class level will protect the entire query set including the introspection query.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[GraphQLDescription(&#34;Represents the available Book queries.&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[ExtendObjectType(typeof(Query))]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Authorize]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BookQuery</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span>  IEnumerable&lt;Book&gt; GetBooks(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [Service]</span> IBookRepository repository)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> repository.GetBooks();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Authorize]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> IEnumerable&lt;Book&gt; GetBooksByAuthor(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [Service]</span> IBookRepository repository,
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">string</span> author)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> repository.GetBookByAuthor(author);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Placing the <code>Authorize</code> attribute at class level will protect the entire query set including the introspection query.</p>
 <h1 id="3-how-to-call-a-protected-graphql-api-using-the-microsoftwebclient-nuget-package">3. How to call a protected graphQL api using the Microsoft.Web.Client nuget package.</h1>
 <p>The HotChocolate suite has a graphQL client named <a href="https://chillicream.com/docs/strawberryshake"><code>Strawberry Shake</code></a>, but it&rsquo;s a very opinionated client.<br>
 To use it you&rsquo;ll need to:</p>
@@ -437,119 +436,118 @@ To use it you&rsquo;ll need to:</p>
 <ol>
 <li>On the <code>appsettings.json</code>  I need to configure how the library is going to work with AAD:</li>
 </ol>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">  <span style="color:#e6db74">&#34;AzureAd&#34;</span><span style="color:#f92672">:</span> {
-    <span style="color:#e6db74">&#34;Authority&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;https://login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a&#34;</span>,
-    <span style="color:#e6db74">&#34;ClientId&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;a895c416-cfb9-4df0-9051-190febbbdf64&#34;</span>,
-    <span style="color:#e6db74">&#34;ClientSecret&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;J.6l-VR2lefhipuJSB&#34;</span>,
-    <span style="color:#e6db74">&#34;Scopes&#34;</span><span style="color:#f92672">:</span> [ <span style="color:#e6db74">&#34;api://2afa13f1-6873-4629-a072-c6a5792e55c3/.default&#34;</span> ]
-  } 
-</code></pre></div><p>As I have stated in the previous section I have registered in my AAD an app called  <code>GraphQL.WebApi</code> and another one called <code>GraphQL.Client</code>. <br>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;AzureAd&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;Authority&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;https://login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;ClientId&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;a895c416-cfb9-4df0-9051-190febbbdf64&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;ClientSecret&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;J.6l-VR2lefhipuJSB&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;Scopes&#34;</span><span style="color:#f92672">:</span> [ <span style="color:#e6db74">&#34;api://2afa13f1-6873-4629-a072-c6a5792e55c3/.default&#34;</span> ]
+</span></span><span style="display:flex;"><span>  } 
+</span></span></code></pre></div><p>As I have stated in the previous section I have registered in my AAD an app called  <code>GraphQL.WebApi</code> and another one called <code>GraphQL.Client</code>. <br>
 The <code>a895c416-cfb9-4df0-9051-190febbbdf64</code> is the <code>GraphQL.Client</code> ClientId and the <code>api://2afa13f1-6873-4629-a072-c6a5792e55c3/.default</code> is the default scope from the <code>GraphQL.WebApi</code>.</p>
 <ol start="2">
 <li>Register the <code>Microsoft.Identity.Client</code> configuration and the <code>graphQL.Client</code> implementation into the DI container:</li>
 </ol>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">services.AddScoped&lt;IGraphQLClient&gt;(sp =&gt;
-    <span style="color:#66d9ef">new</span> GraphQLHttpClient(<span style="color:#66d9ef">new</span> GraphQLHttpClientOptions
-        {
-            EndPoint = <span style="color:#66d9ef">new</span> Uri(Configuration[<span style="color:#e6db74">&#34;GraphQLURI&#34;</span>]),
-            HttpMessageHandler = <span style="color:#66d9ef">new</span> AuthorizationHandler(       
-                sp.GetRequiredService&lt;IOptions&lt;AzureAdConfig&gt;&gt;()),
-
-        }, <span style="color:#66d9ef">new</span> SystemTextJsonSerializer())
-);
-
-services.AddOptions&lt;AzureAdConfig&gt;()
-    .Bind(Configuration.GetSection(<span style="color:#e6db74">&#34;AzureAd&#34;</span>));
-
-</code></pre></div><p>To fetch a JWT token from my AAD I&rsquo;ll be using an <code>HttpMessageHandler</code>. The implementation of the <code>DelegatingHandler</code> looks like this:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AuthorizationHandler</span> : DelegatingHandler
-{
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IOptions&lt;AzureAdConfig&gt; <span style="color:#ae81ff">_</span>config;
-
-    <span style="color:#66d9ef">public</span> AuthorizationHandler(IOptions&lt;AzureAdConfig&gt; config, HttpMessageHandler inner = <span style="color:#66d9ef">null</span>) 
-        : <span style="color:#66d9ef">base</span>(inner ?? <span style="color:#66d9ef">new</span> HttpClientHandler())
-    {
-        <span style="color:#ae81ff">_</span>config = config;
-    }
-
-    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">async</span> Task&lt;HttpResponseMessage&gt; SendAsync(
-        HttpRequestMessage request, 
-        CancellationToken cancellationToken)
-    {
-        <span style="color:#66d9ef">var</span> app = ConfidentialClientApplicationBuilder.Create(<span style="color:#ae81ff">_</span>config.Value.ClientId)
-            .WithClientSecret(<span style="color:#ae81ff">_</span>config.Value.ClientSecret)
-            .WithAuthority(<span style="color:#66d9ef">new</span> Uri(<span style="color:#ae81ff">_</span>config.Value.Authority))
-            .Build();
-
-        <span style="color:#66d9ef">var</span> token = <span style="color:#66d9ef">await</span> app.AcquireTokenForClient(<span style="color:#ae81ff">_</span>config.Value.Scopes)
-            .ExecuteAsync(cancellationToken);
-
-        request.Headers.Authorization = <span style="color:#66d9ef">new</span> AuthenticationHeaderValue(<span style="color:#e6db74">&#34;bearer&#34;</span>, token.AccessToken);
-        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">base</span>.SendAsync(request, cancellationToken);
-    }
-}
-</code></pre></div><p>With everything put in place it&rsquo;s time to create a graphQL query, like this one:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">GetBooksByAuthor</span>
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> Value =
-        <span style="color:#e6db74">@&#34;
-</span><span style="color:#e6db74">        query GetByAuthor ($author: String!) {
-</span><span style="color:#e6db74">            getBooksByAuthor: booksByAuthor(author: $author) {
-</span><span style="color:#e6db74">                author
-</span><span style="color:#e6db74">                title
-</span><span style="color:#e6db74">                numberOfPages
-</span><span style="color:#e6db74">                price
-</span><span style="color:#e6db74">            }
-</span><span style="color:#e6db74">        }&#34;</span>;
-}
-</code></pre></div><p>And try to call the protected graphQL API, like this:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[ApiController]</span>
-<span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
-</span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BooksController</span> : ControllerBase
-{
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger&lt;BooksController&gt; <span style="color:#ae81ff">_l</span>ogger;
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IGraphQLClient <span style="color:#ae81ff">_</span>client;
-
-    <span style="color:#66d9ef">public</span> BooksController(
-        ILogger&lt;BooksController&gt; logger, 
-        IGraphQLClient client)
-    {
-        <span style="color:#ae81ff">_l</span>ogger = logger;
-        <span style="color:#ae81ff">_</span>client = client;
-    }
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">    [HttpGet(&#34;{author}&#34;)]</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;ActionResult&gt; GetBooksByAuthor(
-<span style="color:#a6e22e">        [FromRoute]</span><span style="color:#66d9ef">string</span> author)
-    {
-        <span style="color:#66d9ef">try</span>
-        {
-            <span style="color:#66d9ef">var</span> query = <span style="color:#66d9ef">new</span> GraphQLRequest
-            {
-                Query = Queries.GetBooksByAuthor.Value,
-                Variables = <span style="color:#66d9ef">new</span>
-                {
-                    author = author
-                }
-            };
-
-            <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">await</span> <span style="color:#ae81ff">_</span>client.SendQueryAsync&lt;GetBooksByAuthorData&gt;(query);
-
-            <span style="color:#66d9ef">if</span> (result.Errors != <span style="color:#66d9ef">null</span> &amp;&amp; result.Errors.Any())
-            {
-                <span style="color:#66d9ef">return</span> StatusCode(StatusCodes.Status500InternalServerError);
-            }
-
-            <span style="color:#66d9ef">return</span> Ok(result.Data.Books);
-        }
-        <span style="color:#66d9ef">catch</span> (Exception e)
-        {
-            <span style="color:#ae81ff">_l</span>ogger.LogError(<span style="color:#e6db74">&#34;Something went wrong&#34;</span>, e);
-            <span style="color:#66d9ef">return</span> StatusCode(StatusCodes.Status500InternalServerError, <span style="color:#e6db74">&#34;Something went wrong&#34;</span>);
-        }
-    }
-}
-</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>services.AddScoped&lt;IGraphQLClient&gt;(sp =&gt;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">new</span> GraphQLHttpClient(<span style="color:#66d9ef">new</span> GraphQLHttpClientOptions
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            EndPoint = <span style="color:#66d9ef">new</span> Uri(Configuration[<span style="color:#e6db74">&#34;GraphQLURI&#34;</span>]),
+</span></span><span style="display:flex;"><span>            HttpMessageHandler = <span style="color:#66d9ef">new</span> AuthorizationHandler(       
+</span></span><span style="display:flex;"><span>                sp.GetRequiredService&lt;IOptions&lt;AzureAdConfig&gt;&gt;()),
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        }, <span style="color:#66d9ef">new</span> SystemTextJsonSerializer())
+</span></span><span style="display:flex;"><span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>services.AddOptions&lt;AzureAdConfig&gt;()
+</span></span><span style="display:flex;"><span>    .Bind(Configuration.GetSection(<span style="color:#e6db74">&#34;AzureAd&#34;</span>));
+</span></span></code></pre></div><p>To fetch a JWT token from my AAD I&rsquo;ll be using an <code>HttpMessageHandler</code>. The implementation of the <code>DelegatingHandler</code> looks like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AuthorizationHandler</span> : DelegatingHandler
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IOptions&lt;AzureAdConfig&gt; <span style="color:#ae81ff">_</span>config;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> AuthorizationHandler(IOptions&lt;AzureAdConfig&gt; config, HttpMessageHandler inner = <span style="color:#66d9ef">null</span>) 
+</span></span><span style="display:flex;"><span>        : <span style="color:#66d9ef">base</span>(inner ?? <span style="color:#66d9ef">new</span> HttpClientHandler())
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">_</span>config = config;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">async</span> Task&lt;HttpResponseMessage&gt; SendAsync(
+</span></span><span style="display:flex;"><span>        HttpRequestMessage request, 
+</span></span><span style="display:flex;"><span>        CancellationToken cancellationToken)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> app = ConfidentialClientApplicationBuilder.Create(<span style="color:#ae81ff">_</span>config.Value.ClientId)
+</span></span><span style="display:flex;"><span>            .WithClientSecret(<span style="color:#ae81ff">_</span>config.Value.ClientSecret)
+</span></span><span style="display:flex;"><span>            .WithAuthority(<span style="color:#66d9ef">new</span> Uri(<span style="color:#ae81ff">_</span>config.Value.Authority))
+</span></span><span style="display:flex;"><span>            .Build();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> token = <span style="color:#66d9ef">await</span> app.AcquireTokenForClient(<span style="color:#ae81ff">_</span>config.Value.Scopes)
+</span></span><span style="display:flex;"><span>            .ExecuteAsync(cancellationToken);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        request.Headers.Authorization = <span style="color:#66d9ef">new</span> AuthenticationHeaderValue(<span style="color:#e6db74">&#34;bearer&#34;</span>, token.AccessToken);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">base</span>.SendAsync(request, cancellationToken);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>With everything put in place it&rsquo;s time to create a graphQL query, like this one:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">GetBooksByAuthor</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> Value =
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">@&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        query GetByAuthor ($author: String!) {
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            getBooksByAuthor: booksByAuthor(author: $author) {
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                author
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                title
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                numberOfPages
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                price
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            }
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        }&#34;</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>And try to call the protected graphQL API, like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[ApiController]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BooksController</span> : ControllerBase
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger&lt;BooksController&gt; <span style="color:#ae81ff">_l</span>ogger;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IGraphQLClient <span style="color:#ae81ff">_</span>client;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> BooksController(
+</span></span><span style="display:flex;"><span>        ILogger&lt;BooksController&gt; logger, 
+</span></span><span style="display:flex;"><span>        IGraphQLClient client)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">_l</span>ogger = logger;
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">_</span>client = client;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [HttpGet(&#34;{author}&#34;)]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;ActionResult&gt; GetBooksByAuthor(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [FromRoute]</span><span style="color:#66d9ef">string</span> author)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> query = <span style="color:#66d9ef">new</span> GraphQLRequest
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                Query = Queries.GetBooksByAuthor.Value,
+</span></span><span style="display:flex;"><span>                Variables = <span style="color:#66d9ef">new</span>
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    author = author
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">await</span> <span style="color:#ae81ff">_</span>client.SendQueryAsync&lt;GetBooksByAuthorData&gt;(query);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (result.Errors != <span style="color:#66d9ef">null</span> &amp;&amp; result.Errors.Any())
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> StatusCode(StatusCodes.Status500InternalServerError);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> Ok(result.Data.Books);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">catch</span> (Exception e)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">_l</span>ogger.LogError(<span style="color:#e6db74">&#34;Something went wrong&#34;</span>, e);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> StatusCode(StatusCodes.Status500InternalServerError, <span style="color:#e6db74">&#34;Something went wrong&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div>
     </div>
     
       

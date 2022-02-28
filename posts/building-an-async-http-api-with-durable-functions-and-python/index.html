@@ -226,87 +226,87 @@ The <code>start_new</code> method takes 3 parameters:</p>
 <li>Input: Any JSON-serializable data that should be passed as the input to the orchestrator function.</li>
 </ul>
 <p>And lastly, it builds the URL from where the client can retrieve the status and the result of the submitted job.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> azure.functions <span style="color:#66d9ef">as</span> func
-<span style="color:#f92672">import</span> azure.durable_functions <span style="color:#66d9ef">as</span> df
-<span style="color:#f92672">import</span> json
-<span style="color:#f92672">import</span> dateutil.parser
-<span style="color:#f92672">from</span> urllib.parse <span style="color:#f92672">import</span> urlparse
-
-<span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>(req: func<span style="color:#f92672">.</span>HttpRequest, starter: str) <span style="color:#f92672">-&gt;</span> func<span style="color:#f92672">.</span>HttpResponse:
-
-    response <span style="color:#f92672">=</span> { }
-    headers <span style="color:#f92672">=</span> { <span style="color:#e6db74">&#34;Content-Type&#34;</span>: <span style="color:#e6db74">&#34;application/json&#34;</span> }
-
-    start_date <span style="color:#f92672">=</span> req<span style="color:#f92672">.</span>params<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#39;s&#39;</span>)
-    end_date <span style="color:#f92672">=</span> req<span style="color:#f92672">.</span>params<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#39;e&#39;</span>)
-    
-    <span style="color:#66d9ef">if</span> start_date:
-        <span style="color:#66d9ef">try</span>:
-          start_date <span style="color:#f92672">=</span> dateutil<span style="color:#f92672">.</span>parser<span style="color:#f92672">.</span>parse(start_date, dayfirst<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
-        <span style="color:#66d9ef">except</span>:
-          response[<span style="color:#e6db74">&#39;error&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Invalid start date format.&#34;</span>
-          <span style="color:#66d9ef">return</span> func<span style="color:#f92672">.</span>HttpResponse(json<span style="color:#f92672">.</span>dumps(response) ,headers<span style="color:#f92672">=</span>headers, status_code<span style="color:#f92672">=</span><span style="color:#ae81ff">400</span> )
-    <span style="color:#66d9ef">else</span>:
-        response[<span style="color:#e6db74">&#39;error&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Empty start date.&#34;</span>
-        <span style="color:#66d9ef">return</span> func<span style="color:#f92672">.</span>HttpResponse(json<span style="color:#f92672">.</span>dumps(response) ,headers<span style="color:#f92672">=</span>headers, status_code<span style="color:#f92672">=</span><span style="color:#ae81ff">400</span> )
-
-    <span style="color:#66d9ef">if</span> end_date:
-        <span style="color:#66d9ef">try</span>:
-          end_date <span style="color:#f92672">=</span> dateutil<span style="color:#f92672">.</span>parser<span style="color:#f92672">.</span>parse(end_date, dayfirst<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
-        <span style="color:#66d9ef">except</span>:
-          response[<span style="color:#e6db74">&#39;error&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Invalid end date format.&#34;</span>
-          <span style="color:#66d9ef">return</span> func<span style="color:#f92672">.</span>HttpResponse(json<span style="color:#f92672">.</span>dumps(response) ,headers<span style="color:#f92672">=</span>headers, status_code<span style="color:#f92672">=</span><span style="color:#ae81ff">400</span> )
-    <span style="color:#66d9ef">else</span>:
-        response[<span style="color:#e6db74">&#39;error&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Empty end date.&#34;</span>
-        <span style="color:#66d9ef">return</span> func<span style="color:#f92672">.</span>HttpResponse(json<span style="color:#f92672">.</span>dumps(response) ,headers<span style="color:#f92672">=</span>headers, status_code<span style="color:#f92672">=</span><span style="color:#ae81ff">400</span> )
-
-    delta <span style="color:#f92672">=</span> end_date <span style="color:#f92672">-</span> start_date
-    <span style="color:#66d9ef">if</span> delta<span style="color:#f92672">.</span>days <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">1</span>:
-        response[<span style="color:#e6db74">&#39;error&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Invalid date range.&#34;</span>
-        <span style="color:#66d9ef">return</span> func<span style="color:#f92672">.</span>HttpResponse(json<span style="color:#f92672">.</span>dumps(response) ,headers<span style="color:#f92672">=</span>headers, status_code<span style="color:#f92672">=</span><span style="color:#ae81ff">400</span> )
-
-    
-    client <span style="color:#f92672">=</span> df<span style="color:#f92672">.</span>DurableOrchestrationClient(starter)
-
-    parameters <span style="color:#f92672">=</span> {
-        <span style="color:#e6db74">&#34;start&#34;</span>: start_date<span style="color:#f92672">.</span>strftime(<span style="color:#e6db74">&#34;%Y-%m-</span><span style="color:#e6db74">%d</span><span style="color:#e6db74">&#34;</span>),
-        <span style="color:#e6db74">&#34;end&#34;</span>: end_date<span style="color:#f92672">.</span>strftime(<span style="color:#e6db74">&#34;%Y-%m-</span><span style="color:#e6db74">%d</span><span style="color:#e6db74">&#34;</span>)
-    }
-
-    instance_id <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> client<span style="color:#f92672">.</span>start_new(<span style="color:#e6db74">&#39;orchestrator-function&#39;</span>, <span style="color:#66d9ef">None</span>, parameters)
-
-    status_uri <span style="color:#f92672">=</span> build_api_url(urlparse(req<span style="color:#f92672">.</span>url)<span style="color:#f92672">.</span>scheme, req<span style="color:#f92672">.</span>headers<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;host&#34;</span>), instance_id)
-    response[<span style="color:#e6db74">&#34;statusUri&#34;</span>] <span style="color:#f92672">=</span> status_uri
-    <span style="color:#66d9ef">return</span> func<span style="color:#f92672">.</span>HttpResponse(json<span style="color:#f92672">.</span>dumps(response), headers<span style="color:#f92672">=</span>headers, status_code<span style="color:#f92672">=</span><span style="color:#ae81ff">200</span> )
-
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">build_api_url</span>(scheme, host, instance_id):
-    <span style="color:#66d9ef">return</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>scheme<span style="color:#e6db74">}</span><span style="color:#e6db74">://</span><span style="color:#e6db74">{</span>host<span style="color:#e6db74">}</span><span style="color:#e6db74">/api/status/</span><span style="color:#e6db74">{</span>instance_id<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
-</code></pre></div><h1 id="get-status-function">get-status-function</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> azure.functions <span style="color:#66d9ef">as</span> func
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> azure.durable_functions <span style="color:#66d9ef">as</span> df
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> json
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> dateutil.parser
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> urllib.parse <span style="color:#f92672">import</span> urlparse
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>(req: func<span style="color:#f92672">.</span>HttpRequest, starter: str) <span style="color:#f92672">-&gt;</span> func<span style="color:#f92672">.</span>HttpResponse:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    response <span style="color:#f92672">=</span> { }
+</span></span><span style="display:flex;"><span>    headers <span style="color:#f92672">=</span> { <span style="color:#e6db74">&#34;Content-Type&#34;</span>: <span style="color:#e6db74">&#34;application/json&#34;</span> }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    start_date <span style="color:#f92672">=</span> req<span style="color:#f92672">.</span>params<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#39;s&#39;</span>)
+</span></span><span style="display:flex;"><span>    end_date <span style="color:#f92672">=</span> req<span style="color:#f92672">.</span>params<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#39;e&#39;</span>)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> start_date:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>          start_date <span style="color:#f92672">=</span> dateutil<span style="color:#f92672">.</span>parser<span style="color:#f92672">.</span>parse(start_date, dayfirst<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">except</span>:
+</span></span><span style="display:flex;"><span>          response[<span style="color:#e6db74">&#39;error&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Invalid start date format.&#34;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">return</span> func<span style="color:#f92672">.</span>HttpResponse(json<span style="color:#f92672">.</span>dumps(response) ,headers<span style="color:#f92672">=</span>headers, status_code<span style="color:#f92672">=</span><span style="color:#ae81ff">400</span> )
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>        response[<span style="color:#e6db74">&#39;error&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Empty start date.&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> func<span style="color:#f92672">.</span>HttpResponse(json<span style="color:#f92672">.</span>dumps(response) ,headers<span style="color:#f92672">=</span>headers, status_code<span style="color:#f92672">=</span><span style="color:#ae81ff">400</span> )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> end_date:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>          end_date <span style="color:#f92672">=</span> dateutil<span style="color:#f92672">.</span>parser<span style="color:#f92672">.</span>parse(end_date, dayfirst<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">except</span>:
+</span></span><span style="display:flex;"><span>          response[<span style="color:#e6db74">&#39;error&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Invalid end date format.&#34;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">return</span> func<span style="color:#f92672">.</span>HttpResponse(json<span style="color:#f92672">.</span>dumps(response) ,headers<span style="color:#f92672">=</span>headers, status_code<span style="color:#f92672">=</span><span style="color:#ae81ff">400</span> )
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>        response[<span style="color:#e6db74">&#39;error&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Empty end date.&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> func<span style="color:#f92672">.</span>HttpResponse(json<span style="color:#f92672">.</span>dumps(response) ,headers<span style="color:#f92672">=</span>headers, status_code<span style="color:#f92672">=</span><span style="color:#ae81ff">400</span> )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    delta <span style="color:#f92672">=</span> end_date <span style="color:#f92672">-</span> start_date
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> delta<span style="color:#f92672">.</span>days <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">1</span>:
+</span></span><span style="display:flex;"><span>        response[<span style="color:#e6db74">&#39;error&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Invalid date range.&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> func<span style="color:#f92672">.</span>HttpResponse(json<span style="color:#f92672">.</span>dumps(response) ,headers<span style="color:#f92672">=</span>headers, status_code<span style="color:#f92672">=</span><span style="color:#ae81ff">400</span> )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    client <span style="color:#f92672">=</span> df<span style="color:#f92672">.</span>DurableOrchestrationClient(starter)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    parameters <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;start&#34;</span>: start_date<span style="color:#f92672">.</span>strftime(<span style="color:#e6db74">&#34;%Y-%m-</span><span style="color:#e6db74">%d</span><span style="color:#e6db74">&#34;</span>),
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;end&#34;</span>: end_date<span style="color:#f92672">.</span>strftime(<span style="color:#e6db74">&#34;%Y-%m-</span><span style="color:#e6db74">%d</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    instance_id <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> client<span style="color:#f92672">.</span>start_new(<span style="color:#e6db74">&#39;orchestrator-function&#39;</span>, <span style="color:#66d9ef">None</span>, parameters)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    status_uri <span style="color:#f92672">=</span> build_api_url(urlparse(req<span style="color:#f92672">.</span>url)<span style="color:#f92672">.</span>scheme, req<span style="color:#f92672">.</span>headers<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;host&#34;</span>), instance_id)
+</span></span><span style="display:flex;"><span>    response[<span style="color:#e6db74">&#34;statusUri&#34;</span>] <span style="color:#f92672">=</span> status_uri
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> func<span style="color:#f92672">.</span>HttpResponse(json<span style="color:#f92672">.</span>dumps(response), headers<span style="color:#f92672">=</span>headers, status_code<span style="color:#f92672">=</span><span style="color:#ae81ff">200</span> )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">build_api_url</span>(scheme, host, instance_id):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>scheme<span style="color:#e6db74">}</span><span style="color:#e6db74">://</span><span style="color:#e6db74">{</span>host<span style="color:#e6db74">}</span><span style="color:#e6db74">/api/status/</span><span style="color:#e6db74">{</span>instance_id<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span></code></pre></div><h1 id="get-status-function">get-status-function</h1>
 <h2 id="is-this-function-really-needed">Is this function really needed?</h2>
 <p>Before discussing the implementation of this Azure Function, I think it&rsquo;s important to talk a bit about if this function is really needed or not.</p>
 <p>Most of the examples that you are going to find online don&rsquo;t use a custom function to retrieve the status of the jobs. Instead of that, they use the <code>create_check_status_response</code> method on the Client Function.</p>
 <p>That means that in the previous section I could have built the client function like this:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    <span style="color:#f92672">...</span>
-    client <span style="color:#f92672">=</span> df<span style="color:#f92672">.</span>DurableOrchestrationClient(starter)
-
-    parameters <span style="color:#f92672">=</span> {
-        <span style="color:#e6db74">&#34;start&#34;</span>: start_date<span style="color:#f92672">.</span>strftime(<span style="color:#e6db74">&#34;%Y-%m-</span><span style="color:#e6db74">%d</span><span style="color:#e6db74">&#34;</span>),
-        <span style="color:#e6db74">&#34;end&#34;</span>: end_date<span style="color:#f92672">.</span>strftime(<span style="color:#e6db74">&#34;%Y-%m-</span><span style="color:#e6db74">%d</span><span style="color:#e6db74">&#34;</span>)
-    }
-
-    instance_id <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> client<span style="color:#f92672">.</span>start_new(<span style="color:#e6db74">&#39;orchestrator-function&#39;</span>, <span style="color:#66d9ef">None</span>, parameters)
-    <span style="color:#66d9ef">return</span> client<span style="color:#f92672">.</span>create_check_status_response(req, instance_id)
-</code></pre></div><p>And that&rsquo;s how the function would have responded:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">{
-  <span style="color:#e6db74">&#34;id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;b78244c9e19f43e89e7b1578f711940d&#34;</span>,
-  <span style="color:#e6db74">&#34;statusQueryGetUri&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;http://localhost:7071/runtime/webhooks/durabletask/instances/b78244c9e19f43e89e7b1578f711940d?taskHub=TestHubName&amp;connection=Storage&amp;code=V/xX4rraZaheGNwbMePOhhGtyHxGsgks4Q36WKBdS3WfiOjD5Sb5lw==&#34;</span>,
-  <span style="color:#e6db74">&#34;sendEventPostUri&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;http://localhost:7071/runtime/webhooks/durabletask/instances/b78244c9e19f43e89e7b1578f711940d/raiseEvent/{eventName}?taskHub=TestHubName&amp;connection=Storage&amp;code=V/xX4rraZaheGNwbMePOhhGtyHxGsgks4Q36WKBdS3WfiOjD5Sb5lw==&#34;</span>,
-  <span style="color:#e6db74">&#34;terminatePostUri&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;http://localhost:7071/runtime/webhooks/durabletask/instances/b78244c9e19f43e89e7b1578f711940d/terminate?reason={text}&amp;taskHub=TestHubName&amp;connection=Storage&amp;code=V/xX4rraZaheGNwbMePOhhGtyHxGsgks4Q36WKBdS3WfiOjD5Sb5lw==&#34;</span>,
-  <span style="color:#e6db74">&#34;rewindPostUri&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;http://localhost:7071/runtime/webhooks/durabletask/instances/b78244c9e19f43e89e7b1578f711940d/rewind?reason={text}&amp;taskHub=TestHubName&amp;connection=Storage&amp;code=V/xX4rraZaheGNwbMePOhhGtyHxGsgks4Q36WKBdS3WfiOjD5Sb5lw==&#34;</span>,
-  <span style="color:#e6db74">&#34;purgeHistoryDeleteUri&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;http://localhost:7071/runtime/webhooks/durabletask/instances/b78244c9e19f43e89e7b1578f711940d?taskHub=TestHubName&amp;connection=Storage&amp;code=V/xX4rraZaheGNwbMePOhhGtyHxGsgks4Q36WKBdS3WfiOjD5Sb5lw==&#34;</span>,
-  <span style="color:#e6db74">&#34;restartPostUri&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;http://localhost:7071/runtime/webhooks/durabletask/instances/b78244c9e19f43e89e7b1578f711940d/restart?taskHub=TestHubName&amp;connection=Storage&amp;code=V/xX4rraZaheGNwbMePOhhGtyHxGsgks4Q36WKBdS3WfiOjD5Sb5lw==&#34;</span>
-}
-</code></pre></div><p>As you can see the <code>create_check_status_response</code> method returns a response that contains links to the various management operations that can be invoked on an orchestration instance.<br>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>    <span style="color:#f92672">...</span>
+</span></span><span style="display:flex;"><span>    client <span style="color:#f92672">=</span> df<span style="color:#f92672">.</span>DurableOrchestrationClient(starter)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    parameters <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;start&#34;</span>: start_date<span style="color:#f92672">.</span>strftime(<span style="color:#e6db74">&#34;%Y-%m-</span><span style="color:#e6db74">%d</span><span style="color:#e6db74">&#34;</span>),
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;end&#34;</span>: end_date<span style="color:#f92672">.</span>strftime(<span style="color:#e6db74">&#34;%Y-%m-</span><span style="color:#e6db74">%d</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    instance_id <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> client<span style="color:#f92672">.</span>start_new(<span style="color:#e6db74">&#39;orchestrator-function&#39;</span>, <span style="color:#66d9ef">None</span>, parameters)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> client<span style="color:#f92672">.</span>create_check_status_response(req, instance_id)
+</span></span></code></pre></div><p>And that&rsquo;s how the function would have responded:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;b78244c9e19f43e89e7b1578f711940d&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;statusQueryGetUri&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;http://localhost:7071/runtime/webhooks/durabletask/instances/b78244c9e19f43e89e7b1578f711940d?taskHub=TestHubName&amp;connection=Storage&amp;code=V/xX4rraZaheGNwbMePOhhGtyHxGsgks4Q36WKBdS3WfiOjD5Sb5lw==&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;sendEventPostUri&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;http://localhost:7071/runtime/webhooks/durabletask/instances/b78244c9e19f43e89e7b1578f711940d/raiseEvent/{eventName}?taskHub=TestHubName&amp;connection=Storage&amp;code=V/xX4rraZaheGNwbMePOhhGtyHxGsgks4Q36WKBdS3WfiOjD5Sb5lw==&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;terminatePostUri&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;http://localhost:7071/runtime/webhooks/durabletask/instances/b78244c9e19f43e89e7b1578f711940d/terminate?reason={text}&amp;taskHub=TestHubName&amp;connection=Storage&amp;code=V/xX4rraZaheGNwbMePOhhGtyHxGsgks4Q36WKBdS3WfiOjD5Sb5lw==&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;rewindPostUri&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;http://localhost:7071/runtime/webhooks/durabletask/instances/b78244c9e19f43e89e7b1578f711940d/rewind?reason={text}&amp;taskHub=TestHubName&amp;connection=Storage&amp;code=V/xX4rraZaheGNwbMePOhhGtyHxGsgks4Q36WKBdS3WfiOjD5Sb5lw==&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;purgeHistoryDeleteUri&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;http://localhost:7071/runtime/webhooks/durabletask/instances/b78244c9e19f43e89e7b1578f711940d?taskHub=TestHubName&amp;connection=Storage&amp;code=V/xX4rraZaheGNwbMePOhhGtyHxGsgks4Q36WKBdS3WfiOjD5Sb5lw==&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;restartPostUri&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;http://localhost:7071/runtime/webhooks/durabletask/instances/b78244c9e19f43e89e7b1578f711940d/restart?taskHub=TestHubName&amp;connection=Storage&amp;code=V/xX4rraZaheGNwbMePOhhGtyHxGsgks4Q36WKBdS3WfiOjD5Sb5lw==&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>As you can see the <code>create_check_status_response</code> method returns a response that contains links to the various management operations that can be invoked on an orchestration instance.<br>
 These operations include querying the orchestration status, raising events or terminating the orchestration.</p>
 <blockquote>
 <p>So, why I&rsquo;m building an extra Azure Function to retrieve the status of a job instead of directly using the <code>create_check_status_response</code> method?</p>
@@ -339,27 +339,27 @@ As you can see the response payload includes the orchestrator management endpoin
 </li>
 <li>History: The execution history of the orchestration. This field is only populated if showHistory is set to true.</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> azure.functions <span style="color:#66d9ef">as</span> func
-<span style="color:#f92672">import</span> azure.durable_functions <span style="color:#66d9ef">as</span> df
-<span style="color:#f92672">import</span> json
-
-
-<span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>(req: func<span style="color:#f92672">.</span>HttpRequest, starter: str) <span style="color:#f92672">-&gt;</span> func<span style="color:#f92672">.</span>HttpResponse:
-    client <span style="color:#f92672">=</span> df<span style="color:#f92672">.</span>DurableOrchestrationClient(starter)
-
-    instance_id <span style="color:#f92672">=</span> req<span style="color:#f92672">.</span>route_params[<span style="color:#e6db74">&#34;id&#34;</span>]
-
-    response <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> client<span style="color:#f92672">.</span>get_status(instance_id)
-
-    <span style="color:#66d9ef">if</span> response<span style="color:#f92672">.</span>instance_id <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
-        <span style="color:#66d9ef">return</span> func<span style="color:#f92672">.</span>HttpResponse(<span style="color:#e6db74">&#34;Job not found&#34;</span>, status_code<span style="color:#f92672">=</span><span style="color:#ae81ff">404</span>)
-
-    <span style="color:#66d9ef">return</span> func<span style="color:#f92672">.</span>HttpResponse(json<span style="color:#f92672">.</span>dumps({
-        <span style="color:#e6db74">&#34;id&#34;</span>: response<span style="color:#f92672">.</span>instance_id,
-        <span style="color:#e6db74">&#34;status&#34;</span>: response<span style="color:#f92672">.</span>runtime_status<span style="color:#f92672">.</span>value,
-        <span style="color:#e6db74">&#34;result&#34;</span>: response<span style="color:#f92672">.</span>output
-    }))
-</code></pre></div><h1 id="orchestrator-function">orchestrator-function</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> azure.functions <span style="color:#66d9ef">as</span> func
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> azure.durable_functions <span style="color:#66d9ef">as</span> df
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> json
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>(req: func<span style="color:#f92672">.</span>HttpRequest, starter: str) <span style="color:#f92672">-&gt;</span> func<span style="color:#f92672">.</span>HttpResponse:
+</span></span><span style="display:flex;"><span>    client <span style="color:#f92672">=</span> df<span style="color:#f92672">.</span>DurableOrchestrationClient(starter)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    instance_id <span style="color:#f92672">=</span> req<span style="color:#f92672">.</span>route_params[<span style="color:#e6db74">&#34;id&#34;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    response <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> client<span style="color:#f92672">.</span>get_status(instance_id)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> response<span style="color:#f92672">.</span>instance_id <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> func<span style="color:#f92672">.</span>HttpResponse(<span style="color:#e6db74">&#34;Job not found&#34;</span>, status_code<span style="color:#f92672">=</span><span style="color:#ae81ff">404</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> func<span style="color:#f92672">.</span>HttpResponse(json<span style="color:#f92672">.</span>dumps({
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;id&#34;</span>: response<span style="color:#f92672">.</span>instance_id,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;status&#34;</span>: response<span style="color:#f92672">.</span>runtime_status<span style="color:#f92672">.</span>value,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;result&#34;</span>: response<span style="color:#f92672">.</span>output
+</span></span><span style="display:flex;"><span>    }))
+</span></span></code></pre></div><h1 id="orchestrator-function">orchestrator-function</h1>
 <p>Nothing fancy here. The orchestrator function in this application is really simple because there is no need to orchestrate multiple activies nor build a complex workflow.</p>
 <p>The function does the following steps:</p>
 <ul>
@@ -367,88 +367,88 @@ As you can see the response payload includes the orchestrator management endpoin
 <li>Calls the activity function passing the retrieved inputs.</li>
 <li>Waits for the activity function to end and returns the result.</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> azure.durable_functions <span style="color:#66d9ef">as</span> df
-
-
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">orchestrator_function</span>(context: df<span style="color:#f92672">.</span>DurableOrchestrationContext):
-    input <span style="color:#f92672">=</span> context<span style="color:#f92672">.</span>get_input()
-    result <span style="color:#f92672">=</span> <span style="color:#66d9ef">yield</span> context<span style="color:#f92672">.</span>call_activity(<span style="color:#e6db74">&#39;query-storage-account-activity-function&#39;</span>, {<span style="color:#e6db74">&#39;start&#39;</span>: input[<span style="color:#e6db74">&#39;start&#39;</span>], <span style="color:#e6db74">&#39;end&#39;</span>: input[<span style="color:#e6db74">&#39;end&#39;</span>]})
-    <span style="color:#66d9ef">return</span> result
-
-main <span style="color:#f92672">=</span> df<span style="color:#f92672">.</span>Orchestrator<span style="color:#f92672">.</span>create(orchestrator_function)
-</code></pre></div><h1 id="query-storage-account-activity-function">query-storage-account-activity-function</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> azure.durable_functions <span style="color:#66d9ef">as</span> df
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">orchestrator_function</span>(context: df<span style="color:#f92672">.</span>DurableOrchestrationContext):
+</span></span><span style="display:flex;"><span>    input <span style="color:#f92672">=</span> context<span style="color:#f92672">.</span>get_input()
+</span></span><span style="display:flex;"><span>    result <span style="color:#f92672">=</span> <span style="color:#66d9ef">yield</span> context<span style="color:#f92672">.</span>call_activity(<span style="color:#e6db74">&#39;query-storage-account-activity-function&#39;</span>, {<span style="color:#e6db74">&#39;start&#39;</span>: input[<span style="color:#e6db74">&#39;start&#39;</span>], <span style="color:#e6db74">&#39;end&#39;</span>: input[<span style="color:#e6db74">&#39;end&#39;</span>]})
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> result
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>main <span style="color:#f92672">=</span> df<span style="color:#f92672">.</span>Orchestrator<span style="color:#f92672">.</span>create(orchestrator_function)
+</span></span></code></pre></div><h1 id="query-storage-account-activity-function">query-storage-account-activity-function</h1>
 <p>This Activity Function is responsible to run the query against the Azure Table Storage.</p>
 <p>This function retrieves the Storage Table connection string from an App Configuration with a Key Vault reference (<a href="https://docs.microsoft.com/en-us/azure/azure-app-configuration/overview)">https://docs.microsoft.com/en-us/azure/azure-app-configuration/overview)</a>, runs the query and returns the result.</p>
 <p>As you can see this function is a single unit of work and does not contain any reference to the durable-functions library.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> json
-<span style="color:#f92672">import</span> os
-<span style="color:#f92672">from</span> azure.appconfiguration <span style="color:#f92672">import</span> AzureAppConfigurationClient
-<span style="color:#f92672">from</span> azure.identity <span style="color:#f92672">import</span> DefaultAzureCredential
-<span style="color:#f92672">from</span> azure.keyvault.secrets <span style="color:#f92672">import</span> SecretClient
-<span style="color:#f92672">from</span> azure.data.tables <span style="color:#f92672">import</span> TableClient
-<span style="color:#f92672">from</span> pathlib <span style="color:#f92672">import</span> Path
-
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>(request: dict) <span style="color:#f92672">-&gt;</span> int:
-    start <span style="color:#f92672">=</span> request[<span style="color:#e6db74">&#39;start&#39;</span>]
-    end   <span style="color:#f92672">=</span> request[<span style="color:#e6db74">&#39;end&#39;</span>]
-    
-    table_conn_str <span style="color:#f92672">=</span> get_azure_table_connection_string()
-    response <span style="color:#f92672">=</span> run_query(start, end, table_conn_str)
-
-    <span style="color:#66d9ef">return</span> response
-
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">run_query</span>(start, end, table_conn_str) <span style="color:#f92672">-&gt;</span> int:
-
-    items <span style="color:#f92672">=</span> []
-    client <span style="color:#f92672">=</span>  TableClient<span style="color:#f92672">.</span>from_connection_string(conn_str<span style="color:#f92672">=</span>table_conn_str, table_name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;audit&#34;</span>) 
-    
-    parameters <span style="color:#f92672">=</span> {
-        <span style="color:#e6db74">&#34;start&#34;</span>: start,
-        <span style="color:#e6db74">&#34;end&#34;</span>: end
-    }
-           
-    query_filter <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;PartitionKey ge @start and PartitionKey le @end and CertNumber ne &#39;&#39;&#34;</span>
-    entities <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>query_entities(query_filter, parameters<span style="color:#f92672">=</span>parameters, select<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;identificationNumber&#39;</span>)
-    
-    <span style="color:#66d9ef">for</span> entity <span style="color:#f92672">in</span> entities:
-        items<span style="color:#f92672">.</span>append(entity[<span style="color:#e6db74">&#39;identificationNumber&#39;</span>])
-        
-    <span style="color:#66d9ef">return</span> len(set(items))
-
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_azure_table_connection_string</span>() <span style="color:#f92672">-&gt;</span> str:
-    
-    defaultAzureCredential <span style="color:#f92672">=</span> DefaultAzureCredential()
-
-    app_config_base_url <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;AppConfigEndpoint&#39;</span>)
-    app_config_client <span style="color:#f92672">=</span> AzureAppConfigurationClient(base_url<span style="color:#f92672">=</span>app_config_base_url, credential<span style="color:#f92672">=</span>defaultAzureCredential)
-
-    keyvault_value <span style="color:#f92672">=</span> app_config_client<span style="color:#f92672">.</span>get_configuration_setting(key<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;storage-account-connection-string&#34;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;async-http-api&#34;</span>)
-    url_parts <span style="color:#f92672">=</span> Path(json<span style="color:#f92672">.</span>loads(keyvault_value<span style="color:#f92672">.</span>value)[<span style="color:#e6db74">&#34;uri&#34;</span>])<span style="color:#f92672">.</span>parts
-    vault_url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;//&#34;</span><span style="color:#f92672">.</span>join(url_parts[:<span style="color:#ae81ff">2</span>])
-    kv_secret <span style="color:#f92672">=</span> url_parts[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
-    kv_client <span style="color:#f92672">=</span> SecretClient(vault_url, defaultAzureCredential)
-    secret_val <span style="color:#f92672">=</span> kv_client<span style="color:#f92672">.</span>get_secret(kv_secret)<span style="color:#f92672">.</span>value
-
-    <span style="color:#66d9ef">return</span> secret_val
-</code></pre></div><h1 id="6-test">6. Test</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> json
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> os
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> azure.appconfiguration <span style="color:#f92672">import</span> AzureAppConfigurationClient
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> azure.identity <span style="color:#f92672">import</span> DefaultAzureCredential
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> azure.keyvault.secrets <span style="color:#f92672">import</span> SecretClient
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> azure.data.tables <span style="color:#f92672">import</span> TableClient
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> pathlib <span style="color:#f92672">import</span> Path
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>(request: dict) <span style="color:#f92672">-&gt;</span> int:
+</span></span><span style="display:flex;"><span>    start <span style="color:#f92672">=</span> request[<span style="color:#e6db74">&#39;start&#39;</span>]
+</span></span><span style="display:flex;"><span>    end   <span style="color:#f92672">=</span> request[<span style="color:#e6db74">&#39;end&#39;</span>]
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    table_conn_str <span style="color:#f92672">=</span> get_azure_table_connection_string()
+</span></span><span style="display:flex;"><span>    response <span style="color:#f92672">=</span> run_query(start, end, table_conn_str)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> response
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">run_query</span>(start, end, table_conn_str) <span style="color:#f92672">-&gt;</span> int:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    items <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>    client <span style="color:#f92672">=</span>  TableClient<span style="color:#f92672">.</span>from_connection_string(conn_str<span style="color:#f92672">=</span>table_conn_str, table_name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;audit&#34;</span>) 
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    parameters <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;start&#34;</span>: start,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;end&#34;</span>: end
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>           
+</span></span><span style="display:flex;"><span>    query_filter <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;PartitionKey ge @start and PartitionKey le @end and CertNumber ne &#39;&#39;&#34;</span>
+</span></span><span style="display:flex;"><span>    entities <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>query_entities(query_filter, parameters<span style="color:#f92672">=</span>parameters, select<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;identificationNumber&#39;</span>)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> entity <span style="color:#f92672">in</span> entities:
+</span></span><span style="display:flex;"><span>        items<span style="color:#f92672">.</span>append(entity[<span style="color:#e6db74">&#39;identificationNumber&#39;</span>])
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> len(set(items))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_azure_table_connection_string</span>() <span style="color:#f92672">-&gt;</span> str:
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    defaultAzureCredential <span style="color:#f92672">=</span> DefaultAzureCredential()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    app_config_base_url <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;AppConfigEndpoint&#39;</span>)
+</span></span><span style="display:flex;"><span>    app_config_client <span style="color:#f92672">=</span> AzureAppConfigurationClient(base_url<span style="color:#f92672">=</span>app_config_base_url, credential<span style="color:#f92672">=</span>defaultAzureCredential)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    keyvault_value <span style="color:#f92672">=</span> app_config_client<span style="color:#f92672">.</span>get_configuration_setting(key<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;storage-account-connection-string&#34;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;async-http-api&#34;</span>)
+</span></span><span style="display:flex;"><span>    url_parts <span style="color:#f92672">=</span> Path(json<span style="color:#f92672">.</span>loads(keyvault_value<span style="color:#f92672">.</span>value)[<span style="color:#e6db74">&#34;uri&#34;</span>])<span style="color:#f92672">.</span>parts
+</span></span><span style="display:flex;"><span>    vault_url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;//&#34;</span><span style="color:#f92672">.</span>join(url_parts[:<span style="color:#ae81ff">2</span>])
+</span></span><span style="display:flex;"><span>    kv_secret <span style="color:#f92672">=</span> url_parts[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>    kv_client <span style="color:#f92672">=</span> SecretClient(vault_url, defaultAzureCredential)
+</span></span><span style="display:flex;"><span>    secret_val <span style="color:#f92672">=</span> kv_client<span style="color:#f92672">.</span>get_secret(kv_secret)<span style="color:#f92672">.</span>value
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> secret_val
+</span></span></code></pre></div><h1 id="6-test">6. Test</h1>
 <p>Everything is put in place, now let&rsquo;s test it.</p>
 <p>If I try to submit a new job with a few invalid parameters, it responds with an error:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">curl <span style="color:#e6db74">&#34;https://func-sa-table-durable-dev.azurewebsites.net/api/submit/query&#34;</span>
-<span style="color:#f92672">{</span><span style="color:#e6db74">&#34;error&#34;</span>: <span style="color:#e6db74">&#34;Empty start date.&#34;</span><span style="color:#f92672">}</span>
-curl <span style="color:#e6db74">&#34;https://func-sa-table-durable-dev.azurewebsites.net/api/submit/query?s=10/08/2021&amp;e=abcd&#34;</span>
-<span style="color:#f92672">{</span><span style="color:#e6db74">&#34;error&#34;</span>: <span style="color:#e6db74">&#34;Invalid end date format.&#34;</span><span style="color:#f92672">}</span>
-curl <span style="color:#e6db74">&#34;https://func-sa-table-durable-dev.azurewebsites.net/api/submit/query?s=10/08/2021&amp;e=05/08/2021&#34;</span>
-<span style="color:#f92672">{</span><span style="color:#e6db74">&#34;error&#34;</span>: <span style="color:#e6db74">&#34;Invalid date range.&#34;</span><span style="color:#f92672">}</span>
-</code></pre></div><p>If I try to submit a new job with valid parameters, the client function responds with the status endpoint.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">curl <span style="color:#e6db74">&#34;https://func-sa-table-durable-dev.azurewebsites.net/api/submit/query?s=10/10/2021&amp;e=10/12/2021&#34;</span>
-<span style="color:#f92672">{</span><span style="color:#e6db74">&#34;statusUri&#34;</span>: <span style="color:#e6db74">&#34;https://func-sa-table-durable-dev.azurewebsites.net/api/status/433ebcfe85ec4012abe94dcda2aa6b00&#34;</span><span style="color:#f92672">}</span>
-</code></pre></div><p>If I query the get-status function right away, it returns that the job is still being executed.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">curl <span style="color:#e6db74">&#34;https://func-sa-table-durable-dev.azurewebsites.net/api/status/433ebcfe85ec4012abe94dcda2aa6b00&#34;</span>
-<span style="color:#f92672">{</span><span style="color:#e6db74">&#34;id&#34;</span>: <span style="color:#e6db74">&#34;433ebcfe85ec4012abe94dcda2aa6b00&#34;</span>, <span style="color:#e6db74">&#34;status&#34;</span>: <span style="color:#e6db74">&#34;Running&#34;</span>, <span style="color:#e6db74">&#34;result&#34;</span>: null<span style="color:#f92672">}</span>
-</code></pre></div><p>If I query the get-status function after a few minutes, the job has completed and we can see the result.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">curl <span style="color:#e6db74">&#34;https://func-sa-table-durable-dev.azurewebsites.net/api/status/433ebcfe85ec4012abe94dcda2aa6b00&#34;</span>
-<span style="color:#f92672">{</span><span style="color:#e6db74">&#34;id&#34;</span>: <span style="color:#e6db74">&#34;433ebcfe85ec4012abe94dcda2aa6b00&#34;</span>, <span style="color:#e6db74">&#34;status&#34;</span>: <span style="color:#e6db74">&#34;Completed&#34;</span>, <span style="color:#e6db74">&#34;result&#34;</span>: 119<span style="color:#f92672">}</span>
-</code></pre></div><h1 id="7-deployment-to-azure">7. Deployment to Azure</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>curl <span style="color:#e6db74">&#34;https://func-sa-table-durable-dev.azurewebsites.net/api/submit/query&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;error&#34;</span>: <span style="color:#e6db74">&#34;Empty start date.&#34;</span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>curl <span style="color:#e6db74">&#34;https://func-sa-table-durable-dev.azurewebsites.net/api/submit/query?s=10/08/2021&amp;e=abcd&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;error&#34;</span>: <span style="color:#e6db74">&#34;Invalid end date format.&#34;</span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>curl <span style="color:#e6db74">&#34;https://func-sa-table-durable-dev.azurewebsites.net/api/submit/query?s=10/08/2021&amp;e=05/08/2021&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;error&#34;</span>: <span style="color:#e6db74">&#34;Invalid date range.&#34;</span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>If I try to submit a new job with valid parameters, the client function responds with the status endpoint.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>curl <span style="color:#e6db74">&#34;https://func-sa-table-durable-dev.azurewebsites.net/api/submit/query?s=10/10/2021&amp;e=10/12/2021&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;statusUri&#34;</span>: <span style="color:#e6db74">&#34;https://func-sa-table-durable-dev.azurewebsites.net/api/status/433ebcfe85ec4012abe94dcda2aa6b00&#34;</span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>If I query the get-status function right away, it returns that the job is still being executed.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>curl <span style="color:#e6db74">&#34;https://func-sa-table-durable-dev.azurewebsites.net/api/status/433ebcfe85ec4012abe94dcda2aa6b00&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;id&#34;</span>: <span style="color:#e6db74">&#34;433ebcfe85ec4012abe94dcda2aa6b00&#34;</span>, <span style="color:#e6db74">&#34;status&#34;</span>: <span style="color:#e6db74">&#34;Running&#34;</span>, <span style="color:#e6db74">&#34;result&#34;</span>: null<span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>If I query the get-status function after a few minutes, the job has completed and we can see the result.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>curl <span style="color:#e6db74">&#34;https://func-sa-table-durable-dev.azurewebsites.net/api/status/433ebcfe85ec4012abe94dcda2aa6b00&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;id&#34;</span>: <span style="color:#e6db74">&#34;433ebcfe85ec4012abe94dcda2aa6b00&#34;</span>, <span style="color:#e6db74">&#34;status&#34;</span>: <span style="color:#e6db74">&#34;Completed&#34;</span>, <span style="color:#e6db74">&#34;result&#34;</span>: 119<span style="color:#f92672">}</span>
+</span></span></code></pre></div><h1 id="7-deployment-to-azure">7. Deployment to Azure</h1>
 <p>I didn&rsquo;t plan to write about how to deploy these functions to Azure, but it might be useful to someone.</p>
 <p>Here&rsquo;s how you can deploy them using:</p>
 <ul>
@@ -456,91 +456,91 @@ curl <span style="color:#e6db74">&#34;https://func-sa-table-durable-dev.azureweb
 <li>Github Actions</li>
 </ul>
 <h2 id="using-azure-pipelines">Using Azure Pipelines</h2>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">trigger</span>: <span style="color:#ae81ff">none</span>
-
-<span style="color:#f92672">pool</span>:
-  <span style="color:#f92672">vmImage</span>: <span style="color:#e6db74">&#39;ubuntu-latest&#39;</span>
-
-<span style="color:#f92672">variables</span>:
-- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">azureSubscription</span>
-  <span style="color:#f92672">value</span>: <span style="color:#e6db74">&#39;cpons-demos-dev&#39;</span>
-- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">functionAppName</span>
-  <span style="color:#f92672">value</span>: <span style="color:#e6db74">&#39;func-staccount-report-query-dev&#39;</span>
-
-<span style="color:#f92672">steps</span>:
-- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">UsePythonVersion@0</span>
-  <span style="color:#f92672">inputs</span>:
-    <span style="color:#f92672">versionSpec</span>: <span style="color:#e6db74">&#39;3.8&#39;</span>
-  <span style="color:#f92672">displayName</span>: <span style="color:#e6db74">&#39;Use Python 3.8&#39;</span>
-
-- <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
-</span><span style="color:#e6db74">    python -m pip install --upgrade pip
-</span><span style="color:#e6db74">    pip install --target=&#34;./.python_packages/lib/site-packages&#34; -r ./requirements.txt</span>    
-  <span style="color:#f92672">displayName</span>: <span style="color:#e6db74">&#39;Install dependencies&#39;</span>
-
-- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">CopyFiles@2</span>
-  <span style="color:#f92672">inputs</span>:
-    <span style="color:#f92672">SourceFolder</span>: <span style="color:#e6db74">&#39;$(Build.SourcesDirectory)&#39;</span>
-    <span style="color:#f92672">Contents</span>: <span style="color:#e6db74">&#39;**&#39;</span>
-    <span style="color:#f92672">TargetFolder</span>: <span style="color:#e6db74">&#39;$(Build.ArtifactStagingDirectory)&#39;</span>
-
-- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">ArchiveFiles@2</span>
-  <span style="color:#f92672">inputs</span>:
-    <span style="color:#f92672">rootFolderOrFile</span>: <span style="color:#e6db74">&#39;$(Build.ArtifactStagingDirectory)&#39;</span>
-    <span style="color:#f92672">includeRootFolder</span>: <span style="color:#66d9ef">false</span>
-    <span style="color:#f92672">archiveType</span>: <span style="color:#e6db74">&#39;zip&#39;</span>
-    <span style="color:#f92672">archiveFile</span>: <span style="color:#e6db74">&#39;$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip&#39;</span>
-    <span style="color:#f92672">replaceExistingArchive</span>: <span style="color:#66d9ef">true</span>
-
-- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AzureFunctionApp@1</span>
-  <span style="color:#f92672">inputs</span>:
-    <span style="color:#f92672">azureSubscription</span>: <span style="color:#e6db74">&#39;$(azureSubscription)&#39;</span>
-    <span style="color:#f92672">appType</span>: <span style="color:#e6db74">&#39;functionAppLinux&#39;</span>
-    <span style="color:#f92672">appName</span>: <span style="color:#e6db74">&#39;$(functionAppName)&#39;</span>
-    <span style="color:#f92672">package</span>: <span style="color:#e6db74">&#39;$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip&#39;</span>
-    <span style="color:#f92672">runtimeStack</span>: <span style="color:#e6db74">&#39;PYTHON|3.8&#39;</span>
-</code></pre></div><h2 id="using-github-action">Using Github Action</h2>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">Deploy Durable Functions to Azure Function App</span>
-
-<span style="color:#f92672">on</span>:
-  <span style="color:#f92672">push</span>:
-    <span style="color:#f92672">branches</span>: [ <span style="color:#ae81ff">main ]</span>
-
-  <span style="color:#f92672">workflow_dispatch</span>:
-
-<span style="color:#f92672">env</span>:
-  <span style="color:#f92672">AZURE_FUNCTIONAPP_NAME</span>: <span style="color:#ae81ff">func-staccount-report-query-dev</span>
-  <span style="color:#f92672">AZURE_FUNCTIONAPP_PACKAGE_PATH</span>: <span style="color:#e6db74">&#39;.&#39;</span>   
-  <span style="color:#f92672">PYTHON_VERSION</span>: <span style="color:#e6db74">&#39;3.8&#39;</span>
-                
-<span style="color:#f92672">jobs</span>:
-  <span style="color:#f92672">build-and-deploy</span>:
-    <span style="color:#f92672">environment</span>: <span style="color:#ae81ff">dev</span>
-    <span style="color:#f92672">runs-on</span>: <span style="color:#ae81ff">ubuntu-latest</span>
-    <span style="color:#f92672">steps</span>:
-    - <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#39;Checkout GitHub Action&#39;</span>
-      <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">actions/checkout@master</span>
-
-    - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Setup Python ${{ env.PYTHON_VERSION }} Environment</span>
-      <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">actions/setup-python@v1</span>
-      <span style="color:#f92672">with</span>:
-        <span style="color:#f92672">python-version</span>: <span style="color:#ae81ff">${{ env.PYTHON_VERSION }}</span>
-
-    - <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#39;Resolve Project Dependencies Using Pip&#39;</span>
-      <span style="color:#f92672">shell</span>: <span style="color:#ae81ff">bash</span>
-      <span style="color:#f92672">run</span>: |<span style="color:#e6db74">
-</span><span style="color:#e6db74">        pushd &#39;./${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}&#39;
-</span><span style="color:#e6db74">        python -m pip install --upgrade pip
-</span><span style="color:#e6db74">        pip install -r requirements.txt --target=&#34;.python_packages/lib/site-packages&#34;
-</span><span style="color:#e6db74">        popd</span>        
-    - <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#39;Run Azure Functions Action&#39;</span>
-      <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">Azure/functions-action@v1</span>
-      <span style="color:#f92672">id</span>: <span style="color:#ae81ff">fa</span>
-      <span style="color:#f92672">with</span>:
-        <span style="color:#f92672">app-name</span>: <span style="color:#ae81ff">${{ env.AZURE_FUNCTIONAPP_NAME }}</span>
-        <span style="color:#f92672">package</span>: <span style="color:#ae81ff">${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}</span>
-        <span style="color:#f92672">publish-profile</span>: <span style="color:#ae81ff">${{ secrets.SCM_CREDENTIALS }}</span>
-</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">trigger</span>: <span style="color:#ae81ff">none</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">pool</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">vmImage</span>: <span style="color:#e6db74">&#39;ubuntu-latest&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">variables</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">azureSubscription</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">value</span>: <span style="color:#e6db74">&#39;cpons-demos-dev&#39;</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">functionAppName</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">value</span>: <span style="color:#e6db74">&#39;func-staccount-report-query-dev&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">steps</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">UsePythonVersion@0</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">versionSpec</span>: <span style="color:#e6db74">&#39;3.8&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">displayName</span>: <span style="color:#e6db74">&#39;Use Python 3.8&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    python -m pip install --upgrade pip
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    pip install --target=&#34;./.python_packages/lib/site-packages&#34; -r ./requirements.txt</span>    
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">displayName</span>: <span style="color:#e6db74">&#39;Install dependencies&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">CopyFiles@2</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">SourceFolder</span>: <span style="color:#e6db74">&#39;$(Build.SourcesDirectory)&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">Contents</span>: <span style="color:#e6db74">&#39;**&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">TargetFolder</span>: <span style="color:#e6db74">&#39;$(Build.ArtifactStagingDirectory)&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">ArchiveFiles@2</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">rootFolderOrFile</span>: <span style="color:#e6db74">&#39;$(Build.ArtifactStagingDirectory)&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">includeRootFolder</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">archiveType</span>: <span style="color:#e6db74">&#39;zip&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">archiveFile</span>: <span style="color:#e6db74">&#39;$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">replaceExistingArchive</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AzureFunctionApp@1</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">azureSubscription</span>: <span style="color:#e6db74">&#39;$(azureSubscription)&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">appType</span>: <span style="color:#e6db74">&#39;functionAppLinux&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">appName</span>: <span style="color:#e6db74">&#39;$(functionAppName)&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">package</span>: <span style="color:#e6db74">&#39;$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">runtimeStack</span>: <span style="color:#e6db74">&#39;PYTHON|3.8&#39;</span>
+</span></span></code></pre></div><h2 id="using-github-action">Using Github Action</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">name</span>: <span style="color:#ae81ff">Deploy Durable Functions to Azure Function App</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">on</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">push</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">branches</span>: [ <span style="color:#ae81ff">main ]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">workflow_dispatch</span>:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">env</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">AZURE_FUNCTIONAPP_NAME</span>: <span style="color:#ae81ff">func-staccount-report-query-dev</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">AZURE_FUNCTIONAPP_PACKAGE_PATH</span>: <span style="color:#e6db74">&#39;.&#39;</span>   
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">PYTHON_VERSION</span>: <span style="color:#e6db74">&#39;3.8&#39;</span>
+</span></span><span style="display:flex;"><span>                
+</span></span><span style="display:flex;"><span><span style="color:#f92672">jobs</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">build-and-deploy</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">environment</span>: <span style="color:#ae81ff">dev</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">runs-on</span>: <span style="color:#ae81ff">ubuntu-latest</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">steps</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#39;Checkout GitHub Action&#39;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">actions/checkout@master</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Setup Python ${{ env.PYTHON_VERSION }} Environment</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">actions/setup-python@v1</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">with</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">python-version</span>: <span style="color:#ae81ff">${{ env.PYTHON_VERSION }}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#39;Resolve Project Dependencies Using Pip&#39;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">shell</span>: <span style="color:#ae81ff">bash</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">run</span>: |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        pushd &#39;./${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        python -m pip install --upgrade pip
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        pip install -r requirements.txt --target=&#34;.python_packages/lib/site-packages&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        popd</span>        
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#39;Run Azure Functions Action&#39;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">Azure/functions-action@v1</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">id</span>: <span style="color:#ae81ff">fa</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">with</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">app-name</span>: <span style="color:#ae81ff">${{ env.AZURE_FUNCTIONAPP_NAME }}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">package</span>: <span style="color:#ae81ff">${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">publish-profile</span>: <span style="color:#ae81ff">${{ secrets.SCM_CREDENTIALS }}</span>
+</span></span></code></pre></div>
     </div>
     
       

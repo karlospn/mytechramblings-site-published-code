@@ -223,78 +223,78 @@ This processor is really useful if you deploy the Collector as a sidecar along y
 <p>If you&rsquo;re curious about the logging exporter, here&rsquo;s an example of how the output looks like:</p>
 <p><img src="/img/aws-otel-collector-logging-output.png" alt="otel-collector-logging-output"></p>
 <p>And here&rsquo;s how we&rsquo;re going to configure the Collector:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">receivers</span>:
-  <span style="color:#f92672">otlp</span>:
-    <span style="color:#f92672">protocols</span>:
-      <span style="color:#f92672">grpc</span>:
-        <span style="color:#f92672">endpoint</span>: <span style="color:#ae81ff">0.0.0.0</span>:<span style="color:#ae81ff">4317</span>
-
-<span style="color:#f92672">processors</span>:
-  <span style="color:#f92672">memory_limiter</span>:
-    <span style="color:#f92672">limit_mib</span>: <span style="color:#ae81ff">50</span>
-    <span style="color:#f92672">check_interval</span>: <span style="color:#ae81ff">1s</span>
-  <span style="color:#f92672">batch/traces</span>:
-    <span style="color:#f92672">timeout</span>: <span style="color:#ae81ff">1s</span>
-    <span style="color:#f92672">send_batch_size</span>: <span style="color:#ae81ff">50</span>
-
-<span style="color:#f92672">exporters</span>:
-  <span style="color:#f92672">logging</span>:
-    <span style="color:#f92672">loglevel</span>: <span style="color:#ae81ff">debug</span>
-  <span style="color:#f92672">awsxray</span>:
-    <span style="color:#f92672">region</span>: <span style="color:#ae81ff">eu-west-1</span>
-
-<span style="color:#f92672">service</span>:
-  <span style="color:#f92672">pipelines</span>:
-    <span style="color:#f92672">traces</span>:
-      <span style="color:#f92672">receivers</span>:
-        - <span style="color:#ae81ff">otlp</span>
-      <span style="color:#f92672">processors</span>:
-        - <span style="color:#ae81ff">memory_limiter</span>
-        - <span style="color:#ae81ff">batch/traces</span>
-      <span style="color:#f92672">exporters</span>:
-        - <span style="color:#ae81ff">logging</span>
-        - <span style="color:#ae81ff">awsxray</span>
-</code></pre></div><h1 id="configuring-permissions-for-the-aws-opentelemetry-collector">Configuring permissions for the AWS OpenTelemetry Collector</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">receivers</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">otlp</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">protocols</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">grpc</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">endpoint</span>: <span style="color:#ae81ff">0.0.0.0</span>:<span style="color:#ae81ff">4317</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">processors</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">memory_limiter</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">limit_mib</span>: <span style="color:#ae81ff">50</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">check_interval</span>: <span style="color:#ae81ff">1s</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">batch/traces</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">timeout</span>: <span style="color:#ae81ff">1s</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">send_batch_size</span>: <span style="color:#ae81ff">50</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">exporters</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">logging</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">loglevel</span>: <span style="color:#ae81ff">debug</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">awsxray</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">region</span>: <span style="color:#ae81ff">eu-west-1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">service</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">pipelines</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">traces</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">receivers</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#ae81ff">otlp</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">processors</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#ae81ff">memory_limiter</span>
+</span></span><span style="display:flex;"><span>        - <span style="color:#ae81ff">batch/traces</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">exporters</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#ae81ff">logging</span>
+</span></span><span style="display:flex;"><span>        - <span style="color:#ae81ff">awsxray</span>
+</span></span></code></pre></div><h1 id="configuring-permissions-for-the-aws-opentelemetry-collector">Configuring permissions for the AWS OpenTelemetry Collector</h1>
 <ul>
 <li><em>All the AWS Access Keys and Secret Keys from this post are fake, so don&rsquo;t bother trying them out.</em></li>
 </ul>
 <p>I&rsquo;ll be running the Collector on my local machine using docker-compose, that requires that you specify a valid <code>AWS_ACCESS_KEY</code> and <code>AWS_SECRET_ACCESS_KEY</code>.</p>
 <p>Here&rsquo;s a snippet from the docker-compose file where the Collector is configured:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">  <span style="color:#f92672">otel</span>:
-    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">amazon/aws-otel-collector:latest</span>
-    <span style="color:#f92672">command</span>: --<span style="color:#ae81ff">config /config/config.yml</span>
-    <span style="color:#f92672">volumes</span>:
-      - <span style="color:#ae81ff">./aws-otel-collector-config:/config</span>
-    <span style="color:#f92672">environment</span>:
-      - <span style="color:#ae81ff">AWS_ACCESS_KEY_ID=AKIA5S6L5S6L5S6L5S6L</span>
-      - <span style="color:#ae81ff">AWS_SECRET_ACCESS_KEY=GO7BvT9IBLb4NudL0aGO7BvT9IBLb4NudL0a</span>
-      - <span style="color:#ae81ff">AWS_REGION=eu-west-1</span>
-    <span style="color:#f92672">ports</span>:
-      - <span style="color:#ae81ff">4317</span>:<span style="color:#ae81ff">4317</span>
-    <span style="color:#f92672">networks</span>:
-      - <span style="color:#ae81ff">tracing</span>
-</code></pre></div><p>The user requires at least permissions for AWS CloudWatch Logs for metric publishing, and for AWS X-Ray for sending traces.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>  <span style="color:#f92672">otel</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">amazon/aws-otel-collector:latest</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">command</span>: --<span style="color:#ae81ff">config /config/config.yml</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">volumes</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">./aws-otel-collector-config:/config</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">environment</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">AWS_ACCESS_KEY_ID=AKIA5S6L5S6L5S6L5S6L</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">AWS_SECRET_ACCESS_KEY=GO7BvT9IBLb4NudL0aGO7BvT9IBLb4NudL0a</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">AWS_REGION=eu-west-1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">4317</span>:<span style="color:#ae81ff">4317</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">tracing</span>
+</span></span></code></pre></div><p>The user requires at least permissions for AWS CloudWatch Logs for metric publishing, and for AWS X-Ray for sending traces.</p>
 <p>So, I&rsquo;ll be using this IAM policy for the Collector:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">Copy</span>
-{
-    <span style="color:#f92672">&#34;Version&#34;: </span><span style="color:#e6db74">&#34;2012-10-17&#34;</span>,
-    <span style="color:#f92672">&#34;Statement&#34;: </span>[
-        {
-            <span style="color:#f92672">&#34;Effect&#34;: </span><span style="color:#e6db74">&#34;Allow&#34;</span>,
-            <span style="color:#f92672">&#34;Action&#34;: </span>[
-                <span style="color:#e6db74">&#34;logs:PutLogEvents&#34;</span>,
-                <span style="color:#e6db74">&#34;logs:CreateLogGroup&#34;</span>,
-                <span style="color:#e6db74">&#34;logs:CreateLogStream&#34;</span>,
-                <span style="color:#e6db74">&#34;logs:DescribeLogStreams&#34;</span>,
-                <span style="color:#e6db74">&#34;logs:DescribeLogGroups&#34;</span>,
-                <span style="color:#e6db74">&#34;xray:*&#34;</span>,
-                <span style="color:#e6db74">&#34;ssm:GetParameters&#34;</span>
-            ],
-            <span style="color:#f92672">&#34;Resource&#34;: </span><span style="color:#e6db74">&#34;*&#34;</span>
-        }
-    ]
-}
-</code></pre></div><p>After setting up the AWS OTEL Collector, I&rsquo;m ready to begin building the apps, but it won’t be right now. <br>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ae81ff">Copy</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;Version&#34;: </span><span style="color:#e6db74">&#34;2012-10-17&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;Statement&#34;: </span>[
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;Effect&#34;: </span><span style="color:#e6db74">&#34;Allow&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;Action&#34;: </span>[
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;logs:PutLogEvents&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;logs:CreateLogGroup&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;logs:CreateLogStream&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;logs:DescribeLogStreams&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;logs:DescribeLogGroups&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;xray:*&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;ssm:GetParameters&#34;</span>
+</span></span><span style="display:flex;"><span>            ],
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;Resource&#34;: </span><span style="color:#e6db74">&#34;*&#34;</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>After setting up the AWS OTEL Collector, I&rsquo;m ready to begin building the apps, but it won’t be right now. <br>
 <strong>See you in <a href="https://www.mytechramblings.com/posts/getting-started-with-aws-distro-for-otel-and-dotnet-part-2/">part 2</a></strong></p>
 
     </div>

@@ -166,10 +166,10 @@ My goal was trying to build an AWS ECS Fargate cluster and deploy apps on it usi
 <li>I want to <strong>decouple the creation deployment and lifecycle of the infrastructure from the application codebase.</strong></li>
 </ul>
 <p>My first approach was trying to emulate this post on the official AWS blog: <a href="https://aws.amazon.com/es/blogs/devops/deploying-a-asp-net-core-web-application-to-amazon-ecs-using-an-azure-devops-pipeline">https://aws.amazon.com/es/blogs/devops/deploying-a-asp-net-core-web-application-to-amazon-ecs-using-an-azure-devops-pipeline</a>, but I didn&rsquo;t like that approach. Let me explain a little bit my pain points with this approach:</p>
-<p>1- I didn&rsquo;t want to deploy images using the &lsquo;latest&rsquo; tag strategy.</p>
+<p>1- I didn&rsquo;t want to deploy images using the &rsquo;latest&rsquo; tag strategy.</p>
 <p>To deploy a container into ECS you need to create a &ldquo;ECS Task Definition&rdquo;.<br>
-An ECS Task Definition contains among many other attributes the Uri and tag of the image you want to ran, so if you put something like &lsquo;uri:latest&rsquo; as the value of the attribute you don&rsquo;t need to create a new Task Definition everytime you deploy a new version of the same container because it will always pick the image with the &lsquo;latest&rsquo; tag.<br>
-That&rsquo;s a neat trick, but I really like to avoid deployments with stable tags like the &lsquo;latest&rsquo; tag, because those tags continue to receive updates and can introduce unwanted inconsistencies. I prefer to use unique tags for every deployment like the container build Id.</p>
+An ECS Task Definition contains among many other attributes the Uri and tag of the image you want to ran, so if you put something like &lsquo;uri:latest&rsquo; as the value of the attribute you don&rsquo;t need to create a new Task Definition everytime you deploy a new version of the same container because it will always pick the image with the &rsquo;latest&rsquo; tag.<br>
+That&rsquo;s a neat trick, but I really like to avoid deployments with stable tags like the &rsquo;latest&rsquo; tag, because those tags continue to receive updates and can introduce unwanted inconsistencies. I prefer to use unique tags for every deployment like the container build Id.</p>
 <p>2- The post only explains how to create a pipeline that updates and already running container, but how should I deploy my application the first time? How should I create the ECS Task Definition and the ECS Service the first time? Those questions are linked with one of my <strong>biggest pain points</strong> when working with ECS:</p>
 <ul>
 <li><strong>You need an existing image to create an ECS Task Definition</strong></li>
@@ -213,96 +213,94 @@ That &ldquo;dummy&rdquo; application is going to be used when provisioning the i
 Once the image is pushed into a generic ECR repository I can reuse it for all the applications that I decide to spun up inside my ECS cluster.</p>
 <p>So that&rsquo;s the first pipeline you are going to ran and you can ran it whenever you want as long as it is the first one.</p>
 <p>As I said it&rsquo;s a very simple pipeline, take a look:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">trigger</span>:
-  <span style="color:#f92672">branches</span>:
-    <span style="color:#f92672">include</span>:
-    - <span style="color:#ae81ff">master</span>
-  <span style="color:#f92672">paths</span>:
-    <span style="color:#f92672">include</span>:
-    - <span style="color:#e6db74">&#39;*&#39;</span>
-    <span style="color:#f92672">exclude</span>:
-    - <span style="color:#e6db74">&#39;azure-pipelines.yml&#39;</span>
-
-<span style="color:#f92672">pool</span>:
-  <span style="color:#f92672">vmImage</span>: <span style="color:#e6db74">&#39;ubuntu-latest&#39;</span>
-
-<span style="color:#f92672">variables</span>:
-  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">AWS_ACCOUNT_ID</span>
-    <span style="color:#f92672">value</span>: <span style="color:#ae81ff">1234567789927</span>
-  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">APP_NAME</span>
-    <span style="color:#f92672">value</span>: <span style="color:#ae81ff">dummy</span>
-  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">DOCKERFILE_PATH</span>
-    <span style="color:#f92672">value</span>: <span style="color:#ae81ff">Dummy.WebApi/Dockerfile</span>
-  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">AWS_REGION</span>
-    <span style="color:#f92672">value </span>: <span style="color:#ae81ff">eu-west-1</span>
-  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">TAG</span>
-    <span style="color:#f92672">value</span>: <span style="color:#ae81ff">$(Build.BuildId)</span>
-
-<span style="color:#f92672">stages</span>:
-- <span style="color:#f92672">stage</span>: <span style="color:#e6db74">&#39;BuildAndPushToECR&#39;</span>
-  <span style="color:#f92672">jobs</span>:
-  - <span style="color:#f92672">job</span>: <span style="color:#e6db74">&#39;Build&#39;</span>
-    <span style="color:#f92672">steps</span>:    
-    - <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
-</span><span style="color:#e6db74">        echo Starting docker build
-</span><span style="color:#e6db74">        echo docker build -t $(APP_NAME):$(TAG) -f $(System.DefaultWorkingDirectory)/$(DOCKERFILE_PATH) .
-</span><span style="color:#e6db74">        docker build -t $(APP_NAME):$(TAG) -f $(System.DefaultWorkingDirectory)/$(DOCKERFILE_PATH) .</span>        
-      <span style="color:#f92672">displayName</span>: <span style="color:#e6db74">&#39;Run docker build&#39;</span> 
-
-   - <span style="color:#f92672">task</span>: <span style="color:#ae81ff">ECRPushImage@1</span>
-      <span style="color:#f92672">displayName</span>:  <span style="color:#ae81ff">Push image to Dev ECR</span>
-      <span style="color:#f92672">inputs</span>:
-        <span style="color:#f92672">awsCredentials</span>: <span style="color:#e6db74">&#39;AWS ECR Dev&#39;</span>
-        <span style="color:#f92672">regionName</span>: <span style="color:#e6db74">&#39;$(AWS_REGION)&#39;</span>
-        <span style="color:#f92672">imageSource</span>: <span style="color:#e6db74">&#39;imagename&#39;</span>
-        <span style="color:#f92672">sourceImageName</span>: <span style="color:#e6db74">&#39;$(APP_NAME)&#39;</span>
-        <span style="color:#f92672">sourceImageTag</span>: <span style="color:#e6db74">&#39;$(TAG)&#39;</span>
-        <span style="color:#f92672">repositoryName</span>: <span style="color:#e6db74">&#39;$(APP_NAME)&#39;</span>
-        <span style="color:#f92672">pushTag</span>: <span style="color:#e6db74">&#39;$(TAG)&#39;</span>
-
-</code></pre></div><h1 id="2-create-and-deploy-the-infrastructure-needed-on-aws">2. Create and deploy the infrastructure needed on AWS</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">trigger</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">branches</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">include</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">master</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">paths</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">include</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;*&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">exclude</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;azure-pipelines.yml&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">pool</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">vmImage</span>: <span style="color:#e6db74">&#39;ubuntu-latest&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">variables</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">AWS_ACCOUNT_ID</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">value</span>: <span style="color:#ae81ff">1234567789927</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">APP_NAME</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">value</span>: <span style="color:#ae81ff">dummy</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">DOCKERFILE_PATH</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">value</span>: <span style="color:#ae81ff">Dummy.WebApi/Dockerfile</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">AWS_REGION</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">value </span>: <span style="color:#ae81ff">eu-west-1</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">TAG</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">value</span>: <span style="color:#ae81ff">$(Build.BuildId)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">stages</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">stage</span>: <span style="color:#e6db74">&#39;BuildAndPushToECR&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">jobs</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">job</span>: <span style="color:#e6db74">&#39;Build&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">steps</span>:    
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        echo Starting docker build
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        echo docker build -t $(APP_NAME):$(TAG) -f $(System.DefaultWorkingDirectory)/$(DOCKERFILE_PATH) .
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        docker build -t $(APP_NAME):$(TAG) -f $(System.DefaultWorkingDirectory)/$(DOCKERFILE_PATH) .</span>        
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">displayName</span>: <span style="color:#e6db74">&#39;Run docker build&#39;</span> 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>   - <span style="color:#f92672">task</span>: <span style="color:#ae81ff">ECRPushImage@1</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">displayName</span>:  <span style="color:#ae81ff">Push image to Dev ECR</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">awsCredentials</span>: <span style="color:#e6db74">&#39;AWS ECR Dev&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">regionName</span>: <span style="color:#e6db74">&#39;$(AWS_REGION)&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">imageSource</span>: <span style="color:#e6db74">&#39;imagename&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">sourceImageName</span>: <span style="color:#e6db74">&#39;$(APP_NAME)&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">sourceImageTag</span>: <span style="color:#e6db74">&#39;$(TAG)&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">repositoryName</span>: <span style="color:#e6db74">&#39;$(APP_NAME)&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">pushTag</span>: <span style="color:#e6db74">&#39;$(TAG)&#39;</span>
+</span></span></code></pre></div><h1 id="2-create-and-deploy-the-infrastructure-needed-on-aws">2. Create and deploy the infrastructure needed on AWS</h1>
 <p>I decided to use AWS CDK to create all the AWS related infrastructure.<br>
 I&rsquo;m not going to show the CDK app that I have developed because it&rsquo;s a pretty straightforward one and it will be too much code to paste it in this post, the only thing worth mentioning is that the ECS Task Definition is created referencing the <em>&ldquo;dummy&rdquo;</em> image that I have built in the previous step.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> DUMMY_IMAGE = <span style="color:#e6db74">&#34;arn:aws:ecr:eu-west-1:1234567789927:repository/dummy&#34;</span>;
-
-    <span style="color:#66d9ef">private</span> FargateTaskDefinition CreateTaskDefinition(
-        EcsServiceConstructProps props, 
-        ILogGroup logGroup)
-    {
-
-        <span style="color:#66d9ef">var</span> task = <span style="color:#66d9ef">new</span> FargateTaskDefinition(<span style="color:#66d9ef">this</span>,
-            <span style="color:#e6db74">&#34;td-app&#34;</span>,
-            <span style="color:#66d9ef">new</span> FargateTaskDefinitionProps
-            {
-                Cpu = props.Cpu,
-                TaskRole = props.TaskDefinitionRole,
-                ExecutionRole = props.TaskExecutionRole,
-                Family = props.FamilyName,
-                MemoryLimitMiB = props.Memory
-            });
-
-        task.AddContainer(<span style="color:#e6db74">&#34;td-app-container&#34;</span>, 
-            <span style="color:#66d9ef">new</span> ContainerDefinitionOptions
-        {
-            Cpu = props.Cpu,
-            MemoryLimitMiB = props.Memory,
-            Image = ContainerImage.FromEcrRepository(Repository.FromRepositoryArn(<span style="color:#66d9ef">this</span>, 
-                <span style="color:#e6db74">&#34;dummy-image&#34;</span>, DUMMY_IMAGE)),
-            Logging = LogDriver.AwsLogs(<span style="color:#66d9ef">new</span> AwsLogDriverProps
-            {
-                StreamPrefix = <span style="color:#e6db74">&#34;ecs&#34;</span>,
-                LogGroup = logGroup
-            }),
-            Environment = GetEnvironmentVariables(props)
-        }).AddPortMappings(<span style="color:#66d9ef">new</span> PortMapping
-        {
-            ContainerPort = props.ContainerPort,
-        });
-
-        <span style="color:#66d9ef">return</span> task;
-    }
-
-</code></pre></div><p>The pipeline is quite simple as I&rsquo;m just executing the CDK app.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> DUMMY_IMAGE = <span style="color:#e6db74">&#34;arn:aws:ecr:eu-west-1:1234567789927:repository/dummy&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> FargateTaskDefinition CreateTaskDefinition(
+</span></span><span style="display:flex;"><span>        EcsServiceConstructProps props, 
+</span></span><span style="display:flex;"><span>        ILogGroup logGroup)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> task = <span style="color:#66d9ef">new</span> FargateTaskDefinition(<span style="color:#66d9ef">this</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;td-app&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">new</span> FargateTaskDefinitionProps
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                Cpu = props.Cpu,
+</span></span><span style="display:flex;"><span>                TaskRole = props.TaskDefinitionRole,
+</span></span><span style="display:flex;"><span>                ExecutionRole = props.TaskExecutionRole,
+</span></span><span style="display:flex;"><span>                Family = props.FamilyName,
+</span></span><span style="display:flex;"><span>                MemoryLimitMiB = props.Memory
+</span></span><span style="display:flex;"><span>            });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        task.AddContainer(<span style="color:#e6db74">&#34;td-app-container&#34;</span>, 
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">new</span> ContainerDefinitionOptions
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Cpu = props.Cpu,
+</span></span><span style="display:flex;"><span>            MemoryLimitMiB = props.Memory,
+</span></span><span style="display:flex;"><span>            Image = ContainerImage.FromEcrRepository(Repository.FromRepositoryArn(<span style="color:#66d9ef">this</span>, 
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;dummy-image&#34;</span>, DUMMY_IMAGE)),
+</span></span><span style="display:flex;"><span>            Logging = LogDriver.AwsLogs(<span style="color:#66d9ef">new</span> AwsLogDriverProps
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                StreamPrefix = <span style="color:#e6db74">&#34;ecs&#34;</span>,
+</span></span><span style="display:flex;"><span>                LogGroup = logGroup
+</span></span><span style="display:flex;"><span>            }),
+</span></span><span style="display:flex;"><span>            Environment = GetEnvironmentVariables(props)
+</span></span><span style="display:flex;"><span>        }).AddPortMappings(<span style="color:#66d9ef">new</span> PortMapping
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            ContainerPort = props.ContainerPort,
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> task;
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><p>The pipeline is quite simple as I&rsquo;m just executing the CDK app.</p>
 <p><img src="/img/cdk-deploy.png" alt="cdk-deploy"></p>
 <p>I&rsquo;m not going to show you the pipeline to deploy a CDK app because I already talked about it in a previous post.<br>
 If you want to know how to build an Azure DevOps pipeline that deploys an AWS CDK app you can read my previous post: <a href="https://www.mytechramblings.com/posts/provisioning-aws-resources-using-cdk-azure-devops/">https://www.mytechramblings.com/posts/provisioning-aws-resources-using-cdk-azure-devops/</a></p>
@@ -315,106 +313,104 @@ If you want to know how to build an Azure DevOps pipeline that deploys an AWS CD
 </ul>
 <p>The tricky part of this pipeline is when we want to create a new revision of the ECS Task Definition and update the ECS Service to reference the new definition.
 There are 2 paths we can follow: We can do it everything by ourselves via scripting and the result will be something like this:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#!/bin/bash
-</span><span style="color:#75715e"></span>
-set -e
-ECR_IMAGE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>AWS_ACCOUNT_ID<span style="color:#e6db74">}</span><span style="color:#e6db74">.dkr.ecr.</span><span style="color:#e6db74">${</span>AWS_DEFAULT_REGION<span style="color:#e6db74">}</span><span style="color:#e6db74">.amazonaws.com/</span><span style="color:#e6db74">${</span>IMAGE_REPO_NAME<span style="color:#e6db74">}</span><span style="color:#e6db74">:</span><span style="color:#e6db74">${</span>IMAGE_TAG<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
-
-TASK_DEFINITION<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>aws ecs describe-task-definition --task-definition <span style="color:#e6db74">&#34;</span>$TASK_FAMILY<span style="color:#e6db74">&#34;</span> --region <span style="color:#e6db74">&#34;</span>$AWS_DEFAULT_REGION<span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">)</span>
-
-NEW_TASK_DEFINTIION<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>echo $TASK_DEFINITION | jq --arg IMAGE <span style="color:#e6db74">&#34;</span>$ECR_IMAGE<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#39;.taskDefinition | .containerDefinitions[0].image = $IMAGE | del(.taskDefinitionArn) | del(.revision) | del(.status) | del(.requiresAttributes) | del(.compatibilities)&#39;</span><span style="color:#66d9ef">)</span>
-
-NEW_TASK_INFO<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>aws ecs register-task-definition --region <span style="color:#e6db74">&#34;</span>$AWS_DEFAULT_REGION<span style="color:#e6db74">&#34;</span> --cli-input-json <span style="color:#e6db74">&#34;</span>$NEW_TASK_DEFINTIION<span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">)</span>
-
-NEW_REVISION<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>echo $NEW_TASK_INFO | jq <span style="color:#e6db74">&#39;.taskDefinition.revision&#39;</span><span style="color:#66d9ef">)</span>
-aws ecs update-service --cluster <span style="color:#e6db74">${</span>ECS_CLUSTER<span style="color:#e6db74">}</span> <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>                       --service <span style="color:#e6db74">${</span>SERVICE_NAME<span style="color:#e6db74">}</span> <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>                       --task-definition <span style="color:#e6db74">${</span>TASK_FAMILY<span style="color:#e6db74">}</span>:<span style="color:#e6db74">${</span>NEW_REVISION<span style="color:#e6db74">}</span><span style="color:#e6db74">```</span>
-
-</code></pre></div><p>Or we can use the <strong>Fargate CLI</strong> : <a href="https://github.com/awslabs/fargatecli">https://github.com/awslabs/fargatecli</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>set -e
+</span></span><span style="display:flex;"><span>ECR_IMAGE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>AWS_ACCOUNT_ID<span style="color:#e6db74">}</span><span style="color:#e6db74">.dkr.ecr.</span><span style="color:#e6db74">${</span>AWS_DEFAULT_REGION<span style="color:#e6db74">}</span><span style="color:#e6db74">.amazonaws.com/</span><span style="color:#e6db74">${</span>IMAGE_REPO_NAME<span style="color:#e6db74">}</span><span style="color:#e6db74">:</span><span style="color:#e6db74">${</span>IMAGE_TAG<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>TASK_DEFINITION<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>aws ecs describe-task-definition --task-definition <span style="color:#e6db74">&#34;</span>$TASK_FAMILY<span style="color:#e6db74">&#34;</span> --region <span style="color:#e6db74">&#34;</span>$AWS_DEFAULT_REGION<span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>NEW_TASK_DEFINTIION<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>echo $TASK_DEFINITION | jq --arg IMAGE <span style="color:#e6db74">&#34;</span>$ECR_IMAGE<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#39;.taskDefinition | .containerDefinitions[0].image = $IMAGE | del(.taskDefinitionArn) | del(.revision) | del(.status) | del(.requiresAttributes) | del(.compatibilities)&#39;</span><span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>NEW_TASK_INFO<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>aws ecs register-task-definition --region <span style="color:#e6db74">&#34;</span>$AWS_DEFAULT_REGION<span style="color:#e6db74">&#34;</span> --cli-input-json <span style="color:#e6db74">&#34;</span>$NEW_TASK_DEFINTIION<span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>NEW_REVISION<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>echo $NEW_TASK_INFO | jq <span style="color:#e6db74">&#39;.taskDefinition.revision&#39;</span><span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>aws ecs update-service --cluster <span style="color:#e6db74">${</span>ECS_CLUSTER<span style="color:#e6db74">}</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>                       --service <span style="color:#e6db74">${</span>SERVICE_NAME<span style="color:#e6db74">}</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>                       --task-definition <span style="color:#e6db74">${</span>TASK_FAMILY<span style="color:#e6db74">}</span>:<span style="color:#e6db74">${</span>NEW_REVISION<span style="color:#e6db74">}</span><span style="color:#e6db74">```</span>
+</span></span></code></pre></div><p>Or we can use the <strong>Fargate CLI</strong> : <a href="https://github.com/awslabs/fargatecli">https://github.com/awslabs/fargatecli</a></p>
 <p>The fargate CLI is an command-line interface that allows me to streamline the deployment of containers to an existing AWS Fargate cluster.<br>
 With the Fargate CLI you can update the ECS Task Definition and the ECS Service simply by running the following command:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">fargate service deploy <span style="color:#e6db74">${</span>ECS_SERVICE_NAME<span style="color:#e6db74">}</span> --image <span style="color:#e6db74">${</span>ECR_REPOSITORY_ARN<span style="color:#e6db74">}</span>:<span style="color:#e6db74">${</span>TAG<span style="color:#e6db74">}</span> --cluster <span style="color:#e6db74">${</span>FARGATE_CLUSTER_ARN<span style="color:#e6db74">}</span> --region <span style="color:#e6db74">${</span>AWS_DEFAULT_REGION<span style="color:#e6db74">}</span>
-</code></pre></div><p>For simplicity I decided to ran with the Fargate CLI instead of the bash script, I placed the CLI on a separate Git repository.<br>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>fargate service deploy <span style="color:#e6db74">${</span>ECS_SERVICE_NAME<span style="color:#e6db74">}</span> --image <span style="color:#e6db74">${</span>ECR_REPOSITORY_ARN<span style="color:#e6db74">}</span>:<span style="color:#e6db74">${</span>TAG<span style="color:#e6db74">}</span> --cluster <span style="color:#e6db74">${</span>FARGATE_CLUSTER_ARN<span style="color:#e6db74">}</span> --region <span style="color:#e6db74">${</span>AWS_DEFAULT_REGION<span style="color:#e6db74">}</span>
+</span></span></code></pre></div><p>For simplicity I decided to ran with the Fargate CLI instead of the bash script, I placed the CLI on a separate Git repository.<br>
 This pipeline sounds a little more complex, so let me show the end result:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">trigger</span>:
-  <span style="color:#f92672">branches</span>:
-    <span style="color:#f92672">include</span>:
-    - <span style="color:#ae81ff">master</span>
-  <span style="color:#f92672">paths</span>:
-    <span style="color:#f92672">include</span>:
-    - <span style="color:#e6db74">&#39;*&#39;</span>
-    <span style="color:#f92672">exclude</span>:
-    - <span style="color:#e6db74">&#39;azure-pipelines.yml&#39;</span>
-
-<span style="color:#f92672">pool</span>:
-  <span style="color:#f92672">vmImage</span>: <span style="color:#e6db74">&#39;ubuntu-latest&#39;</span>
-
-<span style="color:#f92672">resources</span>:
-  <span style="color:#f92672">repositories</span>:
-  - <span style="color:#f92672">repository</span>: <span style="color:#ae81ff">FargateCliRepository</span>
-    <span style="color:#f92672">type</span>: <span style="color:#ae81ff">git</span>
-    <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#39;DevOpsTools/ECSToolset&#39;</span>
-    <span style="color:#f92672">ref</span>: <span style="color:#ae81ff">master</span>
-
-<span style="color:#f92672">variables</span>:
-  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">AWS_ACCOUNT_ID</span>
-    <span style="color:#f92672">value</span>: <span style="color:#ae81ff">1234567789927</span>
-  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">APP_NAME</span>
-    <span style="color:#f92672">value</span>: <span style="color:#ae81ff">chat-app</span>
-  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">DOCKERFILE_PATH</span>
-    <span style="color:#f92672">value</span>: <span style="color:#ae81ff">Chat.WebApi/Dockerfile</span>
-  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">AWS_REGION</span>
-    <span style="color:#f92672">value </span>: <span style="color:#ae81ff">eu-west-1</span>
-  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">FARGATE_CLUSTER_ARN</span>
-    <span style="color:#f92672">value</span>: <span style="color:#ae81ff">arn:aws:ecs:$(AWS_REGION):$(AWS_ACCOUNT_ID):cluster/product-dev-cluster</span>
-  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">SERVICE_NAME</span>
-    <span style="color:#f92672">value</span>: <span style="color:#ae81ff">chat-app-dev-ecs-svc   </span>
-  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">ECR_REPOSITORY</span>
-    <span style="color:#f92672">value</span>: <span style="color:#ae81ff">$(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_REGION).amazonaws.com/$(APP_NAME)</span>
-  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">FARGATE_CLI_PATH</span>
-    <span style="color:#f92672">value</span>: <span style="color:#ae81ff">ECSToolset/fargate-cli/linux64</span>
-  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">TAG</span>
-    <span style="color:#f92672">value</span>: <span style="color:#ae81ff">$(Build.BuildId)</span>
-
-<span style="color:#f92672">stages</span>:
-- <span style="color:#f92672">stage</span>: <span style="color:#e6db74">&#39;BuildAndPushToECR&#39;</span>
-  <span style="color:#f92672">jobs</span>:
-  - <span style="color:#f92672">job</span>: <span style="color:#e6db74">&#39;Build&#39;</span>
-    <span style="color:#f92672">steps</span>:    
-    - <span style="color:#f92672">checkout</span>: <span style="color:#ae81ff">self  </span>
-    - <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
-</span><span style="color:#e6db74">        echo Starting docker build
-</span><span style="color:#e6db74">        echo  docker build -t $(APP_NAME):$(TAG) -f $(System.DefaultWorkingDirectory)/$(DOCKERFILE_PATH) .
-</span><span style="color:#e6db74">        docker build -t $(APP_NAME):$(TAG) -f $(System.DefaultWorkingDirectory)/$(DOCKERFILE_PATH) .</span>        
-      <span style="color:#f92672">displayName</span>: <span style="color:#e6db74">&#39;Run docker build&#39;</span>  
-   - <span style="color:#f92672">task</span>: <span style="color:#ae81ff">ECRPushImage@1</span>
-      <span style="color:#f92672">displayName</span>:  <span style="color:#ae81ff">Push image to ECR</span>
-      <span style="color:#f92672">inputs</span>:
-        <span style="color:#f92672">awsCredentials</span>: <span style="color:#e6db74">&#39;AWS ECR Dev&#39;</span>
-        <span style="color:#f92672">regionName</span>: <span style="color:#e6db74">&#39;$(AWS_REGION)&#39;</span>
-        <span style="color:#f92672">imageSource</span>: <span style="color:#e6db74">&#39;imagename&#39;</span>
-        <span style="color:#f92672">sourceImageName</span>: <span style="color:#e6db74">&#39;$(APP_NAME)&#39;</span>
-        <span style="color:#f92672">sourceImageTag</span>: <span style="color:#e6db74">&#39;$(TAG)&#39;</span>
-        <span style="color:#f92672">repositoryName</span>: <span style="color:#e6db74">&#39;$(APP_NAME)&#39;</span>
-        <span style="color:#f92672">pushTag</span>: <span style="color:#e6db74">&#39;$(TAG)&#39;</span>
-- <span style="color:#f92672">stage </span>: <span style="color:#e6db74">&#39;DeployToECSFargateCluster&#39;</span>
-  <span style="color:#f92672">jobs</span>:
-  - <span style="color:#f92672">job</span>:      
-    <span style="color:#f92672">steps</span>:  
-      - <span style="color:#f92672">checkout</span>: <span style="color:#ae81ff">FargateCliRepository</span>
-      - <span style="color:#f92672">checkout</span>: <span style="color:#ae81ff">self     </span>
-      - <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AWSShellScript@1</span>
-        <span style="color:#f92672">inputs</span>:
-          <span style="color:#f92672">awsCredentials</span>: <span style="color:#e6db74">&#39;AWS Fargate Dev&#39;</span>
-          <span style="color:#f92672">regionName</span>: <span style="color:#e6db74">&#39;$(AWS_REGION)&#39;</span>
-          <span style="color:#f92672">scriptType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
-          <span style="color:#f92672">inlineScript</span>: |<span style="color:#e6db74">
-</span><span style="color:#e6db74">            cd $(System.DefaultWorkingDirectory)/$(FARGATE_CLI_PATH)
-</span><span style="color:#e6db74">            ./fargate service deploy $(SERVICE_NAME) --image $(ECR_REPOSITORY):$(TAG) --cluster $(FARGATE_CLUSTER_ARN) --region $(AWS_REGION)</span>            
-        <span style="color:#f92672">displayName</span>: <span style="color:#e6db74">&#39;Update Task Definition&#39;</span>
-
-</code></pre></div><p>As I stated before I ended up building 3 different pipelines instead of a single pipeline that does everything.<br>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">trigger</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">branches</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">include</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">master</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">paths</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">include</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;*&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">exclude</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;azure-pipelines.yml&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">pool</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">vmImage</span>: <span style="color:#e6db74">&#39;ubuntu-latest&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">resources</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">repositories</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">repository</span>: <span style="color:#ae81ff">FargateCliRepository</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">type</span>: <span style="color:#ae81ff">git</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#39;DevOpsTools/ECSToolset&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ref</span>: <span style="color:#ae81ff">master</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">variables</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">AWS_ACCOUNT_ID</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">value</span>: <span style="color:#ae81ff">1234567789927</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">APP_NAME</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">value</span>: <span style="color:#ae81ff">chat-app</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">DOCKERFILE_PATH</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">value</span>: <span style="color:#ae81ff">Chat.WebApi/Dockerfile</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">AWS_REGION</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">value </span>: <span style="color:#ae81ff">eu-west-1</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">FARGATE_CLUSTER_ARN</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">value</span>: <span style="color:#ae81ff">arn:aws:ecs:$(AWS_REGION):$(AWS_ACCOUNT_ID):cluster/product-dev-cluster</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">SERVICE_NAME</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">value</span>: <span style="color:#ae81ff">chat-app-dev-ecs-svc   </span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">ECR_REPOSITORY</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">value</span>: <span style="color:#ae81ff">$(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_REGION).amazonaws.com/$(APP_NAME)</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">FARGATE_CLI_PATH</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">value</span>: <span style="color:#ae81ff">ECSToolset/fargate-cli/linux64</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">TAG</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">value</span>: <span style="color:#ae81ff">$(Build.BuildId)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">stages</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">stage</span>: <span style="color:#e6db74">&#39;BuildAndPushToECR&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">jobs</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">job</span>: <span style="color:#e6db74">&#39;Build&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">steps</span>:    
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">checkout</span>: <span style="color:#ae81ff">self  </span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        echo Starting docker build
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        echo  docker build -t $(APP_NAME):$(TAG) -f $(System.DefaultWorkingDirectory)/$(DOCKERFILE_PATH) .
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        docker build -t $(APP_NAME):$(TAG) -f $(System.DefaultWorkingDirectory)/$(DOCKERFILE_PATH) .</span>        
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">displayName</span>: <span style="color:#e6db74">&#39;Run docker build&#39;</span>  
+</span></span><span style="display:flex;"><span>   - <span style="color:#f92672">task</span>: <span style="color:#ae81ff">ECRPushImage@1</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">displayName</span>:  <span style="color:#ae81ff">Push image to ECR</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">awsCredentials</span>: <span style="color:#e6db74">&#39;AWS ECR Dev&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">regionName</span>: <span style="color:#e6db74">&#39;$(AWS_REGION)&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">imageSource</span>: <span style="color:#e6db74">&#39;imagename&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">sourceImageName</span>: <span style="color:#e6db74">&#39;$(APP_NAME)&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">sourceImageTag</span>: <span style="color:#e6db74">&#39;$(TAG)&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">repositoryName</span>: <span style="color:#e6db74">&#39;$(APP_NAME)&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">pushTag</span>: <span style="color:#e6db74">&#39;$(TAG)&#39;</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">stage </span>: <span style="color:#e6db74">&#39;DeployToECSFargateCluster&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">jobs</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">job</span>:      
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">steps</span>:  
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">checkout</span>: <span style="color:#ae81ff">FargateCliRepository</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">checkout</span>: <span style="color:#ae81ff">self     </span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AWSShellScript@1</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">awsCredentials</span>: <span style="color:#e6db74">&#39;AWS Fargate Dev&#39;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">regionName</span>: <span style="color:#e6db74">&#39;$(AWS_REGION)&#39;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">scriptType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">inlineScript</span>: |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            cd $(System.DefaultWorkingDirectory)/$(FARGATE_CLI_PATH)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            ./fargate service deploy $(SERVICE_NAME) --image $(ECR_REPOSITORY):$(TAG) --cluster $(FARGATE_CLUSTER_ARN) --region $(AWS_REGION)</span>            
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">displayName</span>: <span style="color:#e6db74">&#39;Update Task Definition&#39;</span>
+</span></span></code></pre></div><p>As I stated before I ended up building 3 different pipelines instead of a single pipeline that does everything.<br>
 The first pipeline is circumstancial, it creates the &ldquo;dummy application&rdquo; and runs just once.<br>
 The other 2 pipelines are the important ones: the first one deploys the infrastructure using CDK and the second one deploys the app.</p>
 <ul>

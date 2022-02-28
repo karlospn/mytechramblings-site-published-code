@@ -197,113 +197,113 @@ So I&rsquo;m hoping to maintain that simplicity when I move it to Azure Static W
 <p>My de facto tool for IaC is <strong>Terraform</strong>, but it doesn&rsquo;t support Azure Static WebApps right now. It seems that they&rsquo;re also working on it: <a href="https://github.com/terraform-providers/terraform-provider-azurerm/pull/7150">https://github.com/terraform-providers/terraform-provider-azurerm/pull/7150</a> <br>
 <strong>Pulumi</strong> also doesn&rsquo;t support it, so it seems that my best option right now is using an <strong>ARM template</strong>.</p>
 <p>Here&rsquo;s the ARM template I have built:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
-    <span style="color:#f92672">&#34;$schema&#34;</span>: <span style="color:#e6db74">&#34;https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#&#34;</span>,
-    <span style="color:#f92672">&#34;contentVersion&#34;</span>: <span style="color:#e6db74">&#34;1.0.0.0&#34;</span>,
-    <span style="color:#f92672">&#34;parameters&#34;</span>: {
-        <span style="color:#f92672">&#34;name&#34;</span>: {
-            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
-        },
-        <span style="color:#f92672">&#34;location&#34;</span>: {
-            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
-        },
-        <span style="color:#f92672">&#34;sku&#34;</span>: {
-            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
-        },
-        <span style="color:#f92672">&#34;skucode&#34;</span>: {
-            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
-        },
-        <span style="color:#f92672">&#34;repositoryUrl&#34;</span>: {
-            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
-        },
-        <span style="color:#f92672">&#34;branch&#34;</span>: {
-            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
-        },
-        <span style="color:#f92672">&#34;repositoryToken&#34;</span>: {
-            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;securestring&#34;</span>
-        },
-        <span style="color:#f92672">&#34;appLocation&#34;</span>: {
-            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
-        },
-        <span style="color:#f92672">&#34;apiLocation&#34;</span>: {
-            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
-        },
-        <span style="color:#f92672">&#34;appArtifactLocation&#34;</span>: {
-            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
-        },
-        <span style="color:#f92672">&#34;resourceTags&#34;</span>: {
-            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;object&#34;</span>
-        }
-    },
-    <span style="color:#f92672">&#34;resources&#34;</span>: [
-        {
-            <span style="color:#f92672">&#34;apiVersion&#34;</span>: <span style="color:#e6db74">&#34;2019-12-01-preview&#34;</span>,
-            <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;name&#39;)]&#34;</span>,
-            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;Microsoft.Web/staticSites&#34;</span>,
-            <span style="color:#f92672">&#34;location&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;location&#39;)]&#34;</span>,
-            <span style="color:#f92672">&#34;tags&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;resourceTags&#39;)]&#34;</span>,
-            <span style="color:#f92672">&#34;properties&#34;</span>: {
-                <span style="color:#f92672">&#34;repositoryUrl&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;repositoryUrl&#39;)]&#34;</span>,
-                <span style="color:#f92672">&#34;branch&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;branch&#39;)]&#34;</span>,
-                <span style="color:#f92672">&#34;repositoryToken&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;repositoryToken&#39;)]&#34;</span>,
-                <span style="color:#f92672">&#34;buildProperties&#34;</span>: {
-                    <span style="color:#f92672">&#34;appLocation&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;appLocation&#39;)]&#34;</span>,
-                    <span style="color:#f92672">&#34;apiLocation&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;apiLocation&#39;)]&#34;</span>,
-                    <span style="color:#f92672">&#34;appArtifactLocation&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;appArtifactLocation&#39;)]&#34;</span>
-                }
-            },
-            <span style="color:#f92672">&#34;sku&#34;</span>: {
-                <span style="color:#f92672">&#34;Tier&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;sku&#39;)]&#34;</span>,
-                <span style="color:#f92672">&#34;Name&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;skuCode&#39;)]&#34;</span>
-            }
-        }
-    ]
-}
-</code></pre></div><p>And I&rsquo;m also using a parameters file:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
-    <span style="color:#f92672">&#34;$schema&#34;</span>: <span style="color:#e6db74">&#34;https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#&#34;</span>,
-    <span style="color:#f92672">&#34;contentVersion&#34;</span>: <span style="color:#e6db74">&#34;1.0.0.0&#34;</span>,
-    <span style="color:#f92672">&#34;parameters&#34;</span>: {
-        <span style="color:#f92672">&#34;name&#34;</span>: {
-            <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;mytechramblings-blog&#34;</span>
-        },
-        <span style="color:#f92672">&#34;location&#34;</span>: {
-            <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;westeurope&#34;</span>
-        },
-        <span style="color:#f92672">&#34;sku&#34;</span>: {
-            <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;Free&#34;</span>
-        },
-        <span style="color:#f92672">&#34;skucode&#34;</span>: {
-            <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;Free&#34;</span>
-        },
-        <span style="color:#f92672">&#34;repositoryUrl&#34;</span>: {
-            <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;https://github.com/karlospn/blog-azure-static-webapp&#34;</span>
-        },
-        <span style="color:#f92672">&#34;branch&#34;</span>: {
-            <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;master&#34;</span>
-        },
-        <span style="color:#f92672">&#34;repositoryToken&#34;</span>: {
-            <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span> 
-        },
-        <span style="color:#f92672">&#34;appLocation&#34;</span>: {
-            <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;/&#34;</span>
-        },
-        <span style="color:#f92672">&#34;apiLocation&#34;</span>: {
-            <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span>
-        },
-        <span style="color:#f92672">&#34;appArtifactLocation&#34;</span>: {
-            <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;public&#34;</span>
-        },
-        <span style="color:#f92672">&#34;resourceTags&#34;</span>: {
-            <span style="color:#f92672">&#34;value&#34;</span>: {
-                <span style="color:#f92672">&#34;Environment&#34;</span>: <span style="color:#e6db74">&#34;Development&#34;</span>,
-                <span style="color:#f92672">&#34;Project&#34;</span>: <span style="color:#e6db74">&#34;personal-blog&#34;</span>,
-                <span style="color:#f92672">&#34;ApplicationName&#34;</span>: <span style="color:#e6db74">&#34;mytechramblings-blog&#34;</span>
-            }
-        }
-    }
-}
-</code></pre></div><p>It&rsquo;s a pretty simple ARM template, there is only a couple of things worth mentioning:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;$schema&#34;</span>: <span style="color:#e6db74">&#34;https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;contentVersion&#34;</span>: <span style="color:#e6db74">&#34;1.0.0.0&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;parameters&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;name&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;location&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;sku&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;skucode&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;repositoryUrl&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;branch&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;repositoryToken&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;securestring&#34;</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;appLocation&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;apiLocation&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;appArtifactLocation&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;resourceTags&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;object&#34;</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;resources&#34;</span>: [
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;apiVersion&#34;</span>: <span style="color:#e6db74">&#34;2019-12-01-preview&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;name&#39;)]&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;Microsoft.Web/staticSites&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;location&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;location&#39;)]&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;tags&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;resourceTags&#39;)]&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;properties&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;repositoryUrl&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;repositoryUrl&#39;)]&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;branch&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;branch&#39;)]&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;repositoryToken&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;repositoryToken&#39;)]&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;buildProperties&#34;</span>: {
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">&#34;appLocation&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;appLocation&#39;)]&#34;</span>,
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">&#34;apiLocation&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;apiLocation&#39;)]&#34;</span>,
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">&#34;appArtifactLocation&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;appArtifactLocation&#39;)]&#34;</span>
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;sku&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;Tier&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;sku&#39;)]&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;Name&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;skuCode&#39;)]&#34;</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>And I&rsquo;m also using a parameters file:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;$schema&#34;</span>: <span style="color:#e6db74">&#34;https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;contentVersion&#34;</span>: <span style="color:#e6db74">&#34;1.0.0.0&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;parameters&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;name&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;mytechramblings-blog&#34;</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;location&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;westeurope&#34;</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;sku&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;Free&#34;</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;skucode&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;Free&#34;</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;repositoryUrl&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;https://github.com/karlospn/blog-azure-static-webapp&#34;</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;branch&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;master&#34;</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;repositoryToken&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span> 
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;appLocation&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;/&#34;</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;apiLocation&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;appArtifactLocation&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;public&#34;</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;resourceTags&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;value&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;Environment&#34;</span>: <span style="color:#e6db74">&#34;Development&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;Project&#34;</span>: <span style="color:#e6db74">&#34;personal-blog&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;ApplicationName&#34;</span>: <span style="color:#e6db74">&#34;mytechramblings-blog&#34;</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>It&rsquo;s a pretty simple ARM template, there is only a couple of things worth mentioning:</p>
 <ul>
 <li>The <strong>&ldquo;repositoryToken&rdquo;</strong> parameter must contain a GitHub PAT with admin/write access to the repository and the ability to interact with workflows. <br>
 Right now I&rsquo;m leaving it as a empty string in the parameters file, and I will inject the correct value during the deployment pipeline.</li>
@@ -339,91 +339,91 @@ If you try to do that you&rsquo;re going to end up with 2 pipelines that are doi
 <ul>
 <li><strong>This action creates the Azure static web app using an ARM template</strong></li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">Create Azure Static WebApps resources</span>
-<span style="color:#f92672">on</span>:
-  <span style="color:#f92672">workflow_dispatch</span>:
-  
-<span style="color:#f92672">env</span>:
-  <span style="color:#f92672">resourceGroupName</span>: <span style="color:#e6db74">&#39;rg-blog-dev-001&#39;</span>
-  <span style="color:#f92672">resourceGroupRegion</span>: <span style="color:#e6db74">&#39;westeurope&#39;</span>   
-<span style="color:#f92672">jobs</span>:
-  <span style="color:#f92672">build-and-deploy</span>:
-    <span style="color:#f92672">runs-on</span>: <span style="color:#ae81ff">ubuntu-latest</span>
-    <span style="color:#f92672">steps</span>:
-    - <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">actions/checkout@master</span>
-    - <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">azure/login@v1</span>
-      <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Azure Login</span>
-      <span style="color:#f92672">with</span>:
-        <span style="color:#f92672">creds</span>: <span style="color:#ae81ff">${{ secrets.AZURE_CREDENTIALS }}</span>
-    - <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">Azure/cli@v1.0.0</span>
-      <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Create resource Group </span>
-      <span style="color:#f92672">with</span>:  
-        <span style="color:#f92672">inlineScript</span>: |<span style="color:#e6db74">
-</span><span style="color:#e6db74">          </span>          <span style="color:#ae81ff">az group create -l ${{ env.resourceGroupRegion }} -n ${{ env.resourceGroupName }}</span>
-    - <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">azure/arm-deploy@v1</span>
-      <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Deploy ARM Template</span>
-      <span style="color:#f92672">with</span>:
-        <span style="color:#f92672">subscriptionId</span>: <span style="color:#ae81ff">${{ secrets.AZURE_SUBSCRIPTION_ID }}</span>
-        <span style="color:#f92672">resourceGroupName</span>: <span style="color:#ae81ff">${{ env.resourceGroupName }}</span>
-        <span style="color:#f92672">template</span>: <span style="color:#ae81ff">./infrastructure/azuredeploy.json</span>
-        <span style="color:#f92672">parameters</span>: <span style="color:#ae81ff">./infrastructure/azuredeploy.parameters.json repositoryToken=${{ secrets.PAT_FOR_AZURE_STATIC_WEBAPPS }}</span>
-        <span style="color:#f92672">deploymentName</span>: <span style="color:#ae81ff">mytechramblings-deployment</span>
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">name</span>: <span style="color:#ae81ff">Create Azure Static WebApps resources</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">on</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">workflow_dispatch</span>:
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#f92672">env</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">resourceGroupName</span>: <span style="color:#e6db74">&#39;rg-blog-dev-001&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">resourceGroupRegion</span>: <span style="color:#e6db74">&#39;westeurope&#39;</span>   
+</span></span><span style="display:flex;"><span><span style="color:#f92672">jobs</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">build-and-deploy</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">runs-on</span>: <span style="color:#ae81ff">ubuntu-latest</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">steps</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">actions/checkout@master</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">azure/login@v1</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Azure Login</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">with</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">creds</span>: <span style="color:#ae81ff">${{ secrets.AZURE_CREDENTIALS }}</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">Azure/cli@v1.0.0</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Create resource Group </span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">with</span>:  
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">inlineScript</span>: |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          </span>          <span style="color:#ae81ff">az group create -l ${{ env.resourceGroupRegion }} -n ${{ env.resourceGroupName }}</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">azure/arm-deploy@v1</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Deploy ARM Template</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">with</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">subscriptionId</span>: <span style="color:#ae81ff">${{ secrets.AZURE_SUBSCRIPTION_ID }}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">resourceGroupName</span>: <span style="color:#ae81ff">${{ env.resourceGroupName }}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">template</span>: <span style="color:#ae81ff">./infrastructure/azuredeploy.json</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">parameters</span>: <span style="color:#ae81ff">./infrastructure/azuredeploy.parameters.json repositoryToken=${{ secrets.PAT_FOR_AZURE_STATIC_WEBAPPS }}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">deploymentName</span>: <span style="color:#ae81ff">mytechramblings-deployment</span>
+</span></span></code></pre></div><ul>
 <li><strong>This action builds and deploy the blog</strong>. <br>
 I did not build this action it was auto-generated and commited on my repository by the service itself.</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">name</span>: <span style="color:#ae81ff">Azure Static Web Apps CI/CD</span>
-
-<span style="color:#f92672">on</span>:
-  <span style="color:#f92672">push</span>:
-    <span style="color:#f92672">branches</span>:
-      - <span style="color:#ae81ff">master</span>
-    <span style="color:#f92672">paths-ignore</span>: 
-      - <span style="color:#e6db74">&#39;.github/**&#39;</span>
-      - <span style="color:#e6db74">&#39;infrastructure/**&#39;</span>
-  <span style="color:#f92672">pull_request</span>:
-    <span style="color:#f92672">types</span>: [<span style="color:#ae81ff">opened, synchronize, reopened, closed]</span>
-    <span style="color:#f92672">branches</span>:
-      - <span style="color:#ae81ff">master</span>
-
-<span style="color:#f92672">jobs</span>:
-  <span style="color:#f92672">build_and_deploy_job</span>:
-    <span style="color:#f92672">if</span>: <span style="color:#ae81ff">github.event_name == &#39;push&#39; || (github.event_name == &#39;pull_request&#39; &amp;&amp; github.event.action != &#39;closed&#39;)</span>
-    <span style="color:#f92672">runs-on</span>: <span style="color:#ae81ff">ubuntu-latest</span>
-    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Build and Deploy Job</span>
-    <span style="color:#f92672">steps</span>:
-      - <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">actions/checkout@v2</span>
-        <span style="color:#f92672">with</span>:
-          <span style="color:#f92672">submodules</span>: <span style="color:#66d9ef">true</span>
-      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Build And Deploy</span>
-        <span style="color:#f92672">id</span>: <span style="color:#ae81ff">builddeploy</span>
-        <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">Azure/static-web-apps-deploy@v0.0.1-preview</span>
-        <span style="color:#f92672">with</span>:
-          <span style="color:#f92672">azure_static_web_apps_api_token</span>: <span style="color:#ae81ff">${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PURPLE_FOREST_03D78C803 }}</span>
-          <span style="color:#f92672">repo_token</span>: <span style="color:#ae81ff">${{ secrets.GITHUB_TOKEN }}</span> <span style="color:#75715e"># Used for Github integrations (i.e. PR comments)</span>
-          <span style="color:#f92672">action</span>: <span style="color:#e6db74">&#34;upload&#34;</span>
-          <span style="color:#75715e">###### Repository/Build Configurations - These values can be configured to match you app requirements. ######</span>
-          <span style="color:#75715e"># For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig</span>
-          <span style="color:#f92672">app_location</span>: <span style="color:#e6db74">&#34;/&#34;</span> <span style="color:#75715e"># App source code path</span>
-          <span style="color:#f92672">api_location</span>: <span style="color:#e6db74">&#34;api&#34;</span> <span style="color:#75715e"># Api source code path - optional</span>
-          <span style="color:#f92672">output_location</span>: <span style="color:#e6db74">&#34;public&#34;</span> <span style="color:#75715e"># Built app content directory - optional</span>
-          <span style="color:#75715e">###### End of Repository/Build Configurations ######</span>
-
-  <span style="color:#f92672">close_pull_request_job</span>:
-    <span style="color:#f92672">if</span>: <span style="color:#ae81ff">github.event_name == &#39;pull_request&#39; &amp;&amp; github.event.action == &#39;closed&#39;</span>
-    <span style="color:#f92672">runs-on</span>: <span style="color:#ae81ff">ubuntu-latest</span>
-    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Close Pull Request Job</span>
-    <span style="color:#f92672">steps</span>:
-      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Close Pull Request</span>
-        <span style="color:#f92672">id</span>: <span style="color:#ae81ff">closepullrequest</span>
-        <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">Azure/static-web-apps-deploy@v0.0.1-preview</span>
-        <span style="color:#f92672">with</span>:
-          <span style="color:#f92672">azure_static_web_apps_api_token</span>: <span style="color:#ae81ff">${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PURPLE_FOREST_03D78C803 }}</span>
-          <span style="color:#f92672">action</span>: <span style="color:#e6db74">&#34;close&#34;</span>
-</code></pre></div><p>After executing both pipelines the blog is finally up and running on an static web app.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">name</span>: <span style="color:#ae81ff">Azure Static Web Apps CI/CD</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">on</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">push</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">branches</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">master</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">paths-ignore</span>: 
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#39;.github/**&#39;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#39;infrastructure/**&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">pull_request</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">types</span>: [<span style="color:#ae81ff">opened, synchronize, reopened, closed]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">branches</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">master</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">jobs</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">build_and_deploy_job</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">if</span>: <span style="color:#ae81ff">github.event_name == &#39;push&#39; || (github.event_name == &#39;pull_request&#39; &amp;&amp; github.event.action != &#39;closed&#39;)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">runs-on</span>: <span style="color:#ae81ff">ubuntu-latest</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Build and Deploy Job</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">steps</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">actions/checkout@v2</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">with</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">submodules</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Build And Deploy</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">id</span>: <span style="color:#ae81ff">builddeploy</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">Azure/static-web-apps-deploy@v0.0.1-preview</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">with</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">azure_static_web_apps_api_token</span>: <span style="color:#ae81ff">${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PURPLE_FOREST_03D78C803 }}</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">repo_token</span>: <span style="color:#ae81ff">${{ secrets.GITHUB_TOKEN }}</span> <span style="color:#75715e"># Used for Github integrations (i.e. PR comments)</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">action</span>: <span style="color:#e6db74">&#34;upload&#34;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#75715e">###### Repository/Build Configurations - These values can be configured to match you app requirements. ######</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#75715e"># For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">app_location</span>: <span style="color:#e6db74">&#34;/&#34;</span> <span style="color:#75715e"># App source code path</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">api_location</span>: <span style="color:#e6db74">&#34;api&#34;</span> <span style="color:#75715e"># Api source code path - optional</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">output_location</span>: <span style="color:#e6db74">&#34;public&#34;</span> <span style="color:#75715e"># Built app content directory - optional</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#75715e">###### End of Repository/Build Configurations ######</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">close_pull_request_job</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">if</span>: <span style="color:#ae81ff">github.event_name == &#39;pull_request&#39; &amp;&amp; github.event.action == &#39;closed&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">runs-on</span>: <span style="color:#ae81ff">ubuntu-latest</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Close Pull Request Job</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">steps</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Close Pull Request</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">id</span>: <span style="color:#ae81ff">closepullrequest</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">Azure/static-web-apps-deploy@v0.0.1-preview</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">with</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">azure_static_web_apps_api_token</span>: <span style="color:#ae81ff">${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PURPLE_FOREST_03D78C803 }}</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">action</span>: <span style="color:#e6db74">&#34;close&#34;</span>
+</span></span></code></pre></div><p>After executing both pipelines the blog is finally up and running on an static web app.</p>
 <p>The last step is to add my custom domain in the web app, you can do it either from the Azure portal or using the Azure CLI:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">az staticwebapp hostname set -n mytechramblings-blog --hostname www.mytechramblings.com
-</code></pre></div><h2 id="final-thoughts">Final thoughts</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>az staticwebapp hostname set -n mytechramblings-blog --hostname www.mytechramblings.com
+</span></span></code></pre></div><h2 id="final-thoughts">Final thoughts</h2>
 <p>My impressions after tinkering a little bit with Azure Static WebApps is that it&rsquo;s still lacking a little bit in some departments.</p>
 <p>I&rsquo;m getting the impression that the service is trying a little too hard to automate things for me, it&rsquo;s a nice feature that it creates a fully functional CI/CD pipeline for me, but I want the ability to turn that feature off and do whatever I want to deploy the code.<br>
 Also the support for Azure DevOps is a must. GitHub is great and all, but seems a weird decision to support only GitHub when a huge chunk of .NET shops are using Azure DevOps.</p>

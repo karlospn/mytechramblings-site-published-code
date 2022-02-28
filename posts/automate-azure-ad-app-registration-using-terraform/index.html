@@ -223,15 +223,14 @@ That&rsquo;s a bad sign to begin with, it means that all the most recent feature
 But let&rsquo;s going forward, that&rsquo;s the final look after registering in my AAD the master app and giving it the proper permissions:</p>
 <p><img src="/img/tf-aad-master-app.png" alt="master-app-config"></p>
 <p>Now we can configure the Terraform provider using the master app client_id and client_secret.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">
-<span style="color:#ae81ff">provider &#34;azuread&#34; {</span>
-  <span style="color:#ae81ff">version           = &#34;=1.1.1&#34;</span>
-  <span style="color:#ae81ff">client_id         = &#34;ba4d0620-0522-4ada-b0b6-0cdd8cfaeae7&#34;</span>
-  <span style="color:#ae81ff">client_secret     = &#34;my_secret_goes_here&#34;</span>
-  <span style="color:#ae81ff">tenant_id         = &#34;my_tenant_goes_here&#34;</span>
-}
-
-</code></pre></div><h2 id="step-2-register-the-payment-api">Step 2: Register the payment API</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">provider &#34;azuread&#34; {</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">version           = &#34;=1.1.1&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">client_id         = &#34;ba4d0620-0522-4ada-b0b6-0cdd8cfaeae7&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">client_secret     = &#34;my_secret_goes_here&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">tenant_id         = &#34;my_tenant_goes_here&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="step-2-register-the-payment-api">Step 2: Register the payment API</h2>
 <hr>
 <p>Next step is to create the payment API using Terraform.
 The payment API has the following configuration:</p>
@@ -239,60 +238,60 @@ The payment API has the following configuration:</p>
 <li>It exposes 2 scopes : payment.write and payment.read.</li>
 <li>It has 2 application roles: Reader and Writer.</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">resource &#34;azuread_application&#34; &#34;payments_api&#34; {</span>
-    <span style="color:#ae81ff">name                       = &#34;payments_api&#34;</span>
-    <span style="color:#ae81ff">available_to_other_tenants = false</span>
-    <span style="color:#ae81ff">oauth2_allow_implicit_flow = false</span>
-    <span style="color:#ae81ff">type                       = &#34;webapp/api&#34;</span>
-    <span style="color:#ae81ff">identifier_uris            = [&#34;api://payment&#34;]</span>
-}
-
-<span style="color:#ae81ff">resource &#34;azuread_application_oauth2_permission&#34; &#34;payment_apis_payment_write_scope&#34; {</span>
-  <span style="color:#ae81ff">application_object_id      = azuread_application.payments_api.id</span>
-  <span style="color:#ae81ff">admin_consent_description  = &#34;Allow the application to access the commit payment methods&#34;</span>
-  <span style="color:#ae81ff">admin_consent_display_name = &#34;payment.write&#34;</span>
-  <span style="color:#ae81ff">is_enabled                 = true</span>
-  <span style="color:#ae81ff">type                       = &#34;Admin&#34;</span>
-  <span style="color:#ae81ff">value                      = &#34;payment.write&#34;</span>
-  <span style="color:#ae81ff">user_consent_description  = &#34;Allow the application to access the commit payment methods&#34;</span>
-  <span style="color:#ae81ff">user_consent_display_name  = &#34;payment.write&#34;</span>
-}
-
-<span style="color:#ae81ff">resource &#34;azuread_application_oauth2_permission&#34; &#34;payment_apis_payment_read_scope&#34; {</span>
-  <span style="color:#ae81ff">application_object_id      = azuread_application.payments_api.id</span>
-  <span style="color:#ae81ff">admin_consent_description  = &#34;Allow the application to access the read payment methods&#34;</span>
-  <span style="color:#ae81ff">admin_consent_display_name = &#34;payment.read&#34;</span>
-  <span style="color:#ae81ff">is_enabled                 = true</span>
-  <span style="color:#ae81ff">type                       = &#34;User&#34;</span>
-  <span style="color:#ae81ff">value                      = &#34;payment.read&#34;</span>
-  <span style="color:#ae81ff">user_consent_description  = &#34;Allow the application to access the read payment methods&#34;</span>
-  <span style="color:#ae81ff">user_consent_display_name = &#34;payment.read&#34;    </span>
-}
-
-<span style="color:#ae81ff">resource &#34;azuread_application_app_role&#34; &#34;payments_api_admin_approle&#34; {</span>
-  <span style="color:#ae81ff">application_object_id = azuread_application.payments_api.id</span>
-  <span style="color:#ae81ff">allowed_member_types  = [&#34;User&#34;, &#34;Application&#34;]</span>
-  <span style="color:#ae81ff">description           = &#34;Can read and make payments&#34;</span>
-  <span style="color:#ae81ff">display_name          = &#34;Admin&#34;</span>
-  <span style="color:#ae81ff">is_enabled            = true</span>
-  <span style="color:#ae81ff">value                 = &#34;Admin&#34;</span>
-}
-
-<span style="color:#ae81ff">resource &#34;azuread_application_app_role&#34; &#34;payments_api_reader_approle&#34; {</span>
-  <span style="color:#ae81ff">application_object_id = azuread_application.payments_api.id</span>
-  <span style="color:#ae81ff">allowed_member_types  = [&#34;User&#34;, &#34;Application&#34;]</span>
-  <span style="color:#ae81ff">description           = &#34;Can only read payments&#34;</span>
-  <span style="color:#ae81ff">display_name          = &#34;Reader&#34;</span>
-  <span style="color:#ae81ff">is_enabled            = true</span>
-  <span style="color:#ae81ff">value                 = &#34;Reader&#34;</span>
-}
-
-<span style="color:#ae81ff">resource &#34;azuread_service_principal&#34; &#34;payment_sp&#34; {</span>
-  <span style="color:#ae81ff">application_id               = azuread_application.payments_api.application_id</span>
-  <span style="color:#ae81ff">app_role_assignment_required = false</span>
-  <span style="color:#ae81ff">tags = [ &#34;payment&#34;, &#34;api&#34;]</span>
-}
-</code></pre></div><p>It&rsquo;s a pretty straightforward config file but I have encountered some issues while building it.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ae81ff">resource &#34;azuread_application&#34; &#34;payments_api&#34; {</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">name                       = &#34;payments_api&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">available_to_other_tenants = false</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">oauth2_allow_implicit_flow = false</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">type                       = &#34;webapp/api&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">identifier_uris            = [&#34;api://payment&#34;]</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">resource &#34;azuread_application_oauth2_permission&#34; &#34;payment_apis_payment_write_scope&#34; {</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">application_object_id      = azuread_application.payments_api.id</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">admin_consent_description  = &#34;Allow the application to access the commit payment methods&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">admin_consent_display_name = &#34;payment.write&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">is_enabled                 = true</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">type                       = &#34;Admin&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">value                      = &#34;payment.write&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">user_consent_description  = &#34;Allow the application to access the commit payment methods&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">user_consent_display_name  = &#34;payment.write&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">resource &#34;azuread_application_oauth2_permission&#34; &#34;payment_apis_payment_read_scope&#34; {</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">application_object_id      = azuread_application.payments_api.id</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">admin_consent_description  = &#34;Allow the application to access the read payment methods&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">admin_consent_display_name = &#34;payment.read&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">is_enabled                 = true</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">type                       = &#34;User&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">value                      = &#34;payment.read&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">user_consent_description  = &#34;Allow the application to access the read payment methods&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">user_consent_display_name = &#34;payment.read&#34;    </span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">resource &#34;azuread_application_app_role&#34; &#34;payments_api_admin_approle&#34; {</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">application_object_id = azuread_application.payments_api.id</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">allowed_member_types  = [&#34;User&#34;, &#34;Application&#34;]</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">description           = &#34;Can read and make payments&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">display_name          = &#34;Admin&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">is_enabled            = true</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">value                 = &#34;Admin&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">resource &#34;azuread_application_app_role&#34; &#34;payments_api_reader_approle&#34; {</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">application_object_id = azuread_application.payments_api.id</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">allowed_member_types  = [&#34;User&#34;, &#34;Application&#34;]</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">description           = &#34;Can only read payments&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">display_name          = &#34;Reader&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">is_enabled            = true</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">value                 = &#34;Reader&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">resource &#34;azuread_service_principal&#34; &#34;payment_sp&#34; {</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">application_id               = azuread_application.payments_api.application_id</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">app_role_assignment_required = false</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">tags = [ &#34;payment&#34;, &#34;api&#34;]</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>It&rsquo;s a pretty straightforward config file but I have encountered some issues while building it.</p>
 <p>The first issue:</p>
 <ul>
 <li>I can create the application roles but <strong>there is NO way to assign users or groups to those roles</strong>.</li>
@@ -319,67 +318,66 @@ There is an example on this page: <a href="https://github.com/terraform-provider
 </li>
 <li>The Booking API has the Payment API Reader Role assigned.</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">resource &#34;azuread_application&#34; &#34;booking_api&#34; {</span>
-    <span style="color:#ae81ff">name                       = &#34;booking_api&#34;</span>
-    <span style="color:#ae81ff">available_to_other_tenants = false</span>
-    <span style="color:#ae81ff">oauth2_allow_implicit_flow = false</span>
-    <span style="color:#ae81ff">type                       = &#34;webapp/api&#34;</span>
-    <span style="color:#ae81ff">identifier_uris            = [&#34;api://booking&#34;]</span>
-
-    <span style="color:#ae81ff">required_resource_access {</span>
-        <span style="color:#ae81ff">resource_app_id = azuread_application.payments_api.application_id</span>
-        <span style="color:#ae81ff">resource_access {</span>
-            <span style="color:#ae81ff">id   = azuread_application_app_role.payments_api_reader_approle.role_id</span>
-            <span style="color:#ae81ff">type = &#34;Role&#34;</span>
-        }
-    }
-}
-
-<span style="color:#ae81ff">resource &#34;azuread_service_principal&#34; &#34;booking_sp&#34; {</span>
-  <span style="color:#ae81ff">application_id               = azuread_application.booking_api.application_id</span>
-  <span style="color:#ae81ff">app_role_assignment_required = false</span>
-  <span style="color:#ae81ff">tags = [ &#34;payment&#34;, &#34;api&#34;]</span>
-}
-
-<span style="color:#ae81ff">resource &#34;azuread_application_password&#34; &#34;booking_api_pwd&#34; {</span>
-  <span style="color:#ae81ff">application_object_id = azuread_application.booking_api.id</span>
-  <span style="color:#ae81ff">description           = &#34;My managed password&#34;</span>
-  <span style="color:#ae81ff">value                 = &#34;VT=uSgbTanZhyz@%nL9Hpd+Tfay_MRV#&#34;</span>
-  <span style="color:#ae81ff">end_date              = &#34;2099-01-01T01:02:03Z&#34;</span>
-}
-</code></pre></div><p>Apart from creating the application I&rsquo;m also creating a client secret to test the client credentials flow.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ae81ff">resource &#34;azuread_application&#34; &#34;booking_api&#34; {</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">name                       = &#34;booking_api&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">available_to_other_tenants = false</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">oauth2_allow_implicit_flow = false</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">type                       = &#34;webapp/api&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">identifier_uris            = [&#34;api://booking&#34;]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">required_resource_access {</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">resource_app_id = azuread_application.payments_api.application_id</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">resource_access {</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">id   = azuread_application_app_role.payments_api_reader_approle.role_id</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">type = &#34;Role&#34;</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">resource &#34;azuread_service_principal&#34; &#34;booking_sp&#34; {</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">application_id               = azuread_application.booking_api.application_id</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">app_role_assignment_required = false</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">tags = [ &#34;payment&#34;, &#34;api&#34;]</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">resource &#34;azuread_application_password&#34; &#34;booking_api_pwd&#34; {</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">application_object_id = azuread_application.booking_api.id</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">description           = &#34;My managed password&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">value                 = &#34;VT=uSgbTanZhyz@%nL9Hpd+Tfay_MRV#&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">end_date              = &#34;2099-01-01T01:02:03Z&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Apart from creating the application I&rsquo;m also creating a client secret to test the client credentials flow.</p>
 <p>Be mindful that the Terraform provider <strong>cannot grant consent to use the role in an automatically way</strong>, you need to do it manually or using a script.</p>
 <p><img src="/img/aad-api-grant-admin-consent.png" alt="booking-app-grant-admin-consent"></p>
 <p>After doing that, let&rsquo;s test it and see if it works. I&rsquo;m going to request an access token using the Booking API client id and client secret.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">
-curl -X POST <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>  https://login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/oauth2/v2.0/token <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>  -H <span style="color:#e6db74">&#39;Cache-Control: no-cache&#39;</span> <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>  -H <span style="color:#e6db74">&#39;Content-Type: application/x-www-form-urlencoded&#39;</span> <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>  -d <span style="color:#e6db74">&#39;grant_type=client_credentials&amp;client_id=5cd49945-086c-4605-9f86-00fe08134dab&amp;client_secret=VT%3DuSgbTanZhyz%40%25nL9Hpd%2BTfay_MRV%23&amp;scope=api%3A%2F%2Fpayment%2F.default&#39;</span>
-
-</code></pre></div><p>And it returns an access_token with the following attributes:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
-  <span style="color:#f92672">&#34;aud&#34;</span>: <span style="color:#e6db74">&#34;api://payment&#34;</span>,
-  <span style="color:#f92672">&#34;iss&#34;</span>: <span style="color:#e6db74">&#34;https://sts.windows.net/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/&#34;</span>,
-  <span style="color:#f92672">&#34;iat&#34;</span>: <span style="color:#ae81ff">1595422827</span>,
-  <span style="color:#f92672">&#34;nbf&#34;</span>: <span style="color:#ae81ff">1595422827</span>,
-  <span style="color:#f92672">&#34;exp&#34;</span>: <span style="color:#ae81ff">1595426727</span>,
-  <span style="color:#f92672">&#34;aio&#34;</span>: <span style="color:#e6db74">&#34;E2BgYGAtTs258t5NtmeuveDN2979AA==&#34;</span>,
-  <span style="color:#f92672">&#34;appid&#34;</span>: <span style="color:#e6db74">&#34;5cd49945-086c-4605-9f86-00fe08134dab&#34;</span>,
-  <span style="color:#f92672">&#34;appidacr&#34;</span>: <span style="color:#e6db74">&#34;1&#34;</span>,
-  <span style="color:#f92672">&#34;idp&#34;</span>: <span style="color:#e6db74">&#34;https://sts.windows.net/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/&#34;</span>,
-  <span style="color:#f92672">&#34;oid&#34;</span>: <span style="color:#e6db74">&#34;3b78fe9b-7641-4a73-9b0c-bd05383a27bc&#34;</span>,
-  <span style="color:#f92672">&#34;rh&#34;</span>: <span style="color:#e6db74">&#34;0.AR8A4nEGijA6ME2cua1wm5x0SkWZ1FxsCAVGn4YA_ggTTasfALk.&#34;</span>,
-  <span style="color:#f92672">&#34;roles&#34;</span>: [
-    <span style="color:#e6db74">&#34;Reader&#34;</span>
-  ],
-  <span style="color:#f92672">&#34;sub&#34;</span>: <span style="color:#e6db74">&#34;3b78fe9b-7641-4a73-9b0c-bd05383a27bc&#34;</span>,
-  <span style="color:#f92672">&#34;tid&#34;</span>: <span style="color:#e6db74">&#34;8a0671e2-3a30-4d30-9cb9-ad709b9c744a&#34;</span>,
-  <span style="color:#f92672">&#34;uti&#34;</span>: <span style="color:#e6db74">&#34;41oex9rUzU28oibY_D0hAA&#34;</span>,
-  <span style="color:#f92672">&#34;ver&#34;</span>: <span style="color:#e6db74">&#34;1.0&#34;</span>
-}
-</code></pre></div><p>So far so good, the issuer and the audience are both correct and it also contains the Reader application Role.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>curl -X POST <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  https://login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/oauth2/v2.0/token <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  -H <span style="color:#e6db74">&#39;Cache-Control: no-cache&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  -H <span style="color:#e6db74">&#39;Content-Type: application/x-www-form-urlencoded&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  -d <span style="color:#e6db74">&#39;grant_type=client_credentials&amp;client_id=5cd49945-086c-4605-9f86-00fe08134dab&amp;client_secret=VT%3DuSgbTanZhyz%40%25nL9Hpd%2BTfay_MRV%23&amp;scope=api%3A%2F%2Fpayment%2F.default&#39;</span>
+</span></span></code></pre></div><p>And it returns an access_token with the following attributes:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;aud&#34;</span>: <span style="color:#e6db74">&#34;api://payment&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;iss&#34;</span>: <span style="color:#e6db74">&#34;https://sts.windows.net/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;iat&#34;</span>: <span style="color:#ae81ff">1595422827</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;nbf&#34;</span>: <span style="color:#ae81ff">1595422827</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;exp&#34;</span>: <span style="color:#ae81ff">1595426727</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;aio&#34;</span>: <span style="color:#e6db74">&#34;E2BgYGAtTs258t5NtmeuveDN2979AA==&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;appid&#34;</span>: <span style="color:#e6db74">&#34;5cd49945-086c-4605-9f86-00fe08134dab&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;appidacr&#34;</span>: <span style="color:#e6db74">&#34;1&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;idp&#34;</span>: <span style="color:#e6db74">&#34;https://sts.windows.net/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;oid&#34;</span>: <span style="color:#e6db74">&#34;3b78fe9b-7641-4a73-9b0c-bd05383a27bc&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;rh&#34;</span>: <span style="color:#e6db74">&#34;0.AR8A4nEGijA6ME2cua1wm5x0SkWZ1FxsCAVGn4YA_ggTTasfALk.&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;roles&#34;</span>: [
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;Reader&#34;</span>
+</span></span><span style="display:flex;"><span>  ],
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;sub&#34;</span>: <span style="color:#e6db74">&#34;3b78fe9b-7641-4a73-9b0c-bd05383a27bc&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;tid&#34;</span>: <span style="color:#e6db74">&#34;8a0671e2-3a30-4d30-9cb9-ad709b9c744a&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;uti&#34;</span>: <span style="color:#e6db74">&#34;41oex9rUzU28oibY_D0hAA&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;ver&#34;</span>: <span style="color:#e6db74">&#34;1.0&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>So far so good, the issuer and the audience are both correct and it also contains the Reader application Role.</p>
 <h2 id="step-4-register-the-frontend-spa">Step 4: Register the FrontEnd SPA</h2>
 <hr>
 <p>The FrontEnd SPA has the following configuration:</p>
@@ -388,28 +386,28 @@ curl -X POST <span style="color:#ae81ff">\
 <li>Uses an implicit flow to obtain an access token and a id token and aftewards uses the access token to attain access to the Payment API.</li>
 <li>The FrontEnd SPA app has permission only to ask for the payment.read scope.</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">resource &#34;azuread_application&#34; &#34;frontend_spa&#34; {</span>
-    <span style="color:#ae81ff">name                       = &#34;frontend_spa&#34;</span>
-    <span style="color:#ae81ff">available_to_other_tenants = false</span>
-    <span style="color:#ae81ff">oauth2_allow_implicit_flow = true</span>
-    <span style="color:#ae81ff">reply_urls                 = [&#34;https://oidcdebugger.com/debug&#34;]</span>
-    <span style="color:#ae81ff">logout_url                 = &#34;https://localhost:4200/logout&#34;</span>
-
-    <span style="color:#ae81ff">required_resource_access {</span>
-        <span style="color:#ae81ff">resource_app_id = azuread_application.payments_api.application_id</span>
-        <span style="color:#ae81ff">resource_access {</span>
-            <span style="color:#ae81ff">id   = azuread_application_oauth2_permission.payment_apis_payment_read_scope.permission_id</span>
-            <span style="color:#ae81ff">type = &#34;Scope&#34;</span>
-        }
-    }
-}
-
-<span style="color:#ae81ff">resource &#34;azuread_service_principal&#34; &#34;frontend_spa&#34; {</span>
-  <span style="color:#ae81ff">application_id               = azuread_application.frontend_spa.application_id</span>
-  <span style="color:#ae81ff">app_role_assignment_required = false</span>
-  <span style="color:#ae81ff">tags = [ &#34;frontend&#34;, &#34;spa&#34;]</span>
-}
-</code></pre></div><p>I have found a few problems with the SPA:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ae81ff">resource &#34;azuread_application&#34; &#34;frontend_spa&#34; {</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">name                       = &#34;frontend_spa&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">available_to_other_tenants = false</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">oauth2_allow_implicit_flow = true</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">reply_urls                 = [&#34;https://oidcdebugger.com/debug&#34;]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">logout_url                 = &#34;https://localhost:4200/logout&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">required_resource_access {</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">resource_app_id = azuread_application.payments_api.application_id</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">resource_access {</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">id   = azuread_application_oauth2_permission.payment_apis_payment_read_scope.permission_id</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">type = &#34;Scope&#34;</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">resource &#34;azuread_service_principal&#34; &#34;frontend_spa&#34; {</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">application_id               = azuread_application.frontend_spa.application_id</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">app_role_assignment_required = false</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">tags = [ &#34;frontend&#34;, &#34;spa&#34;]</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>I have found a few problems with the SPA:</p>
 <ul>
 <li>I have the same issue I mention in the step 3: the Terraform provider cannot grant admin content to use the payment API scope in a programmatic way.</li>
 </ul>
@@ -430,44 +428,44 @@ I&rsquo;m starting an implicit flow and try to log in as <strong>Jane</strong>.<
 <p>Remember from the step 2 that I have <strong>manually</strong> assigned a Reader role in the Payment API to Jane.</p>
 </blockquote>
 <p>The fastest way to begin an implicit flow is by building the URI by myself.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">https://login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/oauth2/v2.0/authorize
-  ?client_id<span style="color:#f92672">=</span>c6b731f2-785b-4206-974a-db8d34eb4397
-  &amp;redirect_uri<span style="color:#f92672">=</span>https%3A%2F%2Foidcdebugger.com%2Fdebug
-  &amp;scope<span style="color:#f92672">=</span>api%3A%2F%2Fpayment%2Fpayment.read%20openid
-  &amp;response_type<span style="color:#f92672">=</span>token%20id_token
-  &amp;response_mode<span style="color:#f92672">=</span>form_post
-  &amp;nonce<span style="color:#f92672">=</span>iaiqs1h3pa
-</code></pre></div><p>And it returns an access_token with the following attributes:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
-   <span style="color:#f92672">&#34;aud&#34;</span>: <span style="color:#e6db74">&#34;api://payment&#34;</span>,
-   <span style="color:#f92672">&#34;iss&#34;</span>: <span style="color:#e6db74">&#34;https://sts.windows.net/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/&#34;</span>,
-   <span style="color:#f92672">&#34;iat&#34;</span>: <span style="color:#ae81ff">1595425611</span>,
-   <span style="color:#f92672">&#34;nbf&#34;</span>: <span style="color:#ae81ff">1595425611</span>,
-   <span style="color:#f92672">&#34;exp&#34;</span>: <span style="color:#ae81ff">1595429511</span>,
-   <span style="color:#f92672">&#34;acr&#34;</span>: <span style="color:#e6db74">&#34;1&#34;</span>,
-   <span style="color:#f92672">&#34;aio&#34;</span>: <span style="color:#e6db74">&#34;ATQAy/8QAAAAOe3HCSYBGo663Mt+8XSEK/yY+P8Ao4qLGurtTMz5S9VtG7FBYdfpCiPb3qP59gHO&#34;</span>,
-   <span style="color:#f92672">&#34;amr&#34;</span>: [
-      <span style="color:#e6db74">&#34;pwd&#34;</span>
-   ],
-   <span style="color:#f92672">&#34;appid&#34;</span>: <span style="color:#e6db74">&#34;c6b731f2-785b-4206-974a-db8d34eb4397&#34;</span>,
-   <span style="color:#f92672">&#34;appidacr&#34;</span>: <span style="color:#e6db74">&#34;0&#34;</span>,
-   <span style="color:#f92672">&#34;given_name&#34;</span>: <span style="color:#e6db74">&#34;doe&#34;</span>,
-   <span style="color:#f92672">&#34;ipaddr&#34;</span>: <span style="color:#e6db74">&#34;00.00.000.0&#34;</span>,
-   <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;jane&#34;</span>,
-   <span style="color:#f92672">&#34;oid&#34;</span>: <span style="color:#e6db74">&#34;0a92ffc5-9551-47a0-baf0-7f3352eac015&#34;</span>,
-   <span style="color:#f92672">&#34;rh&#34;</span>: <span style="color:#e6db74">&#34;0.AR8A4nEGijA6ME2cua1wm5x0SvIxt8ZbeAZCl0rbjTTrQ5cfAAc.&#34;</span>,
-   <span style="color:#f92672">&#34;roles&#34;</span>: [
-      <span style="color:#e6db74">&#34;Reader&#34;</span>
-   ],
-   <span style="color:#f92672">&#34;scp&#34;</span>: <span style="color:#e6db74">&#34;payment.read&#34;</span>,
-   <span style="color:#f92672">&#34;sub&#34;</span>: <span style="color:#e6db74">&#34;ODPx3tnkeekXKN1Olvx8pD5e5PcXJMCg0LoaHz3F14g&#34;</span>,
-   <span style="color:#f92672">&#34;tid&#34;</span>: <span style="color:#e6db74">&#34;8a0671e2-3a30-4d30-9cb9-ad709b9c744a&#34;</span>,
-   <span style="color:#f92672">&#34;unique_name&#34;</span>: <span style="color:#e6db74">&#34;jane@cpnoutlook.onmicrosoft.com&#34;</span>,
-   <span style="color:#f92672">&#34;upn&#34;</span>: <span style="color:#e6db74">&#34;jane@cpnoutlook.onmicrosoft.com&#34;</span>,
-   <span style="color:#f92672">&#34;uti&#34;</span>: <span style="color:#e6db74">&#34;wYVNdVa5Bk6FE7iZjNkjAA&#34;</span>,
-   <span style="color:#f92672">&#34;ver&#34;</span>: <span style="color:#e6db74">&#34;1.0&#34;</span>
-}
-</code></pre></div><p>Everything looks alright: issuer, audience, scopes, upn, roles.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>https://login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/oauth2/v2.0/authorize
+</span></span><span style="display:flex;"><span>  ?client_id<span style="color:#f92672">=</span>c6b731f2-785b-4206-974a-db8d34eb4397
+</span></span><span style="display:flex;"><span>  &amp;redirect_uri<span style="color:#f92672">=</span>https%3A%2F%2Foidcdebugger.com%2Fdebug
+</span></span><span style="display:flex;"><span>  &amp;scope<span style="color:#f92672">=</span>api%3A%2F%2Fpayment%2Fpayment.read%20openid
+</span></span><span style="display:flex;"><span>  &amp;response_type<span style="color:#f92672">=</span>token%20id_token
+</span></span><span style="display:flex;"><span>  &amp;response_mode<span style="color:#f92672">=</span>form_post
+</span></span><span style="display:flex;"><span>  &amp;nonce<span style="color:#f92672">=</span>iaiqs1h3pa
+</span></span></code></pre></div><p>And it returns an access_token with the following attributes:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">&#34;aud&#34;</span>: <span style="color:#e6db74">&#34;api://payment&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">&#34;iss&#34;</span>: <span style="color:#e6db74">&#34;https://sts.windows.net/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">&#34;iat&#34;</span>: <span style="color:#ae81ff">1595425611</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">&#34;nbf&#34;</span>: <span style="color:#ae81ff">1595425611</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">&#34;exp&#34;</span>: <span style="color:#ae81ff">1595429511</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">&#34;acr&#34;</span>: <span style="color:#e6db74">&#34;1&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">&#34;aio&#34;</span>: <span style="color:#e6db74">&#34;ATQAy/8QAAAAOe3HCSYBGo663Mt+8XSEK/yY+P8Ao4qLGurtTMz5S9VtG7FBYdfpCiPb3qP59gHO&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">&#34;amr&#34;</span>: [
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;pwd&#34;</span>
+</span></span><span style="display:flex;"><span>   ],
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">&#34;appid&#34;</span>: <span style="color:#e6db74">&#34;c6b731f2-785b-4206-974a-db8d34eb4397&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">&#34;appidacr&#34;</span>: <span style="color:#e6db74">&#34;0&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">&#34;given_name&#34;</span>: <span style="color:#e6db74">&#34;doe&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">&#34;ipaddr&#34;</span>: <span style="color:#e6db74">&#34;00.00.000.0&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;jane&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">&#34;oid&#34;</span>: <span style="color:#e6db74">&#34;0a92ffc5-9551-47a0-baf0-7f3352eac015&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">&#34;rh&#34;</span>: <span style="color:#e6db74">&#34;0.AR8A4nEGijA6ME2cua1wm5x0SvIxt8ZbeAZCl0rbjTTrQ5cfAAc.&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">&#34;roles&#34;</span>: [
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;Reader&#34;</span>
+</span></span><span style="display:flex;"><span>   ],
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">&#34;scp&#34;</span>: <span style="color:#e6db74">&#34;payment.read&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">&#34;sub&#34;</span>: <span style="color:#e6db74">&#34;ODPx3tnkeekXKN1Olvx8pD5e5PcXJMCg0LoaHz3F14g&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">&#34;tid&#34;</span>: <span style="color:#e6db74">&#34;8a0671e2-3a30-4d30-9cb9-ad709b9c744a&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">&#34;unique_name&#34;</span>: <span style="color:#e6db74">&#34;jane@cpnoutlook.onmicrosoft.com&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">&#34;upn&#34;</span>: <span style="color:#e6db74">&#34;jane@cpnoutlook.onmicrosoft.com&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">&#34;uti&#34;</span>: <span style="color:#e6db74">&#34;wYVNdVa5Bk6FE7iZjNkjAA&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">&#34;ver&#34;</span>: <span style="color:#e6db74">&#34;1.0&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Everything looks alright: issuer, audience, scopes, upn, roles.</p>
 <h2 id="conclusion">Conclusion</h2>
 <hr>
 <p>It is really easy to built a pretty common scenario using the AAD Terraform provider and if you already have some knowledge about how AAD works it&rsquo;s going to be a breeze switching from the portal to Terraform.<br>

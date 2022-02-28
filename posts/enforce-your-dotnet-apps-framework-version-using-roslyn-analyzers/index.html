@@ -227,73 +227,73 @@ is to create our own <strong>Roslyn Analyzer</strong>.</p>
 That&rsquo;s an easy way to reassure that every application enforces your own company coding rules.</p>
 <p>Well, anyways, I could keep rambling about Roslyn for a long time, but let&rsquo;s focus on building a Roslyn analyzer that validates the framework version of our application.</p>
 <p>The C# code would be something like this:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis;
-<span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis.Diagnostics;
-<span style="color:#66d9ef">using</span> System.Collections.Immutable;
-<span style="color:#66d9ef">using</span> System.Linq;
-
-<span style="color:#66d9ef">namespace</span> ATC.Analyzers.Rules
-{
-<span style="color:#a6e22e">    [DiagnosticAnalyzer(LanguageNames.CSharp)]</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CheckNetCoreFrameworkVersionRule</span> : DiagnosticAnalyzer
-    {
-        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> <span style="color:#66d9ef">string</span>[] <span style="color:#ae81ff">_</span>allowedFrameworkVersions = { <span style="color:#e6db74">&#34;2.1&#34;</span>, <span style="color:#e6db74">&#34;3.1&#34;</span> };
-
-        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> CoreFrameworkString = <span style="color:#e6db74">&#34;.NETCoreApp,Version=v&#34;</span>;
-        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> DiagnosticId = <span style="color:#e6db74">&#34;MyRule0001&#34;</span>;
-        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> Title = <span style="color:#e6db74">&#34;Application framework not allowed&#34;</span> ;
-        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> MessageFormat = <span style="color:#e6db74">&#34;The application &#39;{0}&#39; has the attribute: &#39;{1}&#39;, that does not match with the supported framework versions: &#39;{2}&#39;&#34;</span>;
-        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> Description = <span style="color:#e6db74">&#34;Right now we are only supporting applications targeting a LTS .NETCore version.&#34;</span>;
-        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> HelpLink = <span style="color:#e6db74">&#34;https://dotnet.microsoft.com/platform/support/policy/dotnet-core&#34;</span>;
-        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> Category = <span style="color:#e6db74">&#34;CustomRules.Maintenability&#34;</span>;
-
-        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> DiagnosticDescriptor Rule = <span style="color:#66d9ef">new</span> DiagnosticDescriptor(
-            DiagnosticId,
-            Title,
-            MessageFormat,
-            Category,
-            DiagnosticSeverity.Error, 
-            <span style="color:#66d9ef">true</span>,
-            description: Description,
-            helpLinkUri: HelpLink);
-
-        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> ImmutableArray&lt;DiagnosticDescriptor&gt; SupportedDiagnostics =&gt; 
-            ImmutableArray.Create(Rule);
-
-        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">void</span> Initialize(AnalysisContext context)
-        {
-            context.RegisterCompilationAction(AnalyzeMethod);
-        }
-
-        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> AnalyzeMethod(CompilationAnalysisContext context)
-        {
-            <span style="color:#66d9ef">var</span> attrs = context.Compilation.Assembly.GetAttributes()
-                .FirstOrDefault(attr =&gt; attr.ToString().Contains(<span style="color:#e6db74">&#34;TargetFrameworkAttribute&#34;</span>));
-
-            <span style="color:#66d9ef">if</span> (attrs != <span style="color:#66d9ef">null</span>)
-            {
-                <span style="color:#66d9ef">var</span> attrString = attrs.ToString();
-                
-                <span style="color:#66d9ef">var</span> found = <span style="color:#ae81ff">_</span>allowedFrameworkVersions
-                    .Select(version =&gt; <span style="color:#e6db74">$&#34;{CoreFrameworkString}{version}&#34;</span>)
-                    .Any(pattern =&gt; attrString.Contains(pattern));
-
-                <span style="color:#66d9ef">if</span> (!found)
-                {
-                    <span style="color:#66d9ef">var</span> diagnostic = Diagnostic.Create(
-                        Rule,
-                        Location.None,
-                        context.Compilation.AssemblyName,
-                        attrString,
-                        <span style="color:#ae81ff">_</span>allowedFrameworkVersions.Aggregate((result, next) =&gt; <span style="color:#e6db74">$&#34;{next}, {result}&#34;</span>));
-
-                    context.ReportDiagnostic(diagnostic);
-                }
-            }
-        }
-    }
-}
-</code></pre></div><p>Let&rsquo;s describe what the analyzer does:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Microsoft.CodeAnalysis.Diagnostics;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.Collections.Immutable;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.Linq;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> ATC.Analyzers.Rules
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [DiagnosticAnalyzer(LanguageNames.CSharp)]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CheckNetCoreFrameworkVersionRule</span> : DiagnosticAnalyzer
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> <span style="color:#66d9ef">string</span>[] <span style="color:#ae81ff">_</span>allowedFrameworkVersions = { <span style="color:#e6db74">&#34;2.1&#34;</span>, <span style="color:#e6db74">&#34;3.1&#34;</span> };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> CoreFrameworkString = <span style="color:#e6db74">&#34;.NETCoreApp,Version=v&#34;</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> DiagnosticId = <span style="color:#e6db74">&#34;MyRule0001&#34;</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> Title = <span style="color:#e6db74">&#34;Application framework not allowed&#34;</span> ;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> MessageFormat = <span style="color:#e6db74">&#34;The application &#39;{0}&#39; has the attribute: &#39;{1}&#39;, that does not match with the supported framework versions: &#39;{2}&#39;&#34;</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> Description = <span style="color:#e6db74">&#34;Right now we are only supporting applications targeting a LTS .NETCore version.&#34;</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> HelpLink = <span style="color:#e6db74">&#34;https://dotnet.microsoft.com/platform/support/policy/dotnet-core&#34;</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> Category = <span style="color:#e6db74">&#34;CustomRules.Maintenability&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> DiagnosticDescriptor Rule = <span style="color:#66d9ef">new</span> DiagnosticDescriptor(
+</span></span><span style="display:flex;"><span>            DiagnosticId,
+</span></span><span style="display:flex;"><span>            Title,
+</span></span><span style="display:flex;"><span>            MessageFormat,
+</span></span><span style="display:flex;"><span>            Category,
+</span></span><span style="display:flex;"><span>            DiagnosticSeverity.Error, 
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>            description: Description,
+</span></span><span style="display:flex;"><span>            helpLinkUri: HelpLink);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> ImmutableArray&lt;DiagnosticDescriptor&gt; SupportedDiagnostics =&gt; 
+</span></span><span style="display:flex;"><span>            ImmutableArray.Create(Rule);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">void</span> Initialize(AnalysisContext context)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            context.RegisterCompilationAction(AnalyzeMethod);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> AnalyzeMethod(CompilationAnalysisContext context)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> attrs = context.Compilation.Assembly.GetAttributes()
+</span></span><span style="display:flex;"><span>                .FirstOrDefault(attr =&gt; attr.ToString().Contains(<span style="color:#e6db74">&#34;TargetFrameworkAttribute&#34;</span>));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (attrs != <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">var</span> attrString = attrs.ToString();
+</span></span><span style="display:flex;"><span>                
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">var</span> found = <span style="color:#ae81ff">_</span>allowedFrameworkVersions
+</span></span><span style="display:flex;"><span>                    .Select(version =&gt; <span style="color:#e6db74">$&#34;{CoreFrameworkString}{version}&#34;</span>)
+</span></span><span style="display:flex;"><span>                    .Any(pattern =&gt; attrString.Contains(pattern));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (!found)
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">var</span> diagnostic = Diagnostic.Create(
+</span></span><span style="display:flex;"><span>                        Rule,
+</span></span><span style="display:flex;"><span>                        Location.None,
+</span></span><span style="display:flex;"><span>                        context.Compilation.AssemblyName,
+</span></span><span style="display:flex;"><span>                        attrString,
+</span></span><span style="display:flex;"><span>                        <span style="color:#ae81ff">_</span>allowedFrameworkVersions.Aggregate((result, next) =&gt; <span style="color:#e6db74">$&#34;{next}, {result}&#34;</span>));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                    context.ReportDiagnostic(diagnostic);
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Let&rsquo;s describe what the analyzer does:</p>
 <p>1 - Obtains the attribute &ldquo;TargetFrameworkAttribute&rdquo; from the Compilation object.</p>
 <blockquote>
 <p>The TargetFramework attribute identifies the version of the .NET Framework that a particular assembly was compiled against.<br>
@@ -302,8 +302,8 @@ Source: <a href="https://msdn.microsoft.com/en-us/library/system.runtime.version
 </blockquote>
 <p>The attribute has the following format &ldquo;.NETCoreApp,Version=vX.Y&rdquo;, where X.Y is the framework version.<br>
 For example, on a .NET Core 3.1 console application the value will be:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">System.Runtime.Versioning.TargetFrameworkAttribute(<span style="color:#e6db74">&#34;.NETCoreApp,Version=v3.1&#34;</span>, FrameworkDisplayName = <span style="color:#e6db74">&#34;&#34;</span>)
-</code></pre></div><p>2 - For every version we are allowing to use we build the pattern .NETCoreApp,Version=vX.Y. In our case we are building 2 patterns: .NETCoreApp,Version=v2.1 and .NETCoreApp,Version=v3.1 patterns.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>System.Runtime.Versioning.TargetFrameworkAttribute(<span style="color:#e6db74">&#34;.NETCoreApp,Version=v3.1&#34;</span>, FrameworkDisplayName = <span style="color:#e6db74">&#34;&#34;</span>)
+</span></span></code></pre></div><p>2 - For every version we are allowing to use we build the pattern .NETCoreApp,Version=vX.Y. In our case we are building 2 patterns: .NETCoreApp,Version=v2.1 and .NETCoreApp,Version=v3.1 patterns.</p>
 <p>3 - Check if the attribute value matches any of our patterns and if it doesn&rsquo;t, raise an error.</p>
 <p>Let&rsquo;s test the analyzer. When we install the analyzer in a .NET Core 2.2 application we get the following error:</p>
 <p><img src="/img/roslyn-framework-error-netcore22.png" alt="Framework .Net Core 2.2 error"></p>

@@ -157,7 +157,7 @@
     <div class="post-content">
       
       <p>Nowadays no one on his right mind is going to create a WCF from scratch. It really makes no sense to do it. It&rsquo;s a deprecated technology, it does not work with .NET Core, only works on Windows OS and personally I found the configuration confusing as hell, every time I need to modify an existing one I have to spend a good amount of time trying to figure out what everything means.</p>
-<p>If you are not old enough, probably you&rsquo;re asking yourself: <em>&ldquo;What the hell is WCF?&quot;</em>.<br>
+<p>If you are not old enough, probably you&rsquo;re asking yourself: <em>&ldquo;What the hell is WCF?&rdquo;</em>.<br>
 WCF stands for &ldquo;Windows Communication Foundation&rdquo;, and if you want to know more about read the official Microsoft docs: <a href="https://docs.microsoft.com/es-es/dotnet/framework/wcf/whats-wcf">here</a></p>
 <p>If you want to build a .NET application from scratch right now, most likely you are going to build an app using .NET Core, probably is going to use REST over HTTP or even GRPC and it is also pretty likely that you are going to host it in a container platform, a serverless function or a Paas platform like Azure App Services.<br>
 But let&rsquo;s be honest if you&rsquo;re working for an old enough company and a company that uses .NET as its main stack, it&rsquo;s pretty likely that you are going to stumble with a bunch of legacy applications in some lost server and I&rsquo;m pretty sure you are going to find some WCF applications among them.<br>
@@ -178,279 +178,272 @@ Having multiple options is always nice and maybe in your company they cannot upd
 <li>First of all I define the response object that the healthcheck is going to return.<br>
 The healthcheck is going to return a <em>&ldquo;HealthCheckResponse&rdquo;</em> that contains a descriptive message and the status of our service: <em>Healthy</em>, <em>Unhealthy</em> or <em>Degraded</em></li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> System.Runtime.Serialization;
-
-<span style="color:#66d9ef">namespace</span> HealthChecks.Wcf
-{
-<span style="color:#a6e22e">    [DataContract]</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HealthCheckResponse</span>
-    {
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">        [DataMember]</span>
-        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Status { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">        [DataMember]</span>
-        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Message { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-
-    }
-}
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.Runtime.Serialization;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> HealthChecks.Wcf
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [DataContract]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HealthCheckResponse</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [DataMember]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Status { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [DataMember]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Message { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
 <li>Next step is to define the contract.<br>
 The endpoint created is going to be located under the <em>/check</em> uri</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> System.ServiceModel;
-<span style="color:#66d9ef">using</span> System.ServiceModel.Web;
-
-<span style="color:#66d9ef">namespace</span> HealthChecks.Wcf
-{
-<span style="color:#a6e22e">    [ServiceContract(Name =&#34;health&#34;)]</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> IHealthCheckService
-    {
-<span style="color:#a6e22e">        [OperationContract]</span>
-<span style="color:#a6e22e">        [WebInvoke(
-</span><span style="color:#a6e22e">            Method = &#34;GET&#34;, 
-</span><span style="color:#a6e22e">            UriTemplate = &#34;/check&#34;, 
-</span><span style="color:#a6e22e">            BodyStyle = WebMessageBodyStyle.Bare,
-</span><span style="color:#a6e22e">            RequestFormat = WebMessageFormat.Json, 
-</span><span style="color:#a6e22e">            ResponseFormat = WebMessageFormat.Json)]</span>
-        HealthCheckResponse CheckHealth();
-    }
-}
-
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.ServiceModel;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.ServiceModel.Web;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> HealthChecks.Wcf
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [ServiceContract(Name =&#34;health&#34;)]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IHealthCheckService</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [OperationContract]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [WebInvoke(
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">            Method = &#34;GET&#34;, 
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">            UriTemplate = &#34;/check&#34;, 
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">            BodyStyle = WebMessageBodyStyle.Bare,
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">            RequestFormat = WebMessageFormat.Json, 
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">            ResponseFormat = WebMessageFormat.Json)]</span>
+</span></span><span style="display:flex;"><span>        HealthCheckResponse CheckHealth();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
 <li>Next step is to implement the <em>CheckHealth</em> method that I defined in the <em>IHealthCheckService</em> interface.</li>
 </ul>
 <p>Notice that I  created an abstract class that defines an abstract method: <em>ExecuteHealthCheck()</em> , that&rsquo;s because the <em>ExecuteHealthcheck</em> method needs to be implemented by the client app and it will contain the healthcheck logic that the client want to check.</p>
 <p>The <em>HealthCheckBase</em> is going to fetch the result of the <em>ExecuteHealthCheck</em> method, map from the method response to the response object and return a result.<br>
 In case the healthcheck fails it will return a WebFaultException with a 500 status code, and if the healthcheck succeeds with a healthy or degraded status it will return a 200 OK.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> System.Net;
-<span style="color:#66d9ef">using</span> System.ServiceModel.Web;
-<span style="color:#66d9ef">using</span> HealthChecks.Wcf.Enums;
-
-<span style="color:#66d9ef">namespace</span> HealthChecks.Wcf
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HealthCheckBase</span> : IHealthCheckService
-    {
-        <span style="color:#66d9ef">public</span> HealthCheckResponse CheckHealth()
-        {
-            <span style="color:#66d9ef">var</span> result = EvaluateHealthCheck();
-            <span style="color:#66d9ef">return</span> MappedResultToResponse(result);
-
-        }
-
-        <span style="color:#66d9ef">private</span> HealthCheckResult EvaluateHealthCheck()
-        {
-            <span style="color:#66d9ef">var</span> healthCheckResult = ExecuteHealthCheck();
-
-            <span style="color:#66d9ef">if</span> (healthCheckResult == <span style="color:#66d9ef">null</span> || 
-                <span style="color:#66d9ef">string</span>.IsNullOrEmpty(healthCheckResult.Message))
-            {
-                <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> WebFaultException&lt;<span style="color:#66d9ef">string</span>&gt;(
-                    <span style="color:#e6db74">&#34;Something when wrong on your healthcheck. Check your implementation&#34;</span>, 
-                    HttpStatusCode.InternalServerError);
-
-            }
-            <span style="color:#66d9ef">if</span> (healthCheckResult.Status == HealthStatus.Unhealthy)
-            {
-                <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> WebFaultException&lt;HealthCheckResult&gt;(
-                    healthCheckResult, 
-                    HttpStatusCode.InternalServerError);
-            }
-
-            <span style="color:#66d9ef">return</span> healthCheckResult;
-        }
-
-        <span style="color:#66d9ef">private</span> HealthCheckResponse MappedResultToResponse(HealthCheckResult result)
-        {
-            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> HealthCheckResponse
-            {
-                Status = result.Status.ToString(),
-                Message = result.Message
-            };
-        }
-
-        <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">abstract</span> HealthCheckResult ExecuteHealthCheck();
-    }
-
-}
-
-
-<span style="color:#66d9ef">using</span> HealthChecks.Wcf.Enums;
-
-<span style="color:#66d9ef">namespace</span> HealthChecks.Wcf
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HealthCheckResult</span>
-    {
-
-        <span style="color:#66d9ef">public</span> HealthStatus Status  {<span style="color:#66d9ef">get</span>;<span style="color:#66d9ef">set</span>;}
-
-        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Message { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-
-    }
-}
-
-<span style="color:#66d9ef">namespace</span> HealthChecks.Wcf.Enums
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">enum</span> HealthStatus
-    {
-        Healthy,
-        Unhealthy,
-        Degraded
-    }
-}
-
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.Net;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.ServiceModel.Web;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> HealthChecks.Wcf.Enums;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> HealthChecks.Wcf
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HealthCheckBase</span> : IHealthCheckService
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> HealthCheckResponse CheckHealth()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> result = EvaluateHealthCheck();
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> MappedResultToResponse(result);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> HealthCheckResult EvaluateHealthCheck()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> healthCheckResult = ExecuteHealthCheck();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (healthCheckResult == <span style="color:#66d9ef">null</span> || 
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">string</span>.IsNullOrEmpty(healthCheckResult.Message))
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> WebFaultException&lt;<span style="color:#66d9ef">string</span>&gt;(
+</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">&#34;Something when wrong on your healthcheck. Check your implementation&#34;</span>, 
+</span></span><span style="display:flex;"><span>                    HttpStatusCode.InternalServerError);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (healthCheckResult.Status == HealthStatus.Unhealthy)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> WebFaultException&lt;HealthCheckResult&gt;(
+</span></span><span style="display:flex;"><span>                    healthCheckResult, 
+</span></span><span style="display:flex;"><span>                    HttpStatusCode.InternalServerError);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> healthCheckResult;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> HealthCheckResponse MappedResultToResponse(HealthCheckResult result)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> HealthCheckResponse
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                Status = result.Status.ToString(),
+</span></span><span style="display:flex;"><span>                Message = result.Message
+</span></span><span style="display:flex;"><span>            };
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">abstract</span> HealthCheckResult ExecuteHealthCheck();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> HealthChecks.Wcf.Enums;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> HealthChecks.Wcf
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HealthCheckResult</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> HealthStatus Status  {<span style="color:#66d9ef">get</span>;<span style="color:#66d9ef">set</span>;}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Message { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> HealthChecks.Wcf.Enums
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">enum</span> HealthStatus
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Healthy,
+</span></span><span style="display:flex;"><span>        Unhealthy,
+</span></span><span style="display:flex;"><span>        Degraded
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
 <li>Last step is to wire everything up.<br>
 When the serviceHost is opening the connection we use it to create a ServiceEndpoint with a WebHttpBinding.<br>
 Basically that will allow us to create a new REST endpoint in our WCF application.</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> System;
-<span style="color:#66d9ef">using</span> System.Collections.Generic;
-<span style="color:#66d9ef">using</span> System.Linq;
-<span style="color:#66d9ef">using</span> System.Reflection;
-<span style="color:#66d9ef">using</span> System.ServiceModel;
-<span style="color:#66d9ef">using</span> System.ServiceModel.Description;
-
-<span style="color:#66d9ef">namespace</span> HealthChecks.Wcf
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HealthCheckExtensions</span>
-    {
-        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> Action&lt;ServiceHostBase&gt; AddHealthCheckEndpoint()
-        {
-            <span style="color:#66d9ef">return</span> serviceHost =&gt;
-            {
-                serviceHost.Opening += (snd, args) =&gt;
-                     {
-                         GenerateHealthEndpoint(serviceHost);
-                     };
-            };
-        }
-
-        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> GenerateHealthEndpoint(ServiceHostBase serviceHost)
-        {
-            <span style="color:#66d9ef">var</span> implementedContracts = serviceHost
-                .GetType()
-                .GetProperty(<span style="color:#e6db74">&#34;ImplementedContracts&#34;</span>, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.GetField);
-
-            <span style="color:#66d9ef">if</span> (implementedContracts != <span style="color:#66d9ef">null</span>)
-            {
-                <span style="color:#66d9ef">var</span> contractDic = (Dictionary&lt;<span style="color:#66d9ef">string</span>, ContractDescription&gt;)implementedContracts.GetValue(serviceHost, <span style="color:#66d9ef">null</span>);
-                <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> contract <span style="color:#66d9ef">in</span> contractDic.Values)
-                {
-                    <span style="color:#66d9ef">if</span> (serviceHost.Description.Endpoints.Any())
-                    {
-                        <span style="color:#66d9ef">continue</span>;
-                    }
-
-                    <span style="color:#66d9ef">if</span> (contract.ConfigurationName == <span style="color:#66d9ef">typeof</span>(IHealthCheckService).FullName)
-                    {
-                        <span style="color:#66d9ef">var</span> serviceEndpoint = <span style="color:#66d9ef">new</span> ServiceEndpoint(contract, 
-                            <span style="color:#66d9ef">new</span> WebHttpBinding(), 
-                            <span style="color:#66d9ef">new</span> EndpointAddress(serviceHost.BaseAddresses[<span style="color:#ae81ff">0</span>]));
-
-                        serviceEndpoint.Behaviors.Add(<span style="color:#66d9ef">new</span> WebHttpBehavior());
-                        serviceHost.AddServiceEndpoint(serviceEndpoint);
-                    }
-                }
-            }
-
-        }
-    }
-}
-
-</code></pre></div><p>And that&rsquo;s it, we have built a library capable of adding a healthcheck REST endpoint into our WCF application in less than 200 lines of code.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.Collections.Generic;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.Linq;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.Reflection;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.ServiceModel;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.ServiceModel.Description;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> HealthChecks.Wcf
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HealthCheckExtensions</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> Action&lt;ServiceHostBase&gt; AddHealthCheckEndpoint()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> serviceHost =&gt;
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                serviceHost.Opening += (snd, args) =&gt;
+</span></span><span style="display:flex;"><span>                     {
+</span></span><span style="display:flex;"><span>                         GenerateHealthEndpoint(serviceHost);
+</span></span><span style="display:flex;"><span>                     };
+</span></span><span style="display:flex;"><span>            };
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> GenerateHealthEndpoint(ServiceHostBase serviceHost)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> implementedContracts = serviceHost
+</span></span><span style="display:flex;"><span>                .GetType()
+</span></span><span style="display:flex;"><span>                .GetProperty(<span style="color:#e6db74">&#34;ImplementedContracts&#34;</span>, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.GetField);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (implementedContracts != <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">var</span> contractDic = (Dictionary&lt;<span style="color:#66d9ef">string</span>, ContractDescription&gt;)implementedContracts.GetValue(serviceHost, <span style="color:#66d9ef">null</span>);
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> contract <span style="color:#66d9ef">in</span> contractDic.Values)
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">if</span> (serviceHost.Description.Endpoints.Any())
+</span></span><span style="display:flex;"><span>                    {
+</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">continue</span>;
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">if</span> (contract.ConfigurationName == <span style="color:#66d9ef">typeof</span>(IHealthCheckService).FullName)
+</span></span><span style="display:flex;"><span>                    {
+</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">var</span> serviceEndpoint = <span style="color:#66d9ef">new</span> ServiceEndpoint(contract, 
+</span></span><span style="display:flex;"><span>                            <span style="color:#66d9ef">new</span> WebHttpBinding(), 
+</span></span><span style="display:flex;"><span>                            <span style="color:#66d9ef">new</span> EndpointAddress(serviceHost.BaseAddresses[<span style="color:#ae81ff">0</span>]));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                        serviceEndpoint.Behaviors.Add(<span style="color:#66d9ef">new</span> WebHttpBehavior());
+</span></span><span style="display:flex;"><span>                        serviceHost.AddServiceEndpoint(serviceEndpoint);
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>And that&rsquo;s it, we have built a library capable of adding a healthcheck REST endpoint into our WCF application in less than 200 lines of code.</p>
 <h1 id="test-the-library">Test the library</h1>
 <p>Begin by creating a new WCF from scratch and adding a new csharp class that inherits from <em>HealthCheckBase</em>.<br>
 The class needs to implement the <em>ExecuteHealthCheck</em> method. The method will contain our health checking code. In my case I&rsquo;m returning directly an OK result.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> HealthChecks.Wcf.Enums;
-
-<span style="color:#66d9ef">namespace</span> HealthChecks.Wcf.IntegrationTest
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyHealthCheckService</span> : HealthCheckBase 
-    {
-
-        <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">override</span> HealthCheckResult ExecuteHealthCheck()
-        {
-            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> HealthCheckResult
-            {
-                Message = <span style="color:#e6db74">&#34;Everything runs smoothly&#34;</span>,
-                Status = HealthStatus.Healthy
-            };
-        
-        }
-
-    }
-}
-
-</code></pre></div><p>Next we need to register everything on our IoC container.
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">using</span> HealthChecks.Wcf.Enums;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> HealthChecks.Wcf.IntegrationTest
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyHealthCheckService</span> : HealthCheckBase 
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">override</span> HealthCheckResult ExecuteHealthCheck()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> HealthCheckResult
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                Message = <span style="color:#e6db74">&#34;Everything runs smoothly&#34;</span>,
+</span></span><span style="display:flex;"><span>                Status = HealthStatus.Healthy
+</span></span><span style="display:flex;"><span>            };
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Next we need to register everything on our IoC container.
 I&rsquo;m using Autofac, so I need to follow the steps that Autofac dictates when you&rsquo;re registering the dependencies in a WCF.<br>
 You can use the IoC container that best suits your necessities, just look it up at the documentation what steps you need to follow.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">  <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> Application_Start(<span style="color:#66d9ef">object</span> sender, EventArgs e)
-        {
-            <span style="color:#66d9ef">var</span> builder = <span style="color:#66d9ef">new</span> ContainerBuilder();
-            builder.RegisterType&lt;Service1&gt;().As&lt;IService1&gt;();
-            builder.RegisterType&lt;MyHealthCheckService&gt;();
-            <span style="color:#66d9ef">var</span> container = builder.Build();
-
-            AutofacHostFactory.Container = container;
-            AutofacHostFactory.HostConfigurationAction = HealthCheckExtensions.AddHealthCheckEndpoint();
-        }
-
-</code></pre></div><p>We are creating a service without a .svc file, to do it with Autofac you need to add the following lines in the web.config.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>  <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> Application_Start(<span style="color:#66d9ef">object</span> sender, EventArgs e)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> builder = <span style="color:#66d9ef">new</span> ContainerBuilder();
+</span></span><span style="display:flex;"><span>            builder.RegisterType&lt;Service1&gt;().As&lt;IService1&gt;();
+</span></span><span style="display:flex;"><span>            builder.RegisterType&lt;MyHealthCheckService&gt;();
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> container = builder.Build();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            AutofacHostFactory.Container = container;
+</span></span><span style="display:flex;"><span>            AutofacHostFactory.HostConfigurationAction = HealthCheckExtensions.AddHealthCheckEndpoint();
+</span></span><span style="display:flex;"><span>        }
+</span></span></code></pre></div><p>We are creating a service without a .svc file, to do it with Autofac you need to add the following lines in the web.config.</p>
 <p>If you want more information about how to add a svc-less service using Autofac read it from the offical documentation <a href="https://autofaccn.readthedocs.io/en/latest/integration/wcf.html#svc-less-services">here</a></p>
 <p>As I said before if you&rsquo;re using another IoC container just search in the documentation how to create a svc-less service.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">  <span style="color:#f92672">&lt;serviceHostingEnvironment</span> <span style="color:#a6e22e">aspNetCompatibilityEnabled=</span><span style="color:#e6db74">&#34;true&#34;</span> <span style="color:#a6e22e">multipleSiteBindingsEnabled=</span><span style="color:#e6db74">&#34;true&#34;</span> <span style="color:#f92672">&gt;</span>
-      <span style="color:#f92672">&lt;serviceActivations&gt;</span>
-       <span style="color:#f92672">&lt;add</span> <span style="color:#a6e22e">relativeAddress=</span><span style="color:#e6db74">&#34;health.svc&#34;</span> <span style="color:#a6e22e">service=</span><span style="color:#e6db74">&#34;HealthChecks.Wcf.IntegrationTest.MyHealthCheckService, HealthChecks.Wcf.IntegrationTest&#34;</span> <span style="color:#a6e22e">factory=</span><span style="color:#e6db74">&#34;Autofac.Integration.Wcf.AutofacServiceHostFactory, Autofac.Integration.Wcf&#34;</span><span style="color:#f92672">/&gt;</span>
-      <span style="color:#f92672">&lt;/serviceActivations&gt;</span>
-    <span style="color:#f92672">&lt;/serviceHostingEnvironment&gt;</span>
-</code></pre></div><p>The REST endpoint is going to be located in the uri : <em><strong>/health.svc/check</strong></em></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>  <span style="color:#f92672">&lt;serviceHostingEnvironment</span> <span style="color:#a6e22e">aspNetCompatibilityEnabled=</span><span style="color:#e6db74">&#34;true&#34;</span> <span style="color:#a6e22e">multipleSiteBindingsEnabled=</span><span style="color:#e6db74">&#34;true&#34;</span> <span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;serviceActivations&gt;</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#f92672">&lt;add</span> <span style="color:#a6e22e">relativeAddress=</span><span style="color:#e6db74">&#34;health.svc&#34;</span> <span style="color:#a6e22e">service=</span><span style="color:#e6db74">&#34;HealthChecks.Wcf.IntegrationTest.MyHealthCheckService, HealthChecks.Wcf.IntegrationTest&#34;</span> <span style="color:#a6e22e">factory=</span><span style="color:#e6db74">&#34;Autofac.Integration.Wcf.AutofacServiceHostFactory, Autofac.Integration.Wcf&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;/serviceActivations&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/serviceHostingEnvironment&gt;</span>
+</span></span></code></pre></div><p>The REST endpoint is going to be located in the uri : <em><strong>/health.svc/check</strong></em></p>
 <p>Now run the application and test the REST endpoint:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">curl -i http://localhost:39150/health.svc/check
-HTTP/1.1 <span style="color:#ae81ff">200</span> OK
-Cache-Control: private
-Content-Type: application/json; charset<span style="color:#f92672">=</span>utf-8
-Server: Microsoft-IIS/10.0
-Set-Cookie: ASP.NET_SessionId<span style="color:#f92672">=</span>04nkjaxw1h32o0jwybcpzgil; path<span style="color:#f92672">=</span>/; HttpOnly; SameSite<span style="color:#f92672">=</span>Lax
-X-AspNet-Version: 4.0.30319
-X-SourceFiles: <span style="color:#f92672">=</span>?UTF-8?B?RDpcTkVUIFByb2plY3RzXGhlYWx0aGNoZWNrcy13Y2ZcdGVzdFxBVEMuSGVhbHRoQ2hlY2tzLldjZi5JbnRlZ3JhdGlvblRlc3RcaGVhbHRoLnN2Y1xjaGVjaw<span style="color:#f92672">==</span>?<span style="color:#f92672">=</span>
-X-Powered-By: ASP.NET
-Date: Sat, <span style="color:#ae81ff">04</span> Jul <span style="color:#ae81ff">2020</span> 20:39:39 GMT
-Content-Length: <span style="color:#ae81ff">57</span>
-
-</code></pre></div><p>Now modify the healthcheck class to make it fail:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> HealthChecks.Wcf.Enums;
-
-<span style="color:#66d9ef">namespace</span> HealthChecks.Wcf.IntegrationTest
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyHealthCheckService</span> : HealthCheckBase 
-    {
-
-        <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">override</span> HealthCheckResult ExecuteHealthCheck()
-        {
-            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> HealthCheckResult
-            {
-                Message = <span style="color:#e6db74">&#34;Everything is failing smoothly&#34;</span>,
-                Status = HealthStatus.Unhealthy
-            };
-        
-        }
-
-    }
-}
-</code></pre></div><p>And test it again:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">HTTP/1.1 <span style="color:#ae81ff">500</span> Internal Server Error
-Cache-Control: private
-Content-Type: application/json; charset<span style="color:#f92672">=</span>utf-8
-Server: Microsoft-IIS/10.0
-X-AspNet-Version: 4.0.30319
-Set-Cookie: ASP.NET_SessionId<span style="color:#f92672">=</span>vktoksbu5nuzjovhhqryt1iq; path<span style="color:#f92672">=</span>/; HttpOnly; SameSite<span style="color:#f92672">=</span>Lax
-X-SourceFiles: <span style="color:#f92672">=</span>?UTF-8?B?RDpcTkVUIFByb2plY3RzXGhlYWx0aGNoZWNrcy13Y2ZcdGVzdFxBVEMuSGVhbHRoQ2hlY2tzLldjZi5JbnRlZ3JhdGlvblRlc3RcaGVhbHRoLnN2Y1xjaGVjaw<span style="color:#f92672">==</span>?<span style="color:#f92672">=</span>
-X-Powered-By: ASP.NET
-Date: Sat, <span style="color:#ae81ff">04</span> Jul <span style="color:#ae81ff">2020</span> 20:41:56 GMT
-Content-Length: <span style="color:#ae81ff">46</span>
-
-</code></pre></div><h1 id="azure">Azure</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>curl -i http://localhost:39150/health.svc/check
+</span></span><span style="display:flex;"><span>HTTP/1.1 <span style="color:#ae81ff">200</span> OK
+</span></span><span style="display:flex;"><span>Cache-Control: private
+</span></span><span style="display:flex;"><span>Content-Type: application/json; charset<span style="color:#f92672">=</span>utf-8
+</span></span><span style="display:flex;"><span>Server: Microsoft-IIS/10.0
+</span></span><span style="display:flex;"><span>Set-Cookie: ASP.NET_SessionId<span style="color:#f92672">=</span>04nkjaxw1h32o0jwybcpzgil; path<span style="color:#f92672">=</span>/; HttpOnly; SameSite<span style="color:#f92672">=</span>Lax
+</span></span><span style="display:flex;"><span>X-AspNet-Version: 4.0.30319
+</span></span><span style="display:flex;"><span>X-SourceFiles: <span style="color:#f92672">=</span>?UTF-8?B?RDpcTkVUIFByb2plY3RzXGhlYWx0aGNoZWNrcy13Y2ZcdGVzdFxBVEMuSGVhbHRoQ2hlY2tzLldjZi5JbnRlZ3JhdGlvblRlc3RcaGVhbHRoLnN2Y1xjaGVjaw<span style="color:#f92672">==</span>?<span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>X-Powered-By: ASP.NET
+</span></span><span style="display:flex;"><span>Date: Sat, <span style="color:#ae81ff">04</span> Jul <span style="color:#ae81ff">2020</span> 20:39:39 GMT
+</span></span><span style="display:flex;"><span>Content-Length: <span style="color:#ae81ff">57</span>
+</span></span></code></pre></div><p>Now modify the healthcheck class to make it fail:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">using</span> HealthChecks.Wcf.Enums;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> HealthChecks.Wcf.IntegrationTest
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyHealthCheckService</span> : HealthCheckBase 
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">override</span> HealthCheckResult ExecuteHealthCheck()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> HealthCheckResult
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                Message = <span style="color:#e6db74">&#34;Everything is failing smoothly&#34;</span>,
+</span></span><span style="display:flex;"><span>                Status = HealthStatus.Unhealthy
+</span></span><span style="display:flex;"><span>            };
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>And test it again:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>HTTP/1.1 <span style="color:#ae81ff">500</span> Internal Server Error
+</span></span><span style="display:flex;"><span>Cache-Control: private
+</span></span><span style="display:flex;"><span>Content-Type: application/json; charset<span style="color:#f92672">=</span>utf-8
+</span></span><span style="display:flex;"><span>Server: Microsoft-IIS/10.0
+</span></span><span style="display:flex;"><span>X-AspNet-Version: 4.0.30319
+</span></span><span style="display:flex;"><span>Set-Cookie: ASP.NET_SessionId<span style="color:#f92672">=</span>vktoksbu5nuzjovhhqryt1iq; path<span style="color:#f92672">=</span>/; HttpOnly; SameSite<span style="color:#f92672">=</span>Lax
+</span></span><span style="display:flex;"><span>X-SourceFiles: <span style="color:#f92672">=</span>?UTF-8?B?RDpcTkVUIFByb2plY3RzXGhlYWx0aGNoZWNrcy13Y2ZcdGVzdFxBVEMuSGVhbHRoQ2hlY2tzLldjZi5JbnRlZ3JhdGlvblRlc3RcaGVhbHRoLnN2Y1xjaGVjaw<span style="color:#f92672">==</span>?<span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>X-Powered-By: ASP.NET
+</span></span><span style="display:flex;"><span>Date: Sat, <span style="color:#ae81ff">04</span> Jul <span style="color:#ae81ff">2020</span> 20:41:56 GMT
+</span></span><span style="display:flex;"><span>Content-Length: <span style="color:#ae81ff">46</span>
+</span></span></code></pre></div><h1 id="azure">Azure</h1>
 <p>I said that adding a healthcheck into your WCF could be a first step towards a lift-and-shift migration into Azure, but why I said that?</p>
 <p>Well that&rsquo;s because if you&rsquo;re going to move an existing WCF into Azure hands down the best option is to use Azure App Services. And if you have implemented a healthcheck endpoint in your WCF you can totally put it to good use.</p>
 <p>Azure Web Apps contains a Health Check feature and is used to prevent unhealthy instance(s) from serving requests, thus improving availability. The feature will ping the specified health check path on all instances of your webapp every 2 minutes.<br>
