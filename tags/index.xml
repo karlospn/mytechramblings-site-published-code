@@ -9,17 +9,57 @@
     <description>Recent content in Tags on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 01 Feb 2022 10:00:12 +0100</lastBuildDate>
+    <lastBuildDate>Tue, 01 Mar 2022 10:01:37 +0100</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>aws</title>
-      <link>https://www.mytechramblings.com/tags/aws/</link>
-      <pubDate>Tue, 01 Feb 2022 10:00:12 +0100</pubDate>
+      <title>containers</title>
+      <link>https://www.mytechramblings.com/tags/containers/</link>
+      <pubDate>Tue, 01 Mar 2022 10:01:37 +0100</pubDate>
       
-      <guid>https://www.mytechramblings.com/tags/aws/</guid>
+      <guid>https://www.mytechramblings.com/tags/containers/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>csharp</title>
+      <link>https://www.mytechramblings.com/tags/csharp/</link>
+      <pubDate>Tue, 01 Mar 2022 10:01:37 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/csharp/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>docker</title>
+      <link>https://www.mytechramblings.com/tags/docker/</link>
+      <pubDate>Tue, 01 Mar 2022 10:01:37 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/docker/</guid>
       <description>
         
           
@@ -37,9 +77,69 @@
     <item>
       <title>dotnet</title>
       <link>https://www.mytechramblings.com/tags/dotnet/</link>
-      <pubDate>Tue, 01 Feb 2022 10:00:12 +0100</pubDate>
+      <pubDate>Tue, 01 Mar 2022 10:01:37 +0100</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/dotnet/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>linux</title>
+      <link>https://www.mytechramblings.com/tags/linux/</link>
+      <pubDate>Tue, 01 Mar 2022 10:01:37 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/linux/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>performance</title>
+      <link>https://www.mytechramblings.com/tags/performance/</link>
+      <pubDate>Tue, 01 Mar 2022 10:01:37 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/performance/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>aws</title>
+      <link>https://www.mytechramblings.com/tags/aws/</link>
+      <pubDate>Tue, 01 Feb 2022 10:00:12 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/aws/</guid>
       <description>
         
           
@@ -155,26 +255,6 @@
     </item>
     
     <item>
-      <title>containers</title>
-      <link>https://www.mytechramblings.com/tags/containers/</link>
-      <pubDate>Mon, 25 Oct 2021 10:45:14 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/containers/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
       <title>devops</title>
       <link>https://www.mytechramblings.com/tags/devops/</link>
       <pubDate>Mon, 25 Oct 2021 10:45:14 +0200</pubDate>
@@ -195,51 +275,11 @@
     </item>
     
     <item>
-      <title>docker</title>
-      <link>https://www.mytechramblings.com/tags/docker/</link>
-      <pubDate>Mon, 25 Oct 2021 10:45:14 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/docker/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
       <title>security</title>
       <link>https://www.mytechramblings.com/tags/security/</link>
       <pubDate>Mon, 25 Oct 2021 10:45:14 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/security/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>csharp</title>
-      <link>https://www.mytechramblings.com/tags/csharp/</link>
-      <pubDate>Tue, 14 Sep 2021 10:05:00 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/csharp/</guid>
       <description>
         
           

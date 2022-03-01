@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>Profiling a .NET6 app running in a linux container with dotnet-trace, dotnet-dump, dotnet-counters, dotnet-gcdump and Visual Studio :: my tech ramblings — A blog for writing about my techie ramblings</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Introduction Every software developer at some time or other has stumbled with an application that doesn&amp;rsquo;t perform well, and when it happens I find a lot of unfamiliarity about what steps to take. And that&amp;rsquo;s the reason I decided to write this post.
+This post is aimed at people with no knowledge of how to profile an application using the .NET CLI tools and what should they look for when a possible performance issue arises."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://www.mytechramblings.com/posts/profiling-a-net-app-with-dotnet-cli-diagnostic-tools/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/assets/style.css">
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.mytechramblings.com/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://www.mytechramblings.com/img/favicon.png">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Profiling a .NET6 app running in a linux container with dotnet-trace, dotnet-dump, dotnet-counters, dotnet-gcdump and Visual Studio"/>
+<meta name="twitter:description" content="This post contains a few practical examples showing you how to profile a .NET6 application running in a linux container using the .NET CLI diagnostic tools (dotnet-trace, dotnet-dump, dotnet-counters and dotnet-gcdump) and Visual Studio."/>
+
+
+
+<meta property="og:title" content="Profiling a .NET6 app running in a linux container with dotnet-trace, dotnet-dump, dotnet-counters, dotnet-gcdump and Visual Studio" />
+<meta property="og:description" content="This post contains a few practical examples showing you how to profile a .NET6 application running in a linux container using the .NET CLI diagnostic tools (dotnet-trace, dotnet-dump, dotnet-counters and dotnet-gcdump) and Visual Studio." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.mytechramblings.com/posts/profiling-a-net-app-with-dotnet-cli-diagnostic-tools/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-03-01T10:01:37+01:00" />
+<meta property="article:modified_time" content="2022-03-01T10:01:37+01:00" /><meta property="og:site_name" content="my tech ramblings" />
+
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://www.mytechramblings.com/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">my tech ramblings</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/profiling-a-net-app-with-dotnet-cli-diagnostic-tools/">Profiling a .NET6 app running in a linux container with dotnet-trace, dotnet-dump, dotnet-counters, dotnet-gcdump and Visual Studio</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2022-03-01
+        </span>
+
+        
+          
+            
+
+
+
+          
+        
+      
+
+      
+      
+        <span class="post-read-time">— 24 min read</span>
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          #<a href="https://www.mytechramblings.com/tags/csharp/">csharp</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/dotnet/">dotnet</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/performance/">performance</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/linux/">linux</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/containers/">containers</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/docker/">docker</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <h1 id="introduction">Introduction</h1>
+<p>Every software developer at some time or other has stumbled with an application that doesn&rsquo;t perform well, and when it happens I find a lot of unfamiliarity about what steps to take. And that&rsquo;s the reason I decided to write this post.</p>
+<p>This post is aimed at people with no knowledge of how to profile an application using the .NET CLI tools and what should they look for when a possible performance issue arises. If you’re a performance veteran you can skip it.</p>
+<p>I have built a containerized .NET6 application beforehand, this app has a few performance issues and we&rsquo;re going to try to spot them.</p>
+<p>The performance issues on this demo app are oversimplified and I&rsquo;m sure that if you take a quick glance on its source code you&rsquo;ll be able to spot them pretty quickly, but we are not going to do that, instead of that we&rsquo;re going to use the .NET CLI diagnostic tools to profile the app and try to understand what is happening.</p>
+<p>On a real scenario the performance issues will not be so easy to spot on, but the objective of this post is to serve as stepping stone for beginners, so when faced with a real performance issue you know the basic steps to follow.</p>
+<h1 id="net-cli-diagnostic-tools">.NET CLI diagnostic tools</h1>
+<p>A couple years ago Microsoft introduced a series of new diagnostic tools:</p>
+<ul>
+<li><code>dotnet-counters</code> to view Performance Counters.</li>
+<li><code>dotnet-dump</code> to capture and analyze Windows and Linux dumps.</li>
+<li><code>dotnet-trace</code> to capture runtime events, GC collections and sample CPU stacks.</li>
+<li><code>dotnet-gcdump</code> to collect GC dumps.</li>
+</ul>
+<p>Those tools are cross-platform and nowadays are the preferred method of collecting diagnostic information for .NET Core scenarios targeting .NET Core 3.0 or above.</p>
+<h1 id="adding-net-cli-tools-in-a-container">Adding .NET CLI tools in a container</h1>
+<p>The .NET Core global CLI diagnostic tools (dotnet-counters, dotnet-dump, dotnet-gcdump and dotnet-trace) are designed to work in a wide variety of environments and should all work directly in Docker containers.</p>
+<p>The only complicating factor of using these tools in a container is that they are installed with the .NET SDK and many Docker containers run without the .NET SDK present.</p>
+<p>One easy solution to this problem is to install the tools in the initial Docker image. The tools don&rsquo;t need the .NET SDK to run, only to be installed. Therefore, it&rsquo;s possible to create a Dockerfile with a multi-stage build that installs the tools in a build stage (where the .NET SDK is present) and then copies the binaries into the final image.</p>
+<p>The only downside to this approach is increased Docker image size.</p>
+<p>The next code snippet shows how to add the .NET CLI diagnostic tools inside a docker image alongside your application.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ae81ff">FROM mcr.microsoft.com/dotnet/sdk:6.0-bullseye-slim AS build-env</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">WORKDIR /app</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Copy csproj and restore dependencies</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY Profiling.Api.csproj ./src/</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet restore &#34;./src/Profiling.Api.csproj&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Copy everything, build and publish</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY . ./src/</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet publish src/*.csproj -c Release -o /app/publish</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Install dotnet debug tools</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet tool install --tool-path /tools dotnet-trace \</span>
+</span></span><span style="display:flex;"><span> <span style="color:#75715e">&amp;&amp;</span> <span style="color:#ae81ff">dotnet tool install --tool-path /tools dotnet-counters \</span>
+</span></span><span style="display:flex;"><span> <span style="color:#75715e">&amp;&amp;</span> <span style="color:#ae81ff">dotnet tool install --tool-path /tools dotnet-dump \</span>
+</span></span><span style="display:flex;"><span> <span style="color:#75715e">&amp;&amp;</span> <span style="color:#ae81ff">dotnet tool install --tool-path /tools dotnet-gcdump</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Build runtime imagedock</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">FROM mcr.microsoft.com/dotnet/aspnet:6.0-bullseye-slim</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Copy dotnet-tools</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">WORKDIR /tools</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY --from=build-env /tools .</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Copy app</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">WORKDIR /app</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY --from=build-env /app/publish .</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Set entrypoint</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">ENTRYPOINT [&#34;dotnet&#34;, &#34;Profiling.Api.dll&#34;]</span>
+</span></span></code></pre></div><h1 id="executing-net-cli-tools-in-a-running-container">Executing .NET CLI tools in a running container</h1>
+<p>In order to access these tools on a running container, we need to be able to access it. We can use the <code>docker exec</code> command to launch a shell on running container.</p>
+<p><code>docker exec -it -w //tools &lt;container-id&gt; sh</code></p>
+<p>And once we&rsquo;re inside the container we&rsquo;re ready to launch any of the diagnostic tools like this:</p>
+<p><code>./dotnet-counters monitor --process-id 1</code></p>
+<h1 id="demo-application">Demo Application</h1>
+<p>The application we&rsquo;re going to profile is a .NET 6 API with 3 endpoints:</p>
+<ul>
+<li><code>/blocking-threads</code> endpoint.</li>
+<li><code>/high-cpu</code> endpoint.</li>
+<li><code>/memory-leak</code> endpoint.</li>
+</ul>
+<p>As you can see, the performance issues we will try to solve on each endpoint are pretty self-explanatory.<br>
+The source code can be found on my <a href="https://github.com/karlospn/profiling-net6-api-demo">GitHub</a></p>
+<p>I&rsquo;ll be running the app as a docker container on my local machine because it&rsquo;s the easiest and fastest setup possible, but it doesn&rsquo;t matter if you&rsquo;re running on a Kubernetes cluster, a virtual machine or any other cloud services, the steps you need to follow when trying to pinpoint a performance issue are exactly the same. <br>
+The only thing that might change are the steps needed to install the diagnostic tools binaries.</p>
+<p>To simulate a more realistic environment I have set some memory an CPU limits to the app running on docker (<strong>1024Mb and 1 CPU</strong>).</p>
+<p><code>docker run -d -p 5003:80 -m 1024m --cpus=1 profiling.api</code></p>
+<p>Also I&rsquo;ll be using <a href="https://github.com/codesenberg/bombardier">Bombardier</a> to generate traffic on the app.</p>
+<p>Bombardier is a modern HTTP(S) benchmarking tool, written in Golang and really simple to use when you want to run a performance or a load test.</p>
+<h1 id="profiling-the-_blocking-threads_-endpoint">Profiling the <em>/blocking-threads</em> endpoint</h1>
+<h2 id="1-using-_dotnet-counters_-to-investigate-possible-performance-issues">1. Using <em>dotnet-counters</em> to investigate possible performance issues</h2>
+<p><code>dotnet-counters</code> is <strong>always the first step</strong> when we want to begin a performance investigation.</p>
+<p><code>dotnet-counters</code> is a performance monitoring and first-level performance investigation tool. It can observe performance counter values that are published via the EventCounter API. <br>
+For example, you can quickly monitor things like the CPU usage or the rate of exceptions being thrown in your .NET Core application to see if there&rsquo;s anything suspicious before diving into more serious performance investigation tools like <code>dotnet-dump</code> or <code>dotnet-trace</code>.</p>
+<p>The command we&rsquo;re going to use to launch <code>dotnet-counters</code> is the following one:</p>
+<p><code>./dotnet-counters monitor --process-id 1 --refresh-interval 3 --counters System.Runtime,Microsoft.AspNetCore.Hosting</code></p>
+<ul>
+<li>The <code>monitor</code> command starts monitoring a .NET application.</li>
+<li>The <code>-p|--process-id</code> parameter specifies the ID of the process we want to monitor, in this case we&rsquo;re inside a docker container so the PID is always 1.<br>
+If you&rsquo;re running outside a container and do not know the PID of the process you want to monitor, you can run the <code>./dotnet-counters ps</code> command.</li>
+<li>The <code>--refresh-interval</code> is the number of seconds between the counter polling values.</li>
+<li>The <code>--counters</code> is an optional parameter and you need to specify a comma-separated list of counters.<br>
+The default counters are the <code>System.Runtime</code> counters, but when working with an API I find useful to monitor also the <code>Microsoft.AspNetCore.Hosting</code> counters, so you can see how many requests are being served, how many requests are failing, request rate, etc.</li>
+</ul>
+<p>That&rsquo;s the output you&rsquo;ll see after launching the tool:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>Microsoft.AspNetCore.Hosting<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>    Current Requests                                               <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Failed Requests                                                <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Request Rate <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                   <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Total Requests                                                 <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>System.Runtime<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>    % Time in GC since last GC <span style="color:#f92672">(</span>%<span style="color:#f92672">)</span>                                 <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Allocation Rate <span style="color:#f92672">(</span>B / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                8,168
+</span></span><span style="display:flex;"><span>    CPU Usage <span style="color:#f92672">(</span>%<span style="color:#f92672">)</span>                                                  <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Exception Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    GC Committed Bytes <span style="color:#f92672">(</span>MB<span style="color:#f92672">)</span>                                        <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    GC Fragmentation <span style="color:#f92672">(</span>%<span style="color:#f92672">)</span>                                           <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    GC Heap Size <span style="color:#f92672">(</span>MB<span style="color:#f92672">)</span>                                              <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">0</span> GC Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                 <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">0</span> Size <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                                                 <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">1</span> GC Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                 <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">1</span> Size <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                                                 <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">2</span> GC Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                 <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">2</span> Size <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                                                 <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    IL Bytes Jitted <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                                       68,801
+</span></span><span style="display:flex;"><span>    LOH Size <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                                                   <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Monitor Lock Contention Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                  <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Number of Active Timers                                        <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Number of Assemblies Loaded                                  <span style="color:#ae81ff">110</span>
+</span></span><span style="display:flex;"><span>    Number of Methods Jitted                                     <span style="color:#ae81ff">620</span>
+</span></span><span style="display:flex;"><span>    POH <span style="color:#f92672">(</span>Pinned Object Heap<span style="color:#f92672">)</span> Size <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                              <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    ThreadPool Completed Work Item Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>           <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    ThreadPool Queue Length                                        <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    ThreadPool Thread Count                                        <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Time spent in JIT <span style="color:#f92672">(</span>ms / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                 <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Working Set <span style="color:#f92672">(</span>MB<span style="color:#f92672">)</span>                                              <span style="color:#ae81ff">61</span>
+</span></span></code></pre></div><p>As you can see, it&rsquo;s quite a lot of counters, let me explain briefly the meaning of each one of them.</p>
+<ul>
+<li><strong>Current Requests</strong>:  The total number of requests that have started, but not yet stopped.</li>
+<li><strong>Failed Requests</strong>:  The total number of failed requests that have occurred for the life of the app.</li>
+<li><strong>Request Rate</strong>: The number of requests that occur per update interval.</li>
+<li><strong>Total Requests</strong>:  The total number of requests that have occurred for the life of the app.</li>
+<li><strong>% Time in GC since last GC (%)</strong>: The percent of time in GC since the last GC.</li>
+<li><strong>Allocation Rate</strong>:  Number of bytes allocated in the managed heap between update intervals.</li>
+<li><strong>CPU Usage</strong>: The percentage of CPU usage relative to to CPU resource allocated.</li>
+<li><strong>Exception Count</strong>: The number of exceptions that have occurred.</li>
+<li><strong>GC Commited Bytes</strong>: The number of bytes committed by the GC.</li>
+<li><strong>GC Fragmentation</strong>: The GC Heap Fragmentation (available on .NET 5 and later versions).</li>
+<li><strong>GC Heap Size</strong>: The number of bytes allocated by the GC.</li>
+<li><strong>Gen 0 GC Count</strong>: The number of times GC has occurred for Gen 0 per update interval.</li>
+<li><strong>Gen 0 Size</strong>:  The number of bytes for Gen 0 GC.</li>
+<li><strong>Gen 1 GC Count</strong>: The number of times GC has occurred for Gen 1 per update interval.</li>
+<li><strong>Gen 1 Size</strong>:  The number of bytes for Gen 1 GC.</li>
+<li><strong>Gen 2 GC Count</strong>: The number of times GC has occurred for Gen 2 per update interval.</li>
+<li><strong>Gen 2 Size</strong>:  The number of bytes for Gen 2 GC.</li>
+<li><strong>IL Bytes Jitted</strong>: The total size of ILs that are JIT-compiled, in bytes.</li>
+<li><strong>LOH Size</strong>: The number of bytes for the Large Object Heap.</li>
+<li><strong>Monitor Lock Contention Count</strong>: The number of times there was contention when trying to take the monitor&rsquo;s lock.</li>
+<li><strong>Number of Active Timers</strong>: The number of Timer instances that are currently active.</li>
+<li><strong>Number of Assemblies Loaded</strong>: The number of Assembly instances loaded into a process at a point in time.</li>
+<li><strong>Number of Methods Jitted</strong>:  The number of methods that are JIT-compiled.</li>
+<li><strong>POH (Pinned Object Heap) Size</strong>: The number of bytes for the pinned object heap (available on .NET 5 and later versions).</li>
+<li><strong>ThreadPool Completed Work Item Count</strong>: The number of work items that have been processed so far in the ThreadPool.</li>
+<li><strong>ThreadPool Queue Length</strong>: The number of work items that are currently queued to be processed in the ThreadPool.</li>
+<li><strong>ThreadPool Thread Count</strong>: The number of thread pool threads that currently exist in the ThreadPool.</li>
+<li><strong>Time spent in JIT</strong>: The total time spent doing jitting work.</li>
+<li><strong>Working Set</strong>: The amount of physical memory mapped to the process.</li>
+</ul>
+<p>Right now we&rsquo;re monitoring the app counters in real time, but there is no traffic in our application, so nothing worth mentioning is happening. Let&rsquo;s apply some load using bombardier.</p>
+<p>I&rsquo;m going to apply a load of 100 requests per second during 120 seconds to the <code>blocking-threads</code> endpoint.</p>
+<p><code>./bombardier.exe -c 120 --rate 100 -l -d 120s http://localhost:5003/blocking-threads</code></p>
+<p>These are the values of the counters halfway through the load test:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>Microsoft.AspNetCore.Hosting<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>    Current Requests                                              <span style="color:#ae81ff">47</span>
+</span></span><span style="display:flex;"><span>    Failed Requests                                                <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Request Rate <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                  <span style="color:#ae81ff">12</span>
+</span></span><span style="display:flex;"><span>    Total Requests                                               <span style="color:#ae81ff">615</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>System.Runtime<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>    % Time in GC since last GC <span style="color:#f92672">(</span>%<span style="color:#f92672">)</span>                                 <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Allocation Rate <span style="color:#f92672">(</span>B / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                              437,504
+</span></span><span style="display:flex;"><span>    CPU Usage <span style="color:#f92672">(</span>%<span style="color:#f92672">)</span>                                                 <span style="color:#ae81ff">13</span>
+</span></span><span style="display:flex;"><span>    Exception Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    GC Committed Bytes <span style="color:#f92672">(</span>MB<span style="color:#f92672">)</span>                                       <span style="color:#ae81ff">15</span>
+</span></span><span style="display:flex;"><span>    GC Fragmentation <span style="color:#f92672">(</span>%<span style="color:#f92672">)</span>                                           5.626
+</span></span><span style="display:flex;"><span>    GC Heap Size <span style="color:#f92672">(</span>MB<span style="color:#f92672">)</span>                                             <span style="color:#ae81ff">12</span>
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">0</span> GC Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                 <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">0</span> Size <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                                                <span style="color:#ae81ff">24</span>
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">1</span> GC Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                 <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">1</span> Size <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                                         7,551,272
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">2</span> GC Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                 <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">2</span> Size <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                                         1,681,048
+</span></span><span style="display:flex;"><span>    IL Bytes Jitted <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                                      267,867
+</span></span><span style="display:flex;"><span>    LOH Size <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                                              98,408
+</span></span><span style="display:flex;"><span>    Monitor Lock Contention Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                  <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    Number of Active Timers                                        <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Number of Assemblies Loaded                                  <span style="color:#ae81ff">113</span>
+</span></span><span style="display:flex;"><span>    Number of Methods Jitted                                   2,889
+</span></span><span style="display:flex;"><span>    POH <span style="color:#f92672">(</span>Pinned Object Heap<span style="color:#f92672">)</span> Size <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                      2,659,768
+</span></span><span style="display:flex;"><span>    ThreadPool Completed Work Item Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>          <span style="color:#ae81ff">51</span>
+</span></span><span style="display:flex;"><span>    ThreadPool Queue Length                                      <span style="color:#ae81ff">207</span>
+</span></span><span style="display:flex;"><span>    ThreadPool Thread Count                                       <span style="color:#ae81ff">47</span>
+</span></span><span style="display:flex;"><span>    Time spent in JIT <span style="color:#f92672">(</span>ms / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                 <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Working Set <span style="color:#f92672">(</span>MB<span style="color:#f92672">)</span>                                              <span style="color:#ae81ff">82</span>
+</span></span></code></pre></div><p>And these are the values of the counters at the end of the load test:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>Microsoft.AspNetCore.Hosting<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>    Current Requests                                              <span style="color:#ae81ff">65</span>
+</span></span><span style="display:flex;"><span>    Failed Requests                                                <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Request Rate <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                  <span style="color:#ae81ff">35</span>
+</span></span><span style="display:flex;"><span>    Total Requests                                             3,103
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>System.Runtime<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>    % Time in GC since last GC <span style="color:#f92672">(</span>%<span style="color:#f92672">)</span>                                 <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Allocation Rate <span style="color:#f92672">(</span>B / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                            1,270,560
+</span></span><span style="display:flex;"><span>    CPU Usage <span style="color:#f92672">(</span>%<span style="color:#f92672">)</span>                                                 <span style="color:#ae81ff">20</span>
+</span></span><span style="display:flex;"><span>    Exception Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    GC Committed Bytes <span style="color:#f92672">(</span>MB<span style="color:#f92672">)</span>                                       <span style="color:#ae81ff">25</span>
+</span></span><span style="display:flex;"><span>    GC Fragmentation <span style="color:#f92672">(</span>%<span style="color:#f92672">)</span>                                          14.214
+</span></span><span style="display:flex;"><span>    GC Heap Size <span style="color:#f92672">(</span>MB<span style="color:#f92672">)</span>                                             <span style="color:#ae81ff">21</span>
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">0</span> GC Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                 <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">0</span> Size <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                                                <span style="color:#ae81ff">24</span>
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">1</span> GC Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                 <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">1</span> Size <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                                         6,581,168
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">2</span> GC Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                 <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">2</span> Size <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                                         8,775,656
+</span></span><span style="display:flex;"><span>    IL Bytes Jitted <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                                      272,942
+</span></span><span style="display:flex;"><span>    LOH Size <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                                              98,408
+</span></span><span style="display:flex;"><span>    Monitor Lock Contention Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                  <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    Number of Active Timers                                        <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Number of Assemblies Loaded                                  <span style="color:#ae81ff">113</span>
+</span></span><span style="display:flex;"><span>    Number of Methods Jitted                                   2,973
+</span></span><span style="display:flex;"><span>    POH <span style="color:#f92672">(</span>Pinned Object Heap<span style="color:#f92672">)</span> Size <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                      4,559,088
+</span></span><span style="display:flex;"><span>    ThreadPool Completed Work Item Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>         <span style="color:#ae81ff">135</span>
+</span></span><span style="display:flex;"><span>    ThreadPool Queue Length                                    1,361
+</span></span><span style="display:flex;"><span>    ThreadPool Thread Count                                       <span style="color:#ae81ff">65</span>
+</span></span><span style="display:flex;"><span>    Time spent in JIT <span style="color:#f92672">(</span>ms / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                 <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Working Set <span style="color:#f92672">(</span>MB<span style="color:#f92672">)</span>                                              <span style="color:#ae81ff">91</span>
+</span></span></code></pre></div><p>The counters that seemed OK were:</p>
+<ul>
+<li>The CPU usage was low.</li>
+<li>Allocation rate was low.</li>
+<li>No GC collections.</li>
+<li>LOH had a low and steady size.</li>
+</ul>
+<p>The counters that seemed OFF were:</p>
+<ul>
+<li>Poor Request/Rate ratio.</li>
+<li>The <strong>&ldquo;ThreadPool Queue Length&rdquo;</strong> and <strong>&ldquo;ThreadPool Thread Count&rdquo;</strong> counters were increasing exponentially during the test duration.</li>
+</ul>
+<p>The &ldquo;ThreadPool Thread Count&rdquo; should not be growing like this, in an ideal application  everything runs asynchronously which means that a low number of threads can serve a huge amount of requests.</p>
+<p>In an async world when an incoming request arrives it gets a new thread from the Threadpool, that thread runs it’s current operation and when an async method is awaited, saves the current context and adds itself to the pool as an available thread.<br>
+When the async call completes or if a new request comes in at this point, the Threadpool checks if all the threads are already in operation, if yes it spawns up a new thread, if not it takes up one of the available threads from the pool.</p>
+<p>The fact that the &ldquo;ThreadPool Thread Count&rdquo; counter keeps growing means that the application is expanding the Threadpool to handle incoming requests, which means that probably some threads are being blocked somewhere.</p>
+<p>The blockage could be on purpose and maybe the app is doing some long running task, but maybe the threads are being blocked because there is something wrong, so it&rsquo;s worth investigating further.</p>
+<h2 id="2-using-_dotnet-dump_-and-visual-studio-to-analyze-possible-blocked-threads">2. Using <em>dotnet-dump</em> and Visual Studio to analyze possible blocked threads</h2>
+<p>The <code>dotnet-dump</code> diagnostic tool is the one to use when you want to take a look at what are the threads doing.</p>
+<p><code>dotnet-dump</code>  is capable to collect and analyze Windows and Linux dumps without any native debugger involved, by default <code>dotnet-dump</code> creates a full dump which contains a snapshot of the memory, information about the running threads with their corresponding stack traces and information about possible exceptions that might have occurred.</p>
+<p>I&rsquo;m going to apply another load of 100 requests per second during 120 seconds to the <code>blocking-threads</code> endpoint with bombardier, and while the load test is running I&rsquo;ll capture a dump using:</p>
+<p><code>./dotnet-dump collect --process-id 1</code></p>
+<ul>
+<li>The <code>collect</code> command  collects a dump from a running process.</li>
+<li>The <code>-p|--process-id</code> parameter specifies the process id to collect the trace, in this case we&rsquo;re inside a docker container so the PID is always 1.</li>
+</ul>
+<p>A good way to analyze this dump is with Visual Studio, but the dump is inside the docker container, so I&rsquo;m going to copy it from inside the container to my local machine using the command:</p>
+<p><code>docker cp &lt;container-id&gt;:&lt;path-to-the-dump&gt; .</code></p>
+<p>Now we can open it with Visual Studio. To start a debugging session, select &ldquo;Debug with Managed Only&rdquo;.</p>
+<p><img src="/img/vs-dump-debug.png" alt="vs-dump-debug"></p>
+<p>Keep in mind that a dump it&rsquo;s a snapshot of your application in a concrete point in time, so you can&rsquo;t debug the application, but what we can do is select &ldquo;Debug &gt; Windows &gt; Threads&rdquo; to get a  list of what were the threads doing at the time we captured the dump.</p>
+<p>And as you can see on the next screenshot, it looks suspicious the amount of threads that are on the &ldquo;Sleep&rdquo; state.</p>
+<p><img src="/img/vs-dump-threads-view.png" alt="vs-dump-threads-view"></p>
+<p>Another thing we can do is select &ldquo;Debug &gt; Windows &gt; Parallel Stacks&rdquo; and it gives us a more graphical view of what&rsquo;s happening with the active threads.</p>
+<p><img src="/img/vs-dump-parallel-stacks.png" alt="vs-dump-parallel-stacks"></p>
+<p>In this case we can see that there are 74 threads grouped on 2 stacks, if we take a deeper look at those stacks we recognize that &ldquo;BlockingThreadsService.Run&rdquo; is a function of our app, if we double click on it, Visual Studio will take us there.</p>
+<blockquote>
+<p><em>To navigate from the Parallel Stacks window to the source code we need to enable the microsoft symbols server and also have access to the application symbols.</em></p>
+</blockquote>
+<p>After double-clicking on the &ldquo;BlockingThreadsService.Run&rdquo; on the Parallel Stacks windows, Visual Studio will show us which command was this thread executing when the dump was created.</p>
+<p><img src="/img/vs-dump-task-waitall.png" alt="vs-dump-task-waitall"></p>
+<p>And it seems that the thread was stopped in the &ldquo;Task.WaitAll&rdquo; command.</p>
+<p>If we keep diggingg a little bit further and take a look at this thread call stack, we will see that Task1 is blocked on the lock statement</p>
+<p><img src="/img/vs-dump-task-lock.png" alt="vs-dump-task-lock"></p>
+<p>It&rsquo;s pretty clear that there is some bad code on the &ldquo;BlockingThreadsService.Run&rdquo; function that is blocking threads, so now we can try to fix it. <br>
+I&rsquo;m not going to fix it in this post, we have found the performance issue and now we can move on to another one.</p>
+<h1 id="profiling-the-_high-cpu_-endpoint">Profiling the <em>/high-cpu</em> endpoint</h1>
+<h2 id="1-using-_dotnet-counters_-to-investigate-possible-performance-issues-1">1. Using <em>dotnet-counters</em> to investigate possible performance issues</h2>
+<p>We&rsquo;re going to follow the same steps we did on the previous performance issue:</p>
+<ul>
+<li>Launch <code>dotnet-counters</code></li>
+<li>Apply some load with <code>bombardier</code> to the <code>/high-cpu</code> endpoint</li>
+<li>Monitor the counters looking for something that doesn&rsquo;t seems right.</li>
+</ul>
+<p>These are the values of the counters halfway through the load test:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>Microsoft.AspNetCore.Hosting<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>    Current Requests                                               <span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>    Failed Requests                                                <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Request Rate <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                   <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    Total Requests                                                <span style="color:#ae81ff">71</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>System.Runtime<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>    % Time in GC since last GC <span style="color:#f92672">(</span>%<span style="color:#f92672">)</span>                                 <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Allocation Rate <span style="color:#f92672">(</span>B / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                               48,608
+</span></span><span style="display:flex;"><span>    CPU Usage <span style="color:#f92672">(</span>%<span style="color:#f92672">)</span>                                                 <span style="color:#ae81ff">99</span>
+</span></span><span style="display:flex;"><span>    Exception Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    GC Committed Bytes <span style="color:#f92672">(</span>MB<span style="color:#f92672">)</span>                                       <span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span>    GC Fragmentation <span style="color:#f92672">(</span>%<span style="color:#f92672">)</span>                                           0.231
+</span></span><span style="display:flex;"><span>    GC Heap Size <span style="color:#f92672">(</span>MB<span style="color:#f92672">)</span>                                              <span style="color:#ae81ff">6</span>
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">0</span> GC Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                 <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">0</span> Size <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                                                <span style="color:#ae81ff">24</span>
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">1</span> GC Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                 <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">1</span> Size <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                                         1,535,312
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">2</span> GC Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                 <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">2</span> Size <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                                         2,185,032
+</span></span><span style="display:flex;"><span>    IL Bytes Jitted <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                                      247,267
+</span></span><span style="display:flex;"><span>    LOH Size <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                                             196,792
+</span></span><span style="display:flex;"><span>    Monitor Lock Contention Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                  <span style="color:#ae81ff">6</span>
+</span></span><span style="display:flex;"><span>    Number of Active Timers                                        <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Number of Assemblies Loaded                                  <span style="color:#ae81ff">113</span>
+</span></span><span style="display:flex;"><span>    Number of Methods Jitted                                   2,664
+</span></span><span style="display:flex;"><span>    POH <span style="color:#f92672">(</span>Pinned Object Heap<span style="color:#f92672">)</span> Size <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                      2,206,568
+</span></span><span style="display:flex;"><span>    ThreadPool Completed Work Item Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>           <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    ThreadPool Queue Length                                      <span style="color:#ae81ff">695</span>
+</span></span><span style="display:flex;"><span>    ThreadPool Thread Count                                        <span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>    Time spent in JIT <span style="color:#f92672">(</span>ms / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                 <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Working Set <span style="color:#f92672">(</span>MB<span style="color:#f92672">)</span>                                              <span style="color:#ae81ff">81</span>
+</span></span></code></pre></div><p>And these are the values of the counters at the end of the load test:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>Microsoft.AspNetCore.Hosting<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>    Current Requests                                               <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>    Failed Requests                                                <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Request Rate <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                   <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Total Requests                                               <span style="color:#ae81ff">136</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>System.Runtime<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>    % Time in GC since last GC <span style="color:#f92672">(</span>%<span style="color:#f92672">)</span>                                <span style="color:#ae81ff">53</span>
+</span></span><span style="display:flex;"><span>    Allocation Rate <span style="color:#f92672">(</span>B / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                8,128
+</span></span><span style="display:flex;"><span>    CPU Usage <span style="color:#f92672">(</span>%<span style="color:#f92672">)</span>                                                 <span style="color:#ae81ff">99</span>
+</span></span><span style="display:flex;"><span>    Exception Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    GC Committed Bytes <span style="color:#f92672">(</span>MB<span style="color:#f92672">)</span>                                       <span style="color:#ae81ff">11</span>
+</span></span><span style="display:flex;"><span>    GC Fragmentation <span style="color:#f92672">(</span>%<span style="color:#f92672">)</span>                                           3.386
+</span></span><span style="display:flex;"><span>    GC Heap Size <span style="color:#f92672">(</span>MB<span style="color:#f92672">)</span>                                             <span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">0</span> GC Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                 <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">0</span> Size <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                                                <span style="color:#ae81ff">24</span>
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">1</span> GC Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                 <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">1</span> Size <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                                           462,464
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">2</span> GC Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                 <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">2</span> Size <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                                         5,019,752
+</span></span><span style="display:flex;"><span>    IL Bytes Jitted <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                                      252,401
+</span></span><span style="display:flex;"><span>    LOH Size <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                                             196,792
+</span></span><span style="display:flex;"><span>    Monitor Lock Contention Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                  <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Number of Active Timers                                        <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Number of Assemblies Loaded                                  <span style="color:#ae81ff">113</span>
+</span></span><span style="display:flex;"><span>    Number of Methods Jitted                                   2,728
+</span></span><span style="display:flex;"><span>    POH <span style="color:#f92672">(</span>Pinned Object Heap<span style="color:#f92672">)</span> Size <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                      3,145,928
+</span></span><span style="display:flex;"><span>    ThreadPool Completed Work Item Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>           <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    ThreadPool Queue Length                                    1,651
+</span></span><span style="display:flex;"><span>    ThreadPool Thread Count                                        <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>    Time spent in JIT <span style="color:#f92672">(</span>ms / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                 <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Working Set <span style="color:#f92672">(</span>MB<span style="color:#f92672">)</span>                                              <span style="color:#ae81ff">83</span>
+</span></span></code></pre></div><p>The counters that seemed OK were:</p>
+<ul>
+<li>The threadpool thread count was relatively small.</li>
+<li>Allocation rate was low.</li>
+<li>No GC collections.</li>
+<li>LOH had a low and steady size.</li>
+</ul>
+<p>The counters that seemed OFF were:</p>
+<ul>
+<li>A terrible Request/Rate ratio.</li>
+<li>The <strong>CPU Usage</strong> was almost 100% during the entire length of the load test.</li>
+</ul>
+<p>Having this low request/rate tied to the fact that the CPU usage was almost 100% during the entire duration of the load test means that the CPU is the current bottleneck.</p>
+<p>Having this high CPU usage and low request/rate might not be a performance issue, maybe this application is doing some heavy CPU operations on purpose, or maybe there are some operations that are wasting too many CPU cycles.</p>
+<p>Let&rsquo;s dig deeper.</p>
+<h2 id="2-using-_dotnet-trace_-and-visual-studio-to-analyze-a-cpu-trace">2. Using <em>dotnet-trace</em> and Visual Studio to analyze a CPU trace</h2>
+<p>The <code>dotnet-trace</code> diagnostic tool collects diagnostic traces from a running process. It can collect either CPU traces or GC collections and object allocations traces. It also captures CLR events.</p>
+<p>I&rsquo;m going to apply another load of 100 requests per second during 120 seconds to the <code>high-cpu</code> endpoint with bombardier, and while the load test is running I&rsquo;ll capture a CPU trace using the command:</p>
+<p><code>./dotnet-trace collect --process-id 1 --duration 00:00:30</code></p>
+<ul>
+<li>The <code>collect</code> command  collects a diagnostic trace from a running process.</li>
+<li>The <code>-p|--process-id</code> parameter specifies the process id to collect the trace, in this case we&rsquo;re inside a docker container so the PID is always 1.</li>
+<li>The <code>--duration</code> parameter when specified, will trace for the given timespan and then automatically stop the trace.</li>
+<li>By default <code>dotnet-trace</code> collects CPU traces and CLR events, if you want to capture instead GC collection traces you can use the <code>--profile</code> parameter.</li>
+</ul>
+<p>We&rsquo;re going to analyze this trace with Visual Studio also, but the trace is inside the docker container, so I&rsquo;m going to copy it from inside the container to my local machine using the command:</p>
+<p><code>docker cp &lt;container-id&gt;:&lt;path-to-the-trace&gt; .</code></p>
+<p>Now we can open the trace with Visual Studio, and right after opening it we are prompted with the top CPU functions.</p>
+<p><img src="/img/vs-trace-top-functions.png" alt="vs-trace-top-functions"></p>
+<p>On this list we can see that &ldquo;CalculatePrimeNumber&rdquo; takes the number one spot on the list with more than 60% of CPU time. If we click on the &ldquo;Open details&rdquo; link we can get a more in-depth information.</p>
+<p><img src="/img/vs-trace-open-details.png" alt="vs-trace-open-details"></p>
+<p>This next section lists every function that the .NET trace profiled and shows the total CPU time spent and the self CPU time spent.</p>
+<ul>
+<li>Total CPU time: CPU time spent executing code in this function and in functions called by this function.</li>
+<li>Self CPU time: CPU time spent executing code in this function, excluding time in functions called by this function.</li>
+</ul>
+<p>One way to investigate is ordering by &ldquo;Self CPU&rdquo;, we&rsquo;ll get the functions ordered by how much CPU time they spent without any dependency.</p>
+<p><img src="/img/vs-trace-functions-cpu.png" alt="vs-trace-functions-cpu"></p>
+<p>We can also view the call tree for every function, clicking in the &ldquo;Show Hot Path&rdquo; and &ldquo;Expand Hot Path&rdquo; will take us to the CPU hot path.</p>
+<p><img src="/img/vs-trace-hot-path.png" alt="vs-trace-hot-path.png"></p>
+<p>After taking a look at the trace, it&rsquo;s pretty clear that the performance issue is the &ldquo;CalculatePrimeNumber&rdquo; function, and therefore we can go now and try to fix it.</p>
+<p>The &ldquo;CalculatePrimeNumber&rdquo; function is spending a huge amount of CPU time, so now we can take a look at the source code and try to determine if the CPU spent by this method is legitimate, it is a bug or maybe the code can be improved to reduce the usage.</p>
+<h1 id="profiling-the-_memory-leak_-endpoint">Profiling the <em>/memory-leak</em> endpoint</h1>
+<h2 id="1-using-_dotnet-counters_-to-investigate-possible-issue">1. Using <em>dotnet-counters</em> to investigate possible issue</h2>
+<p>We&rsquo;re going to follow the same steps we did on the previous performance issues:</p>
+<ul>
+<li>Launch <code>dotnet-counters</code>.</li>
+<li>Apply some load with <code>bombardier</code> to the <code>/memory-leak</code> endpoint.</li>
+<li>Monitor the counters looking for something that doesn&rsquo;t seems right.</li>
+</ul>
+<p>These are the values of the counters halfway through the load test:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>Microsoft.AspNetCore.Hosting<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>    Current Requests                                               <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    Failed Requests                                                <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Request Rate <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                  <span style="color:#ae81ff">45</span>
+</span></span><span style="display:flex;"><span>    Total Requests                                             2,075
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>System.Runtime<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>    % Time in GC since last GC <span style="color:#f92672">(</span>%<span style="color:#f92672">)</span>                                 <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    Allocation Rate <span style="color:#f92672">(</span>B / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                1.113e+08
+</span></span><span style="display:flex;"><span>    CPU Usage <span style="color:#f92672">(</span>%<span style="color:#f92672">)</span>                                                <span style="color:#ae81ff">101</span>
+</span></span><span style="display:flex;"><span>    Exception Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    GC Committed Bytes <span style="color:#f92672">(</span>MB<span style="color:#f92672">)</span>                                      <span style="color:#ae81ff">172</span>
+</span></span><span style="display:flex;"><span>    GC Fragmentation <span style="color:#f92672">(</span>%<span style="color:#f92672">)</span>                                           4.763
+</span></span><span style="display:flex;"><span>    GC Heap Size <span style="color:#f92672">(</span>MB<span style="color:#f92672">)</span>                                            <span style="color:#ae81ff">162</span>
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">0</span> GC Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                <span style="color:#ae81ff">22</span>
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">0</span> Size <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                                           192,120
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">1</span> GC Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                 <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">1</span> Size <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                                         3,996,216
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">2</span> GC Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                 <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">2</span> Size <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                                            1.5739e+08
+</span></span><span style="display:flex;"><span>    IL Bytes Jitted <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                                      272,014
+</span></span><span style="display:flex;"><span>    LOH Size <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                                              98,408
+</span></span><span style="display:flex;"><span>    Monitor Lock Contention Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                 <span style="color:#ae81ff">15</span>
+</span></span><span style="display:flex;"><span>    Number of Active Timers                                        <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Number of Assemblies Loaded                                  <span style="color:#ae81ff">113</span>
+</span></span><span style="display:flex;"><span>    Number of Methods Jitted                                   3,009
+</span></span><span style="display:flex;"><span>    POH <span style="color:#f92672">(</span>Pinned Object Heap<span style="color:#f92672">)</span> Size <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                      4,876,328
+</span></span><span style="display:flex;"><span>    ThreadPool Completed Work Item Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>          <span style="color:#ae81ff">90</span>
+</span></span><span style="display:flex;"><span>    ThreadPool Queue Length                                    2,079
+</span></span><span style="display:flex;"><span>    ThreadPool Thread Count                                        <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>    Time spent in JIT <span style="color:#f92672">(</span>ms / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                 <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Working Set <span style="color:#f92672">(</span>MB<span style="color:#f92672">)</span>                                             <span style="color:#ae81ff">245</span>
+</span></span></code></pre></div><p>And these are the values of the counters at the end of the load test:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>Microsoft.AspNetCore.Hosting<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>    Current Requests                                               <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    Failed Requests                                                <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Request Rate <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                  <span style="color:#ae81ff">47</span>
+</span></span><span style="display:flex;"><span>    Total Requests                                             6,534
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>System.Runtime<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>    % Time in GC since last GC <span style="color:#f92672">(</span>%<span style="color:#f92672">)</span>                                 <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    Allocation Rate <span style="color:#f92672">(</span>B / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                               1.1626e+08
+</span></span><span style="display:flex;"><span>    CPU Usage <span style="color:#f92672">(</span>%<span style="color:#f92672">)</span>                                                 <span style="color:#ae81ff">99</span>
+</span></span><span style="display:flex;"><span>    Exception Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    GC Committed Bytes <span style="color:#f92672">(</span>MB<span style="color:#f92672">)</span>                                      <span style="color:#ae81ff">500</span>
+</span></span><span style="display:flex;"><span>    GC Fragmentation <span style="color:#f92672">(</span>%<span style="color:#f92672">)</span>                                           3.639
+</span></span><span style="display:flex;"><span>    GC Heap Size <span style="color:#f92672">(</span>MB<span style="color:#f92672">)</span>                                            <span style="color:#ae81ff">478</span>
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">0</span> GC Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                <span style="color:#ae81ff">23</span>
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">0</span> Size <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                                           176,048
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">1</span> GC Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                 <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">1</span> Size <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                                         5,040,208
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">2</span> GC Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                 <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Gen <span style="color:#ae81ff">2</span> Size <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                                            4.8388e+08
+</span></span><span style="display:flex;"><span>    IL Bytes Jitted <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                                      274,173
+</span></span><span style="display:flex;"><span>    LOH Size <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                                             241,800
+</span></span><span style="display:flex;"><span>    Monitor Lock Contention Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                 <span style="color:#ae81ff">26</span>
+</span></span><span style="display:flex;"><span>    Number of Active Timers                                        <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Number of Assemblies Loaded                                  <span style="color:#ae81ff">113</span>
+</span></span><span style="display:flex;"><span>    Number of Methods Jitted                                   3,019
+</span></span><span style="display:flex;"><span>    POH <span style="color:#f92672">(</span>Pinned Object Heap<span style="color:#f92672">)</span> Size <span style="color:#f92672">(</span>B<span style="color:#f92672">)</span>                      4,876,328
+</span></span><span style="display:flex;"><span>    ThreadPool Completed Work Item Count <span style="color:#f92672">(</span>Count / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>          <span style="color:#ae81ff">94</span>
+</span></span><span style="display:flex;"><span>    ThreadPool Queue Length                                      <span style="color:#ae81ff">674</span>
+</span></span><span style="display:flex;"><span>    ThreadPool Thread Count                                        <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>    Time spent in JIT <span style="color:#f92672">(</span>ms / <span style="color:#ae81ff">1</span> sec<span style="color:#f92672">)</span>                                 <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    Working Set <span style="color:#f92672">(</span>MB<span style="color:#f92672">)</span>                                             <span style="color:#ae81ff">575</span>
+</span></span></code></pre></div><p>The counters that seemed OK were:</p>
+<ul>
+<li>The threadpool thread count was small.</li>
+<li>CPU usage was high but there were a pretty decent number of total requests processed.</li>
+</ul>
+<p>The counters that seemed OFF were:</p>
+<ul>
+<li>Allocation rate was quite high.</li>
+<li>The Working Set and the GC Heap Size kept growing exponentially and both had a similar size at the end of the test.</li>
+<li>The fact that the GC Heap Size kept growing during the test means that more and more managed objects we&rsquo;re added to the memory.</li>
+<li>GC Gen 2 Size was quite big in size.</li>
+</ul>
+<p>Everything indicates that we might have a potential memory leak.</p>
+<h2 id="2-using-_dotnet-gcdump_-and-visual-studio-to-analyze-a-gc-heap-dump">2. Using <em>dotnet-gcdump</em> and Visual Studio to analyze a GC Heap dump</h2>
+<blockquote>
+<p>You can use  <code>dotnet-dump</code>  instead of <code>dotnet-gcdump</code>, with <code>dotnet-dump</code> you will do the following steps:</p>
+<ul>
+<li>Take a Full or a Heap Dump.</li>
+<li>Open it with Visual Studio.</li>
+<li>Start debugging with the &ldquo;Debug Managed Memory&rdquo; option.</li>
+</ul>
+<p>And you&rsquo;ll come to the same conclusion as if you were using <code>dotnet-gcdump</code>.<br>
+But there is a catch, to use the &ldquo;Debug Managed Memory&rdquo; from Visual Studio you need <strong>Visual Studio Enterprise</strong>.</p>
+</blockquote>
+<p>The <code>dotnet-gcdump</code> tool collects GC dumps of .NET processes. These dumps are useful for several scenarios:</p>
+<ul>
+<li>Comparing the number of objects on the heap at several points in time.</li>
+<li>Analyzing roots of objects.</li>
+<li>Collecting general statistics about the counts of objects on the heap.</li>
+</ul>
+<p>I&rsquo;m going to apply another load of 100 requests per second during 120 seconds to the <code>memory-leak</code> endpoint with bombardier, and while the load test is running I&rsquo;ll capture 2 snapshots of the GC Heap.</p>
+<ul>
+<li>Why capture 2 snapshots instead of a single one?</li>
+</ul>
+<p>Well, because the easiest way to know what&rsquo;s going on in the Heap is to take 2 snapshots in different points in time and compare them. That way I&rsquo;ll be able to see which new objects where added on the Heap between those 2 intervals.</p>
+<p>You can capture a snapshot of the GC Heap with this command:<br>
+<code>./dotnet-gcdump collect --process-id 1</code></p>
+<ul>
+<li>The <code>collect</code> command collects a GC dump from a running process.</li>
+<li>The <code>-p|--process-id</code> parameter specifies the process id to collect the trace, in this case we&rsquo;re inside a docker container so the PID is always 1.</li>
+</ul>
+<p>We&rsquo;re going to analyze those dumps with Visual Studio also, but the dumps are inside the docker container, so I&rsquo;m going to copy them from inside the container to my local machine using the command:</p>
+<p><code>docker cp &lt;container-id&gt;:&lt;path-to-the-gcdump&gt; .</code></p>
+<p>Let&rsquo;s open the first dump with Visual Studio, it will show us a screen with all the managed objects that were on the Heap.</p>
+<p><img src="/img/vs-gcdump-managed-objects.png" alt="vs-gcdump-managed-objects"></p>
+<p>If we select &ldquo;Compare to &gt; Browse&rdquo; on the menu and select the second dump it will shows us the diff between the 2 dump files.</p>
+<p><img src="/img/vs-gcdump-compare-snapshots.png" alt="vs-gcdump-compare-snapshots"></p>
+<p>If we order the results by &ldquo;Size Diff&rdquo;  (Total size difference between the current snapshot and the baseline) those are the top results:</p>
+<p><img src="/img/vs-gcdump-top-objects.png" alt="vs-gcdump-top-objects"></p>
+<p>Having strings and objects in the top spots is nothing unusual, any app contains hundreds or even thousands of strings and objects.</p>
+<p>The object of type <code>Node&lt;Guid, Object&gt;</code> is far more interesting. First of all, let&rsquo;s take a look at which types are referenced by this <code>Node&lt;Guid, Object&gt;</code></p>
+<p><img src="/img/vs-gcdump-references.png" alt="vs-gcdump-references"></p>
+<p>More than 3800 new strings with a reference to the <code>Node&lt;Guid,Object&gt;</code> object were created in the interval of time between the 2 dumps. Also the size of those new strings is quite big, almost 400Mb.</p>
+<p>That&rsquo;s quite a sizeable amount of new strings referencing this particular object, let&rsquo;s dig deeper and take look at the Roots for this object.</p>
+<p><img src="/img/vs-gcdump-path-root.png" alt="vs-gcdump-path-root"></p>
+<p>If we take a look at the roots we can see that the <code>Profiling.Api.Service.MemoryLeak.MemoryLeakService</code> (which is a service I have built on our demo app) has a reference to a <code>ConcurrentDictionary&lt;Guid, Object&gt;</code>, and in turn, the <code>ConcurrentDictionary&lt;Guid, Object&gt;</code> has a reference to the <code>Node&lt;Guid,Object&gt;</code>.</p>
+<p>The leakage seems to be coming from the <code>ConcurrentDictionary&lt;Guid, Object&gt;</code> on the <code>Profiling.Api.Service.MemoryLeak.MemoryLeakService</code> namespace.</p>
+<p>The next step would be to dig in the source code and take a look at what this dictionary is used for, because this behaviour might be completely legitimate and this app needs to work with thousands of new strings from time to time, and instead of a memory leak this is just a poor implementation.</p>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://www.mytechramblings.com/posts/getting-started-with-aws-distro-for-otel-and-dotnet-part-2/">
+                  <span class="button__text">Getting started with AWS Distro for OpenTelemetry and distributed tracing using .NET. Part 2: Building the demo</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2022 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>Theme created by <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://www.mytechramblings.com/assets/main.js"></script>
+<script src="https://www.mytechramblings.com/assets/prism.js"></script>
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('carlospons', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Donate',
+    'floating-chat.donateButton.background-color': '#ff5f5f',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
+
+      
+    </div>
+
+    
+      
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-170300931-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+    
+  </body>
+</html>

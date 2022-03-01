@@ -2,25 +2,43 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://www.mytechramblings.com/tags/aws/</loc>
-    <lastmod>2022-02-01T10:00:12+01:00</lastmod>
+    <loc>https://www.mytechramblings.com/tags/containers/</loc>
+    <lastmod>2022-03-01T10:01:37+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/csharp/</loc>
+    <lastmod>2022-03-01T10:01:37+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/docker/</loc>
+    <lastmod>2022-03-01T10:01:37+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/dotnet/</loc>
+    <lastmod>2022-03-01T10:01:37+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/linux/</loc>
+    <lastmod>2022-03-01T10:01:37+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/</loc>
+    <lastmod>2022-03-01T10:01:37+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/performance/</loc>
+    <lastmod>2022-03-01T10:01:37+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/</loc>
+    <lastmod>2022-03-01T10:01:37+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/profiling-a-net-app-with-dotnet-cli-diagnostic-tools/</loc>
+    <lastmod>2022-03-01T10:01:37+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/</loc>
+    <lastmod>2022-03-01T10:01:37+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/aws/</loc>
     <lastmod>2022-02-01T10:00:12+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/posts/getting-started-with-aws-distro-for-otel-and-dotnet-part-2/</loc>
     <lastmod>2022-02-01T10:00:12+01:00</lastmod>
   </url><url>
-    <loc>https://www.mytechramblings.com/</loc>
-    <lastmod>2022-02-01T10:00:12+01:00</lastmod>
-  </url><url>
     <loc>https://www.mytechramblings.com/tags/opentelemetry/</loc>
-    <lastmod>2022-02-01T10:00:12+01:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/posts/</loc>
-    <lastmod>2022-02-01T10:00:12+01:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/</loc>
     <lastmod>2022-02-01T10:00:12+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/posts/getting-started-with-aws-distro-for-otel-and-dotnet-part-1/</loc>
@@ -41,13 +59,7 @@
     <loc>https://www.mytechramblings.com/tags/serverless/</loc>
     <lastmod>2021-12-15T11:20:04+01:00</lastmod>
   </url><url>
-    <loc>https://www.mytechramblings.com/tags/containers/</loc>
-    <lastmod>2021-10-25T10:45:14+02:00</lastmod>
-  </url><url>
     <loc>https://www.mytechramblings.com/tags/devops/</loc>
-    <lastmod>2021-10-25T10:45:14+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/docker/</loc>
     <lastmod>2021-10-25T10:45:14+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/security/</loc>
@@ -55,9 +67,6 @@
   </url><url>
     <loc>https://www.mytechramblings.com/posts/testing-container-vulnerabilities-scanners-using-azure-pipelines/</loc>
     <lastmod>2021-10-25T10:45:14+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/csharp/</loc>
-    <lastmod>2022-01-06T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/posts/running-a-sonarqube-scan-when-building-docker-image/</loc>
     <lastmod>2021-09-14T10:05:00+02:00</lastmod>
