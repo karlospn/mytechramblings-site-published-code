@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>Profiling a .NET6 app running on AWS ECS Fargate with dotnet-monitor :: my tech ramblings — A blog for writing about my techie ramblings</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Just show me the code
+As always, if you don’t care about the post I have uploaded the source code on my Github.
+ I&amp;rsquo;m pretty confident that everyone at some time or other has stumbled with an application that performs well on your local machine, maybe even on the dev environments, but when you put it on production it begins to perform poorly, and it becomes an ordeal trying to pinpoint the root cause of the problem."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://www.mytechramblings.com/posts/profiling-a-net-app-on-aws-ecs-fargate-with-dotnet-monitor/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/assets/style.css">
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.mytechramblings.com/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://www.mytechramblings.com/img/favicon.png">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Profiling a .NET6 app running on AWS ECS Fargate with dotnet-monitor"/>
+<meta name="twitter:description" content="The dotnet-monitor tool is an alternative to the .NET CLI diagnostic tools. In this post I&#39;ll show you how to deploy a .NET 6 application into AWS ECS Fargate with dotnet-monitor as a sidecar container, and afterwards how you can profile an app using the dotnet-monitor HTTP API."/>
+
+
+
+<meta property="og:title" content="Profiling a .NET6 app running on AWS ECS Fargate with dotnet-monitor" />
+<meta property="og:description" content="The dotnet-monitor tool is an alternative to the .NET CLI diagnostic tools. In this post I&#39;ll show you how to deploy a .NET 6 application into AWS ECS Fargate with dotnet-monitor as a sidecar container, and afterwards how you can profile an app using the dotnet-monitor HTTP API." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.mytechramblings.com/posts/profiling-a-net-app-on-aws-ecs-fargate-with-dotnet-monitor/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-03-30T10:25:20+02:00" />
+<meta property="article:modified_time" content="2022-03-30T10:25:20+02:00" /><meta property="og:site_name" content="my tech ramblings" />
+
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://www.mytechramblings.com/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">my tech ramblings</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/profiling-a-net-app-on-aws-ecs-fargate-with-dotnet-monitor/">Profiling a .NET6 app running on AWS ECS Fargate with dotnet-monitor</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2022-03-30
+        </span>
+
+        
+          
+            
+
+
+
+          
+        
+      
+
+      
+      
+        <span class="post-read-time">— 14 min read</span>
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          #<a href="https://www.mytechramblings.com/tags/aws/">aws</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/fargate/">fargate</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/ecs/">ecs</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/containers/">containers</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/dotnet/">dotnet</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/csharp/">csharp</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/performance/">performance</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <blockquote>
+<p><strong>Just show me the code</strong><br>
+As always, if you don’t care about the post I have uploaded the source code on my <a href="https://github.com/karlospn/profiling-net6-api-on-aws-ecs-fargate-using-dotnet-monitor">Github</a>.</p>
+</blockquote>
+<p>I&rsquo;m pretty confident that everyone at some time or other has stumbled with an application that performs well on your local machine, maybe even on the dev environments, but when you put it on production it begins to perform poorly, and it becomes an ordeal trying to pinpoint the root cause of the problem.</p>
+<p>In my <a href="https://www.mytechramblings.com/posts/profiling-a-net-app-with-dotnet-cli-diagnostic-tools/">previous post</a> I talked about how to profile a .NET6 application using the .NET CLI diagnostic tools.</p>
+<p>Those tools (dotnet-counters, dotnet-dump, dotnet-gcdump and dotnet-trace) are designed to work in a wide variety of environments.<br>
+If your apps are running on a VM you can add them on the base image or connect remotely to the machine via SSH and install them. <br>
+If you&rsquo;re running on some sort of Kubernetes cluster you can bake them inside the docker image and afterwards connect to the pod using the kubectl command line.<br>
+There are even some Cloud Services, like Azure App Services, that uses its own set of diagnostic tools, so you don&rsquo;t need them at all.</p>
+<p>Nonetheless there are some environments where collecting diagnostics can become cumbersome, for profiling an app in these kind of environments you can use the <code>dotnet-monitor</code> tool.</p>
+<p>AWS ECS Fargate is one of this environments. Fargate is a serverless container platform, it is a general-purpose platform, which means it doesn&rsquo;t have a specialized set of diagnostic tools put in place like Azure App Service, and trying to access a running container to execute the .NET CLI diagnostic tools is doable but is an absolute pain in the ass.<br>
+Fargate is a great example where the <code>dotnet-monitor</code> tool becomes really handy when we want to profile a .NET app running on it.</p>
+<p><strong>This post is more oriented towards the necessary steps to deploy a .NET6 application on AWS ECS Fargate with <code>dotnet-monitor</code> as a sidecar container rather than how to profile an app.</strong></p>
+<p><strong>But nonetheless after setting everything up on the AWS side I plan to briefly show you how to use the <code>dotnet-monitor</code> HTTP API to profile an app.</strong></p>
+<h1 id="dotnet-monitor"><strong>dotnet-monitor</strong></h1>
+<p><code>dotnet monitor</code> provides an unified way to collect traces, memory dumps, gc dumps and metrics.</p>
+<p>It exposes an HTTP API for on demand collection of artifacts with the following endpoints:</p>
+<ul>
+<li><code>/processes</code>: Gets detailed information about discoverable processes.</li>
+<li><code>/dump</code>: Captures managed dumps of processes without using a debugger.</li>
+<li><code>/gcdump</code>: Captures GC dumps of processes.</li>
+<li><code>/trace</code>: Captures traces of processes without using a profiler.</li>
+<li><code>/metrics</code>: Captures a snapshot of metrics of the default process in the Prometheus exposition format.</li>
+<li><code>/livemetrics</code>: Captures live streaming metrics of a process.</li>
+<li><code>/logs</code>: Captures logs of processes.</li>
+<li><code>/info</code> Gets info about dotnet monitor.</li>
+<li><code>/operations</code>: Gets egress operation status or cancels operations.</li>
+</ul>
+<p>To put it simply, <code>dotnet-monitor</code> just exposes the .NET CLI diagnostics tools via an HTTP API.</p>
+<p>Right now, it is available via two different distribution mechanisms:</p>
+<ul>
+<li>As a .NET Core global tool.</li>
+<li>As a container image available via the Microsoft Container Registry (MCR).</li>
+</ul>
+<p><code>dotnet-monitor</code> is not only for running on-demand profiling, it can also be configured to automatically collect diagnostic artifacts when certain conditions are met within a process. For example, collect a CPU dump when you have a sustained high CPU during a period of time.</p>
+<h1 id="demo-application"><strong>Demo Application</strong></h1>
+<p>The application I&rsquo;m going to use is the same one I used on my <a href="https://www.mytechramblings.com/posts/profiling-a-net-app-with-dotnet-cli-diagnostic-tools/">previous post</a>.</p>
+<p>The demo app is a .NET 6 API with 3 endpoints:</p>
+<ul>
+<li><code>/blocking-threads</code> endpoint.</li>
+<li><code>/high-cpu</code> endpoint.</li>
+<li><code>/memory-leak</code> endpoint.</li>
+</ul>
+<p>Each endpoint has a different performance issue and the problems are pretty self-explanatory.</p>
+<p>But first of all, we need to deploy the app into AWS ECS Fargate with <code>dotnet-monitor</code> as a sidecar container.</p>
+<h1 id="deploy-into-aws-ecs-fargate"><strong>Deploy into AWS ECS Fargate</strong></h1>
+<p>This is the entire stack that we&rsquo;re going to deploy on AWS:</p>
+<p><img src="/img/fargate-dotnet-monitor-cdk-app.png" alt="fargate-dotnet-monitor-cdk-app"></p>
+<ul>
+<li>A VPC with 2 public Subnets.</li>
+<li>A public Application Load Balancer that listens on port 80.
+<ul>
+<li>This ALB is used to access the NET6 Web API.</li>
+<li>You can use port 443 but I didn&rsquo;t have an SSL certificate at hand.</li>
+</ul>
+</li>
+<li>A public Application Load Balancer that listens on port 52323
+<ul>
+<li>This one is used to interact with <code>dotnet-monitor</code></li>
+<li>You could use a single ALB and set 2 listeners with 2 target groups, but in a realistic scenario you  don&rsquo;t want to open a port on your internet facing ALB, instead you&rsquo;ll create a secondary internal ALB and use it to interact with the <code>dotnet-monitor</code> API.</li>
+</ul>
+</li>
+<li>An ECS Task Definition with 2 containers: the WebAPI container and the <code>dotnet-monitor</code> container. The <code>dotnet-monitor</code> will be deployed as a sidecar container that collects diagnostic information from the other container running .NET.</li>
+</ul>
+<p>To deploy this stack I&rsquo;ll be using <a href="https://aws.amazon.com/cdk">AWS CDK</a>.</p>
+<p>The next code snippet is probably the most interesting part of the CDK app, and shows how to setup properly the <code>dotmnet-monitor</code> container and the app container in the ECS Task Definition.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>  <span style="color:#66d9ef">private</span> FargateTaskDefinition CreateTaskDefinition()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> task = <span style="color:#66d9ef">new</span> FargateTaskDefinition(<span style="color:#66d9ef">this</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;task-definition-ecs-profiling-dotnet-demo&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">new</span> FargateTaskDefinitionProps
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    Cpu = <span style="color:#ae81ff">1024</span>,
+</span></span><span style="display:flex;"><span>                    Family = <span style="color:#e6db74">&#34;task-definition-ecs-profiling-dotnet-demo&#34;</span>,
+</span></span><span style="display:flex;"><span>                    MemoryLimitMiB = <span style="color:#ae81ff">2048</span>
+</span></span><span style="display:flex;"><span>                });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            task.AddVolume(<span style="color:#66d9ef">new</span> Amazon.CDK.AWS.ECS.Volume
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                Name = <span style="color:#e6db74">&#34;diagnostics&#34;</span>
+</span></span><span style="display:flex;"><span>            });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            task.AddVolume(<span style="color:#66d9ef">new</span> Amazon.CDK.AWS.ECS.Volume
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                Name = <span style="color:#e6db74">&#34;dumps&#34;</span>
+</span></span><span style="display:flex;"><span>            });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> linuxParams = <span style="color:#66d9ef">new</span> LinuxParameters(<span style="color:#66d9ef">this</span>, <span style="color:#e6db74">&#34;sys-ptrace-linux-params&#34;</span>);
+</span></span><span style="display:flex;"><span>            linuxParams.AddCapabilities(Capability.SYS_PTRACE);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            task.AddContainer(<span style="color:#e6db74">&#34;container-app&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">new</span> ContainerDefinitionOptions
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    Cpu = <span style="color:#ae81ff">512</span>,
+</span></span><span style="display:flex;"><span>                    MemoryLimitMiB = <span style="color:#ae81ff">1024</span>,
+</span></span><span style="display:flex;"><span>                    Image = ContainerImage.FromAsset(<span style="color:#e6db74">&#34;../src/Profiling.Api&#34;</span>),
+</span></span><span style="display:flex;"><span>                    LinuxParameters = linuxParams,
+</span></span><span style="display:flex;"><span>                    Environment = <span style="color:#66d9ef">new</span> Dictionary&lt;<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">string</span>&gt;
+</span></span><span style="display:flex;"><span>                    {
+</span></span><span style="display:flex;"><span>                        {<span style="color:#e6db74">&#34;DOTNET_DiagnosticPorts&#34;</span>,<span style="color:#e6db74">&#34;/diag/port,nosuspend,connect&#34;</span>}
+</span></span><span style="display:flex;"><span>                    },
+</span></span><span style="display:flex;"><span>                    Logging = LogDriver.AwsLogs(<span style="color:#66d9ef">new</span> AwsLogDriverProps
+</span></span><span style="display:flex;"><span>                    {
+</span></span><span style="display:flex;"><span>                        StreamPrefix = <span style="color:#e6db74">&#34;ecs&#34;</span>
+</span></span><span style="display:flex;"><span>                    }),
+</span></span><span style="display:flex;"><span>                    PortMappings = <span style="color:#66d9ef">new</span> IPortMapping[]
+</span></span><span style="display:flex;"><span>                    {
+</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">new</span> PortMapping
+</span></span><span style="display:flex;"><span>                        {
+</span></span><span style="display:flex;"><span>                            ContainerPort = <span style="color:#ae81ff">80</span>
+</span></span><span style="display:flex;"><span>                        }
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                }).AddMountPoints(<span style="color:#66d9ef">new</span> MountPoint
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                ContainerPath = <span style="color:#e6db74">&#34;/diag&#34;</span>,
+</span></span><span style="display:flex;"><span>                SourceVolume = <span style="color:#e6db74">&#34;diagnostics&#34;</span>
+</span></span><span style="display:flex;"><span>            }, <span style="color:#66d9ef">new</span> MountPoint
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                ContainerPath = <span style="color:#e6db74">&#34;/dumps&#34;</span>,
+</span></span><span style="display:flex;"><span>                SourceVolume = <span style="color:#e6db74">&#34;dumps&#34;</span>,
+</span></span><span style="display:flex;"><span>                ReadOnly = <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>            });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            task.AddContainer(<span style="color:#e6db74">&#34;dotnet-monitor&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">new</span> ContainerDefinitionOptions
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    Cpu = <span style="color:#ae81ff">256</span>,
+</span></span><span style="display:flex;"><span>                    MemoryLimitMiB = <span style="color:#ae81ff">512</span>,
+</span></span><span style="display:flex;"><span>                    Image = ContainerImage.FromRegistry(<span style="color:#e6db74">&#34;mcr.microsoft.com/dotnet/monitor:6&#34;</span>),
+</span></span><span style="display:flex;"><span>                    Environment = <span style="color:#66d9ef">new</span> Dictionary&lt;<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">string</span>&gt;
+</span></span><span style="display:flex;"><span>                    {
+</span></span><span style="display:flex;"><span>                        { <span style="color:#e6db74">&#34;DOTNETMONITOR_DiagnosticPort__ConnectionMode&#34;</span>, <span style="color:#e6db74">&#34;Listen&#34;</span> },
+</span></span><span style="display:flex;"><span>                        { <span style="color:#e6db74">&#34;DOTNETMONITOR_DiagnosticPort__EndpointName&#34;</span>, <span style="color:#e6db74">&#34;/diag/port&#34;</span> },
+</span></span><span style="display:flex;"><span>                        { <span style="color:#e6db74">&#34;DOTNETMONITOR_Urls&#34;</span>, <span style="color:#e6db74">&#34;http://+:52323&#34;</span> },
+</span></span><span style="display:flex;"><span>                        { <span style="color:#e6db74">&#34;DOTNETMONITOR_Storage__DumpTempFolder&#34;</span>, <span style="color:#e6db74">&#34;/dumps&#34;</span>}
+</span></span><span style="display:flex;"><span>                    },
+</span></span><span style="display:flex;"><span>                    Command = <span style="color:#66d9ef">new</span>[] { <span style="color:#e6db74">&#34;--no-auth&#34;</span> },
+</span></span><span style="display:flex;"><span>                    PortMappings = <span style="color:#66d9ef">new</span> IPortMapping[]
+</span></span><span style="display:flex;"><span>                    {
+</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">new</span> PortMapping
+</span></span><span style="display:flex;"><span>                        {
+</span></span><span style="display:flex;"><span>                            ContainerPort = <span style="color:#ae81ff">52323</span>
+</span></span><span style="display:flex;"><span>                        }
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                }).AddMountPoints(<span style="color:#66d9ef">new</span> MountPoint
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                ContainerPath = <span style="color:#e6db74">&#34;/diag&#34;</span>,
+</span></span><span style="display:flex;"><span>                SourceVolume = <span style="color:#e6db74">&#34;diagnostics&#34;</span>
+</span></span><span style="display:flex;"><span>            }, <span style="color:#66d9ef">new</span> MountPoint
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                ContainerPath = <span style="color:#e6db74">&#34;/dumps&#34;</span>,
+</span></span><span style="display:flex;"><span>                SourceVolume = <span style="color:#e6db74">&#34;dumps&#34;</span>,
+</span></span><span style="display:flex;"><span>                ReadOnly = <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>            });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> task;
+</span></span><span style="display:flex;"><span>        }
+</span></span></code></pre></div><ul>
+<li>
+<p>The <code>dotnet-monitor</code> tool is configured to run in Listen mode. The tool establishes a diagnostic communication channel at the specified Unix Domain Socket path by the <code>DOTNETMONITOR_DiagnosticPort__EndpointName</code> environment variable.<br>
+Also the application container has a <code>DOTNET_DiagnosticPorts</code> environment variable specified so that the application&rsquo;s runtime will communicate with the dotnet monitor instance at the specified Unix Domain Socket path. <br>
+Each port configuration specifies whether it is a <code>suspend</code> or <code>nosuspend</code> port. Ports specifying suspend in their configuration will cause the runtime to pause early on in the startup path before most runtime subsystems have started. This allows any agent to receive a connection and properly setup before the application startup continues.</p>
+</li>
+<li>
+<p>In Listen mode the Unix Domain Socket file needs to be shared among the <code>dotnet-monitor</code> container and the app container you wish to monitor. If your diagnostic port is established at <code>/diag/port</code>, then a shared volume needs to be mounted at <code>/diag</code> in the <code>dotnet-monitor</code> container and also in the app container. To share a directory in Fargate we&rsquo;ll use <a href="https://docs.aws.amazon.com/AmazonECS/latest/developerguide/bind-mounts.html">Bind Mounts</a>.</p>
+</li>
+<li>
+<p>The <code>dotnet-monitor</code> tool is configured to instruct the application runtime to produce dump files at the path specified by the <code>DOTNETMONITOR_Storage__DumpTempFolder</code> environment variable. If you want to get a dump on Fargate you&rsquo;ll need to enable the <code>SYS_PTRACE</code> Capability on the application container.</p>
+</li>
+<li>
+<p>By default, <code>dotnet monitor</code>  requires authentication. For the purposes of this demo, authentication has been disabled by using the <code>--no-auth</code> command line switch.</p>
+</li>
+<li>
+<p>By default, <code>dotnet monitor</code>  has HTTPS enabled. For the purposes of this example, the artifact URLs have been changed to <code>http://+:52323</code> using the <code>DOTNETMONITOR_Urls</code> environment variable such that a TLS certificate is not required.</p>
+</li>
+</ul>
+<p>If you want to take a look at the entire CDK app, you can go to my <a href="https://github.com/karlospn/profiling-net6-api-on-aws-ecs-fargate-using-dotnet-monitor">Github</a> page.</p>
+<p>After deploying the CDK app into AWS, we can test that the <code>dotnet-monitor</code> API is up and running with a simple cURL command:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ curl http://alb-mon-ecs-prf-dotnet-demo-744303317.eu-west-1.elb.amazonaws.com:52323/info
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;version&#34;</span>:<span style="color:#e6db74">&#34;6.1.0+48853dad0d5d1efd50a90904505f68a137c7b789&#34;</span>,<span style="color:#e6db74">&#34;runtimeVersion&#34;</span>:<span style="color:#e6db74">&#34;6.0.3&#34;</span>,<span style="color:#e6db74">&#34;diagnosticPortMode&#34;</span>:<span style="color:#e6db74">&#34;Listen&#34;</span>,<span style="color:#e6db74">&#34;diagnosticPortName&#34;</span>:<span style="color:#e6db74">&#34;/diag/port&#34;</span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h1 id="profiling-the-demo-api-using-dotnet-monitor"><strong>Profiling the Demo API using dotnet-monitor</strong></h1>
+<p>In my <a href="https://www.mytechramblings.com/posts/profiling-a-net-app-with-dotnet-cli-diagnostic-tools/">previous post</a> I wrote a detailed guide about how to run a performance investigation in each one of the 3 endpoints of the demo API.</p>
+<p><strong>In this post I&rsquo;m not going to show you how to find all the performance issues the demo API has.</strong>   <br>
+<strong>I&rsquo;m going to walk you through only 1 of the issues, that&rsquo;s because the process to investigate and pinpoint what is going on with this app is practically identical as the one I did on my previous post.</strong><br>
+<strong>In fact the only thing that changes is that I&rsquo;m interacting with the <code>dotnet-monitor</code> HTTP API to collect diagnostics instead of the .NET CLI diagnostic tools.</strong></p>
+<h1 id="profiling-the-blocking-threads-endpoint"><strong>Profiling the /blocking-threads endpoint</strong></h1>
+<h2 id="1-using-the-trace-endpoint-from-dotnet-monitor-to-investigate-possible-performance-issues"><strong>1. Using the /trace endpoint from dotnet-monitor to investigate possible performance issues</strong></h2>
+<p>Observing the performance counters is always the first step when we want to begin a performance investigation.</p>
+<p>To obtain the performance counters in a given interval we&rsquo;re going invoke the <code>dotnet-monitor</code> <code>/trace</code> endpoint.</p>
+<p>This endpoint captures a diagnostic trace of a process based on a predefined set of trace profiles.
+The format to invoke it is the following one:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>GET /trace?pid<span style="color:#f92672">={</span>pid<span style="color:#f92672">}</span>&amp;profile<span style="color:#f92672">={</span>profile<span style="color:#f92672">}</span>&amp;durationSeconds<span style="color:#f92672">={</span>durationSeconds<span style="color:#f92672">}</span>&amp;egressProvider<span style="color:#f92672">={</span>egressProvider<span style="color:#f92672">}</span>
+</span></span></code></pre></div><ul>
+<li><code>pid</code>: The ID of the process.</li>
+<li><code>profile</code>: The name of the profile(s) used to collect events. Multiple profiles may be specified by separating them with commas. Default is <code>Cpu,Http,Metrics</code>.**</li>
+<li><code>durationSeconds</code>: The duration of the trace operation in seconds. Default is 30.</li>
+<li><code>egressProvider</code>: If specified, uses the named egress provider for egressing the collected trace. When not specified, the trace is written to the HTTP response stream.</li>
+</ul>
+<p>**The available profiles are:</p>
+<ul>
+<li><code>Cpu</code>: Tracks CPU usage and general .NET runtime information.</li>
+<li><code>Http</code>: Tracks ASP.NET request handling and HttpClient requests.</li>
+<li><code>Logs</code>: Tracks log events emitted at the Debug log level or higher.</li>
+<li><code>Metrics</code>: Tracks event counters from the System.Runtime, Microsoft.AspNetCore.Hosting, and Grpc.AspNetCore.Server event sources.</li>
+</ul>
+<p>If we invoke the <code>/trace</code> endpoint, we will receive a <code>.nettrace</code> file back. If we open it with Visual Studio, it will look like this:</p>
+<p><img src="/img/dotnetmonitor-nettrace-output.png" alt="dotnetmonitor-nettrace-output.png"></p>
+<p>As you can see the contents of the <code>.nettrace</code> file are exactly the same as the output of the <code>dotnet-counters</code> tool. The main difference is that with <code>dotnet-counters</code> we can watch the application performance counters in real-time, meanwhile with <code>dotnet-monitor</code> we need to sample the counters during a period of time before being able to analyze them.</p>
+<p>Right now there is no traffic in our application, so nothing worth mentioning is happening. Let&rsquo;s start by applying some load.<br>
+To generate some load on the app I&rsquo;ll be using <a href="https://github.com/codesenberg/bombardier">Bombardier</a>.<br>
+Bombardier is a modern HTTP(S) benchmarking tool, written in Golang and really simple to use when you want to run a performance or a load test.</p>
+<p>I&rsquo;m going to apply a load of 100 requests per second during 120 seconds to the <code>blocking-threads</code> endpoint.<br>
+<code>bombardier -c 120 --rate 100 -l -d 120s http://alb-pub-ecs-prf-dotnet-demo-100430270.eu-west-1.elb.amazonaws.com/blocking-threads</code></p>
+<p>And at the same time I&rsquo;m going to capture a trace using the <code>dotnet-monitor /trace</code> endpoint.<br>
+<code>GET http://alb-mon-ecs-prf-dotnet-demo-744303317.eu-west-1.elb.amazonaws.com:52323/trace?pid=1&amp;durationSeconds=120</code></p>
+<p>The following screenshots shows the values of the performance counters during the load test:</p>
+<p><img src="/img/dotnetmonitor-counters-1.png" alt="dotnetmonitor-counters-1"></p>
+<p><img src="/img/dotnetmonitor-counters-2.png" alt="dotnetmonitor-counters-2"></p>
+<p>The counters that seemed OK were:</p>
+<ul>
+<li>The CPU usage was low.</li>
+<li>Very few GC collections and no Gen 2 GC Collection.</li>
+<li>LOH had a low and steady size.</li>
+</ul>
+<p>The counters that seemed OFF were:</p>
+<ul>
+<li>The <strong>&ldquo;ThreadPool Thread Count&rdquo;</strong> counter was increasing exponentially during the test duration.</li>
+</ul>
+<p>The &ldquo;ThreadPool Thread Count&rdquo; should not be growing like this, in an ideal application  everything runs asynchronously which means that a low number of threads can serve a huge amount of requests.</p>
+<p>In an async world when an incoming request arrives it gets a new thread from the Threadpool, that thread runs it’s current operation and when an async method is awaited, saves the current context and adds itself to the pool as an available thread.<br>
+When the async call completes or if a new request comes in at this point, the Threadpool checks if all the threads are already in operation, if yes it spawns up a new thread, if not it takes up one of the available threads from the pool.</p>
+<p>The fact that the &ldquo;ThreadPool Thread Count&rdquo; counter keeps growing means that the application is expanding the Threadpool to handle incoming requests, which means that probably some threads are being blocked somewhere.</p>
+<p>The blockage could be on purpose and maybe the app is doing some long running task, but maybe the threads are being blocked because there is something wrong, so it&rsquo;s worth investigating further.</p>
+<h2 id="2-using-the-dump-endpoint-from-dotnet-monitor-and-visual-studio-to-analyze-possible-blocked-threads"><strong>2. Using the /dump endpoint from dotnet-monitor and Visual Studio to analyze possible blocked threads</strong></h2>
+<p>The <code>dotnet monitor /dump</code> endpoint captures a managed dump of a specified process without using a debugger.<br>
+The format to invoke it is the following one:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>GET /dump?pid<span style="color:#f92672">={</span>pid<span style="color:#f92672">}</span>&amp;type<span style="color:#f92672">={</span>type<span style="color:#f92672">}</span>&amp;egressProvider<span style="color:#f92672">={</span>egressProvider<span style="color:#f92672">}</span>
+</span></span></code></pre></div><ul>
+<li><code>pid</code>: The ID of the process.</li>
+<li><code>type</code>: The type of dump to capture. Default value is <code>WithHeap</code>.**</li>
+<li><code>egressProvider</code>: If specified, uses the named egress provider for egressing the collected trace. When not specified, the trace is written to the HTTP response stream.</li>
+</ul>
+<p>**The dump types are the following ones:</p>
+<ul>
+<li><code>Mini</code>:	A small dump containing module lists, thread lists, exception information, and all stacks.</li>
+<li><code>Full</code>:	The largest dump containing all memory including the module images.</li>
+<li><code>Triage</code>:	A small dump containing only stacks for each thread.</li>
+<li><code>WithHeap</code>:	A large and relatively comprehensive dump containing module lists, thread lists, all stacks, exception information, handle information, and all memory except for mapped images.</li>
+</ul>
+<p>I&rsquo;m going to apply another load of 100 requests per second during 120 seconds to the <code>blocking-threads</code> endpoint with bombardier, and while the load test is running I&rsquo;ll capture a dump invoking the /dump endpoint:<br>
+<code>GET http://alb-mon-ecs-prf-dotnet-demo-744303317.eu-west-1.elb.amazonaws.com:52323/dump?pid=1&amp;type=Full</code></p>
+<p>After invoking the endpoint we will receive a dump file ( beware the file might be several Gigabytes in size, if you don&rsquo;t want to receive such a huge file via HTTP you can configure <code>dotnet-monitor</code> to use an <a href="https://github.com/dotnet/dotnet-monitor/blob/main/documentation/egress.md"><code>egressProvider</code></a>).</p>
+<p>Now we can open it with Visual Studio. To start a debugging session, select &ldquo;Debug with Managed Only&rdquo;.</p>
+<p><img src="/img/vs-dump-debug.png" alt="vs-dump-debug"></p>
+<p>Keep in mind that a dump it&rsquo;s a snapshot of your application in a concrete point in time, so you can&rsquo;t debug the application, but what we can do is select &ldquo;Debug &gt; Windows &gt; Threads&rdquo; to get a  list of what were the threads doing at the time we captured the dump.</p>
+<p>And as you can see on the next screenshot, it looks suspicious the amount of threads that are on the &ldquo;Sleep&rdquo; state.</p>
+<p><img src="/img/vs-dump-threads-view.png" alt="vs-dump-threads-view"></p>
+<p>Another thing we can do is select &ldquo;Debug &gt; Windows &gt; Parallel Stacks&rdquo; and it gives us a more graphical view of what&rsquo;s happening with the active threads.</p>
+<p><img src="/img/vs-dump-parallel-stacks.png" alt="vs-dump-parallel-stacks"></p>
+<p>In this case we can see that there are 74 threads grouped on 2 stacks, if we take a deeper look at those stacks we recognize that &ldquo;BlockingThreadsService.Run&rdquo; is a function of our app, if we double click on it, Visual Studio will take us there.</p>
+<blockquote>
+<p><em>To navigate from the Parallel Stacks window to the source code we need to enable the microsoft symbols server and also have access to the application symbols.</em></p>
+</blockquote>
+<p>After double-clicking on the &ldquo;BlockingThreadsService.Run&rdquo; on the Parallel Stacks windows, Visual Studio will show us which command was this thread executing when the dump was created.</p>
+<p><img src="/img/vs-dump-task-waitall.png" alt="vs-dump-task-waitall"></p>
+<p>And it seems that the thread was stopped in the &ldquo;Task.WaitAll&rdquo; command.</p>
+<p>If we keep diggingg a little bit further and take a look at this thread call stack, we will see that Task1 is blocked on the lock statement</p>
+<p><img src="/img/vs-dump-task-lock.png" alt="vs-dump-task-lock"></p>
+<p>It&rsquo;s pretty clear that there is some bad code on the &ldquo;BlockingThreadsService.Run&rdquo; function that is blocking threads, so now we can try to fix it. <br>
+I&rsquo;m not going to fix it in this post, we have found the performance issue and now we can move on.</p>
+<h1 id="net-cli-diagnostic-tools-vs-dotnet-monitor">.NET CLI Diagnostic tools vs dotnet-monitor</h1>
+<p>As I stated in the previous section, it doesn&rsquo;t matter if you&rsquo;re using the .NET CLI diagnostic tools or <code>dotnet-monitor</code> to profile an app, the process to investigate and pinpoint what is going wrong is almost the same.</p>
+<p>When using the .NET CLI diagnostic tools:</p>
+<ul>
+<li>Launch <code>dotnet-counters</code>.</li>
+<li>Apply some load to the application.</li>
+<li>Monitor the counters looking for something that doesn&rsquo;t seems right. And after seeing which counter looks awry, use one of the other tools to drill further down:
+<ul>
+<li>Use <code>dotnet-dump</code> if you want to collect information about the running threads with their corresponding stack traces or information about possible exceptions that might have occurred.</li>
+<li>Use <code>dotnet-trace</code> if you want to collect a CPU trace.</li>
+<li>Use <code>dotnet-gcdump</code> if you want to collect a GC dump.</li>
+</ul>
+</li>
+</ul>
+<p>When using the <code>dotnet-monitor</code> tool:</p>
+<ul>
+<li>Apply some load to the application.</li>
+<li>Invoke the <code>/trace</code> endpoint from the <code>dotnet-monitor</code> to obtain a diagnostic trace that spans the entire load test duration.</li>
+<li>Open the <code>.nettrace</code> file with Visual Studio.</li>
+<li>Inspect the performance counters looking for something that doesn&rsquo;t seems right. And after seeing which counter looks awry, use one of the other endpoints to drill further down:
+<ul>
+<li>Invoke the <code>/dump</code> endpoint if you want to collect information about the running threads with their corresponding stack traces or information about possible exceptions that might have occurred.</li>
+<li>Invoke the <code>/trace</code> endpoint with <code>profile=Cpu</code> if you want to collect a CPU trace.</li>
+<li>Invoke the <code>/gcdump</code> endpoint if you want to collect a GC dump.</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://www.mytechramblings.com/posts/profiling-a-net-app-with-dotnet-cli-diagnostic-tools/">
+                  <span class="button__text">Profiling a .NET6 app running in a linux container with dotnet-trace, dotnet-dump, dotnet-counters, dotnet-gcdump and Visual Studio</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2022 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>Theme created by <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://www.mytechramblings.com/assets/main.js"></script>
+<script src="https://www.mytechramblings.com/assets/prism.js"></script>
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('carlospons', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Donate',
+    'floating-chat.donateButton.background-color': '#ff5f5f',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
+
+      
+    </div>
+
+    
+      
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-170300931-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+    
+  </body>
+</html>

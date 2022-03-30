@@ -2,38 +2,47 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://www.mytechramblings.com/tags/aws/</loc>
+    <lastmod>2022-03-30T10:25:20+02:00</lastmod>
+  </url><url>
     <loc>https://www.mytechramblings.com/tags/containers/</loc>
-    <lastmod>2022-03-01T10:01:37+01:00</lastmod>
+    <lastmod>2022-03-30T10:25:20+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/csharp/</loc>
-    <lastmod>2022-03-01T10:01:37+01:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/docker/</loc>
-    <lastmod>2022-03-01T10:01:37+01:00</lastmod>
+    <lastmod>2022-03-30T10:25:20+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/dotnet/</loc>
+    <lastmod>2022-03-30T10:25:20+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/ecs/</loc>
+    <lastmod>2022-03-30T10:25:20+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/fargate/</loc>
+    <lastmod>2022-03-30T10:25:20+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/</loc>
+    <lastmod>2022-03-30T10:25:20+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/performance/</loc>
+    <lastmod>2022-03-30T10:25:20+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/</loc>
+    <lastmod>2022-03-30T10:25:20+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/profiling-a-net-app-on-aws-ecs-fargate-with-dotnet-monitor/</loc>
+    <lastmod>2022-03-30T10:25:20+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/</loc>
+    <lastmod>2022-03-30T10:25:20+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/docker/</loc>
     <lastmod>2022-03-01T10:01:37+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/linux/</loc>
     <lastmod>2022-03-01T10:01:37+01:00</lastmod>
   </url><url>
-    <loc>https://www.mytechramblings.com/</loc>
-    <lastmod>2022-03-01T10:01:37+01:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/performance/</loc>
-    <lastmod>2022-03-01T10:01:37+01:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/posts/</loc>
-    <lastmod>2022-03-01T10:01:37+01:00</lastmod>
-  </url><url>
     <loc>https://www.mytechramblings.com/posts/profiling-a-net-app-with-dotnet-cli-diagnostic-tools/</loc>
     <lastmod>2022-03-01T10:01:37+01:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/</loc>
-    <lastmod>2022-03-01T10:01:37+01:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/aws/</loc>
-    <lastmod>2022-02-01T10:00:12+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/posts/getting-started-with-aws-distro-for-otel-and-dotnet-part-2/</loc>
     <lastmod>2022-02-01T10:00:12+01:00</lastmod>
@@ -82,9 +91,6 @@
   </url><url>
     <loc>https://www.mytechramblings.com/posts/securing-dotnet-graphql-api-with-aad/</loc>
     <lastmod>2021-08-24T10:21:33+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/ecs/</loc>
-    <lastmod>2021-07-21T10:05:32+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/grpc/</loc>
     <lastmod>2021-07-21T10:05:32+02:00</lastmod>

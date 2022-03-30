@@ -9,15 +9,35 @@
     <description>Recent content in Tags on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 01 Mar 2022 10:01:37 +0100</lastBuildDate>
+    <lastBuildDate>Wed, 30 Mar 2022 10:25:20 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
+      <title>aws</title>
+      <link>https://www.mytechramblings.com/tags/aws/</link>
+      <pubDate>Wed, 30 Mar 2022 10:25:20 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/aws/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
       <title>containers</title>
       <link>https://www.mytechramblings.com/tags/containers/</link>
-      <pubDate>Tue, 01 Mar 2022 10:01:37 +0100</pubDate>
+      <pubDate>Wed, 30 Mar 2022 10:25:20 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/containers/</guid>
       <description>
@@ -37,9 +57,89 @@
     <item>
       <title>csharp</title>
       <link>https://www.mytechramblings.com/tags/csharp/</link>
-      <pubDate>Tue, 01 Mar 2022 10:01:37 +0100</pubDate>
+      <pubDate>Wed, 30 Mar 2022 10:25:20 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/csharp/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>dotnet</title>
+      <link>https://www.mytechramblings.com/tags/dotnet/</link>
+      <pubDate>Wed, 30 Mar 2022 10:25:20 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/dotnet/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>ecs</title>
+      <link>https://www.mytechramblings.com/tags/ecs/</link>
+      <pubDate>Wed, 30 Mar 2022 10:25:20 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/ecs/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>fargate</title>
+      <link>https://www.mytechramblings.com/tags/fargate/</link>
+      <pubDate>Wed, 30 Mar 2022 10:25:20 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/fargate/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>performance</title>
+      <link>https://www.mytechramblings.com/tags/performance/</link>
+      <pubDate>Wed, 30 Mar 2022 10:25:20 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/performance/</guid>
       <description>
         
           
@@ -75,71 +175,11 @@
     </item>
     
     <item>
-      <title>dotnet</title>
-      <link>https://www.mytechramblings.com/tags/dotnet/</link>
-      <pubDate>Tue, 01 Mar 2022 10:01:37 +0100</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/dotnet/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
       <title>linux</title>
       <link>https://www.mytechramblings.com/tags/linux/</link>
       <pubDate>Tue, 01 Mar 2022 10:01:37 +0100</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/linux/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>performance</title>
-      <link>https://www.mytechramblings.com/tags/performance/</link>
-      <pubDate>Tue, 01 Mar 2022 10:01:37 +0100</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/performance/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>aws</title>
-      <link>https://www.mytechramblings.com/tags/aws/</link>
-      <pubDate>Tue, 01 Feb 2022 10:00:12 +0100</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/aws/</guid>
       <description>
         
           
@@ -340,26 +380,6 @@
       <pubDate>Tue, 24 Aug 2021 10:21:33 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/graphql/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>ecs</title>
-      <link>https://www.mytechramblings.com/tags/ecs/</link>
-      <pubDate>Wed, 21 Jul 2021 10:05:32 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/ecs/</guid>
       <description>
         
           
