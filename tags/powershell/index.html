@@ -1,16 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-	<meta name="generator" content="Hugo 0.97.3" />
     
-      <title>my tech ramblings — A blog for writing about my techie ramblings</title>
+      <title>powershell :: my tech ramblings — A blog for writing about my techie ramblings</title>
     
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<meta name="description" content="A blog for writing about my techie ramblings"/>
+<meta name="description" content=""/>
 <meta name="keywords" content=""/>
 <meta name="robots" content="noodp"/>
-<link rel="canonical" href="https://www.mytechramblings.com/" />
+<link rel="canonical" href="https://www.mytechramblings.com/tags/powershell/" />
 
 
 
@@ -27,20 +26,20 @@
 
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="my tech ramblings"/>
+<meta name="twitter:title" content="powershell"/>
 <meta name="twitter:description" content=""/>
 
 
 
-<meta property="og:title" content="my tech ramblings" />
+<meta property="og:title" content="powershell" />
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://www.mytechramblings.com/" /><meta property="og:site_name" content="my tech ramblings" />
+<meta property="og:url" content="https://www.mytechramblings.com/tags/powershell/" /><meta property="og:site_name" content="my tech ramblings" />
 
 
 
 
-<link rel="alternate" type="application/rss+xml" href="/index.xml" title="my tech ramblings" />
+<link rel="alternate" type="application/rss+xml" href="/tags/powershell/index.xml" title="my tech ramblings" />
 
 
 
@@ -105,23 +104,14 @@
 
       <div class="content">
         
-  
-  
-
-  
-  
-    
-  
-  
-
   <div class="posts">
     
     <div class="post on-list">
-      <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/enforce-your-dotnet-apps-framework-version-using-roslyn-analyzers/">Enforce the use of a specific .NET Core version using Roslyn</a></h1>
+      <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/how-to-bootstrap-terraform-and-azdo-to-start-deploying-iac-to-azure/">How to bootstrap Terraform and Azure DevOps to start deploying your infrastructure as code to Azure</a></h1>
       <div class="post-meta">
         
           <span class="post-date">
-            2020-06-24
+            2022-04-19
           </span>
 
           
@@ -133,24 +123,22 @@
         
         
         
-          <span class="post-read-time">— 5 min read</span>
+          <span class="post-read-time">— 19 min read</span>
         
       </div>
 
       
         <span class="post-tags">
           
-            #<a href="https://www.mytechramblings.com/tags/dotnet/">dotnet</a>&nbsp;
+            #<a href="https://www.mytechramblings.com/tags/azure/">azure</a>&nbsp;
           
-            #<a href="https://www.mytechramblings.com/tags/.net/">.NET</a>&nbsp;
+            #<a href="https://www.mytechramblings.com/tags/devops/">devops</a>&nbsp;
           
-            #<a href="https://www.mytechramblings.com/tags/roslyn/">roslyn</a>&nbsp;
+            #<a href="https://www.mytechramblings.com/tags/terraform/">terraform</a>&nbsp;
           
-            #<a href="https://www.mytechramblings.com/tags/analyzers/">analyzers</a>&nbsp;
+            #<a href="https://www.mytechramblings.com/tags/iac/">iac</a>&nbsp;
           
-            #<a href="https://www.mytechramblings.com/tags/csharp/">csharp</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/.netcore/">.NETCore</a>&nbsp;
+            #<a href="https://www.mytechramblings.com/tags/powershell/">powershell</a>&nbsp;
           
         </span>
       
@@ -159,70 +147,16 @@
 
       <div class="post-content">
         
-          In these past few years Microsoft has kept a steady flow of new .NET Core versions, and if you have hundreds of applications in your company it&rsquo;s almost impossible to keep them updated to the most recent version of the framework. If you want to enforce that everyone on your company is using the correct framework version when they create a new application you can use a Roslyn Analyzer.
+          Deploying insfrastructure as code on Azure using Azure Pipelines and Terraform requires a minimal bootstrap process. This process can be done manually, but you&rsquo;ll have to do it every time you want to start deploying resources into a new subscription. So, having some kind of automation seems the way to go here. And that&rsquo;s exactly what I want to show in this post, how to programmatically bootstrap an Azure subscription and an Azure DevOps project to start deploying Infrastructure as Code with Terraform.
         
       </div>
       
-        <div><a class="read-more button" href="/posts/enforce-your-dotnet-apps-framework-version-using-roslyn-analyzers/">Read more →</a></div>
-      
-    </div>
-    
-    <div class="post on-list">
-      <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/create-a-website-with-hugo-and-gh/">Create and host a blog with Hugo and GitHub Pages in less than 30 minutes</a></h1>
-      <div class="post-meta">
-        
-          <span class="post-date">
-            2020-06-21
-          </span>
-
-          
-            
-
-
-
-          
-        
-        
-        
-          <span class="post-read-time">— 5 min read</span>
-        
-      </div>
-
-      
-        <span class="post-tags">
-          
-            #<a href="https://www.mytechramblings.com/tags/hugo/">hugo</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/github/">github</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/actions/">actions</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/go/">go</a>&nbsp;
-          
-        </span>
-      
-
-      
-
-      <div class="post-content">
-        
-          Do you want to start a blog and don&rsquo;t want to lose a lot of time setting everything up?  That exactly why I&rsquo;m going to show you how to build a blog site with Hugo and GitHub Pages.
-        
-      </div>
-      
-        <div><a class="read-more button" href="/posts/create-a-website-with-hugo-and-gh/">Read more →</a></div>
+        <div><a class="read-more button" href="/posts/how-to-bootstrap-terraform-and-azdo-to-start-deploying-iac-to-azure/">Read more →</a></div>
       
     </div>
     
     <div class="pagination">
   <div class="pagination__buttons">
-    
-      <span class="button previous">
-        <a href="/page/5/">
-          <span class="button__icon">←</span>
-          <span class="button__text">Newer posts</span>
-        </a>
-      </span>
     
     
   </div>

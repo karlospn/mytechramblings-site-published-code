@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>How to bootstrap Terraform and Azure DevOps to start deploying your infrastructure as code to Azure :: my tech ramblings — A blog for writing about my techie ramblings</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Just show me the code
+As always, if you don’t care about the post I have uploaded the source code on my Github.
+ Nowadays almost every developer knows what infrastructure as code is.
+In a nutshell, infrastructure as code (IaC) is the process of managing and provisioning computer resources through machine-readable definition files, instead of through physical hardware configuration or interactive configuration tools.
+Deploying insfrastructure as code on Azure using Azure Pipelines and Terraform requires a bootstrap process."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://www.mytechramblings.com/posts/how-to-bootstrap-terraform-and-azdo-to-start-deploying-iac-to-azure/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/assets/style.css">
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.mytechramblings.com/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://www.mytechramblings.com/img/favicon.png">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="How to bootstrap Terraform and Azure DevOps to start deploying your infrastructure as code to Azure"/>
+<meta name="twitter:description" content="Deploying insfrastructure as code on Azure using Azure Pipelines and Terraform requires a minimal bootstrap process. This process can be done manually, but you&#39;ll have to do it every time you want to start deploying resources into a new subscription. So, having some kind of automation seems the way to go here. And that&#39;s exactly what I want to show in this post, how to programmatically bootstrap an Azure subscription and an Azure DevOps project to start deploying Infrastructure as Code with Terraform."/>
+
+
+
+<meta property="og:title" content="How to bootstrap Terraform and Azure DevOps to start deploying your infrastructure as code to Azure" />
+<meta property="og:description" content="Deploying insfrastructure as code on Azure using Azure Pipelines and Terraform requires a minimal bootstrap process. This process can be done manually, but you&#39;ll have to do it every time you want to start deploying resources into a new subscription. So, having some kind of automation seems the way to go here. And that&#39;s exactly what I want to show in this post, how to programmatically bootstrap an Azure subscription and an Azure DevOps project to start deploying Infrastructure as Code with Terraform." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.mytechramblings.com/posts/how-to-bootstrap-terraform-and-azdo-to-start-deploying-iac-to-azure/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-04-19T12:30:10+02:00" />
+<meta property="article:modified_time" content="2022-04-19T12:30:10+02:00" /><meta property="og:site_name" content="my tech ramblings" />
+
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://www.mytechramblings.com/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">my tech ramblings</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/how-to-bootstrap-terraform-and-azdo-to-start-deploying-iac-to-azure/">How to bootstrap Terraform and Azure DevOps to start deploying your infrastructure as code to Azure</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2022-04-19
+        </span>
+
+        
+          
+            
+
+
+
+          
+        
+      
+
+      
+      
+        <span class="post-read-time">— 19 min read</span>
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          #<a href="https://www.mytechramblings.com/tags/azure/">azure</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/devops/">devops</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/terraform/">terraform</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/iac/">iac</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/powershell/">powershell</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <blockquote>
+<p><strong>Just show me the code</strong><br>
+As always, if you don’t care about the post I have uploaded the source code on my <a href="https://github.com/karlospn/bootstrapping-azure-subscription-and-azdo-project-for-terraform">Github</a>.</p>
+</blockquote>
+<p>Nowadays almost every developer knows what infrastructure as code is.</p>
+<p>In a nutshell, infrastructure as code (IaC) is the process of managing and provisioning computer resources through machine-readable definition files, instead of through physical hardware configuration or interactive configuration tools.</p>
+<p>Deploying insfrastructure as code on Azure using Azure Pipelines and Terraform requires a bootstrap process. The required steps are the following ones:</p>
+<ul>
+<li>Create a Resource Group.</li>
+<li>Create an Storage Account to store the Terraform state.</li>
+<li>Create a Service Principal on our Azure Active Directory.</li>
+<li>Assign a role to the SP with enough permissions to create new resources on Azure.</li>
+<li>Store the SP credentials somewhere safe.</li>
+<li>When an IaC pipeline is executed on Azure Pipelines, it needs to retrieve the SP credentials and create/update/delete the desired infrastructure on Azure using Terraform.</li>
+</ul>
+<p>As you can see the required steps to start using IaC with Terraform and Azure Pipelines are quite simple and you could perfectly do it manually using the Azure Portal, but you&rsquo;ll have to do them every time you want to start deploying resources into a new subscription. So, having some kind of automation seems the way to go here.</p>
+<p>And that&rsquo;s what I want to show in this post, how to programmatically bootstrap an Azure subscription and an Azure DevOps project to start deploying Infrastructure as Code with Terraform.</p>
+<h1 id="azure-bicep-vs-arm-templates-vs-terraform">Azure Bicep vs ARM Templates vs Terraform</h1>
+<p>When working with Azure we have 2 native options for IaC: Azure Resource Manager (ARM) templates or Azure Bicep.</p>
+<p>ARM templates are essentially just JSON files with a few extended capabilities, describing the expected infrastructure to end up with, after applying the template. It works OK, but writing them are a pain in the ass.</p>
+<p>Azure Bicep is an abstraction over ARM templates, that aims to drastically simplify the pain  experience of writing ARM templates, it has a cleaner syntax, improved type safety, and better support for modularity and code re-use. Bicep code gets transpiled to standard ARM Template JSON files.</p>
+<p>For organizations starting a greenfield deployment only on Azure infrastructure and having no prior investment in other configuration languages such as Terraform, Bicep is a good option.</p>
+<p>But the truth is that nowadays most of the companies I know that are working with Azure are using Terraform instead of Azure Bicep.</p>
+<p>Why is that? Terraform is a more mature option, works greats with multi-cloud scenarios or even when we want to provision resources on some PaaS/SaaS services, like: provisioning resources inside an Azure DevOps organization or a RabbitMq Cluster.</p>
+<p>Also, Azure Bicep is relatively new, so for quite some time the only viable options to work with IaC on Azure were either Terraform or ARM templates, so a lot of companies made the choice back then and right now there is not enough benefits to ditch Terraform for Bicep.</p>
+<h1 id="resources-created-by-the-bootstrap-script">Resources created by the bootstrap script</h1>
+<p>Here&rsquo;s a detailed list of which resources will be created during the bootstrap process:</p>
+<ul>
+<li>A Resource Group.</li>
+<li>An Storage Account that holds the Terraform State.</li>
+<li>A cannot-delete lock on the Storage Account.</li>
+<li>A Service Principal that will be used by Azure Pipelines to deploy infrastructure onto Azure. This SP will have a custom role.</li>
+<li>A custom role used for deploying infrastructure. This role has the same permissions as <code>Contributor</code> but can create role assignments. It also have permissions to read, write and delete data on Azure Key Vaults and App Configurations.</li>
+<li>A Key Vault to hold the credentials of the Service Principal.
+<ul>
+<li>The script itself adds the SP credentials into the Key Vault, so you don&rsquo;t need to manipulate the Vault at all.</li>
+</ul>
+</li>
+<li>A cannot-delete lock on the Key Vault.</li>
+<li>An <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=azure-devops&amp;tabs=yaml">Azure DevOps variable group</a> that holds the credentials of the Service Principal.
+<ul>
+<li>The bootstrap script links the Azure Key Vault we have created with this variable group and maps the SP credentials to the variable group, so the pipeline can have access to them.</li>
+</ul>
+</li>
+<li>A second Service Principal with a <code>Key Vault Administrator</code> role assigned at a resource group scope.</li>
+</ul>
+<blockquote>
+<p><em>Why we need a second Service Principal?</em></p>
+</blockquote>
+<p>To automate the deploying of infrastructure into Azure we will use Azure Pipelines, which means that the pipelines needs to retrieve the SP credentials to be able to deploy the resources.</p>
+<p>And the SP credentials are stored in the Key Vault, so how can the pipeline retrieve it?</p>
+<p>There are a few options available:</p>
+<ul>
+<li>Create a variable group and store the SP credentials in plain text.</li>
+<li>Create a variable group, <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=azure-devops&amp;tabs=yaml#link-secrets-from-an-azure-key-vault">link it with an existing Key Vault</a> and use the secrets stored on the Vault as variables in the pipeline.</li>
+<li>Use the <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/release/azure-key-vault?view=azure-devops">Azure Key Vault Task</a></li>
+</ul>
+<p>The first option is the easiest to implement but it is the less secure one, so it&rsquo;s discarded.</p>
+<p>The other two options are both good enough, use whatever you prefer, I personally prefer using a variable group because is less verbose that using the KeyVault task.</p>
+<p>Nevertheless, if you create a variable group and you want to link it to and existing Key Vault you need a Service Principal with permissions to retrieve secrets from the Vault.<br>
+In this case I could use the Service Principal I&rsquo;ll be using to create the resources to Azure but it has a role with far too many permissions, so it is a better practice to create another Service Principal with only Key Vault permissions and use it only to link the variable group with the Vault.</p>
+<h1 id="bootstrap-script-powershell-part">Bootstrap Script: Powershell part</h1>
+<p>The script is built using Powershell and the <a href="https://docs.microsoft.com/es-es/powershell/azure/what-is-azure-powershell?view=azps-7.4.0">Az module</a> and it does the following steps:</p>
+<ul>
+<li>Creates a Resource Group and a Storage Account using the Azure Az Powershell Module.</li>
+<li>Inits Terraform using the Storage Account as backend.</li>
+<li>Imports those 2 resources into the Terraform state.</li>
+<li>Uses Terraform to create the rest of the resources listed on the previous section.</li>
+</ul>
+<blockquote>
+<p><em>Why is the script using the Powershell Az Module only to create the resource group and the storage account? Why is it using Terraform to create the rest of the needed resources?</em></p>
+</blockquote>
+<p>We could do everything using purely scripting with Powershell and no using Terraform at all, but using Terraform to create the resources is simpler, less error prone and much more easy to maintain.</p>
+<p>Also, if in a near future we want to update some of the existing resources or even add some additional ones it is easier to do it via Terraform than modifying the Powershell script.</p>
+<p>The idea behind the script is that you don&rsquo;t need to modify it at all, in case you want to add some extra resources or change the existing ones modify the <code>main.tf</code> file and execute the script.</p>
+<p>The next code snippet shows the entirety of the Powershell script:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Param<span style="color:#f92672">(</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">[</span>Parameter<span style="color:#f92672">(</span>Mandatory<span style="color:#f92672">=</span>$True<span style="color:#f92672">)]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">[</span>bool<span style="color:#f92672">]</span> $ProvisionBootstrapResources <span style="color:#f92672">=</span> $false
+</span></span><span style="display:flex;"><span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">function</span> Set-ConfigVars
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    Param
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">(</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">[</span>Parameter<span style="color:#f92672">(</span>Mandatory<span style="color:#f92672">=</span>$true, Position<span style="color:#f92672">=</span>0<span style="color:#f92672">)]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">[</span>string<span style="color:#f92672">]</span> $FileName
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>Test-Path -Path $FileName<span style="color:#f92672">)</span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        $values <span style="color:#f92672">=</span> @<span style="color:#f92672">{}</span>
+</span></span><span style="display:flex;"><span>        Get-Content $FileName | Where-Object <span style="color:#f92672">{</span>$_.length -gt 0<span style="color:#f92672">}</span> | Where-Object <span style="color:#f92672">{</span>!$_.StartsWith<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;#&#34;</span><span style="color:#f92672">)}</span> | ForEach-Object <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            $var <span style="color:#f92672">=</span> $_.Split<span style="color:#f92672">(</span><span style="color:#e6db74">&#39;=&#39;</span>,2<span style="color:#f92672">)</span>.Trim<span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>            $values<span style="color:#f92672">[</span>$var<span style="color:#f92672">[</span>0<span style="color:#f92672">]]</span> <span style="color:#f92672">=</span> $var<span style="color:#f92672">[</span>1<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> $values
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        Write-Error <span style="color:#e6db74">&#34;Configuration file missing.&#34;</span>
+</span></span><span style="display:flex;"><span>        exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">function</span> Connect-AzureSubscription
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    Param
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">(</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">[</span>Parameter<span style="color:#f92672">(</span>Mandatory<span style="color:#f92672">=</span>$true, Position<span style="color:#f92672">=</span>0<span style="color:#f92672">)]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">[</span>string<span style="color:#f92672">]</span> $SubId,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">[</span>Parameter<span style="color:#f92672">(</span>Mandatory<span style="color:#f92672">=</span>$true, Position<span style="color:#f92672">=</span>0<span style="color:#f92672">)]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">[</span>string<span style="color:#f92672">]</span> $TenantId
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>-not <span style="color:#f92672">(</span>Get-AzContext | Where-Object <span style="color:#f92672">{</span> $_.Subscription.Id -eq $SubId <span style="color:#f92672">}))</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        Write-Host <span style="color:#e6db74">&#34;Logging in to Azure Subscription...&#34;</span>
+</span></span><span style="display:flex;"><span>        Connect-AzAccount -SubscriptionId $SubId -TenantId $TenantId -ErrorAction Stop | Out-Null
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Write-Host <span style="color:#e6db74">&#34;Using Azure Subscription:&#34;</span> <span style="color:#66d9ef">$(</span>Get-AzContext<span style="color:#66d9ef">)</span>.Subscription.Name -ForegroundColor Yellow
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">function</span> New-ResourceGroup
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    Param
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">(</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">[</span>Parameter<span style="color:#f92672">(</span>Mandatory<span style="color:#f92672">=</span>$true, Position<span style="color:#f92672">=</span>0<span style="color:#f92672">)]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">[</span>string<span style="color:#f92672">]</span> $RgName,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">[</span>Parameter<span style="color:#f92672">(</span>Mandatory<span style="color:#f92672">=</span>$true, Position<span style="color:#f92672">=</span>1<span style="color:#f92672">)]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">[</span>string<span style="color:#f92672">]</span> $Region
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span><span style="color:#f92672">(</span> -not <span style="color:#f92672">(</span>Get-AzResourceGroup -Name $RgName -ErrorAction SilentlyContinue<span style="color:#f92672">))</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        Write-Host <span style="color:#e6db74">&#34;Resource Group </span>$RgName<span style="color:#e6db74"> doesn&#39;t exist. Creating...&#34;</span>
+</span></span><span style="display:flex;"><span>        New-AzResourceGroup -Name $RgName -Location $Region -ErrorAction Stop
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        Write-Host <span style="color:#e6db74">&#34;Resource Group </span>$RgName<span style="color:#e6db74"> already exists.&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">function</span> New-StorageAccount
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    Param
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">(</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">[</span>Parameter<span style="color:#f92672">(</span>Mandatory<span style="color:#f92672">=</span>$true, Position<span style="color:#f92672">=</span>0<span style="color:#f92672">)]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">[</span>string<span style="color:#f92672">]</span> $RgName,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">[</span>Parameter<span style="color:#f92672">(</span>Mandatory<span style="color:#f92672">=</span>$true, Position<span style="color:#f92672">=</span>1<span style="color:#f92672">)]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">[</span>string<span style="color:#f92672">]</span> $StAccName,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">[</span>Parameter<span style="color:#f92672">(</span>Mandatory<span style="color:#f92672">=</span>$true, Position<span style="color:#f92672">=</span>2<span style="color:#f92672">)]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">[</span>string<span style="color:#f92672">]</span> $ContainerName,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">[</span>Parameter<span style="color:#f92672">(</span>Mandatory<span style="color:#f92672">=</span>$true, Position<span style="color:#f92672">=</span>3<span style="color:#f92672">)]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">[</span>string<span style="color:#f92672">]</span> $Region
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span><span style="color:#f92672">(</span> -not <span style="color:#f92672">(</span>Get-AzStorageAccount -Name $StAccName -ResourceGroupName $RgName -ErrorAction SilentlyContinue<span style="color:#f92672">))</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        Write-Host <span style="color:#e6db74">&#34;Storage Account </span>$StAccName<span style="color:#e6db74"> doesn&#39;t exist. Creating...&#34;</span>
+</span></span><span style="display:flex;"><span>        $storageAccount <span style="color:#f92672">=</span> New-AzStorageAccount -ResourceGroupName $RgName -Name $StAccName -Location $Region -SkuName Standard_LRS -ErrorAction Stop
+</span></span><span style="display:flex;"><span>        New-AzStorageContainer -Name $ContainerName -Permission Off -Context $storageAccount.Context -ErrorAction Stop
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        Write-Host <span style="color:#e6db74">&#34;Storage Account </span>$StAccName<span style="color:#e6db74"> already exists.&#34;</span>
+</span></span><span style="display:flex;"><span>        $storageAccount <span style="color:#f92672">=</span> Get-AzStorageAccount -Name $StAccName -ResourceGroupName $RgName -ErrorAction Stop
+</span></span><span style="display:flex;"><span>        If<span style="color:#f92672">(</span> -not <span style="color:#f92672">(</span>Get-AzStorageContainer -Name $ContainerName -Context $storageAccount.Context -ErrorAction SilentlyContinue<span style="color:#f92672">))</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            Write-Host <span style="color:#e6db74">&#34;Storage Container </span>$ContainerName<span style="color:#e6db74"> doesn&#39;t exist. Creating...&#34;</span>
+</span></span><span style="display:flex;"><span>            New-AzStorageContainer -Name $ContainerName -Permission Off -Context $storageAccount.Context -ErrorAction Stop
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            Write-Host <span style="color:#e6db74">&#34;Storage Container </span>$ContainerName<span style="color:#e6db74"> already exists.&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">function</span> Set-EnvVarsAsTfVars
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    Param
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">(</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">[</span>Parameter<span style="color:#f92672">(</span>Mandatory<span style="color:#f92672">=</span>$true, Position<span style="color:#f92672">=</span>0<span style="color:#f92672">)]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">[</span>hashtable<span style="color:#f92672">]</span> $ConfigVars
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    $env:TF_VAR_tf_state_resource_group_name<span style="color:#f92672">=</span>$ConfigVars.tf_state_resource_group_name
+</span></span><span style="display:flex;"><span>    $env:TF_VAR_tf_state_storage_account_name<span style="color:#f92672">=</span>$ConfigVars.tf_state_storage_account_name
+</span></span><span style="display:flex;"><span>    $env:TF_VAR_project_name<span style="color:#f92672">=</span>$ConfigVars.project_name
+</span></span><span style="display:flex;"><span>    $env:TF_VAR_azure_region<span style="color:#f92672">=</span>$ConfigVars.azure_region
+</span></span><span style="display:flex;"><span>    $env:TF_VAR_azdo_org_url<span style="color:#f92672">=</span>$ConfigVars.azdo_org_url
+</span></span><span style="display:flex;"><span>    $env:TF_VAR_azdo_project_name<span style="color:#f92672">=</span>$ConfigVars.azdo_project_name
+</span></span><span style="display:flex;"><span>    $env:TF_VAR_azdo_pat<span style="color:#f92672">=</span>$ConfigVars.azdo_pat
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">function</span> Invoke-TerraformInit
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    Param
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">(</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">[</span>Parameter<span style="color:#f92672">(</span>Mandatory<span style="color:#f92672">=</span>$true, Position<span style="color:#f92672">=</span>0<span style="color:#f92672">)]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">[</span>string<span style="color:#f92672">]</span> $RgName,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">[</span>Parameter<span style="color:#f92672">(</span>Mandatory<span style="color:#f92672">=</span>$true, Position<span style="color:#f92672">=</span>1<span style="color:#f92672">)]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">[</span>string<span style="color:#f92672">]</span> $StAccName,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">[</span>Parameter<span style="color:#f92672">(</span>Mandatory<span style="color:#f92672">=</span>$true, Position<span style="color:#f92672">=</span>2<span style="color:#f92672">)]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">[</span>string<span style="color:#f92672">]</span> $ContainerName
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    $result <span style="color:#f92672">=</span> &amp; terraform init -input<span style="color:#f92672">=</span>false -backend<span style="color:#f92672">=</span>true -reconfigure <span style="color:#e6db74">`</span>
+</span></span><span style="display:flex;"><span>        -backend-config<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;resource_group_name=</span>$RgName<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">`</span>
+</span></span><span style="display:flex;"><span>        -backend-config<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;storage_account_name=</span>$StAccName<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">`</span>
+</span></span><span style="display:flex;"><span>        -backend-config<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;container_name=</span>$ContainerName<span style="color:#e6db74">&#34;</span> 2&gt;&amp;<span style="color:#ae81ff">1</span> | out-string
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>$result -notmatch <span style="color:#e6db74">&#34;Terraform has been successfully initialized!&#34;</span> -eq $true<span style="color:#f92672">)</span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        Write-Error $result
+</span></span><span style="display:flex;"><span>        exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        Write-Host <span style="color:#e6db74">&#34;Terraform Initialized Successfully&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">function</span> Import-TerraformState
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    Param
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">(</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">[</span>Parameter<span style="color:#f92672">(</span>Mandatory<span style="color:#f92672">=</span>$true, Position<span style="color:#f92672">=</span>0<span style="color:#f92672">)]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">[</span>string<span style="color:#f92672">]</span> $SubId,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">[</span>Parameter<span style="color:#f92672">(</span>Mandatory<span style="color:#f92672">=</span>$true, Position<span style="color:#f92672">=</span>1<span style="color:#f92672">)]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">[</span>string<span style="color:#f92672">]</span> $RgName,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">[</span>Parameter<span style="color:#f92672">(</span>Mandatory<span style="color:#f92672">=</span>$true, Position<span style="color:#f92672">=</span>2<span style="color:#f92672">)]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">[</span>string<span style="color:#f92672">]</span> $StAccName
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Write-Host <span style="color:#e6db74">&#34;Importing Resource Group to tf state&#34;</span> 
+</span></span><span style="display:flex;"><span>    $results1 <span style="color:#f92672">=</span> &amp; terraform import <span style="color:#e6db74">&#34;azurerm_resource_group.tf_state_rg&#34;</span> <span style="color:#e6db74">&#34;/subscriptions/</span>$SubId<span style="color:#e6db74">/resourceGroups/</span>$RgName<span style="color:#e6db74">&#34;</span> 2&gt;&amp;<span style="color:#ae81ff">1</span> | out-string
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Write-Host <span style="color:#e6db74">&#34;Importing Storage Account to tf state&#34;</span>
+</span></span><span style="display:flex;"><span>    $results2 <span style="color:#f92672">=</span> &amp; terraform import <span style="color:#e6db74">&#34;azurerm_storage_account.tf_state_storage&#34;</span> <span style="color:#e6db74">&#34;/subscriptions/</span>$SubId<span style="color:#e6db74">/resourceGroups/</span>$RgName<span style="color:#e6db74">/providers/Microsoft.Storage/storageAccounts/</span>$StAccName<span style="color:#e6db74">&#34;</span> 2&gt;&amp;<span style="color:#ae81ff">1</span> | out-string
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>$results1 -notmatch <span style="color:#e6db74">&#34;Resource already managed by Terraform&#34;</span><span style="color:#f92672">)</span> -and
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">(</span>$results1 -notmatch <span style="color:#e6db74">&#34;Import successful!&#34;</span><span style="color:#f92672">)</span> -and
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">(</span>$results1 -notmatch <span style="color:#e6db74">&#34;Cannot import non-existent remote object&#34;</span><span style="color:#f92672">)</span> -eq $true<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Write-Error $results1
+</span></span><span style="display:flex;"><span>        exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>$results2 -notmatch <span style="color:#e6db74">&#34;Resource already managed by Terraform&#34;</span><span style="color:#f92672">)</span> -and
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">(</span>$results2 -notmatch <span style="color:#e6db74">&#34;Import successful!&#34;</span><span style="color:#f92672">)</span> -and
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">(</span>$results2 -notmatch <span style="color:#e6db74">&#34;Cannot import non-existent remote object&#34;</span><span style="color:#f92672">)</span> -eq $true<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Write-Error $results2
+</span></span><span style="display:flex;"><span>        exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">function</span> Invoke-TerraformPlan
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    terraform plan
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">function</span> Invoke-TerraformApply
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    terraform apply -auto-approve
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">function</span> main 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    $configVarsFileName <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;config.env&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    $configVars <span style="color:#f92672">=</span> Set-ConfigVars -FileName $configVarsFileName
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    Connect-AzureSubscription -SubId $configVars.azure_subscription_id <span style="color:#e6db74">`</span>
+</span></span><span style="display:flex;"><span>                -TenantId $configVars.azure_tenant_id
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Set-EnvVarsAsTfVars -ConfigVars $configVars
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>$ProvisionBootstrapResources -eq $true<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        New-ResourceGroup -RgName $configVars.tf_state_resource_group_name <span style="color:#e6db74">`</span>
+</span></span><span style="display:flex;"><span>                -Region $configVars.azure_region
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        New-StorageAccount -RgName $configVars.tf_state_resource_group_name <span style="color:#e6db74">`</span>
+</span></span><span style="display:flex;"><span>                -StAccName $configVars.tf_state_storage_account_name <span style="color:#e6db74">`</span>
+</span></span><span style="display:flex;"><span>                -ContainerName $configVars.tf_state_storage_account_container_name <span style="color:#e6db74">`</span>
+</span></span><span style="display:flex;"><span>                -Region $configVars.azure_region
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Invoke-TerraformInit -RgName $configVars.tf_state_resource_group_name <span style="color:#e6db74">`</span>
+</span></span><span style="display:flex;"><span>                -StAccName $configVars.tf_state_storage_account_name <span style="color:#e6db74">`</span>
+</span></span><span style="display:flex;"><span>                -ContainerName $configVars.tf_state_storage_account_container_name
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Import-TerraformState -SubId $configVars.azure_subscription_id <span style="color:#e6db74">`</span>
+</span></span><span style="display:flex;"><span>                -RgName $configVars.tf_state_resource_group_name <span style="color:#e6db74">`</span>
+</span></span><span style="display:flex;"><span>                -StAccName $configVars.tf_state_storage_account_name
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>$ProvisionBootstrapResources -eq $false<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>      
+</span></span><span style="display:flex;"><span>        Invoke-TerraformInit -RgName $configVars.tf_state_resource_group_name <span style="color:#e6db74">`</span>
+</span></span><span style="display:flex;"><span>                    -StAccName $configVars.tf_state_storage_account_name <span style="color:#e6db74">`</span>
+</span></span><span style="display:flex;"><span>                    -ContainerName $configVars.tf_state_storage_account_container_name
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    Invoke-TerraformPlan
+</span></span><span style="display:flex;"><span>    Read-Host -Prompt <span style="color:#e6db74">&#34;Press any key to run terraform apply or CTRL+C to quit&#34;</span> 
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    Invoke-TerraformApply
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>main
+</span></span></code></pre></div><p>The script is pretty self-explanatory, but nonetheless here&rsquo;s a quick summary explaining what every function does.</p>
+<ul>
+<li><code>Set-ConfigVars</code>: Gets the script configuration. <em>More info about the configuration on the &ldquo;Script configuration&rdquo; section below.</em></li>
+<li><code>Connect-AzureSubscription</code>:  Connects to the specified Azure subscription.</li>
+<li><code>Set-EnvVarsAsTfVars</code>: The <code>Set-ConfigVars</code> function gets the script configuration and this one stores the config variables as <a href="https://www.terraform.io/cli/config/environment-variables#tf_var_name">Terraform TF_VAR_ environment variables</a> so the config can be used by the Terraform part of the script.</li>
+<li><code>New-ResourceGroup</code>: Creates a Resource Group, if it doesn&rsquo;t exist.</li>
+<li><code>New-StorageAccount</code>: Creates a Storage Account and a Storage Container, if they don&rsquo;t exist.</li>
+<li><code>Invoke-TerraformInit</code>: Initializes Terraform using the Storage Container as backend.</li>
+<li><code>Import-TerraformState</code>: Adds the Storage Account and the Resource Container into the Tf state, so any future changes can be tracked using the <code>Terraform Plan</code> command.</li>
+<li><code>Invoke-TerraformPlan</code>: Runs the <code>Terraform Plan</code> command.</li>
+<li><code>Invoke-TerraformApply</code>:  Runs the <code>Terraform Apply</code> command.</li>
+</ul>
+<p>To know the use of the <code>$ProvisionBootstrapResources</code> parameter and how to execute the script, read the <em>&ldquo;How to run the script&rdquo;</em> section below.</p>
+<h1 id="bootstrap-script-terraform-part">Bootstrap script: Terraform part</h1>
+<p>The Powershell script only creates the necessary resources to start using Terraform (Resource Group + Storage Account), the rest of the resources are created via Terraform.</p>
+<p>The next code snippet shows the Terraform part of the bootstrap script.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>terraform {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  backend <span style="color:#e6db74">&#34;azurerm&#34;</span> {
+</span></span><span style="display:flex;"><span>    key = <span style="color:#e6db74">&#34;bootstrap.tfstate&#34;</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  required_providers {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    azurerm = {
+</span></span><span style="display:flex;"><span>      source  = <span style="color:#e6db74">&#34;hashicorp/azurerm&#34;</span>
+</span></span><span style="display:flex;"><span>      version = <span style="color:#e6db74">&#34;&gt;=3.0.0&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    azuredevops = {
+</span></span><span style="display:flex;"><span>      source = <span style="color:#e6db74">&#34;microsoft/azuredevops&#34;</span>
+</span></span><span style="display:flex;"><span>      version = <span style="color:#e6db74">&#34;&gt;=0.2.0&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    azuread = {
+</span></span><span style="display:flex;"><span>      source  = <span style="color:#e6db74">&#34;azuread&#34;</span>
+</span></span><span style="display:flex;"><span>      version = <span style="color:#e6db74">&#34;&gt;=2.20.0&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>provider <span style="color:#e6db74">&#34;azurerm&#34;</span> {
+</span></span><span style="display:flex;"><span>  features {}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>provider <span style="color:#e6db74">&#34;azuredevops&#34;</span> {
+</span></span><span style="display:flex;"><span>  org_service_url       = <span style="color:#66d9ef">var</span>.azdo_org_url
+</span></span><span style="display:flex;"><span>  personal_access_token = <span style="color:#66d9ef">var</span>.azdo_pat
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>provider <span style="color:#e6db74">&#34;azuread&#34;</span>{
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Get the configuration of the AzureRM provider
+</span></span><span style="display:flex;"><span>data <span style="color:#e6db74">&#34;azurerm_client_config&#34;</span> <span style="color:#e6db74">&#34;current&#34;</span> {}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Get the AzDo Team Project 
+</span></span><span style="display:flex;"><span>data <span style="color:#e6db74">&#34;azuredevops_project&#34;</span> <span style="color:#e6db74">&#34;project&#34;</span> {
+</span></span><span style="display:flex;"><span>  name = <span style="color:#66d9ef">var</span>.azdo_project_name
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##########################################################################################</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Start Importing existing resources <span style="color:#66d9ef">into</span> tf
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##########################################################################################</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Create resource <span style="color:#66d9ef">group</span>. Already exists created <span style="color:#66d9ef">by</span> the powershell Initialize-AzureBootstrapProcessForTerraform.ps1 script
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azurerm_resource_group&#34;</span> <span style="color:#e6db74">&#34;tf_state_rg&#34;</span> {
+</span></span><span style="display:flex;"><span>  name     = <span style="color:#66d9ef">var</span>.tf_state_resource_group_name
+</span></span><span style="display:flex;"><span>  location = <span style="color:#66d9ef">var</span>.azure_region
+</span></span><span style="display:flex;"><span>  tags = <span style="color:#66d9ef">var</span>.default_tags
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Creates store account that hold Terraform shared state. Already exists created <span style="color:#66d9ef">by</span> the powershell Initialize-AzureBootstrapProcessForTerraform.ps1 script
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azurerm_storage_account&#34;</span> <span style="color:#e6db74">&#34;tf_state_storage&#34;</span> {
+</span></span><span style="display:flex;"><span>  name                     = <span style="color:#66d9ef">var</span>.tf_state_storage_account_name
+</span></span><span style="display:flex;"><span>  resource_group_name      = azurerm_resource_group.tf_state_rg.name
+</span></span><span style="display:flex;"><span>  location                 = azurerm_resource_group.tf_state_rg.location
+</span></span><span style="display:flex;"><span>  account_tier             = <span style="color:#e6db74">&#34;Standard&#34;</span>
+</span></span><span style="display:flex;"><span>  account_kind             = <span style="color:#e6db74">&#34;StorageV2&#34;</span>
+</span></span><span style="display:flex;"><span>  account_replication_type = <span style="color:#e6db74">&#34;LRS&#34;</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  tags = merge( 
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span>.default_tags,
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;description&#34;</span> = <span style="color:#e6db74">&#34;Storage Account that holds the Terraform state files.&#34;</span>
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Lock the storage account. It cannot be deleted because it <span style="color:#66d9ef">is</span> needed <span style="color:#66d9ef">by</span> Terraform.
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azurerm_management_lock&#34;</span> <span style="color:#e6db74">&#34;lock_tf_storage_account&#34;</span> {
+</span></span><span style="display:flex;"><span>  name       = <span style="color:#e6db74">&#34;lock-bs-tf-stacct-${var.project_name}&#34;</span>
+</span></span><span style="display:flex;"><span>  scope      = azurerm_storage_account.tf_state_storage.id
+</span></span><span style="display:flex;"><span>  lock_level = <span style="color:#e6db74">&#34;CanNotDelete&#34;</span>
+</span></span><span style="display:flex;"><span>  notes      = <span style="color:#e6db74">&#34;Locked because it&#39;s needed by Terraform&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##########################################################################################</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> End Importing existing resources <span style="color:#66d9ef">into</span> tf
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##########################################################################################</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##########################################################################################</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Start Creating KeyVault to hold SP credentials
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##########################################################################################</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> KeyVault to hold SP creds
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azurerm_key_vault&#34;</span> <span style="color:#e6db74">&#34;sp_creds_kv&#34;</span> {
+</span></span><span style="display:flex;"><span>  name                        = <span style="color:#e6db74">&#34;kv-bs-tf-${var.project_name}&#34;</span>
+</span></span><span style="display:flex;"><span>  location                    = azurerm_resource_group.tf_state_rg.location
+</span></span><span style="display:flex;"><span>  resource_group_name         = azurerm_resource_group.tf_state_rg.name
+</span></span><span style="display:flex;"><span>  tenant_id                   = data.azurerm_client_config.current.tenant_id
+</span></span><span style="display:flex;"><span>  sku_name                    = <span style="color:#e6db74">&#34;standard&#34;</span>
+</span></span><span style="display:flex;"><span>  soft_delete_retention_days  = <span style="color:#ae81ff">15</span>
+</span></span><span style="display:flex;"><span>  enable_rbac_authorization   = <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>  purge_protection_enabled    = <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>  tags                        = merge( 
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span>.default_tags,
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;description&#34;</span> = <span style="color:#e6db74">&#34;KeyVault that holds the SP credentials for deploying infrastructure&#34;</span>
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Lock the key vault. It cannot be deleted because it <span style="color:#66d9ef">is</span> needed <span style="color:#66d9ef">by</span> Azure DevOps
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azurerm_management_lock&#34;</span> <span style="color:#e6db74">&#34;lock_sp_kv&#34;</span> {
+</span></span><span style="display:flex;"><span>  name       = <span style="color:#e6db74">&#34;lock-bs-tf-kv-${var.project_name}&#34;</span>
+</span></span><span style="display:flex;"><span>  scope      = azurerm_key_vault.sp_creds_kv.id
+</span></span><span style="display:flex;"><span>  lock_level = <span style="color:#e6db74">&#34;CanNotDelete&#34;</span>
+</span></span><span style="display:flex;"><span>  notes      = <span style="color:#e6db74">&#34;Locked because it&#39;s needed by Azure DevOps&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Add myself <span style="color:#66d9ef">as</span> a KV Admin role. This assignment <span style="color:#66d9ef">is</span> required to later <span style="color:#66d9ef">add</span> the IaC SP credentials <span style="color:#66d9ef">into</span> the KV
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azurerm_role_assignment&#34;</span> <span style="color:#e6db74">&#34;me_keyvault_role&#34;</span> {
+</span></span><span style="display:flex;"><span>  scope                            = <span style="color:#e6db74">&#34;/subscriptions/${data.azurerm_client_config.current.subscription_id}/resourceGroups/${azurerm_resource_group.tf_state_rg.name}&#34;</span>
+</span></span><span style="display:flex;"><span>  role_definition_name             = <span style="color:#e6db74">&#34;Key Vault Administrator&#34;</span>
+</span></span><span style="display:flex;"><span>  principal_id                     = data.azurerm_client_config.current.object_id
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##########################################################################################</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> End Creating KeyVault to hold SP credentials
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##########################################################################################</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#########################################################################################</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Start creating SP to be used <span style="color:#66d9ef">by</span> Azure DevOps variable <span style="color:#66d9ef">group</span>  to access the Key Vault
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##########################################################################################</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Create an AAD application, it<span style="color:#960050;background-color:#1e0010">&#39;</span>s needed to create a SP
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azuread_application&#34;</span> <span style="color:#e6db74">&#34;azdo_keyvault_app&#34;</span> {
+</span></span><span style="display:flex;"><span>  display_name = <span style="color:#e6db74">&#34;app-bs-tf-azdo-vargroup-kv-connection-${var.project_name}&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Create an AAD Service Principal
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azuread_service_principal&#34;</span> <span style="color:#e6db74">&#34;azdo_keyvault_sp&#34;</span> {
+</span></span><span style="display:flex;"><span>  application_id = azuread_application.azdo_keyvault_app.application_id
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Creates a password <span style="color:#66d9ef">for</span> the AAD app
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azuread_application_password&#34;</span> <span style="color:#e6db74">&#34;azdo_keyvault_sp_password&#34;</span> {
+</span></span><span style="display:flex;"><span>  application_object_id = azuread_application.azdo_keyvault_app.id
+</span></span><span style="display:flex;"><span>  display_name          = <span style="color:#e6db74">&#34;TF generated password&#34;</span> 
+</span></span><span style="display:flex;"><span>  end_date              = <span style="color:#e6db74">&#34;2040-01-01T00:00:00Z&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Assign a KV Admin role to the SP. The role <span style="color:#66d9ef">is</span> assigned at resource <span style="color:#66d9ef">group</span> scope
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azurerm_role_assignment&#34;</span> <span style="color:#e6db74">&#34;azdo_keyvault_role&#34;</span> {
+</span></span><span style="display:flex;"><span>  scope                            = <span style="color:#e6db74">&#34;/subscriptions/${data.azurerm_client_config.current.subscription_id}/resourceGroups/${azurerm_resource_group.tf_state_rg.name}&#34;</span>
+</span></span><span style="display:flex;"><span>  role_definition_name             = <span style="color:#e6db74">&#34;Key Vault Administrator&#34;</span>
+</span></span><span style="display:flex;"><span>  principal_id                     = azuread_service_principal.azdo_keyvault_sp.id
+</span></span><span style="display:flex;"><span>  skip_service_principal_aad_check = <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Create a Azure DevOps Service Endpoint to access to KV
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azuredevops_serviceendpoint_azurerm&#34;</span> <span style="color:#e6db74">&#34;keyvault_access&#34;</span> {
+</span></span><span style="display:flex;"><span>  project_id            = data.azuredevops_project.project.id
+</span></span><span style="display:flex;"><span>  service_endpoint_name = <span style="color:#e6db74">&#34;service-endpoint-bs-tf-azdo-vargroup-kv-connection-${var.project_name}&#34;</span>
+</span></span><span style="display:flex;"><span>  credentials {
+</span></span><span style="display:flex;"><span>    serviceprincipalid  = azuread_application.azdo_keyvault_app.application_id
+</span></span><span style="display:flex;"><span>    serviceprincipalkey = azuread_application_password.azdo_keyvault_sp_password.<span style="color:#66d9ef">value</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  azurerm_spn_tenantid      = data.azurerm_client_config.current.tenant_id
+</span></span><span style="display:flex;"><span>  azurerm_subscription_id   = data.azurerm_client_config.current.subscription_id
+</span></span><span style="display:flex;"><span>  azurerm_subscription_name = <span style="color:#e6db74">&#34;Management Subscription&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##########################################################################################</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> End creating SP to be used <span style="color:#66d9ef">by</span> Azure DevOps variable <span style="color:#66d9ef">group</span>  to access the Key Vault
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##########################################################################################</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##########################################################################################</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Start creating SP to be used <span style="color:#66d9ef">by</span> AzDo Pipelines to deploy infrastructure to Azure
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##########################################################################################</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Create an AAD application, it<span style="color:#960050;background-color:#1e0010">&#39;</span>s needed to create a SP
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azuread_application&#34;</span> <span style="color:#e6db74">&#34;iac_app&#34;</span> {
+</span></span><span style="display:flex;"><span>  display_name = <span style="color:#e6db74">&#34;app-bs-tf-deploy-iac-azdo-pipelines-${var.project_name}&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Create an AAD Service Principal
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azuread_service_principal&#34;</span> <span style="color:#e6db74">&#34;iac_sp&#34;</span> {
+</span></span><span style="display:flex;"><span>  application_id = azuread_application.iac_app.application_id
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Creates a random password <span style="color:#66d9ef">for</span> the AAD app
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azuread_application_password&#34;</span> <span style="color:#e6db74">&#34;iac_sp_password&#34;</span> {
+</span></span><span style="display:flex;"><span>  application_object_id = azuread_application.iac_app.id
+</span></span><span style="display:flex;"><span>  display_name          = <span style="color:#e6db74">&#34;TF generated password&#34;</span>   
+</span></span><span style="display:flex;"><span>  end_date              = <span style="color:#e6db74">&#34;2040-01-01T00:00:00Z&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span> Create a custom role <span style="color:#66d9ef">for</span> <span style="color:#66d9ef">this</span> SP
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azurerm_role_definition&#34;</span> <span style="color:#e6db74">&#34;iac_custom_role&#34;</span> {
+</span></span><span style="display:flex;"><span>  name        = <span style="color:#e6db74">&#34;role-iac-deploy-${var.project_name}&#34;</span>
+</span></span><span style="display:flex;"><span>  scope       = <span style="color:#e6db74">&#34;/subscriptions/${data.azurerm_client_config.current.subscription_id}&#34;</span>
+</span></span><span style="display:flex;"><span>  description = <span style="color:#e6db74">&#34;This is a custom role created via Terraform. It has the same permissions as Contributor but can create role assigmnemts. It also have permissions to read, write and delete data on  Azure Key Vault and App Configuration.&#34;</span>
+</span></span><span style="display:flex;"><span>  permissions {
+</span></span><span style="display:flex;"><span>    actions     = [<span style="color:#e6db74">&#34;*&#34;</span>]
+</span></span><span style="display:flex;"><span>    not_actions = [
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;Microsoft.Authorization/elevateAccess/Action&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;Microsoft.Blueprint/blueprintAssignments/write&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;Microsoft.Blueprint/blueprintAssignments/delete&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;Microsoft.Compute/galleries/share/action&#34;</span>
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>    data_actions = [ 
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;Microsoft.KeyVault/vaults/*&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;Microsoft.AppConfiguration/configurationStores/*/read&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;Microsoft.AppConfiguration/configurationStores/*/write&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;Microsoft.AppConfiguration/configurationStores/*/delete&#34;</span>
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>    not_data_actions = []
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  assignable_scopes = [
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;/subscriptions/${data.azurerm_client_config.current.subscription_id}&#34;</span>
+</span></span><span style="display:flex;"><span>  ]
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Assign the custom role to the SP. The role <span style="color:#66d9ef">is</span> assigned at subscription scope.
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azurerm_role_assignment&#34;</span> <span style="color:#e6db74">&#34;iac_role_assignment&#34;</span> {
+</span></span><span style="display:flex;"><span>  scope                            = <span style="color:#e6db74">&#34;/subscriptions/${data.azurerm_client_config.current.subscription_id}&#34;</span>
+</span></span><span style="display:flex;"><span>  role_definition_name             = <span style="color:#e6db74">&#34;role-iac-deploy-${var.project_name}&#34;</span>
+</span></span><span style="display:flex;"><span>  principal_id                     = azuread_service_principal.iac_sp.id
+</span></span><span style="display:flex;"><span>  skip_service_principal_aad_check = <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>  depends_on = [
+</span></span><span style="display:flex;"><span>    azurerm_role_definition.iac_custom_role
+</span></span><span style="display:flex;"><span>  ]
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Store SP client secret <span style="color:#66d9ef">in</span> the KV
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azurerm_key_vault_secret&#34;</span> <span style="color:#e6db74">&#34;iac_sp_secret&#34;</span> {
+</span></span><span style="display:flex;"><span>  name         = <span style="color:#e6db74">&#34;sp-bs-tf-iac-client-secret&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">value</span>        = azuread_application_password.iac_sp_password.<span style="color:#66d9ef">value</span>
+</span></span><span style="display:flex;"><span>  key_vault_id = azurerm_key_vault.sp_creds_kv.id
+</span></span><span style="display:flex;"><span>  tags = <span style="color:#66d9ef">var</span>.default_tags
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Store SP client secret <span style="color:#66d9ef">in</span> the KV
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azurerm_key_vault_secret&#34;</span> <span style="color:#e6db74">&#34;iac_sp_clientid&#34;</span> {
+</span></span><span style="display:flex;"><span>  name         = <span style="color:#e6db74">&#34;sp-bs-tf-iac-client-id&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">value</span>        = azuread_service_principal.iac_sp.application_id
+</span></span><span style="display:flex;"><span>  key_vault_id = azurerm_key_vault.sp_creds_kv.id
+</span></span><span style="display:flex;"><span>  tags = <span style="color:#66d9ef">var</span>.default_tags
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Store SP client secret <span style="color:#66d9ef">in</span> the KV
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azurerm_key_vault_secret&#34;</span> <span style="color:#e6db74">&#34;iac_sp_tenant&#34;</span> {
+</span></span><span style="display:flex;"><span>  name         = <span style="color:#e6db74">&#34;sp-bs-tf-iac-tenant-id&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">value</span>        = data.azurerm_client_config.current.tenant_id
+</span></span><span style="display:flex;"><span>  key_vault_id = azurerm_key_vault.sp_creds_kv.id
+</span></span><span style="display:flex;"><span>  tags = <span style="color:#66d9ef">var</span>.default_tags
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Store SP client secret <span style="color:#66d9ef">in</span> the KV
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azurerm_key_vault_secret&#34;</span> <span style="color:#e6db74">&#34;iac_sp_subid&#34;</span> {
+</span></span><span style="display:flex;"><span>  name         = <span style="color:#e6db74">&#34;sp-bs-tf-iac-subscription-id&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">value</span>        = data.azurerm_client_config.current.subscription_id
+</span></span><span style="display:flex;"><span>  key_vault_id = azurerm_key_vault.sp_creds_kv.id
+</span></span><span style="display:flex;"><span>  tags = <span style="color:#66d9ef">var</span>.default_tags
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##########################################################################################</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> End creating SP to be used <span style="color:#66d9ef">by</span> AzDo Pipelines to deploy infrastructure to Azure
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##########################################################################################</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#########################################################################################</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Start creating Azure DevOps variable Group used <span style="color:#66d9ef">for</span> deploy IaC
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##########################################################################################</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Create AZDO variable <span style="color:#66d9ef">group</span> with IaC SP credentials
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azuredevops_variable_group&#34;</span> <span style="color:#e6db74">&#34;azdo_iac_var_group&#34;</span> {
+</span></span><span style="display:flex;"><span>  project_id   = data.azuredevops_project.project.id
+</span></span><span style="display:flex;"><span>  name         = <span style="color:#e6db74">&#34;vargroup-bs-tf-iac-${var.project_name}&#34;</span>
+</span></span><span style="display:flex;"><span>  allow_access = <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  key_vault {
+</span></span><span style="display:flex;"><span>    name                = azurerm_key_vault.sp_creds_kv.name
+</span></span><span style="display:flex;"><span>    service_endpoint_id = azuredevops_serviceendpoint_azurerm.keyvault_access.id
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  depends_on = [
+</span></span><span style="display:flex;"><span>    azurerm_key_vault_secret.iac_sp_secret,
+</span></span><span style="display:flex;"><span>    azurerm_key_vault_secret.iac_sp_clientid,
+</span></span><span style="display:flex;"><span>    azurerm_key_vault_secret.iac_sp_tenant,
+</span></span><span style="display:flex;"><span>    azurerm_key_vault_secret.iac_sp_subid
+</span></span><span style="display:flex;"><span>  ]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  variable {
+</span></span><span style="display:flex;"><span>    name = <span style="color:#e6db74">&#34;sp-bs-tf-iac-client-id&#34;</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  variable {
+</span></span><span style="display:flex;"><span>    name = <span style="color:#e6db74">&#34;sp-bs-tf-iac-client-secret&#34;</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  variable {
+</span></span><span style="display:flex;"><span>    name = <span style="color:#e6db74">&#34;sp-bs-tf-iac-tenant-id&#34;</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  variable {
+</span></span><span style="display:flex;"><span>    name = <span style="color:#e6db74">&#34;sp-bs-tf-iac-subscription-id&#34;</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##########################################################################################</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> End creating Azure DevOps variable Group used <span style="color:#66d9ef">for</span> deploy IaC
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##########################################################################################</span>
+</span></span></code></pre></div><p>As I did with the Powershell part of the script, let me run another quick summary explaining what Terraform creates.</p>
+<p>The first two resources you&rsquo;ll see in the <code>main.tf</code> file are these ones:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Create resource <span style="color:#66d9ef">group</span>. Already exists created <span style="color:#66d9ef">by</span> the powershell Initialize-AzureBootstrapProcessForTerraform.ps1 script
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azurerm_resource_group&#34;</span> <span style="color:#e6db74">&#34;tf_state_rg&#34;</span> {
+</span></span><span style="display:flex;"><span>  name     = <span style="color:#66d9ef">var</span>.tf_state_resource_group_name
+</span></span><span style="display:flex;"><span>  location = <span style="color:#66d9ef">var</span>.azure_region
+</span></span><span style="display:flex;"><span>  tags = <span style="color:#66d9ef">var</span>.default_tags
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Creates store account that hold Terraform shared state. Already exists created <span style="color:#66d9ef">by</span> the powershell Initialize-AzureBootstrapProcessForTerraform.ps1 script
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azurerm_storage_account&#34;</span> <span style="color:#e6db74">&#34;tf_state_storage&#34;</span> {
+</span></span><span style="display:flex;"><span>  name                     = <span style="color:#66d9ef">var</span>.tf_state_storage_account_name
+</span></span><span style="display:flex;"><span>  resource_group_name      = azurerm_resource_group.tf_state_rg.name
+</span></span><span style="display:flex;"><span>  location                 = azurerm_resource_group.tf_state_rg.location
+</span></span><span style="display:flex;"><span>  account_tier             = <span style="color:#e6db74">&#34;Standard&#34;</span>
+</span></span><span style="display:flex;"><span>  account_kind             = <span style="color:#e6db74">&#34;StorageV2&#34;</span>
+</span></span><span style="display:flex;"><span>  account_replication_type = <span style="color:#e6db74">&#34;LRS&#34;</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  tags = merge( 
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span>.default_tags,
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;description&#34;</span> = <span style="color:#e6db74">&#34;Storage Account that holds the Terraform state files.&#34;</span>
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Terraform is <strong>NOT</strong> creating a new extra Resource Group and Storage Account.<br>
+On the Powershell part of the script we imported these resources into the Tf state, here we&rsquo;re simply declaring them so we can keep track of them via Terraform.</p>
+<p>In the <code>main.tf</code> file we&rsquo;re using those 3 providers:</p>
+<ul>
+<li>The <a href="https://registry.terraform.io/providers/hashicorp/azuread/latest/docs">azuread</a> provider.</li>
+<li>The <a href="https://registry.terraform.io/providers/microsoft/azuredevops/latest/docs">azuredevops</a> provider.</li>
+<li>The <a href="https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs">azurerm</a> provider.</li>
+</ul>
+<p>With the azuread provider we create the following resources:</p>
+<ul>
+<li>A Service Principal that will be used to deploy infrastructure.</li>
+<li>A Service Principal that will be used to link the Azure DevOps variable group with the Vault.</li>
+</ul>
+<p>With the azuredevops provider we create the following resources:</p>
+<ul>
+<li>A Service Endpoint <em>(is required to link the variable group with the Vault)</em>.</li>
+<li>A Variable Group linked with the Vault <em>(it uses the Service Endpoint)</em>.</li>
+</ul>
+<p>With the azurerm provider we create the following resources:</p>
+<ul>
+<li>An Storage Account cannot-delete Lock.</li>
+<li>An Azure KeyVault.</li>
+<li>An Azure KeyVault cannot-delete Lock.</li>
+<li>Assign myself a &ldquo;Key Vault Administrator&rdquo; Role <em>(this role assignment is necessary because later on the script we are going to add the SP credentials into the Vault)</em>.</li>
+<li>A custom role <em>(it will be used to deploy the infrastructure)</em> and assign it to the SP.</li>
+<li>Assign a &ldquo;Key Vault Administrator&rdquo; Role to the second SP <em>(this role assignment is necesarry to link the variable group with the Vault)</em>.</li>
+<li>Store the SP credentials into the Vault.</li>
+</ul>
+<p>Also, if you take a look at my <a href="https://github.com/karlospn/bootstrapping-azure-subscription-and-azdo-project-for-terraform">GitHub repository</a> you&rsquo;ll see that there is a <code>variables.tf</code> file. More info about it in the next section.</p>
+<h1 id="script-configuration">Script configuration</h1>
+<p>Reusability is key, I don&rsquo;t want to modify the script every time I need to bootstrap a new subscription.</p>
+<p>To avoid that, there is a <code>config.env</code> file that contains the script configuration.</p>
+<p>The configuration variables are used in the Powershell script and also in the Terraform files. The script stores the configuration variables as <a href="https://www.terraform.io/cli/config/environment-variables#tf_var_name">Terraform TF_VAR_ environment variables</a> so they can be used within the <code>main.tf</code> file.</p>
+<blockquote>
+<p>You can change the values on the <code>config.env</code> file to your liking, but you must <strong>NOT</strong> change the name of the variables or the script will break.</p>
+</blockquote>
+<p>The config variables are the following ones:</p>
+<ul>
+<li><code>tf_state_resource_group_name</code>: The name of the resource group.</li>
+<li><code>tf_state_storage_account_name</code>: The name of the storage account.</li>
+<li><code>tf_state_storage_account_container_name</code>: The name of the storage account container.</li>
+<li><code>project_name</code>: The name of the project. It will be added as a suffix in all the created resources.</li>
+<li><code>azure_region</code>: The azure region where all the resources will be created.</li>
+<li><code>azure_subscription_id</code>: The azure subscription ID.</li>
+<li><code>azure_tenant_id</code>: The azure tenant ID.</li>
+<li><code>azdo_org_url</code>: The URL of the Azure DevOps organization.</li>
+<li><code>azdo_project_name</code>: The name of the Azure DevOps project where the variable group will be created.</li>
+<li><code>azdo_pat</code>: An Azure DevOps PAT (Personal Access Token).</li>
+</ul>
+<p>Example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">## Terraform State Variable</span>
+</span></span><span style="display:flex;"><span>tf_state_resource_group_name<span style="color:#f92672">=</span>rg-bs-tf-myproject-dev
+</span></span><span style="display:flex;"><span>tf_state_storage_account_name<span style="color:#f92672">=</span>stbstfmyprojectdev
+</span></span><span style="display:flex;"><span>tf_state_storage_account_container_name<span style="color:#f92672">=</span>tfstate
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Project Name</span>
+</span></span><span style="display:flex;"><span>project_name<span style="color:#f92672">=</span>myproject-dev
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Azure Variables</span>
+</span></span><span style="display:flex;"><span>azure_region<span style="color:#f92672">=</span>westeurope
+</span></span><span style="display:flex;"><span>azure_subscription_id<span style="color:#f92672">=</span>c179c52f-af4d-4a1a-adbe-2a27d480c62d
+</span></span><span style="display:flex;"><span>azure_tenant_id<span style="color:#f92672">=</span>da0d66e4-f338-454c-b0e5-cbdbf4fc385f
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Azure DevOps Variables</span>
+</span></span><span style="display:flex;"><span>azdo_org_url<span style="color:#f92672">=</span>https://dev.azure.com/cponsn
+</span></span><span style="display:flex;"><span>azdo_project_name<span style="color:#f92672">=</span>demos
+</span></span><span style="display:flex;"><span>azdo_pat<span style="color:#f92672">=</span>12p3j12p31290j213021asdpsdj
+</span></span></code></pre></div><h1 id="how-to-run-the-script">How to run the script</h1>
+<p><strong>To run it you need to set a parameter named: <code>ProvisionBootStrapResources</code>.</strong></p>
+<ul>
+<li><em>Example: <code>./Initialize-AzureBootstrapProcessForTerraform.ps1 -ProvisionBootStrapResources $True</code></em></li>
+</ul>
+<p>When the <code>ProvisionBootStrapResources</code> parameter is set to <code>$True</code> it will execute the entire script, which means:</p>
+<ul>
+<li>Creating the resource group and the storage account using the Powershell Az module.</li>
+<li>Import them into the Tf state.</li>
+<li>Executing the Terraform Init, Plan and Apply commands to create the rest of the resources.</li>
+</ul>
+<p><strong>If this is the first time you run the script and want to create all the resources from zero, set it to <code>$True</code>.</strong></p>
+<p>When the <code>ProvisionBootStrapResources</code> parameter is set to <code>$False</code> it will skip the steps of creating the resource group and the storage account and it will only run the Terraform Init, Plan and Apply steps.<br>
+<strong>If you already ran the bootstrap script previously and have modified the <code>main.tf</code> file to add or update some existing resources set it to <code>$False</code>.</strong></p>
+<h1 id="where-to-run-the-script">Where to run the script</h1>
+<p>There are 2 options available, run it on your <strong>local machine</strong> or on <strong>Azure Cloud Shell</strong>.</p>
+<p>To run the script on your <strong>local machine</strong> you&rsquo;ll need to have already installed:</p>
+<ul>
+<li>Terraform</li>
+<li>Azure Powershell Az Module.
+<ul>
+<li>For more information go to: <a href="https://docs.microsoft.com/es-es/powershell/azure/what-is-azure-powershell?view=azps-7.4.0">https://docs.microsoft.com/es-es/powershell/azure/what-is-azure-powershell?view=azps-7.4.0</a></li>
+</ul>
+</li>
+</ul>
+<p>To run the script on <strong>Azure Cloud Shell</strong> you&rsquo;ll need to upload the following files into the remote workspace:</p>
+<ul>
+<li><code>Initialize-AzureBootstrapProcessForTerraform.ps1</code></li>
+<li><code>config.env</code></li>
+<li><code>main.tf</code></li>
+<li><code>variables.tf</code></li>
+</ul>
+<p>And afterwards, just execute the <code>Initialize-AzureBootstrapProcessForTerraform.ps1</code> script.</p>
+<p><img src="/img/tf-bs-azdo-cloudshell.png" alt="tf-bs-azdo-cloudshell"></p>
+<h1 id="permissions-needed-to-execute-the-script">Permissions needed to execute the script</h1>
+<p>To run the script you&rsquo;ll need to have the following permissions:</p>
+<ul>
+<li>An <code>Owner</code> Role on the target Azure Subscription.</li>
+<li>An <code>Application Administrator</code> Role on Azure Active Directory.</li>
+<li>An <code>Azure DevOps PAT</code> (Personal Access Token) with a Full Access scope.</li>
+</ul>
+<h1 id="azure-devops-iac-pipeline-example">Azure DevOps IaC pipeline example</h1>
+<p>After executing the script we&rsquo;re ready to start deploying infrastructure to Azure using Azure Pipelines.</p>
+<p>I have created an example pipeline to show you how it looks.</p>
+<p>The pipeline has 3 runtime parameters. The Runtime parameters let you have more control over what values can be passed to a pipeline. In our case we are defining which Terraform commands should the pipeline execute.</p>
+<p><img src="/img/tf-bs-azdo-pipelines-run-pipeline.png" alt="tf-bs-azdo-pipelines-run-pipeline"></p>
+<p>The pipeline uses the variable group we have created to obtain the credentials of the SP stored on the Key Vault.</p>
+<p><img src="/img/tf-bs-azdo-variable-group.png" alt="tf-bs-azdo-variable-group"></p>
+<p>The next code snippet is an example of an IaC pipeline.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">trigger</span>: <span style="color:#ae81ff">none</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">parameters</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">terraform_destroy</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">boolean</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">default</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">terraform_apply</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">boolean</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">default</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">terraform_plan</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">boolean</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">default</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">variables</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">group</span>: <span style="color:#ae81ff">vargroup-bs-tf-iac-myproject-dev</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">STATE_RESGRP</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">value</span>: <span style="color:#ae81ff">rg-bs-tf-myproject-dev</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">STATE_ACCOUNT</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">value</span>: <span style="color:#ae81ff">stbstfmyprojectdev</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">STATE_CONTAINER</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">value</span>: <span style="color:#ae81ff">tfstate</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">KEY_NAME</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">value</span>: <span style="color:#ae81ff">shared-svc-group-myproject-dev</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">CURRENT_PATH</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">value</span>: <span style="color:#ae81ff">./samples/azure-pipelines</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">pool</span>: 
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">vmImage</span>: <span style="color:#e6db74">&#39;ubuntu-latest&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">steps</span>:  
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">bash</span>: |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      terraform init -input=false -backend=true -reconfigure \
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      -backend-config=&#34;resource_group_name=$(STATE_RESGRP)&#34; \
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      -backend-config=&#34;storage_account_name=$(STATE_ACCOUNT)&#34; \
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      -backend-config=&#34;container_name=$(STATE_CONTAINER)&#34; \
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      -backend-config=&#34;key=$(KEY_NAME).tfstate&#34;</span>      
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">workingDirectory</span>: <span style="color:#ae81ff">$(CURRENT_PATH)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Initialize Terraform backend state</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">env</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">ARM_CLIENT_ID</span>: <span style="color:#ae81ff">$(sp-bs-tf-iac-client-id)</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">ARM_CLIENT_SECRET</span>: <span style="color:#ae81ff">$(sp-bs-tf-iac-client-secret)</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">ARM_TENANT_ID</span>: <span style="color:#ae81ff">$(sp-bs-tf-iac-tenant-id)</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">ARM_SUBSCRIPTION_ID</span>: <span style="color:#ae81ff">$(sp-bs-tf-iac-subscription-id)</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">bash</span>: |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      </span>      <span style="color:#ae81ff">terraform plan -input=false</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">condition</span>: <span style="color:#ae81ff">and(succeeded(), eq(&#39;${{ parameters.terraform_plan }}&#39;, true))</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">workingDirectory</span>: <span style="color:#ae81ff">$(CURRENT_PATH)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Plan Terraform changes</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">env</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">ARM_CLIENT_ID</span>: <span style="color:#ae81ff">$(sp-bs-tf-iac-client-id)</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">ARM_CLIENT_SECRET</span>: <span style="color:#ae81ff">$(sp-bs-tf-iac-client-secret)</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">ARM_TENANT_ID</span>: <span style="color:#ae81ff">$(sp-bs-tf-iac-tenant-id)</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">ARM_SUBSCRIPTION_ID</span>: <span style="color:#ae81ff">$(sp-bs-tf-iac-subscription-id)</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">bash</span>: |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      </span>      <span style="color:#ae81ff">terraform apply -input=false -auto-approve</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">condition</span>: <span style="color:#ae81ff">and(succeeded(), eq(&#39;${{ parameters.terraform_apply }}&#39;, true))</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">workingDirectory</span>: <span style="color:#ae81ff">$(CURRENT_PATH)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Apply Terraform changes</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">env</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">ARM_CLIENT_ID</span>: <span style="color:#ae81ff">$(sp-bs-tf-iac-client-id)</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">ARM_CLIENT_SECRET</span>: <span style="color:#ae81ff">$(sp-bs-tf-iac-client-secret)</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">ARM_TENANT_ID</span>: <span style="color:#ae81ff">$(sp-bs-tf-iac-tenant-id)</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">ARM_SUBSCRIPTION_ID</span>: <span style="color:#ae81ff">$(sp-bs-tf-iac-subscription-id)</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">bash</span>: |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      </span>      <span style="color:#ae81ff">terraform destroy -input=false -auto-approve</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">condition</span>: <span style="color:#ae81ff">and(succeeded(), eq(&#39;${{ parameters.terraform_destroy }}&#39;, true))</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">workingDirectory</span>: <span style="color:#ae81ff">$(CURRENT_PATH)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Destroy Terraform </span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">env</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">ARM_CLIENT_ID</span>: <span style="color:#ae81ff">$(sp-bs-tf-iac-client-id)</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">ARM_CLIENT_SECRET</span>: <span style="color:#ae81ff">$(sp-bs-tf-iac-client-secret)</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">ARM_TENANT_ID</span>: <span style="color:#ae81ff">$(sp-bs-tf-iac-tenant-id)</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">ARM_SUBSCRIPTION_ID</span>: <span style="color:#ae81ff">$(sp-bs-tf-iac-subscription-id)</span>
+</span></span></code></pre></div><p>And here&rsquo;s how the output of the pipeline looks like:</p>
+<p><img src="/img/tf-bs-azdo-pipeline-tf-plan.png" alt="tf-bs-azdo-pipeline-tf-plan"></p>
+<h1 id="reference-links">Reference links</h1>
+<p>Whenever I use some code that is taken from somewhere else or I draw inspiration from other person work I like to reference it in my posts.</p>
+<p>In this case I haven taken a few ideas from this project, so kudos to him.</p>
+<ul>
+<li><a href="https://github.com/benc-uk/terraform-mgmt-bootstrap">https://github.com/benc-uk/terraform-mgmt-bootstrap</a></li>
+</ul>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://www.mytechramblings.com/posts/profiling-a-net-app-on-aws-ecs-fargate-with-dotnet-monitor/">
+                  <span class="button__text">Profiling a .NET6 app running on AWS ECS Fargate with dotnet-monitor</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2022 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>Theme created by <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://www.mytechramblings.com/assets/main.js"></script>
+<script src="https://www.mytechramblings.com/assets/prism.js"></script>
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('carlospons', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Donate',
+    'floating-chat.donateButton.background-color': '#ff5f5f',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
+
+      
+    </div>
+
+    
+      
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-170300931-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+    
+  </body>
+</html>

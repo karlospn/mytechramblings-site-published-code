@@ -9,10 +9,110 @@
     <description>Recent content in Tags on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 30 Mar 2022 10:25:20 +0200</lastBuildDate>
+    <lastBuildDate>Tue, 19 Apr 2022 12:30:10 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>azure</title>
+      <link>https://www.mytechramblings.com/tags/azure/</link>
+      <pubDate>Tue, 19 Apr 2022 12:30:10 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/azure/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>devops</title>
+      <link>https://www.mytechramblings.com/tags/devops/</link>
+      <pubDate>Tue, 19 Apr 2022 12:30:10 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/devops/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>iac</title>
+      <link>https://www.mytechramblings.com/tags/iac/</link>
+      <pubDate>Tue, 19 Apr 2022 12:30:10 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/iac/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>powershell</title>
+      <link>https://www.mytechramblings.com/tags/powershell/</link>
+      <pubDate>Tue, 19 Apr 2022 12:30:10 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/powershell/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>terraform</title>
+      <link>https://www.mytechramblings.com/tags/terraform/</link>
+      <pubDate>Tue, 19 Apr 2022 12:30:10 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/terraform/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>aws</title>
@@ -215,26 +315,6 @@
     </item>
     
     <item>
-      <title>azure</title>
-      <link>https://www.mytechramblings.com/tags/azure/</link>
-      <pubDate>Wed, 15 Dec 2021 11:20:04 +0100</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/azure/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
       <title>functions</title>
       <link>https://www.mytechramblings.com/tags/functions/</link>
       <pubDate>Wed, 15 Dec 2021 11:20:04 +0100</pubDate>
@@ -280,26 +360,6 @@
       <pubDate>Wed, 15 Dec 2021 11:20:04 +0100</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/serverless/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>devops</title>
-      <link>https://www.mytechramblings.com/tags/devops/</link>
-      <pubDate>Mon, 25 Oct 2021 10:45:14 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/devops/</guid>
       <description>
         
           
@@ -560,26 +620,6 @@
       <pubDate>Thu, 08 Apr 2021 10:11:51 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/tracing/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>terraform</title>
-      <link>https://www.mytechramblings.com/tags/terraform/</link>
-      <pubDate>Thu, 18 Mar 2021 10:00:02 +0100</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/terraform/</guid>
       <description>
         
           
