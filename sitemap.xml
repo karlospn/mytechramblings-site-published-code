@@ -2,10 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://www.mytechramblings.com/tags/azure/</loc>
-    <lastmod>2022-04-19T12:30:10+02:00</lastmod>
+    <loc>https://www.mytechramblings.com/tags/containers/</loc>
+    <lastmod>2022-05-16T10:05:01+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/csharp/</loc>
+    <lastmod>2022-05-16T10:05:01+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/devops/</loc>
+    <lastmod>2022-05-16T10:05:01+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/docker/</loc>
+    <lastmod>2022-05-16T10:05:01+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/dotnet/</loc>
+    <lastmod>2022-05-16T10:05:01+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/linting-a-dotnet-app-dockerfile-using-hadolint-dockerfile-lint-and-azure-pipelines/</loc>
+    <lastmod>2022-05-16T10:05:01+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/</loc>
+    <lastmod>2022-05-16T10:05:01+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/</loc>
+    <lastmod>2022-05-16T10:05:01+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/</loc>
+    <lastmod>2022-05-16T10:05:01+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/azure/</loc>
     <lastmod>2022-04-19T12:30:10+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/posts/how-to-bootstrap-terraform-and-azdo-to-start-deploying-iac-to-azure/</loc>
@@ -14,31 +38,13 @@
     <loc>https://www.mytechramblings.com/tags/iac/</loc>
     <lastmod>2022-04-19T12:30:10+02:00</lastmod>
   </url><url>
-    <loc>https://www.mytechramblings.com/</loc>
-    <lastmod>2022-04-19T12:30:10+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/posts/</loc>
-    <lastmod>2022-04-19T12:30:10+02:00</lastmod>
-  </url><url>
     <loc>https://www.mytechramblings.com/tags/powershell/</loc>
-    <lastmod>2022-04-19T12:30:10+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/</loc>
     <lastmod>2022-04-19T12:30:10+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/terraform/</loc>
     <lastmod>2022-04-19T12:30:10+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/aws/</loc>
-    <lastmod>2022-03-30T10:25:20+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/containers/</loc>
-    <lastmod>2022-03-30T10:25:20+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/csharp/</loc>
-    <lastmod>2022-03-30T10:25:20+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/dotnet/</loc>
     <lastmod>2022-03-30T10:25:20+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/ecs/</loc>
@@ -52,9 +58,6 @@
   </url><url>
     <loc>https://www.mytechramblings.com/posts/profiling-a-net-app-on-aws-ecs-fargate-with-dotnet-monitor/</loc>
     <lastmod>2022-03-30T10:25:20+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/docker/</loc>
-    <lastmod>2022-03-01T10:01:37+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/linux/</loc>
     <lastmod>2022-03-01T10:01:37+01:00</lastmod>

@@ -9,10 +9,30 @@
     <description>Recent content in containers on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 30 Mar 2022 10:25:20 +0200</lastBuildDate>
+    <lastBuildDate>Mon, 16 May 2022 10:05:01 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/containers/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Linting a .NET 6 app Dockerfile using Hadolint, dockerfile_lint and Azure Pipelines</title>
+      <link>https://www.mytechramblings.com/posts/linting-a-dotnet-app-dockerfile-using-hadolint-dockerfile-lint-and-azure-pipelines/</link>
+      <pubDate>Mon, 16 May 2022 10:05:01 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/linting-a-dotnet-app-dockerfile-using-hadolint-dockerfile-lint-and-azure-pipelines/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          Like any other language, Dockerfiles can and should be linted for updated best practices and code quality checks. In this post I will show you how to incorporate a couple of Dockerfile linters into our Secure DevOps workflow to ensure our Dockerfiles are always readable, understandable and maintainable.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>Profiling a .NET6 app running on AWS ECS Fargate with dotnet-monitor</title>

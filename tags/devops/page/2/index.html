@@ -2,14 +2,14 @@
 <html lang="en">
   <head>
     
-      <title>containers :: my tech ramblings — A blog for writing about my techie ramblings</title>
+      <title>devops :: my tech ramblings — A blog for writing about my techie ramblings</title>
     
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 <meta name="description" content=""/>
 <meta name="keywords" content=""/>
 <meta name="robots" content="noodp"/>
-<link rel="canonical" href="https://www.mytechramblings.com/tags/containers/" />
+<link rel="canonical" href="https://www.mytechramblings.com/tags/devops/" />
 
 
 
@@ -26,20 +26,20 @@
 
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="containers"/>
+<meta name="twitter:title" content="devops"/>
 <meta name="twitter:description" content=""/>
 
 
 
-<meta property="og:title" content="containers" />
+<meta property="og:title" content="devops" />
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://www.mytechramblings.com/tags/containers/" /><meta property="og:site_name" content="my tech ramblings" />
+<meta property="og:url" content="https://www.mytechramblings.com/tags/devops/" /><meta property="og:site_name" content="my tech ramblings" />
 
 
 
 
-<link rel="alternate" type="application/rss+xml" href="/tags/containers/index.xml" title="my tech ramblings" />
+<link rel="alternate" type="application/rss+xml" href="/tags/devops/index.xml" title="my tech ramblings" />
 
 
 
@@ -156,11 +156,11 @@
     </div>
     
     <div class="post on-list">
-      <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/profiling-a-net-app-on-aws-ecs-fargate-with-dotnet-monitor/">Profiling a .NET6 app running on AWS ECS Fargate with dotnet-monitor</a></h1>
+      <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/how-to-bootstrap-terraform-and-azdo-to-start-deploying-iac-to-azure/">How to bootstrap Terraform and Azure DevOps to start deploying your infrastructure as code to Azure</a></h1>
       <div class="post-meta">
         
           <span class="post-date">
-            2022-03-30
+            2022-04-19
           </span>
 
           
@@ -172,26 +172,22 @@
         
         
         
-          <span class="post-read-time">— 14 min read</span>
+          <span class="post-read-time">— 19 min read</span>
         
       </div>
 
       
         <span class="post-tags">
           
-            #<a href="https://www.mytechramblings.com/tags/aws/">aws</a>&nbsp;
+            #<a href="https://www.mytechramblings.com/tags/azure/">azure</a>&nbsp;
           
-            #<a href="https://www.mytechramblings.com/tags/fargate/">fargate</a>&nbsp;
+            #<a href="https://www.mytechramblings.com/tags/devops/">devops</a>&nbsp;
           
-            #<a href="https://www.mytechramblings.com/tags/ecs/">ecs</a>&nbsp;
+            #<a href="https://www.mytechramblings.com/tags/terraform/">terraform</a>&nbsp;
           
-            #<a href="https://www.mytechramblings.com/tags/containers/">containers</a>&nbsp;
+            #<a href="https://www.mytechramblings.com/tags/iac/">iac</a>&nbsp;
           
-            #<a href="https://www.mytechramblings.com/tags/dotnet/">dotnet</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/csharp/">csharp</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/performance/">performance</a>&nbsp;
+            #<a href="https://www.mytechramblings.com/tags/powershell/">powershell</a>&nbsp;
           
         </span>
       
@@ -200,62 +196,11 @@
 
       <div class="post-content">
         
-          The dotnet-monitor tool is an alternative to the .NET CLI diagnostic tools. In this post I&rsquo;ll show you how to deploy a .NET 6 application into AWS ECS Fargate with dotnet-monitor as a sidecar container, and afterwards how you can profile an app using the dotnet-monitor HTTP API.
+          Deploying infrastructure as code on Azure using Azure Pipelines and Terraform requires a minimal bootstrap process. This process can be done manually, but you&rsquo;ll have to do it every time you want to start deploying resources into a new subscription. So, having some kind of automation seems the way to go here. And that&rsquo;s exactly what I want to show in this post, how to programmatically bootstrap an Azure subscription and an Azure DevOps project to start deploying Infrastructure as Code with Terraform.
         
       </div>
       
-        <div><a class="read-more button" href="/posts/profiling-a-net-app-on-aws-ecs-fargate-with-dotnet-monitor/">Read more →</a></div>
-      
-    </div>
-    
-    <div class="post on-list">
-      <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/profiling-a-net-app-with-dotnet-cli-diagnostic-tools/">Profiling a .NET6 app running in a linux container with dotnet-trace, dotnet-dump, dotnet-counters, dotnet-gcdump and Visual Studio</a></h1>
-      <div class="post-meta">
-        
-          <span class="post-date">
-            2022-03-01
-          </span>
-
-          
-            
-
-
-
-          
-        
-        
-        
-          <span class="post-read-time">— 24 min read</span>
-        
-      </div>
-
-      
-        <span class="post-tags">
-          
-            #<a href="https://www.mytechramblings.com/tags/csharp/">csharp</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/dotnet/">dotnet</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/performance/">performance</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/linux/">linux</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/containers/">containers</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/docker/">docker</a>&nbsp;
-          
-        </span>
-      
-
-      
-
-      <div class="post-content">
-        
-          This post contains a few practical examples showing you how to profile a .NET6 application running in a linux container using the .NET CLI diagnostic tools (dotnet-trace, dotnet-dump, dotnet-counters and dotnet-gcdump) and Visual Studio.
-        
-      </div>
-      
-        <div><a class="read-more button" href="/posts/profiling-a-net-app-with-dotnet-cli-diagnostic-tools/">Read more →</a></div>
+        <div><a class="read-more button" href="/posts/how-to-bootstrap-terraform-and-azdo-to-start-deploying-iac-to-azure/">Read more →</a></div>
       
     </div>
     
@@ -311,11 +256,11 @@
     </div>
     
     <div class="post on-list">
-      <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/running-a-sonarqube-scan-when-building-docker-image/">Setting up the SonarQube scanner when building a .NET Core container image</a></h1>
+      <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/automate-azure-devops-setup-using-terraform/">Trying to setup an Azure DevOps organization using Terraform</a></h1>
       <div class="post-meta">
         
           <span class="post-date">
-            2021-09-14
+            2021-03-18
           </span>
 
           
@@ -327,22 +272,20 @@
         
         
         
-          <span class="post-read-time">— 7 min read</span>
+          <span class="post-read-time">— 13 min read</span>
         
       </div>
 
       
         <span class="post-tags">
           
-            #<a href="https://www.mytechramblings.com/tags/sonarqube/">sonarqube</a>&nbsp;
+            #<a href="https://www.mytechramblings.com/tags/azure/">azure</a>&nbsp;
           
-            #<a href="https://www.mytechramblings.com/tags/docker/">docker</a>&nbsp;
+            #<a href="https://www.mytechramblings.com/tags/devops/">devops</a>&nbsp;
           
-            #<a href="https://www.mytechramblings.com/tags/containers/">containers</a>&nbsp;
+            #<a href="https://www.mytechramblings.com/tags/terraform/">terraform</a>&nbsp;
           
-            #<a href="https://www.mytechramblings.com/tags/csharp/">csharp</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/dotnet/">dotnet</a>&nbsp;
+            #<a href="https://www.mytechramblings.com/tags/aad/">aad</a>&nbsp;
           
         </span>
       
@@ -351,60 +294,11 @@
 
       <div class="post-content">
         
-          If you&rsquo;re using containers quite probably you&rsquo;re doing the build, test and analysis steps inside the Dockerfile, and setting up the SonarQube scanner when building the image can be a little more cumbersome than usual, and that&rsquo;s why I wanted to write a little bit about it.
+          On today&rsquo;s post I want to test the Azure DevOps Terraform provider and that&rsquo;s why I&rsquo;ll be trying to automate the setup of an Azure DevOps organization using it.
         
       </div>
       
-        <div><a class="read-more button" href="/posts/running-a-sonarqube-scan-when-building-docker-image/">Read more →</a></div>
-      
-    </div>
-    
-    <div class="post on-list">
-      <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/some-gotchas-when-deploying-a-dotnet-grpc-app-to-ecs/">Some common gotchas when trying to deploy a dotnet gRPC app to AWS ECS</a></h1>
-      <div class="post-meta">
-        
-          <span class="post-date">
-            2021-07-21
-          </span>
-
-          
-            
-
-
-
-          
-        
-        
-        
-          <span class="post-read-time">— 14 min read</span>
-        
-      </div>
-
-      
-        <span class="post-tags">
-          
-            #<a href="https://www.mytechramblings.com/tags/dotnet/">dotnet</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/grpc/">grpc</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/containers/">containers</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/aws/">aws</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/ecs/">ecs</a>&nbsp;
-          
-        </span>
-      
-
-      
-
-      <div class="post-content">
-        
-          Lately I&rsquo;ve been deploying a sizable amount of gRPC services to AWS ECS so I thought it might be useful to talk a little bit about some gotchas I have encountered. Some of the problems I&rsquo;ll be talking about on this post are specific of the .NET implementation of gRPC and another ones are from the AWS side.
-        
-      </div>
-      
-        <div><a class="read-more button" href="/posts/some-gotchas-when-deploying-a-dotnet-grpc-app-to-ecs/">Read more →</a></div>
+        <div><a class="read-more button" href="/posts/automate-azure-devops-setup-using-terraform/">Read more →</a></div>
       
     </div>
     
@@ -462,11 +356,11 @@
     </div>
     
     <div class="post on-list">
-      <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/how-to-use-a-private-nuget-feed-with-docker/">How to restore nuget packages from an Azure DevOps Private Feed when building a Docker image</a></h1>
+      <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/provisioning-aws-resources-using-cdk-azure-devops/">Provisioning resources on AWS using AWS CDK and Azure DevOps Pipelines</a></h1>
       <div class="post-meta">
         
           <span class="post-date">
-            2020-07-14
+            2020-09-30
           </span>
 
           
@@ -478,22 +372,20 @@
         
         
         
-          <span class="post-read-time">— 5 min read</span>
+          <span class="post-read-time">— 12 min read</span>
         
       </div>
 
       
         <span class="post-tags">
           
-            #<a href="https://www.mytechramblings.com/tags/csharp/">csharp</a>&nbsp;
+            #<a href="https://www.mytechramblings.com/tags/aws/">aws</a>&nbsp;
           
-            #<a href="https://www.mytechramblings.com/tags/docker/">docker</a>&nbsp;
+            #<a href="https://www.mytechramblings.com/tags/cdk/">cdk</a>&nbsp;
           
-            #<a href="https://www.mytechramblings.com/tags/nuget/">nuget</a>&nbsp;
+            #<a href="https://www.mytechramblings.com/tags/azure/">azure</a>&nbsp;
           
-            #<a href="https://www.mytechramblings.com/tags/containers/">containers</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/windows/">windows</a>&nbsp;
+            #<a href="https://www.mytechramblings.com/tags/devops/">devops</a>&nbsp;
           
         </span>
       
@@ -502,24 +394,24 @@
 
       <div class="post-content">
         
-          In this post I&rsquo;ll show you how to restore NuGet packages from an Azure DevOps private feed when building a Docker image.
+          In today&rsquo;s post I will show you how you can deploy an AWS CDK application using Azure DevOps.
         
       </div>
       
-        <div><a class="read-more button" href="/posts/how-to-use-a-private-nuget-feed-with-docker/">Read more →</a></div>
+        <div><a class="read-more button" href="/posts/provisioning-aws-resources-using-cdk-azure-devops/">Read more →</a></div>
       
     </div>
     
     <div class="pagination">
   <div class="pagination__buttons">
     
-    
-      <span class="button next">
-        <a href="/tags/containers/page/2/">
-          <span class="button__text">Older posts</span>
-          <span class="button__icon">→</span>
+      <span class="button previous">
+        <a href="/tags/devops/">
+          <span class="button__icon">←</span>
+          <span class="button__text">Newer posts</span>
         </a>
       </span>
+    
     
   </div>
 </div>

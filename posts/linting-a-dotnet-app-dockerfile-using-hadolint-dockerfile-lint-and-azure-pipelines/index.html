@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>Linting a .NET 6 app Dockerfile using Hadolint, dockerfile_lint and Azure Pipelines :: my tech ramblings — A blog for writing about my techie ramblings</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Just show me the code
+As always, if you don’t care about the post I have uploaded the source code on my Github.
+ A few months back I wrote a post about security image scanning and how important it is in a Secure DevOps workflow, also I showed you how you could use some of the most well-known image scanners alongside with your Azure DevOps CI/CD Pipelines. If you&amp;rsquo;re interested, the post is right here."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://www.mytechramblings.com/posts/linting-a-dotnet-app-dockerfile-using-hadolint-dockerfile-lint-and-azure-pipelines/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/assets/style.css">
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.mytechramblings.com/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://www.mytechramblings.com/img/favicon.png">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Linting a .NET 6 app Dockerfile using Hadolint, dockerfile_lint and Azure Pipelines"/>
+<meta name="twitter:description" content="Like any other language, Dockerfiles can and should be linted for updated best practices and code quality checks. In this post I will show you how to incorporate a couple of Dockerfile linters into our Secure DevOps workflow to ensure our Dockerfiles are always readable, understandable and maintainable."/>
+
+
+
+<meta property="og:title" content="Linting a .NET 6 app Dockerfile using Hadolint, dockerfile_lint and Azure Pipelines" />
+<meta property="og:description" content="Like any other language, Dockerfiles can and should be linted for updated best practices and code quality checks. In this post I will show you how to incorporate a couple of Dockerfile linters into our Secure DevOps workflow to ensure our Dockerfiles are always readable, understandable and maintainable." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.mytechramblings.com/posts/linting-a-dotnet-app-dockerfile-using-hadolint-dockerfile-lint-and-azure-pipelines/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-05-16T10:05:01+02:00" />
+<meta property="article:modified_time" content="2022-05-16T10:05:01+02:00" /><meta property="og:site_name" content="my tech ramblings" />
+
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://www.mytechramblings.com/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">my tech ramblings</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/linting-a-dotnet-app-dockerfile-using-hadolint-dockerfile-lint-and-azure-pipelines/">Linting a .NET 6 app Dockerfile using Hadolint, dockerfile_lint and Azure Pipelines</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2022-05-16
+        </span>
+
+        
+          
+            
+
+
+
+          
+        
+      
+
+      
+      
+        <span class="post-read-time">— 16 min read</span>
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          #<a href="https://www.mytechramblings.com/tags/dotnet/">dotnet</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/csharp/">csharp</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/devops/">devops</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/containers/">containers</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/docker/">docker</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <blockquote>
+<p><strong>Just show me the code</strong><br>
+As always, if you don’t care about the post I have uploaded the source code on my <a href="https://github.com/karlospn/linting-a-dockerfile-net6-app-with-azure-pipelines">Github</a>.</p>
+</blockquote>
+<p>A few months back I wrote a post about security image scanning and how important it is in a Secure DevOps workflow, also I showed you how you could use some of the most well-known image scanners alongside with your Azure DevOps CI/CD Pipelines. <br>
+If you&rsquo;re interested, the post is right <a href="https://www.mytechramblings.com/posts/testing-container-vulnerabilities-scanners-using-azure-pipelines/">here</a>.</p>
+<p>Another important step, that is skipped quite frequently, is linting the application Dockerfile.</p>
+<p>Like any other language, Dockerfiles can and should be linted for updated best practices and
+code quality checks.<br>
+Docker is no exception to the rule, and good practices are always moving and getting new updates.</p>
+<p>A Dockerfile linter is a tool that analyses and parses the Dockerfile and warns when it doesn’t match best practices or guidelines. This gives us an automated way of helping developers to write Dockerfiles which always meet a reasonable standard.</p>
+<p>Incorporating a linter into our Secure DevOps workflow ensures our Dockerfiles are always readable, understandable and maintainable.</p>
+<p>In this post I will be covering how you can use them and also how you can integrate them on your CI/CD pipelines.</p>
+<p>To show you how to integrate them with a CI/CD pipeline I&rsquo;ll be using Azure DevOps Pipelines, but the process is practically identical if you want to integrate them with whatever CI/CD tool you use (Github Actions, Bitbucket Pipelines, Jenkins, &hellip;).</p>
+<p>In this post I&rsquo;ll focus on those 2 linters:</p>
+<ul>
+<li>Hadolint (<a href="https://github.com/hadolint/hadolint">https://github.com/hadolint/hadolint</a>)</li>
+<li>dockerfile_lint (<a href="https://github.com/projectatomic/dockerfile_lint">https://github.com/projectatomic/dockerfile_lint</a>)</li>
+</ul>
+<p>More info about them and why I use two linters instead of a single one in the next sections.</p>
+<h1 id="hadolint">Hadolint</h1>
+<p>Hadolint is probably the most popular and used Dockerfile linter right now, it validates that your Dockerfile is following <a href="https://docs.docker.com/develop/develop-images/dockerfile_best-practices/">Docker best practice</a>.</p>
+<p>Here&rsquo;s a <a href="https://github.com/hadolint/hadolint#rules">complete list</a> of the rules that Hadolint validates.</p>
+<h2 id="how-to-use-it">How to use it</h2>
+<p>To run it locally:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>hadolint &lt;Dockerfile&gt;
+</span></span><span style="display:flex;"><span>hadolint --ignore DL3003 --ignore DL3006 &lt;Dockerfile&gt; <span style="color:#75715e"># exclude specific rules</span>
+</span></span></code></pre></div><p>To run it using the official docker image, you just need to pipe your Dockerfile to the docker run command, like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker run --rm -i hadolint/hadolint &lt; Dockerfile
+</span></span></code></pre></div><p>Also if you want to override the severity or ignore specific rules, you can do it using a config file.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">ignored</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">SC1010</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">override</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">error</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">DL3001</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">DL3002</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">warning</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">DL3042</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">DL3033</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">info</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">DL3032</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">style</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">DL3015</span>
+</span></span></code></pre></div><p>To pass a config file (using relative or absolute path) to  the hadolint container use the following command:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ae81ff">docker run --rm -i -v /your/path/to/hadolint.yaml:/.config/hadolint.yaml hadolint/hadolint &lt; Dockerfile</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># OR</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">docker run --rm -i -v /your/path/to/hadolint.yaml:/.config/hadolint.yaml ghcr.io/hadolint/hadolint &lt; Dockerfile</span>
+</span></span></code></pre></div><p>In addition to config files, Hadolint can also be configured with environment variables.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>NO_COLOR<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>                               <span style="color:#75715e"># Set or unset. See https://no-color.org</span>
+</span></span><span style="display:flex;"><span>HADOLINT_NOFAIL<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>                        <span style="color:#75715e"># Truthy value e.g. 1, true or yes</span>
+</span></span><span style="display:flex;"><span>HADOLINT_VERBOSE<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>                       <span style="color:#75715e"># Truthy value e.g. 1, true or yes</span>
+</span></span><span style="display:flex;"><span>HADOLINT_FORMAT<span style="color:#f92672">=</span>json                     <span style="color:#75715e"># Output format (tty | json | checkstyle | codeclimate | gitlab_codeclimate | gnu | codacy | sarif )</span>
+</span></span><span style="display:flex;"><span>HADOLINT_FAILURE_THRESHOLD<span style="color:#f92672">=</span>info          <span style="color:#75715e"># threshold level (error | warning | info | style | ignore | none)</span>
+</span></span><span style="display:flex;"><span>HADOLINT_OVERRIDE_ERROR<span style="color:#f92672">=</span>DL3010,DL3020    <span style="color:#75715e"># comma separated list of rule codes</span>
+</span></span><span style="display:flex;"><span>HADOLINT_OVERRIDE_WARNING<span style="color:#f92672">=</span>DL3010,DL3020  <span style="color:#75715e"># comma separated list of rule codes</span>
+</span></span><span style="display:flex;"><span>HADOLINT_OVERRIDE_INFO<span style="color:#f92672">=</span>DL3010,DL3020     <span style="color:#75715e"># comma separated list of rule codes</span>
+</span></span><span style="display:flex;"><span>HADOLINT_OVERRIDE_STYLE<span style="color:#f92672">=</span>DL3010,DL3020    <span style="color:#75715e"># comma separated list of rule codes</span>
+</span></span><span style="display:flex;"><span>HADOLINT_IGNORE<span style="color:#f92672">=</span>DL3010,DL3020            <span style="color:#75715e"># comma separated list of rule codes</span>
+</span></span><span style="display:flex;"><span>HADOLINT_STRICT_LABELS<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>                 <span style="color:#75715e"># Truthy value e.g. 1, true or yes</span>
+</span></span><span style="display:flex;"><span>HADOLINT_DISABLE_IGNORE_PRAGMA<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>         <span style="color:#75715e"># Truthy value e.g. 1, true or yes</span>
+</span></span><span style="display:flex;"><span>HADOLINT_TRUSTED_REGISTRIES<span style="color:#f92672">=</span>docker.io    <span style="color:#75715e"># comma separated list of registry urls</span>
+</span></span><span style="display:flex;"><span>HADOLINT_REQUIRE_LABELS<span style="color:#f92672">=</span>maintainer:text  <span style="color:#75715e"># comma separated list of label schema items</span>
+</span></span></code></pre></div><h2 id="integrate-it-with-azure-pipelines">Integrate it with Azure Pipelines</h2>
+<p>The easiest way to integrate it with Azure Pipelines is using the docker official image and pass it the application Dockerfile.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">trigger</span>: <span style="color:#ae81ff">none</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">pool</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">vmImage</span>: <span style="color:#e6db74">&#39;ubuntu-latest&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">steps</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Run hadolint linter</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      </span>      <span style="color:#ae81ff">docker run --rm -i --env HADOLINT_FAILURE_THRESHOLD=warning hadolint/hadolint:latest &lt; Dockerfile</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">workingDirectory</span>: <span style="color:#e6db74">&#39;$(System.DefaultWorkingDirectory)&#39;</span>
+</span></span></code></pre></div><h1 id="dockerfile_lint">dockerfile_lint</h1>
+<p>Hadolint already validates that your Dockerfile follows <a href="https://docs.docker.com/develop/develop-images/dockerfile_best-practices/">Docker best practices</a>, so why you need another linter?</p>
+<p>dockerfile_lint is a rule based semantic linter. The linter rules can be used to check file syntax as well as arbitrary semantic and best practices attributes determined by the rule file writer.</p>
+<p>I tend to use dockerfile_lint to validate that the application is configured properly on the Dockerfile.<br>
+For example, if someone is writing a .NET app Dockerfile I want to validate that the base images used are coming from the official Microsoft registry (mcr.microsoft.com) and is not using some unofficial images from docker hub or somewhere else.</p>
+<p>That&rsquo;s why Hadolint and dockerfile_lint are a pretty good match, the first one validates that the Dockerfile is following the best practices, and the second one validates that the app is properly setup using a syntactic analysis.</p>
+<p>One <strong>really important</strong> thing that you need to know about dockerfile_lint is that is somewhat abandoned by Red Hat, they killed it when Project Atomic was abandoned. As it is right now, it works good enough, but do not expect any new releases or bug fixes.</p>
+<h2 id="how-to-use-it-1">How to use it</h2>
+<p>To run it locally:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>npm install -g dockerfile_lint
+</span></span><span style="display:flex;"><span>dockerfile_lint -f &lt;Dockerfile&gt;  -r &lt;linting_rules&gt;.yml
+</span></span></code></pre></div><p>To run it from the official docker image:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker run -it --rm -v $PWD:/root/ <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>           projectatomic/dockerfile-lint <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>           dockerfile_lint <span style="color:#f92672">[</span>-f Dockerfile<span style="color:#f92672">]</span>
+</span></span></code></pre></div><p>Rule files are written in YAML and implememented using regular expressions, the linter runs one instruction of the dockerfile at a time. <br>
+The rule file has 4 sections, a profile section, a general section, a line rule section and a required instruction section.</p>
+<ul>
+<li>More info about how to write rules <a href="https://github.com/projectatomic/dockerfile_lint#extending-and-customizing-rule-files">here</a>.</li>
+<li>A few rules examples <a href="https://github.com/projectatomic/dockerfile_lint/tree/master/sample_rules">here</a>.</li>
+</ul>
+<h2 id="integrate-it-with-azure-pipelines-1">Integrate it with Azure Pipelines</h2>
+<p>The easiest way to integrate it with Azure Pipelines is using NPM to install it and then just run it.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">trigger</span>: <span style="color:#ae81ff">none</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">pool</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">vmImage</span>: <span style="color:#e6db74">&#39;ubuntu-latest&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">steps</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Install semantic linter</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      </span>      <span style="color:#ae81ff">npm install -g dockerfile_lint</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Run semantic linter</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      </span>      <span style="color:#ae81ff">dockerfile_lint -f Dockerfile  -r pipelines/linting_rules.yml</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">workingDirectory</span>: <span style="color:#e6db74">&#39;$(System.DefaultWorkingDirectory)&#39;</span>
+</span></span></code></pre></div><h1 id="practical-example">Practical example</h1>
+<p>In the previous section I gave you a brief introduction about how to use both linters: Hadolint and dockerfile_lint.</p>
+<p>Now, let&rsquo;s make a practical example. I have a .NET6 app Dockerfile that has some issues, I&rsquo;m going to run both linters, fix every linting error and end up with a fully double-checked linted file.</p>
+<p>The next code snippet shows the Dockerfile that I&rsquo;m going to lint.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e">#############</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Stage 1 ##</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#############</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">FROM bitnami/dotnet-sdk:latest AS build</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">WORKDIR /app</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Specify maintainer</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">MAINTAINER mytechramblings.com</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Copy the applications .csproj</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY /src/WebApp/*.csproj ./src/WebApp/</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Restore packages</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet restore &#34;./src/WebApp/WebApp.csproj&#34; \</span>
+</span></span><span style="display:flex;"><span>	-<span style="color:#ae81ff">s &#34;https://api.nuget.org/v3/index.json&#34; \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#ae81ff">runtime rhel-x64</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Copy everything else</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY . ./</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Build the app</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet build &#34;./src/WebApp/WebApp.csproj&#34; \</span>
+</span></span><span style="display:flex;"><span>	-<span style="color:#ae81ff">c Release \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#ae81ff">runtime rhel-x64 \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#ae81ff">self-contained true \</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">/p:PublishSingleFile=true</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Run unit tests</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet test &#34;./test/WebApp.Tests/WebApp.Tests.csproj&#34; \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#66d9ef">no</span>-<span style="color:#ae81ff">restore</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Publish the app</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet publish &#34;./src/WebApp/WebApp.csproj&#34; \</span>
+</span></span><span style="display:flex;"><span>	-<span style="color:#ae81ff">c Release \</span>
+</span></span><span style="display:flex;"><span>	-<span style="color:#ae81ff">o /app/publish \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#ae81ff">runtime rhel-x64 \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#ae81ff">self-contained true \</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">/p:PublishSingleFile=true</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#############</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Stage 2 ##</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#############</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">FROM mcr.microsoft.com/dotnet/runtime-deps:6.0-bullseye-slim</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">WORKDIR /app</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Copy artifact</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY --from=build /app/publish .</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Set entrypoint</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">ENTRYPOINT [&#34;./WebApp&#34;]</span>
+</span></span></code></pre></div><p>It is a multi-stage dockerfile.</p>
+<ul>
+<li>
+<p>Stage one restores, builds and generates the app artifact. As you can see the app is setup to be published as a single file executable.</p>
+</li>
+<li>
+<p>Stage two grabs the app artifact from the previous stage and sets the entrypoint.</p>
+</li>
+</ul>
+<h2 id="1-executing-the-hadolint-linter"><strong>1. Executing the Hadolint linter</strong></h2>
+<p>The first step is executing Hadolint to check if the Dockerfile follows <a href="https://docs.docker.com/develop/develop-images/dockerfile_best-practices/">Docker best practices</a>.<br>
+After running it, this is the output:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>-:4 DL3007 warning: Using latest is prone to errors <span style="color:#66d9ef">if</span> the image will ever update. Pin the version explicitly to a release tag
+</span></span><span style="display:flex;"><span>-:8 DL4000 error: MAINTAINER is deprecated
+</span></span><span style="display:flex;"><span>-:29 DL3059 info: Multiple consecutive <span style="color:#e6db74">`</span>RUN<span style="color:#e6db74">`</span> instructions. Consider consolidation.
+</span></span><span style="display:flex;"><span>-:33 DL3059 info: Multiple consecutive <span style="color:#e6db74">`</span>RUN<span style="color:#e6db74">`</span> instructions. Consider consolidation.
+</span></span></code></pre></div><p>Using the latest tag or no tag at all is not a good practice, to solve the <code>DL3007</code> issue I&rsquo;m going to change:</p>
+<ul>
+<li>The <code>FROM bitnami/dotnet-sdk:latest</code> instruction to <code>FROM bitnami/dotnet-sdk:6</code></li>
+</ul>
+<p>The <code>MAINTAINER</code> instruction is used to define the author of the generated images, but this instruction is deprecated. The <code>LABEL</code> instruction is a much more flexible version of this and you should use it instead. To solve the <code>DL4000</code>  issue I&rsquo;m going to change:</p>
+<ul>
+<li>The <code>MAINTAINER mytechramblings.com</code> instruction to <code>LABEL maintaner=mytechramblings.com</code></li>
+</ul>
+<p>The <code>DL3059</code> rule violation is a false positive error, let me explain why.<br>
+Each <code>RUN</code> instruction creates a new layer in the resulting image. Therefore consolidating consecutive <code>RUN</code> instructions reduces the layer count of an image.<br>
+In our case this is a multi-stage Dockerfile, so we don&rsquo;t care how many layers are being created on stage one, this is mainly because the stage one image is going to be discarded and the only thing that we&rsquo;re going to reuse from that stage is the application artifact.<br>
+To solve this rule I&rsquo;m going to tell Hadolint to ignore it, like this:</p>
+<ul>
+<li><code>docker run --rm -i --env HADOLINT_IGNORE=DL3059 hadolint/hadolint &lt; Dockerfile</code></li>
+</ul>
+<p>After solving those 3 errors Hadolint returns no error at all.</p>
+<h2 id="2-creating-the-dockerfile_lint-rules"><strong>2. Creating the dockerfile_lint rules</strong></h2>
+<p>The next step is executing dockefile_lint, but first we need to create a rules file.</p>
+<p>The Dockerfile I showed you above creates an image that runs just fine, but it doesn&rsquo;t mean that the application is setup properly or that the Dockerfile is compliant with some of my own or my company constraints.</p>
+<p>To keep this example going I made up a few rules that I want to enforce on my Dockerfile, here&rsquo;s the complete list:</p>
+<ul>
+<li>The base images should come from the official Microsoft repository (mcr.microsoft.com)</li>
+<li>You should restore the NuGet packages explicitly using the <code>dotnet restore</code> command, that means that there is not need for <code>dotnet build</code>, <code>dotnet test</code> and  <code>dotnet publish</code>  to restore them again.</li>
+<li>The artifact size should be as small as possible.</li>
+<li>The app must be published as a single file executable.</li>
+<li>The app must be published as a self-contained application.</li>
+<li>The app will be running on a machine running Debian, that means that the <code>linux-x64</code> runtime needs to be set when generating the app artifact.</li>
+<li>There should be at least one <code>EXPOSE</code>, <code>ENTRYPOINT</code> and <code>COPY</code> command on the Dockerfile.</li>
+</ul>
+<p>The next code snippet shows the resulting rules file that I&rsquo;ll be using to enforce the above list.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">profile</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#34;WebApp&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">description</span>: <span style="color:#e6db74">&#34;Linting profile for WebApp application. Checks dockerfile semantically.&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">line_rules</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">FROM</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">paramSyntaxRegex</span>: <span style="color:#ae81ff">/.+/</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">rules</span>:
+</span></span><span style="display:flex;"><span>      -
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">label</span>: <span style="color:#e6db74">&#34;using_mcr_official_repository&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">regex</span>: <span style="color:#ae81ff">/mcr.microsoft.com/</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">inverse_rule</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">level</span>: <span style="color:#e6db74">&#34;error&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">message</span>: <span style="color:#e6db74">&#34;Base Image must be from the official Microsoft registry&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">description</span>: <span style="color:#e6db74">&#34;The Official .NET Docker images are Docker images created and optimized by Microsoft. They are publicly available in the Microsoft MCR repository&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">reference_url</span>:
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#34;https://github.com/microsoft/containerregistry&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">RUN</span>: 
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">paramSyntaxRegex</span>: <span style="color:#ae81ff">/.+/</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">rules</span>: 
+</span></span><span style="display:flex;"><span>      - 
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">label</span>: <span style="color:#e6db74">&#34;use_no_restore_flag_when_running_dotnet_build&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">regex</span>: <span style="color:#ae81ff">/dotnet build(?!.+--no-restore)/g</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">level</span>: <span style="color:#e6db74">&#34;error&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">message</span>: <span style="color:#e6db74">&#34;When using dotnet build you must use the no-restore flag&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">description</span>: <span style="color:#e6db74">&#34;The --no-restore option is used to disable implicit restore, when using the dotnet restore command you don&#39;t need to restore the packages a second time&#34;</span> 
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">reference_url</span>: 
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#34;https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-build&#34;</span>
+</span></span><span style="display:flex;"><span>      - 
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">label</span>: <span style="color:#e6db74">&#34;use_no_restore_flag_when_running_dotnet_test&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">regex</span>: <span style="color:#ae81ff">/dotnet test(?!.+--no-restore)/g</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">level</span>: <span style="color:#e6db74">&#34;error&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">message</span>: <span style="color:#e6db74">&#34;When using dotnet test you must use the no-restore flag&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">description</span>: <span style="color:#e6db74">&#34;The --no-restore option is used to disable implicit restore, when using the dotnet restore command you don&#39;t need to restore the packages a second time&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">reference_url</span>: 
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#34;https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-build&#34;</span>
+</span></span><span style="display:flex;"><span>      - 
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">label</span>: <span style="color:#e6db74">&#34;use_no_build_flag_when_running_dotnet_publish&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">regex</span>: <span style="color:#ae81ff">/dotnet publish(?!.+--no-build)/g</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">level</span>: <span style="color:#e6db74">&#34;error&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">message</span>: <span style="color:#e6db74">&#34;When running dotnet publish you must use the no-build flag&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">description</span>: <span style="color:#e6db74">&#34;The --no-build is used to avoid building the project before publishing. It also implicitly sets the --no-restore flag&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">reference_url</span>: 
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#34;https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-publish&#34;</span>
+</span></span><span style="display:flex;"><span>      - 
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">label</span>: <span style="color:#e6db74">&#34;no_build_without_single_executable&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">regex</span>: <span style="color:#ae81ff">/dotnet build(?!.+PublishSingleFile=true)/g</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">level</span>: <span style="color:#e6db74">&#34;error&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">message</span>: <span style="color:#e6db74">&#34;Application artifact must be published as a single self contained executable&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">description</span>: <span style="color:#e6db74">&#34;Bundling all application-dependent files into a single binary provides an application developer with the attractive option to deploy and distribute the application as a single file&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">reference_url</span>: 
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#34;https://docs.microsoft.com/en-us/dotnet/core/deploying/single-file&#34;</span>
+</span></span><span style="display:flex;"><span>      - 
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">label</span>: <span style="color:#e6db74">&#34;no_publish_without_single_executable&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">regex</span>: <span style="color:#ae81ff">/dotnet publish(?!.+PublishSingleFile=true)/g</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">level</span>: <span style="color:#e6db74">&#34;error&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">message</span>: <span style="color:#e6db74">&#34;Application artifact must be published as a single self contained executable&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">description</span>: <span style="color:#e6db74">&#34;Bundling all application-dependent files into a single binary provides an application developer with the attractive option to deploy and distribute the application as a single file&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">reference_url</span>: 
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#34;https://docs.microsoft.com/en-us/dotnet/core/deploying/single-file&#34;</span>
+</span></span><span style="display:flex;"><span>      - 
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">label</span>: <span style="color:#e6db74">&#34;no_build_without_self_contained&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">regex</span>: <span style="color:#ae81ff">/dotnet build(?!.+self-contained true)/g</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">level</span>: <span style="color:#e6db74">&#34;error&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">message</span>: <span style="color:#e6db74">&#34;The application must be published as a self contained artifact&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">description</span>: <span style="color:#e6db74">&#34;Publishing your app as self-contained produces a platform-specific executable. The output publishing folder contains all components of the app, including the .NET libraries and target runtime&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">reference_url</span>: 
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#34;https://docs.microsoft.com/en-us/dotnet/core/deploying/&#34;</span>
+</span></span><span style="display:flex;"><span>      - 
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">label</span>: <span style="color:#e6db74">&#34;no_publish_without_self_contained&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">regex</span>: <span style="color:#ae81ff">/dotnet publish(?!.+self-contained true)/g</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">level</span>: <span style="color:#e6db74">&#34;error&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">message</span>: <span style="color:#e6db74">&#34;The application must be published as a self contained artifact&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">description</span>: <span style="color:#e6db74">&#34;Publishing your app as self-contained produces a platform-specific executable. The output publishing folder contains all components of the app, including the .NET libraries and target runtime&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">reference_url</span>: 
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#34;https://docs.microsoft.com/en-us/dotnet/core/deploying/&#34;</span>
+</span></span><span style="display:flex;"><span>      - 
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">label</span>: <span style="color:#e6db74">&#34;no_publish_without_trimming&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">regex</span>: <span style="color:#ae81ff">/dotnet publish(?!.+PublishTrimmed=true)/g</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">level</span>: <span style="color:#e6db74">&#34;error&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">message</span>: <span style="color:#e6db74">&#34;Application artifact must be trimmed when published&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">description</span>: <span style="color:#e6db74">&#34;The trim-self-contained deployment model is a specialized version of the self-contained deployment model that is optimized to reduce deployment size&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">reference_url</span>: 
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#34;https://docs.microsoft.com/en-us/dotnet/core/deploying/trim-self-contained&#34;</span>   
+</span></span><span style="display:flex;"><span>      - 
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">label</span>: <span style="color:#e6db74">&#34;no_restore_without_using_linux_x64_runtime&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">regex</span>: <span style="color:#ae81ff">/dotnet restore(?!.+runtime linux-x64)/g</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">level</span>: <span style="color:#e6db74">&#34;error&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">message</span>: <span style="color:#e6db74">&#34;The application must be publish as a linux-64 platform-specific artifact&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">description</span>: <span style="color:#e6db74">&#34;The runtime attribute is used to identify the target platforms where the application runs&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">reference_url</span>: 
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#34;https://docs.microsoft.com/en-us/dotnet/core/rid-catalog&#34;</span>   
+</span></span><span style="display:flex;"><span>      - 
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">label</span>: <span style="color:#e6db74">&#34;no_build_without_using_linux_x64_runtime&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">regex</span>: <span style="color:#ae81ff">/dotnet build(?!.+runtime linux-x64)/g</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">level</span>: <span style="color:#e6db74">&#34;error&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">message</span>: <span style="color:#e6db74">&#34;The application must be publish as a linux-64 platform-specific artifact&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">description</span>: <span style="color:#e6db74">&#34;The runtime attribute is used to identify the target platforms where the application runs&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">reference_url</span>: 
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#34;https://docs.microsoft.com/en-us/dotnet/core/rid-catalog&#34;</span> 
+</span></span><span style="display:flex;"><span>      - 
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">label</span>: <span style="color:#e6db74">&#34;no_publish_without_using_linux_x64_runtime&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">regex</span>: <span style="color:#ae81ff">/dotnet publish(?!.+runtime linux-x64)/g</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">level</span>: <span style="color:#e6db74">&#34;error&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">message</span>: <span style="color:#e6db74">&#34;The application must be publish as a linux-64 platform-specific artifact&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">description</span>: <span style="color:#e6db74">&#34;The runtime attribute is used to identify the target platforms where the application runs&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">reference_url</span>: 
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#34;https://docs.microsoft.com/en-us/dotnet/core/rid-catalog&#34;</span>     
+</span></span><span style="display:flex;"><span><span style="color:#f92672">required_instructions</span>: 
+</span></span><span style="display:flex;"><span>    - 
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">instruction</span>: <span style="color:#e6db74">&#34;EXPOSE&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">count</span>: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">level</span>: <span style="color:#e6db74">&#34;error&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">message</span>: <span style="color:#e6db74">&#34;There is no &#39;EXPOSE&#39; instruction&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">description</span>: <span style="color:#e6db74">&#34;Without exposed ports how will the service of the container be accessed?&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">reference_url</span>: 
+</span></span><span style="display:flex;"><span>        - <span style="color:#e6db74">&#34;https://docs.docker.com/engine/reference/builder/&#34;</span>
+</span></span><span style="display:flex;"><span>        - <span style="color:#e6db74">&#34;#expose&#34;</span>
+</span></span><span style="display:flex;"><span>    - 
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">instruction</span>: <span style="color:#e6db74">&#34;ENTRYPOINT&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">count</span>: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">level</span>: <span style="color:#e6db74">&#34;error&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">message</span>: <span style="color:#e6db74">&#34;There is no &#39;ENTRYPOINT&#39; instruction&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">description</span>: <span style="color:#e6db74">&#34;None&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">reference_url</span>: 
+</span></span><span style="display:flex;"><span>        - <span style="color:#e6db74">&#34;https://docs.docker.com/engine/reference/builder/&#34;</span>
+</span></span><span style="display:flex;"><span>        - <span style="color:#e6db74">&#34;#entrypoint&#34;</span>
+</span></span><span style="display:flex;"><span>    - 
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">instruction</span>: <span style="color:#e6db74">&#34;COPY&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">count</span>: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">level</span>: <span style="color:#e6db74">&#34;error&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">message</span>: <span style="color:#e6db74">&#34;There is no &#39;COPY&#39; instruction&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">description</span>: <span style="color:#e6db74">&#34;None&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">reference_url</span>: 
+</span></span><span style="display:flex;"><span>        - <span style="color:#e6db74">&#34;https://docs.docker.com/engine/reference/builder/&#34;</span>
+</span></span><span style="display:flex;"><span>        - <span style="color:#e6db74">&#34;#copy&#34;</span>
+</span></span></code></pre></div><h2 id="3-executing-the-dockerfile_lint-linter"><strong>3. Executing the dockerfile_lint linter</strong></h2>
+<p>After running it using the rules list from the previous section, this is the output:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Analyzing Dockerfile</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>--------ERRORS---------
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Line 7: -&gt; FROM bitnami/dotnet-sdk:6 AS build
+</span></span><span style="display:flex;"><span>ERROR: Base Image must be from the official Microsoft registry. The Official .NET Docker images are Docker images created and optimized by Microsoft. They are publicly available in the Microsoft MCR repository.
+</span></span><span style="display:flex;"><span>Reference -&gt; https://github.com/microsoft/containerregistry
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Line 27: -&gt; RUN dotnet restore <span style="color:#e6db74">&#34;./src/WebApp/WebApp.csproj&#34;</span>     -s <span style="color:#e6db74">&#34;https://api.nuget.org/v3/index.json&#34;</span>        --runtime rhel-x64
+</span></span><span style="display:flex;"><span>ERROR: The application must be publish as a linux-64 platform-specific artifact. The runtime attribute is used to identify the target platforms where the application runs.
+</span></span><span style="display:flex;"><span>Reference -&gt; https://docs.microsoft.com/en-us/dotnet/core/rid-catalog
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Line 43: -&gt; RUN dotnet build <span style="color:#e6db74">&#34;./src/WebApp/WebApp.csproj&#34;</span>       -c Release      --runtime rhel-x64      --self-contained true   /p:PublishSingleFile<span style="color:#f92672">=</span>true
+</span></span><span style="display:flex;"><span>ERROR: When using dotnet build you must use the no-restore flag. The --no-restore option is used to disable implicit restore, when using the dotnet restore command you <span style="color:#66d9ef">do</span> not need to restore the packages a second time.
+</span></span><span style="display:flex;"><span>Reference -&gt; https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-build
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Line 43: -&gt; RUN dotnet build <span style="color:#e6db74">&#34;./src/WebApp/WebApp.csproj&#34;</span>       -c Release      --runtime rhel-x64      --self-contained true   /p:PublishSingleFile<span style="color:#f92672">=</span>true
+</span></span><span style="display:flex;"><span>ERROR: The application must be publish as a linux-64 platform-specific artifact. The runtime attribute is used to identify the target platforms where the application runs.
+</span></span><span style="display:flex;"><span>Reference -&gt; https://docs.microsoft.com/en-us/dotnet/core/rid-catalog
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Line 65: -&gt; RUN dotnet publish <span style="color:#e6db74">&#34;./src/WebApp/WebApp.csproj&#34;</span>     -c Release      -o /app/publish         --runtime rhel-x64      --self-contained true   /p:PublishSingleFile<span style="color:#f92672">=</span>true
+</span></span><span style="display:flex;"><span>ERROR: When running dotnet publish you must use the no-build flag. The --no-build is used to avoid building the project before publishing. It also implicitly sets the --no-restore flag.
+</span></span><span style="display:flex;"><span>Reference -&gt; https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-publish
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Line 65: -&gt; RUN dotnet publish <span style="color:#e6db74">&#34;./src/WebApp/WebApp.csproj&#34;</span>     -c Release      -o /app/publish         --runtime rhel-x64      --self-contained true   /p:PublishSingleFile<span style="color:#f92672">=</span>true
+</span></span><span style="display:flex;"><span>ERROR: Application artifact must be trimmed when published. The trim-self-contained deployment model is a specialized version of the self-contained deployment model that is optimized to reduce deployment size.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Reference -&gt; https://docs.microsoft.com/en-us/dotnet/core/deploying/trim-self-contained
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Line 65: -&gt; RUN dotnet publish <span style="color:#e6db74">&#34;./src/WebApp/WebApp.csproj&#34;</span>     -c Release      -o /app/publish         --runtime rhel-x64      --self-contained true   /p:PublishSingleFile<span style="color:#f92672">=</span>true
+</span></span><span style="display:flex;"><span>ERROR: The application must be publish as a linux-64 platform-specific artifact. The runtime attribute is used to identify the target platforms where the application runs.
+</span></span><span style="display:flex;"><span>Reference -&gt; https://docs.microsoft.com/en-us/dotnet/core/rid-catalog
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ERROR: There is no <span style="color:#e6db74">&#39;EXPOSE&#39;</span> instruction. Without exposed ports how will the service of the container be accessed?.
+</span></span><span style="display:flex;"><span>Reference -&gt; https://docs.docker.com/engine/reference/builder/#expose
+</span></span></code></pre></div><p>As I said earlier, the Dockerfile I showed you at the beginning of this example creates an image that runs just fine, but as you can see having a working and running image doesn&rsquo;t mean that the Dockerfile is free of problems or the application is tuned up correctly.</p>
+<p>Let&rsquo;s start fixing the errors:</p>
+<ul>
+<li>
+<p>The base image should come from the official Microsoft repository, which means changing this instruction  <code>FROM bitnami/dotnet-sdk:6 AS build</code> to <code>FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build</code></p>
+</li>
+<li>
+<p>The application must use a <code>linux-x64</code> runtime instead of the <code>rhel-x64</code> runtime, which means changing the runtime attribute on the <code>dotnet restore</code>, <code>dotnet build</code> and <code>dotnet publish</code> commands.</p>
+</li>
+<li>
+<p>There is no need to restore the NuGet packages on each dotnet command, which means setting the <code>--no-restore</code> attribute on the <code>dotnet build</code> command.</p>
+</li>
+<li>
+<p>There is no need to restore the NuGet packages and build the project again when running the <code>dotnet publish</code> command, which means setting the <code>--no-build</code> attribute on the <code>dotnet publish</code> command.</p>
+</li>
+<li>
+<p>One strategy to reduce the size of the artifact is to trim the artifact. To do it we need to set the <code>/p:PublishTrimmed=true</code> attribute when running the <code>dotnet publish</code> command.</p>
+</li>
+<li>
+<p>It might not be needed, but it is always a good practice to <code>EXPOSE</code> which ports are going to be used, so on stage 2 we&rsquo;re going to add the <code>EXPOSE 80</code> and <code>EXPOSE 443</code> instructions.</p>
+</li>
+</ul>
+<p>Here&rsquo;s the resulting Dockerfile after applying all this fixes.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e">#############</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Stage 1 ##</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#############</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">WORKDIR /app</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Set the maintainer</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">LABEL maintaner=mytechramblings.com</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Copy the applications .csproj</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY /src/WebApp/*.csproj ./src/WebApp/</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Restore packages</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet restore &#34;./src/WebApp/WebApp.csproj&#34; \</span>
+</span></span><span style="display:flex;"><span>	-<span style="color:#ae81ff">s &#34;https://api.nuget.org/v3/index.json&#34; \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#ae81ff">runtime linux-x64</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Copy everything else</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY . ./</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Build the app</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet build &#34;./src/WebApp/WebApp.csproj&#34; \</span>
+</span></span><span style="display:flex;"><span>	-<span style="color:#ae81ff">c Release \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#ae81ff">runtime linux-x64 \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#66d9ef">no</span>-<span style="color:#ae81ff">restore \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#ae81ff">self-contained true \</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">/p:PublishSingleFile=true</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Run unit tests</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet test &#34;./test/WebApp.Tests/WebApp.Tests.csproj&#34; \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#66d9ef">no</span>-<span style="color:#ae81ff">restore</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Publish the app</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet publish &#34;./src/WebApp/WebApp.csproj&#34; \</span>
+</span></span><span style="display:flex;"><span>	-<span style="color:#ae81ff">c Release \</span>
+</span></span><span style="display:flex;"><span>	-<span style="color:#ae81ff">o /app/publish \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#ae81ff">runtime linux-x64 \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#66d9ef">no</span>-<span style="color:#ae81ff">restore \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#66d9ef">no</span>-<span style="color:#ae81ff">build \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#ae81ff">self-contained true \</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">/p:PublishSingleFile=true \</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">/p:PublishTrimmed=true</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#############</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Stage 2 ##</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#############</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">FROM mcr.microsoft.com/dotnet/runtime-deps:6.0-bullseye-slim</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">WORKDIR /app</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Expose ports</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">EXPOSE 80</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">EXPOSE 443</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Copy artifact</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY --from=build /app/publish .</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Set entrypoint</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">ENTRYPOINT [&#34;./WebApp&#34;]</span>
+</span></span></code></pre></div><p>If we try to execute dockerfile_lint again, there are no errors.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Analyzing Dockerfile</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Check passed!
+</span></span></code></pre></div><h1 id="linting-the-dockerfile-using-azure-pipelines">Linting the Dockerfile using Azure Pipelines</h1>
+<p>Now it is time to put everything together on an Azure DevOps CI/CD pipeline.</p>
+<p>I&rsquo;m going to put together a pipeline that not only runs the linters, but it also builds the application image if there are no linting errors and finally scans the resulting image using a security scanner.</p>
+<p>Here&rsquo;s how it looks:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">trigger</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">branches</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">include</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">main</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">paths</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">exclude</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">pipelines/*</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">test/*</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">README.md</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">.dockerignore</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">.gitignore</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">variables</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">appName</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">value</span>: <span style="color:#e6db74">&#39;WebApp&#39;</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">tag</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">value</span>: <span style="color:#e6db74">&#39;$(Build.BuildId)&#39;</span> 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">pool</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">vmImage</span>: <span style="color:#e6db74">&#39;ubuntu-latest&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">steps</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Run hadolint linter</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      </span>      <span style="color:#ae81ff">docker run --rm -i --env HADOLINT_FAILURE_THRESHOLD=info --env HADOLINT_IGNORE=DL3059 hadolint/hadolint:latest &lt; Dockerfile</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">workingDirectory</span>: <span style="color:#e6db74">&#39;$(System.DefaultWorkingDirectory)&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Install semantic linter</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      </span>      <span style="color:#ae81ff">npm install -g dockerfile_lint</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Run semantic linter</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      </span>      <span style="color:#ae81ff">dockerfile_lint -f Dockerfile  -r pipelines/linting_rules.yml</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">workingDirectory</span>: <span style="color:#e6db74">&#39;$(System.DefaultWorkingDirectory)&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Create application image</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      </span>      <span style="color:#ae81ff">docker build -t  ${{ lower(variables.appName) }}:$(tag) .</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">workingDirectory</span>: <span style="color:#e6db74">&#39;$(System.DefaultWorkingDirectory)&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Download Trivy Scanner</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      </span>      <span style="color:#ae81ff">curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Run security scanner</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      trivy image --exit-code 0 --severity LOW,MEDIUM,HIGH --no-progress ${{ lower(variables.appName) }}:$(tag)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      trivy image --exit-code 1 --severity CRITICAL --no-progress ${{ lower(variables.appName) }}:$(tag)</span>      
+</span></span></code></pre></div>
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://www.mytechramblings.com/posts/how-to-bootstrap-terraform-and-azdo-to-start-deploying-iac-to-azure/">
+                  <span class="button__text">How to bootstrap Terraform and Azure DevOps to start deploying your infrastructure as code to Azure</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2022 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>Theme created by <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://www.mytechramblings.com/assets/main.js"></script>
+<script src="https://www.mytechramblings.com/assets/prism.js"></script>
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('carlospons', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Donate',
+    'floating-chat.donateButton.background-color': '#ff5f5f',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
+
+      
+    </div>
+
+    
+      
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-170300931-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+    
+  </body>
+</html>
