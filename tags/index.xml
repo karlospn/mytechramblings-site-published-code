@@ -9,10 +9,90 @@
     <description>Recent content in Tags on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 16 May 2022 10:05:01 +0200</lastBuildDate>
+    <lastBuildDate>Tue, 14 Jun 2022 10:10:47 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>azure</title>
+      <link>https://www.mytechramblings.com/tags/azure/</link>
+      <pubDate>Tue, 14 Jun 2022 10:10:47 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/azure/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>cloud</title>
+      <link>https://www.mytechramblings.com/tags/cloud/</link>
+      <pubDate>Tue, 14 Jun 2022 10:10:47 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/cloud/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>dns</title>
+      <link>https://www.mytechramblings.com/tags/dns/</link>
+      <pubDate>Tue, 14 Jun 2022 10:10:47 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/dns/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>terraform</title>
+      <link>https://www.mytechramblings.com/tags/terraform/</link>
+      <pubDate>Tue, 14 Jun 2022 10:10:47 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/terraform/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>containers</title>
@@ -115,26 +195,6 @@
     </item>
     
     <item>
-      <title>azure</title>
-      <link>https://www.mytechramblings.com/tags/azure/</link>
-      <pubDate>Tue, 19 Apr 2022 12:30:10 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/azure/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
       <title>iac</title>
       <link>https://www.mytechramblings.com/tags/iac/</link>
       <pubDate>Tue, 19 Apr 2022 12:30:10 +0200</pubDate>
@@ -160,26 +220,6 @@
       <pubDate>Tue, 19 Apr 2022 12:30:10 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/powershell/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>terraform</title>
-      <link>https://www.mytechramblings.com/tags/terraform/</link>
-      <pubDate>Tue, 19 Apr 2022 12:30:10 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/terraform/</guid>
       <description>
         
           

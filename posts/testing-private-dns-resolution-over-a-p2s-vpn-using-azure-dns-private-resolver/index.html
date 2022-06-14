@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>Testing Azure Private Endpoints DNS resolution over an Azure P2S VPN connection :: my tech ramblings — A blog for writing about my techie ramblings</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Just show me the code
+As always, if you don’t care about the post I have uploaded the source code on my Github.
+Nowadays is common knowledge that there is an issue when trying to resolve the DNS of a private endpoint while connected to a Point-to-Site VPN.
+This problem happens because a private DNS zone will not work over an Azure P2S VPN connection, which means that by default you cannot resolve a private DNS zone when connected over a P2S VPN."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://www.mytechramblings.com/posts/testing-private-dns-resolution-over-a-p2s-vpn-using-azure-dns-private-resolver/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/assets/style.css">
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.mytechramblings.com/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://www.mytechramblings.com/img/favicon.png">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Testing Azure Private Endpoints DNS resolution over an Azure P2S VPN connection"/>
+<meta name="twitter:description" content="The purpose of this post is to try out the new Azure DNS Private Resolver resource. To test it, we&#39;re going to try to solve one of the current issues that Azure VPN has right now: when connected over an Azure P2S VPN the private DNS zone resolution does not work. This becomes quite problematic when you&#39;re using private endpoints to secure some private resources, because there is no easy way to resolve the private endpoint DNS when connected to a P2S VPN."/>
+
+
+
+<meta property="og:title" content="Testing Azure Private Endpoints DNS resolution over an Azure P2S VPN connection" />
+<meta property="og:description" content="The purpose of this post is to try out the new Azure DNS Private Resolver resource. To test it, we&#39;re going to try to solve one of the current issues that Azure VPN has right now: when connected over an Azure P2S VPN the private DNS zone resolution does not work. This becomes quite problematic when you&#39;re using private endpoints to secure some private resources, because there is no easy way to resolve the private endpoint DNS when connected to a P2S VPN." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.mytechramblings.com/posts/testing-private-dns-resolution-over-a-p2s-vpn-using-azure-dns-private-resolver/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-06-14T10:10:47+02:00" />
+<meta property="article:modified_time" content="2022-06-14T10:10:47+02:00" /><meta property="og:site_name" content="my tech ramblings" />
+
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://www.mytechramblings.com/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">my tech ramblings</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/testing-private-dns-resolution-over-a-p2s-vpn-using-azure-dns-private-resolver/">Testing Azure Private Endpoints DNS resolution over an Azure P2S VPN connection</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2022-06-14
+        </span>
+
+        
+          
+            
+
+
+
+          
+        
+      
+
+      
+      
+        <span class="post-read-time">— 10 min read</span>
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          #<a href="https://www.mytechramblings.com/tags/azure/">azure</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/cloud/">cloud</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/terraform/">terraform</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/dns/">dns</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <blockquote>
+<p><strong>Just show me the code</strong><br>
+As always, if you don’t care about the post I have uploaded the source code on my <a href="https://github.com/karlospn/testing-private-dns-resolution-using-azure-dns-private-resolver">Github</a>.</p>
+</blockquote>
+<p>Nowadays is common knowledge that there is an issue when trying to resolve the DNS of a private endpoint while connected to a Point-to-Site VPN.</p>
+<p>This problem happens because <strong>a private DNS zone will not work over an Azure P2S VPN connection</strong>, which means that by default you cannot resolve a private DNS zone when connected over a P2S VPN. <br>
+This becomes quite problematic when you&rsquo;re using private endpoints to secure some private resources, because there is no easy way to resolve the private endpoint DNS when connected to a VPN.</p>
+<p>This issue is not exclusive of P2S VPN connections, it also happens if you try to resolve a private resource from an on-premise network connected via ExpressRoute or a VPN S2S.</p>
+<p>There are a few options available to solve this issue, and in this post I plan to talk a little bit about them.</p>
+<p>I didn&rsquo;t plan to write this post, mainly because I didn&rsquo;t find it interesting enough, but the new <a href="https://azure.microsoft.com/en-us/blog/announcing-azure-dns-private-resolver-now-in-preview/">Azure DNS Private Resolver</a> resource seems like a potential solution to this issue and I wanted to test it, so at the end I have decided that writing a little bit about this topic might become helpful to someone.</p>
+<h1 id="what-is-the-problem-when-trying-to-resolve-a-private-resource-over-an-azure-vpn-p2s-connection">What is the problem when trying to resolve a private resource over an Azure VPN P2S connection</h1>
+<p>First of all, let me explain a little more in-depth what this problem is all about.<br>
+I&rsquo;m going to use a simplified example, so you can have a better understanding of what&rsquo;s the issue here.</p>
+<p><img src="/img/vpn-p2s-problem-diagram.png" alt="example-diagram"></p>
+<p>As you can see this is a pretty basic setup, we have a public app where customers can connect via public internet, this public app uses a few private resources, to be more precise, it makes a call to another app and it also needs a database to persists data.</p>
+<p>It makes no sense from the database and the second app to be accessible from anywhere on the internet, so we&rsquo;re going to make them private. To make both resources private we&rsquo;re going to use Azure Private Endpoints.</p>
+<p>When a private endpoint is created, Azure changes the public name resolution by adding another CNAME record pointing towards the dedicated FQDN of the private endpoint. <br>
+By default, it also creates a private DNS zone, corresponding to the <code>privatelink</code> subdomain, with the DNS A resource record for the private endpoint.</p>
+<p>When you resolve the resource endpoint URL from outside the VNet with the private endpoint, it resolves to the public endpoint of the resoucee. When resolved from the VNet hosting the private endpoint, the resource endpoint URL resolves to the private endpoint&rsquo;s IP address.</p>
+<p>It might sound a little bit complicated, but it&rsquo;s quite simple, let me show you a quick example to help you better understand how private endpoints works:</p>
+<h2 id="example-about-how-an-azure-private-endpoint-works">Example about how an Azure Private Endpoint works</h2>
+<ul>
+<li>I have created a new App Service, which is publicly accessible from the internet.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ nslookup dns-resolver-test.azurewebsites.net
+</span></span><span style="display:flex;"><span>Servidor:  ...
+</span></span><span style="display:flex;"><span>Address:  ...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Respuesta no autoritativa:
+</span></span><span style="display:flex;"><span>Nombre:  waws-prod-am2-439-397b.westeurope.cloudapp.azure.com
+</span></span><span style="display:flex;"><span>Address:  20.50.2.56
+</span></span><span style="display:flex;"><span>Aliases:  dns-resolver-test.azurewebsites.net
+</span></span><span style="display:flex;"><span>          waws-prod-am2-439.sip.azurewebsites.windows.net
+</span></span></code></pre></div><ul>
+<li>Now I create a private endpoint to make the app private. As you can see Azure changes the public name resolution by adding another CNAME record pointing towards the dedicated FQDN of the private endpoint.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ nslookup dns-resolver-test.azurewebsites.net
+</span></span><span style="display:flex;"><span>Servidor:  ...
+</span></span><span style="display:flex;"><span>Address:  ...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Respuesta no autoritativa:
+</span></span><span style="display:flex;"><span>Nombre:  waws-prod-am2-439-397b.westeurope.cloudapp.azure.com
+</span></span><span style="display:flex;"><span>Address:  20.50.2.56
+</span></span><span style="display:flex;"><span>Aliases:  dns-resolver-test.azurewebsites.net
+</span></span><span style="display:flex;"><span>          dns-resolver-test.privatelink.azurewebsites.net
+</span></span><span style="display:flex;"><span>          waws-prod-am2-439.sip.azurewebsites.windows.net
+</span></span></code></pre></div><ul>
+<li>When the private endpoint was created a private DNS zone was created with the corresponding <code>privatelink</code> subdomain. <br>
+This DNS zone contains an A-record that points the private endpoint address to the private IP that is associated for the resource. Also this private DNS zone has been attached to the VNET.</li>
+</ul>
+<p><img src="/img/private-endpoint-dns-zone.png" alt="private-endpoint-dns-zone"></p>
+<ul>
+<li>Now when you try to resolve it from a client that&rsquo;s inside the VNET, it will response with the private IP address.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ nslookup dns-resolver-test.azurewebsites.net
+</span></span><span style="display:flex;"><span>Server:  UnKnown
+</span></span><span style="display:flex;"><span>Address:  168.63.129.16
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Non-authoritative answer:
+</span></span><span style="display:flex;"><span>Name:    dns-resolver-test.privatelink.azurewebsites.net
+</span></span><span style="display:flex;"><span>Address:  10.0.0.4
+</span></span><span style="display:flex;"><span>Aliases:  dns-resolver-test.azurewebsites.net
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ curl -I dns-resolver-test.azurewebsites.net
+</span></span><span style="display:flex;"><span>HTTP/1.1 <span style="color:#ae81ff">200</span> OK
+</span></span><span style="display:flex;"><span>Content-Length: <span style="color:#ae81ff">3161</span>
+</span></span><span style="display:flex;"><span>Content-Type: text/html
+</span></span><span style="display:flex;"><span>Last-Modified: Thu, <span style="color:#ae81ff">27</span> Aug <span style="color:#ae81ff">2020</span> 23:23:23 GMT
+</span></span><span style="display:flex;"><span>Accept-Ranges: bytes
+</span></span><span style="display:flex;"><span>ETag: <span style="color:#e6db74">&#34;5f48406b-c59&#34;</span>
+</span></span><span style="display:flex;"><span>Server: nginx/1.19.2
+</span></span><span style="display:flex;"><span>Date: Sun, <span style="color:#ae81ff">05</span> Jun <span style="color:#ae81ff">2022</span> 17:21:50 GMT
+</span></span></code></pre></div><ul>
+<li>If you try to resolve it from a client that&rsquo;s outside of the VNET, it will respond with the public IP address. Bear in mind that if you try to invoke the app from outside the VNET it will thrown an error.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ nslookup dns-resolver-test.azurewebsites.net
+</span></span><span style="display:flex;"><span>Servidor:  ...
+</span></span><span style="display:flex;"><span>Address:  ...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Respuesta no autoritativa:
+</span></span><span style="display:flex;"><span>Nombre:  waws-prod-am2-439-397b.westeurope.cloudapp.azure.com
+</span></span><span style="display:flex;"><span>Address:  20.50.2.56
+</span></span><span style="display:flex;"><span>Aliases:  dns-resolver-test.azurewebsites.net
+</span></span><span style="display:flex;"><span>          dns-resolver-test.privatelink.azurewebsites.net
+</span></span><span style="display:flex;"><span>          waws-prod-am2-439.sip.azurewebsites.windows.net
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ curl -I dns-resolver-test.azurewebsites.net
+</span></span><span style="display:flex;"><span>HTTP/1.1 <span style="color:#ae81ff">403</span> Ip Forbidden
+</span></span><span style="display:flex;"><span>Content-Length: <span style="color:#ae81ff">1895</span>
+</span></span><span style="display:flex;"><span>Content-Type: text/html
+</span></span><span style="display:flex;"><span>x-ms-forbidden-ip: 71.11.124.148
+</span></span><span style="display:flex;"><span>Date: Sun, <span style="color:#ae81ff">05</span> Jun <span style="color:#ae81ff">2022</span> 17:18:48 GMT
+</span></span></code></pre></div><p>Now, image the scenario where someone needs to access those private resources, for that purpose you put in place a Point-to-Site VPN, but if you try to invoke some of the private resources that are using a private endpoint while connected to the VPN you&rsquo;ll get an error.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ curl -I dns-resolver-test.azurewebsites.net
+</span></span><span style="display:flex;"><span>HTTP/1.1 <span style="color:#ae81ff">403</span> Ip Forbidden
+</span></span><span style="display:flex;"><span>Content-Length: <span style="color:#ae81ff">1895</span>
+</span></span><span style="display:flex;"><span>Content-Type: text/html
+</span></span><span style="display:flex;"><span>x-ms-forbidden-ip: 71.11.124.148
+</span></span><span style="display:flex;"><span>Date: Sun, <span style="color:#ae81ff">05</span> Jun <span style="color:#ae81ff">2022</span> 17:24:36 GMT
+</span></span></code></pre></div><p>That&rsquo;s because when connected over an Azure P2S VPN connection the private DNS zone resolution does not work, because it tries to connect using the public endpoint instead of the private endpoint private IP.</p>
+<p>The same problem happens if you&rsquo;re trying to access a private Azure resource from an on-premise network connected to Azure via Express Route or VPN.</p>
+<p>To solve it, there are a few solutions available and in the next sections I&rsquo;m going to talk about them.</p>
+<h1 id="solution-1-modify-the-hosts-file-on-your-local-machine">Solution 1: Modify the hosts file on your local machine</h1>
+<p>The hosts file is used to override the DNS system so that a browser or other application on your local machine can be redirected to a specific IP address.</p>
+<p>This is the easiest solution if you want to invoke a private resource.<br>
+You&rsquo;ll need to modify the hosts file in your machine and point the private resource to the private IP of the private endpoint. This will override the DNS resolution of the private services.</p>
+<p>Here&rsquo;s an example of how to do it:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>10.18.2.4 app-private-api-dns-resolver-test-dev.azurewebsites.net
+</span></span><span style="display:flex;"><span>10.18.2.4 app-private-api-dns-resolver-test-dev.scm.azurewebsites.net
+</span></span><span style="display:flex;"><span>10.18.2.5 cosmos-dns-resolver-test-dev.mongo.cosmos.azure.com
+</span></span><span style="display:flex;"><span>10.18.2.6 cosmos-dns-resolver-test-dev-westeurope.mongo.cosmos.azure.com
+</span></span></code></pre></div><p>Now those services instead of resolving to the public endpoint, they will resolve to the private endpoint private IP.</p>
+<p>This solution works but is very ineffective. <br>
+In the example above we only had two private resources: a Cosmos database and an App Service, but imagine a real project with tens of resources and multiple environments (dev, staging, prod, &hellip;).
+The hosts file ends up having hundreds of private IPs and becomes quite cumbersome to manage it.</p>
+<p>Also every time you create a new private resource on Azure you need to update the hosts file and also signal everyone that is using the VPN that a new resource needs to be added in their hosts file.</p>
+<p>This solution might work with small projects where a small group of people needs to access thoses resources via VPN, but it&rsquo;s not a good solution.</p>
+<h1 id="solution-2-use-a-dns-forwarder">Solution 2: Use a DNS Forwarder</h1>
+<p>Another option for the P2S VPN clients to be able to resolve Private Endpoint entries hosted on Azure Private DNS Zones is using a DNS Forwarder.</p>
+<p>The main objectivo for having a DNS Forwarder is to forward DNS queries to Azure DNS.</p>
+<p>Once you have a DNS forwarder/proxy deployed on Azure, you can define the DNS server at the VNET level or set DNS Server configuration directly on client XLM profile.</p>
+<p>Once everything is setup you will be able to resolve Private Endpoint entries from your VPN P2S clients.</p>
+<p>The DNS Forwarder/Proxy can be hosted on a virtual machine or on a container service like ACI or AKS.</p>
+<p>Setting up a DNS forwarder is simple, mainly because you only need to forward queries to the Azure DNS IP: 168.63.129.16.</p>
+<p>Here&rsquo;s an example of a containerized Bind DNS Server that can be deployed on ACI or AKS:</p>
+<ul>
+<li><a href="https://github.com/whiteducksoftware/az-dns-forwarder">https://github.com/whiteducksoftware/az-dns-forwarder</a></li>
+</ul>
+<p>If you take a look at the configuration of the Bind Server, you&rsquo;ll see that the only action it does is forward queries to Azure DNS:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#a6e22e">options</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">recursion</span> <span style="color:#a6e22e">yes</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">allow</span><span style="color:#f92672">-</span><span style="color:#a6e22e">query</span> { <span style="color:#a6e22e">any</span>; }; <span style="color:#960050;background-color:#1e0010">#</span> <span style="color:#66d9ef">do</span> <span style="color:#a6e22e">not</span> <span style="color:#a6e22e">expose</span> <span style="color:#a6e22e">externally</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">forwarders</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">168.63</span>.<span style="color:#ae81ff">129.16</span>;
+</span></span><span style="display:flex;"><span>        };
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">forward</span> <span style="color:#a6e22e">only</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">dnssec</span><span style="color:#f92672">-</span><span style="color:#a6e22e">validation</span> <span style="color:#a6e22e">no</span>; <span style="color:#960050;background-color:#1e0010">#</span> <span style="color:#a6e22e">needed</span> <span style="color:#66d9ef">for</span> <span style="color:#66d9ef">private</span> <span style="color:#a6e22e">dns</span> <span style="color:#a6e22e">zones</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">auth</span><span style="color:#f92672">-</span><span style="color:#a6e22e">nxdomain</span> <span style="color:#a6e22e">no</span>; <span style="color:#960050;background-color:#1e0010">#</span> <span style="color:#a6e22e">conform</span> <span style="color:#a6e22e">to</span> <span style="color:#a6e22e">RFC1035</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">listen</span><span style="color:#f92672">-</span><span style="color:#a6e22e">on</span> { <span style="color:#a6e22e">any</span>; };
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>If you&rsquo;re using a Windows Virtual Machine, it is also quite straightforward to set it up. Simply add the Azure DNS IP in the Forwarder Tab of the DNS Server.</p>
+<p><img src="/img/windows-dns-manager-forwarders.png" alt="windows-dns-manager"></p>
+<p>Using a DNS Forwarder is the de facto solution nowadays to resolve private DNS zones and it works fine.</p>
+<p>If you want a more in-depth documentation about it, you can go here:</p>
+<ul>
+<li><a href="https://docs.microsoft.com/en-us/azure/private-link/private-endpoint-dns#dns-configuration-scenarios">https://docs.microsoft.com/en-us/azure/private-link/private-endpoint-dns#dns-configuration-scenarios</a></li>
+</ul>
+<p>The inconvenience with this approach is that the DNS forwarder/proxy ends up being another piece of software that needs to be setup and mantain properly. The maintenance part is even worse if you&rsquo;re using a VM instead of a containerized approach because the underlying OS updates became your problem.</p>
+<p>Also the fact that you need to set the DNS forwarder as the main DNS Server of the VNET means that you probably want to deploy it with a high availability.</p>
+<p>In conclusion, using a DNS forwarder when we want to resolve a private DNS zone when connected to a VPN works fine, but nowadays seems that there is a better solution available.</p>
+<h1 id="solution-3-use-azure-private-dns-resolver">Solution 3: Use Azure Private DNS Resolver</h1>
+<p>The Azure DNS Private Resolver resource removes the need to have an additional DNS Forwarder to resolve private DNS zones.</p>
+<p>Let&rsquo;s take a look at the previous example where I had a public app that was using a few private resources.
+Here&rsquo;s how the diagram will look like after deploying an Azure Private DNS Resolver.</p>
+<p><img src="/img/vpn-p2s-private-dns-resolver.png" alt="vpn-p2s-private-dns-resolver"></p>
+<p>As you can see, the only difference is that I have deployed a DNS Resolver Inbound endpoint. <br>
+An inbound endpoint enables name resolution from on-premises or other private locations via an IP address that is part of your private virtual network address space.</p>
+<p>The inbound endpoint requires a subnet in the VNet where it’s provisioned. The subnet can only be delegated to <code>Microsoft.Network/dnsResolvers</code> and can&rsquo;t be used for other services.</p>
+<p>DNS queries received by the inbound endpoint will ingress to Azure DNS. You can resolve names in scenarios where you have Private DNS Zones, including VMs that are using auto registration, or Private Link enabled services.</p>
+<p>One important thing here is that the <strong>DNS Resolver Inbound endpoint needs to be set as a DNS Server in the VNET</strong>, if not you won&rsquo;t be able to resolve any private resource.</p>
+<p>When creating a Private DNS Resolver there is also the concept of outbound endpoints. An outbound endpoint enables conditional forwarding name resolution from Azure to on-premises, other cloud providers, or external DNS servers.</p>
+<p>In this case we don&rsquo;t need an outbound endpoint, only the inbound one.</p>
+<p>If you want to deploy the above example on your subscription and test it, you can find it on my <a href="https://github.com/karlospn/testing-private-dns-resolution-using-azure-dns-private-resolver">GitHub repository</a>. It uses Terraform to deploy it.</p>
+<p>There is not much more worth mentioning and that&rsquo;s good news, you only need to provision an Azure DNS Private Resolver and an inbound enpdoint, set the inbound endpoint as a DNS Server in your VNET and from this point forward you&rsquo;ll be able to resolve private DNS zones when connected to a P2S VPN.</p>
+<p>The only interesting thing worth mentioning (it is only interesting if you&rsquo;re using Terraform with Azure) is that I&rsquo;m using the <a href="https://docs.microsoft.com/en-us/azure/developer/terraform/overview-azapi-provider">AzApi Terraform Provider</a> to provision the Private DNS Resolver instead of the official AzureRM Terraform provider.</p>
+<p>The AzAPI provider is a thin layer on top of the Azure ARM REST APIs. The AzAPI provider enables you to manage any Azure resource type using any API version. This provider complements the AzureRM provider by enabling the management of new Azure resources and properties.</p>
+<p>I&rsquo;m using the AzApi provider because the Private DNS Resolver is not available right now on the official AzureRM Terraform provider.</p>
+<p>If you&rsquo;re interested here&rsquo;s a snippet of how to provision a Private DNS Resolver and an inbound endpoint using the AzApi provider.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#a6e22e">resource</span> <span style="color:#e6db74">&#34;azapi_resource&#34;</span> <span style="color:#e6db74">&#34;dns_resolver&#34;</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">type</span>      <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Microsoft.Network/dnsResolvers@2020-04-01-preview&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">name</span>      <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;resolver-${var.project_name}-${var.environment}&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">parent_id</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">azurerm_resource_group</span>.<span style="color:#a6e22e">rg_dns_test</span>.<span style="color:#a6e22e">id</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">location</span>  <span style="color:#f92672">=</span> <span style="color:#a6e22e">azurerm_resource_group</span>.<span style="color:#a6e22e">rg_dns_test</span>.<span style="color:#a6e22e">location</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">depends_on</span> <span style="color:#f92672">=</span> [
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">azapi_resource</span>.<span style="color:#a6e22e">subnet_dns_resolver_inbound_endpoint</span>
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">body</span> <span style="color:#f92672">=</span>  <span style="color:#a6e22e">jsonencode</span>({
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">properties</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">virtualNetwork</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">id</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">azurerm_virtual_network</span>.<span style="color:#a6e22e">vnet_dns_test</span>.<span style="color:#a6e22e">id</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">tags</span><span style="color:#f92672">=</span> <span style="color:#66d9ef">var</span>.<span style="color:#a6e22e">default_tags</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">response_export_values</span> <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;*&#34;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">resource</span> <span style="color:#e6db74">&#34;azapi_resource&#34;</span> <span style="color:#e6db74">&#34;dns_resolver_inbound_endpoint&#34;</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">type</span>      <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Microsoft.Network/dnsResolvers/inboundEndpoints@2020-04-01-preview&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">name</span>      <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;resolver-inbound-endpoint-${var.project_name}-${var.environment}&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">parent_id</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">azapi_resource</span>.<span style="color:#a6e22e">dns_resolver</span>.<span style="color:#a6e22e">id</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">location</span>  <span style="color:#f92672">=</span> <span style="color:#a6e22e">azurerm_resource_group</span>.<span style="color:#a6e22e">rg_dns_test</span>.<span style="color:#a6e22e">location</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">depends_on</span> <span style="color:#f92672">=</span> [
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">azapi_resource</span>.<span style="color:#a6e22e">dns_resolver</span>
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">body</span> <span style="color:#f92672">=</span>  <span style="color:#a6e22e">jsonencode</span>({
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">properties</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">ipConfigurations</span> <span style="color:#f92672">=</span> [
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    <span style="color:#a6e22e">subnet</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>                        <span style="color:#a6e22e">id</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">azapi_resource</span>.<span style="color:#a6e22e">subnet_dns_resolver_inbound_endpoint</span>.<span style="color:#a6e22e">id</span>
+</span></span><span style="display:flex;"><span>                    },
+</span></span><span style="display:flex;"><span>                    <span style="color:#a6e22e">privateIpAllocationMethod</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Dynamic&#34;</span>
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            ]
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">tags</span><span style="color:#f92672">=</span> <span style="color:#66d9ef">var</span>.<span style="color:#a6e22e">default_tags</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">response_export_values</span> <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;*&#34;</span>]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div>
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://www.mytechramblings.com/posts/linting-a-dotnet-app-dockerfile-using-hadolint-dockerfile-lint-and-azure-pipelines/">
+                  <span class="button__text">Linting a .NET 6 app Dockerfile using Hadolint, dockerfile_lint and Azure Pipelines</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2022 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>Theme created by <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://www.mytechramblings.com/assets/main.js"></script>
+<script src="https://www.mytechramblings.com/assets/prism.js"></script>
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('carlospons', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Donate',
+    'floating-chat.donateButton.background-color': '#ff5f5f',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
+
+      
+    </div>
+
+    
+      
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-170300931-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+    
+  </body>
+</html>
