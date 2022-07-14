@@ -239,11 +239,11 @@ Here&rsquo;s the result:</p>
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">GrpcHealthCheckService</span>: Health.HealthBase
 </span></span><span style="display:flex;"><span>    {
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> HealthCheckService <span style="color:#ae81ff">_</span>healthCheckService;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> HealthCheckService _healthCheckService;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> GrpcHealthCheckService(HealthCheckService healthCheckService)
 </span></span><span style="display:flex;"><span>        {
-</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">_</span>healthCheckService = healthCheckService;
+</span></span><span style="display:flex;"><span>            _healthCheckService = healthCheckService;
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">async</span> Task&lt;HealthCheckResponse&gt; Check(
@@ -255,7 +255,7 @@ Here&rsquo;s the result:</p>
 </span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">var</span> tags = request.Service?.Split(<span style="color:#e6db74">&#34;;&#34;</span>) ??
 </span></span><span style="display:flex;"><span>                           Array.Empty&lt;<span style="color:#66d9ef">string</span>&gt;();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">bool</span> PassAlways(HealthCheckRegistration <span style="color:#ae81ff">_</span>) =&gt; <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">bool</span> PassAlways(HealthCheckRegistration _) =&gt; <span style="color:#66d9ef">true</span>;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (tags.Length == <span style="color:#ae81ff">0</span>)
 </span></span><span style="display:flex;"><span>                {
@@ -270,7 +270,7 @@ Here&rsquo;s the result:</p>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> predicate = GetHealthCheckPredicate();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">await</span> <span style="color:#ae81ff">_</span>healthCheckService.CheckHealthAsync(predicate, 
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">await</span> _healthCheckService.CheckHealthAsync(predicate, 
 </span></span><span style="display:flex;"><span>            context.CancellationToken);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> status = result.Status == HealthStatus.Healthy ? 
@@ -309,11 +309,11 @@ If the service name is not registered, the server returns a <code>NOT_FOUND</cod
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">GrpcHealthCheckService</span>: Health.HealthBase
 </span></span><span style="display:flex;"><span>    {
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> HealthCheckService <span style="color:#ae81ff">_</span>healthCheckService;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> HealthCheckService _healthCheckService;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> GrpcHealthCheckService(HealthCheckService healthCheckService)
 </span></span><span style="display:flex;"><span>        {
-</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">_</span>healthCheckService = healthCheckService;
+</span></span><span style="display:flex;"><span>            _healthCheckService = healthCheckService;
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">async</span> Task&lt;HealthCheckResponse&gt; Check(HealthCheckRequest request, ServerCallContext context)
@@ -323,7 +323,7 @@ If the service name is not registered, the server returns a <code>NOT_FOUND</cod
 </span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">var</span> tags = request.Service?.Split(<span style="color:#e6db74">&#34;;&#34;</span>) ??
 </span></span><span style="display:flex;"><span>                           Array.Empty&lt;<span style="color:#66d9ef">string</span>&gt;();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">bool</span> PassAlways(HealthCheckRegistration <span style="color:#ae81ff">_</span>) =&gt; <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">bool</span> PassAlways(HealthCheckRegistration _) =&gt; <span style="color:#66d9ef">true</span>;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (tags.Length == <span style="color:#ae81ff">0</span>)
 </span></span><span style="display:flex;"><span>                {
@@ -338,7 +338,7 @@ If the service name is not registered, the server returns a <code>NOT_FOUND</cod
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> predicate = GetHealthCheckPredicate();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">await</span> <span style="color:#ae81ff">_</span>healthCheckService.CheckHealthAsync(predicate, context.CancellationToken);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">await</span> _healthCheckService.CheckHealthAsync(predicate, context.CancellationToken);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (result.Status == HealthStatus.Unhealthy)
 </span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> RpcException(<span style="color:#66d9ef">new</span> Status(StatusCode.Unavailable, <span style="color:#e6db74">&#34;Service Unavailable&#34;</span>));

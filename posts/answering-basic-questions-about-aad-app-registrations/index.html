@@ -319,21 +319,21 @@ You can call the downstream API without adding the extension <em>.AddDownstreamW
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">InvokeController</span> : ControllerBase
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger&lt;InvokeController&gt; <span style="color:#ae81ff">_l</span>ogger;
-</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">private</span> IDownstreamWebApi <span style="color:#ae81ff">_d</span>ownstreamWebApi;
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger&lt;InvokeController&gt; _logger;
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">private</span> IDownstreamWebApi _downstreamWebApi;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">public</span> InvokeController(ILogger&lt;InvokeController&gt; logger, 
 </span></span><span style="display:flex;"><span>      IDownstreamWebApi downstreamWebApi)
 </span></span><span style="display:flex;"><span>   {
-</span></span><span style="display:flex;"><span>      <span style="color:#ae81ff">_l</span>ogger = logger;
-</span></span><span style="display:flex;"><span>      <span style="color:#ae81ff">_d</span>ownstreamWebApi = downstreamWebApi;
+</span></span><span style="display:flex;"><span>      _logger = logger;
+</span></span><span style="display:flex;"><span>      _downstreamWebApi = downstreamWebApi;
 </span></span><span style="display:flex;"><span>   }
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">
 </span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">   [HttpGet]</span>
 </span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;ActionResult&gt; Get()
 </span></span><span style="display:flex;"><span>   {
-</span></span><span style="display:flex;"><span>      <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">&#34;Trying to call a downstream Api&#34;</span>);
-</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">var</span> <span style="color:#66d9ef">value</span> = <span style="color:#66d9ef">await</span> <span style="color:#ae81ff">_d</span>ownstreamWebApi.CallWebApiForUserAsync(
+</span></span><span style="display:flex;"><span>      _logger.LogInformation(<span style="color:#e6db74">&#34;Trying to call a downstream Api&#34;</span>);
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">var</span> <span style="color:#66d9ef">value</span> = <span style="color:#66d9ef">await</span> _downstreamWebApi.CallWebApiForUserAsync(
 </span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;WebApi2&#34;</span>,
 </span></span><span style="display:flex;"><span>            options =&gt;
 </span></span><span style="display:flex;"><span>            {

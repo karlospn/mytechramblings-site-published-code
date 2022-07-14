@@ -267,15 +267,15 @@ So now, we can get an instance of the <code>AWSXRayPropagator</code> propagator 
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> ActivitySource Activity = <span style="color:#66d9ef">new</span>(nameof(PublishMessageController));
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger&lt;PublishMessageController&gt; <span style="color:#ae81ff">_l</span>ogger;
-</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IConfiguration <span style="color:#ae81ff">_</span>configuration;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger&lt;PublishMessageController&gt; _logger;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IConfiguration _configuration;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">public</span> PublishMessageController(
 </span></span><span style="display:flex;"><span>      ILogger&lt;PublishMessageController&gt; logger,
 </span></span><span style="display:flex;"><span>      IConfiguration configuration)
 </span></span><span style="display:flex;"><span>  {
-</span></span><span style="display:flex;"><span>      <span style="color:#ae81ff">_l</span>ogger = logger;
-</span></span><span style="display:flex;"><span>      <span style="color:#ae81ff">_</span>configuration = configuration;
+</span></span><span style="display:flex;"><span>      _logger = logger;
+</span></span><span style="display:flex;"><span>      _configuration = configuration;
 </span></span><span style="display:flex;"><span>  }
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">
 </span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">  [HttpGet]</span>
@@ -287,14 +287,14 @@ So now, we can get an instance of the <code>AWSXRayPropagator</code> propagator 
 </span></span><span style="display:flex;"><span>          {
 </span></span><span style="display:flex;"><span>              <span style="color:#66d9ef">var</span> factory = <span style="color:#66d9ef">new</span> ConnectionFactory
 </span></span><span style="display:flex;"><span>              {
-</span></span><span style="display:flex;"><span>                  HostName = <span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;RabbitMq:Host&#34;</span>],
-</span></span><span style="display:flex;"><span>                  UserName = <span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;RabbitMq:Username&#34;</span>],
-</span></span><span style="display:flex;"><span>                  Password = <span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;RabbitMq:Password&#34;</span>],
+</span></span><span style="display:flex;"><span>                  HostName = _configuration[<span style="color:#e6db74">&#34;RabbitMq:Host&#34;</span>],
+</span></span><span style="display:flex;"><span>                  UserName = _configuration[<span style="color:#e6db74">&#34;RabbitMq:Username&#34;</span>],
+</span></span><span style="display:flex;"><span>                  Password = _configuration[<span style="color:#e6db74">&#34;RabbitMq:Password&#34;</span>],
 </span></span><span style="display:flex;"><span>                  Ssl = <span style="color:#66d9ef">new</span> SslOption
 </span></span><span style="display:flex;"><span>                  {
 </span></span><span style="display:flex;"><span>                      Enabled = <span style="color:#66d9ef">true</span>,
 </span></span><span style="display:flex;"><span>                      Version = SslProtocols.None,
-</span></span><span style="display:flex;"><span>                      CertificateValidationCallback = (<span style="color:#ae81ff">_</span>, <span style="color:#ae81ff">_</span>, <span style="color:#ae81ff">_</span>, <span style="color:#ae81ff">_</span>) =&gt; <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>                      CertificateValidationCallback = (_, _, _, _) =&gt; <span style="color:#66d9ef">true</span>
 </span></span><span style="display:flex;"><span>                  }
 </span></span><span style="display:flex;"><span>              };
 </span></span><span style="display:flex;"><span>
@@ -313,7 +313,7 @@ So now, we can get an instance of the <code>AWSXRayPropagator</code> propagator 
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>                  <span style="color:#66d9ef">var</span> body = Encoding.UTF8.GetBytes(<span style="color:#e6db74">&#34;I am app1&#34;</span>);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>                  <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">&#34;Publishing message to queue&#34;</span>);
+</span></span><span style="display:flex;"><span>                  _logger.LogInformation(<span style="color:#e6db74">&#34;Publishing message to queue&#34;</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>                  channel.BasicPublish(exchange: <span style="color:#e6db74">&#34;&#34;</span>,
 </span></span><span style="display:flex;"><span>                      routingKey: <span style="color:#e6db74">&#34;sample&#34;</span>,
@@ -324,7 +324,7 @@ So now, we can get an instance of the <code>AWSXRayPropagator</code> propagator 
 </span></span><span style="display:flex;"><span>      }
 </span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">catch</span> (Exception e)
 </span></span><span style="display:flex;"><span>      {
-</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">_l</span>ogger.LogError(<span style="color:#e6db74">&#34;Error trying to publish a message&#34;</span>, e);
+</span></span><span style="display:flex;"><span>          _logger.LogError(<span style="color:#e6db74">&#34;Error trying to publish a message&#34;</span>, e);
 </span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">throw</span>;
 </span></span><span style="display:flex;"><span>      }
 </span></span><span style="display:flex;"><span>  }
@@ -347,7 +347,7 @@ So now, we can get an instance of the <code>AWSXRayPropagator</code> propagator 
 </span></span><span style="display:flex;"><span>      }
 </span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">catch</span> (Exception ex)
 </span></span><span style="display:flex;"><span>      {
-</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">_l</span>ogger.LogError(ex, <span style="color:#e6db74">&#34;Failed to inject trace context.&#34;</span>);
+</span></span><span style="display:flex;"><span>          _logger.LogError(ex, <span style="color:#e6db74">&#34;Failed to inject trace context.&#34;</span>);
 </span></span><span style="display:flex;"><span>      }
 </span></span><span style="display:flex;"><span>  }
 </span></span><span style="display:flex;"><span>}
@@ -362,7 +362,7 @@ Instead of using an <code>IServiceCollection</code> extension method we’re cre
 </span></span><span style="display:flex;"><span>    .AddSource(nameof(Program))
 </span></span><span style="display:flex;"><span>    .AddOtlpExporter(opts =&gt;
 </span></span><span style="display:flex;"><span>    {
-</span></span><span style="display:flex;"><span>        opts.Endpoint = <span style="color:#66d9ef">new</span> Uri(<span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;Otlp:Endpoint&#34;</span>]);
+</span></span><span style="display:flex;"><span>        opts.Endpoint = <span style="color:#66d9ef">new</span> Uri(_configuration[<span style="color:#e6db74">&#34;Otlp:Endpoint&#34;</span>]);
 </span></span><span style="display:flex;"><span>    })
 </span></span><span style="display:flex;"><span>    .Build();
 </span></span><span style="display:flex;"><span>
@@ -414,9 +414,9 @@ Instead of using an <code>IServiceCollection</code> extension method we’re cre
 </span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">var</span> message = Encoding.UTF8.GetString(body);
 </span></span><span style="display:flex;"><span>          AddActivityTags(activity);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">&#34;Message Received: &#34;</span> + message);
+</span></span><span style="display:flex;"><span>          _logger.LogInformation(<span style="color:#e6db74">&#34;Message Received: &#34;</span> + message);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">_</span> = <span style="color:#66d9ef">await</span> httpClient.PostAsync(<span style="color:#e6db74">&#34;/s3-to-event&#34;</span>,
+</span></span><span style="display:flex;"><span>          _ = <span style="color:#66d9ef">await</span> httpClient.PostAsync(<span style="color:#e6db74">&#34;/s3-to-event&#34;</span>,
 </span></span><span style="display:flex;"><span>              <span style="color:#66d9ef">new</span> StringContent(JsonSerializer.Serialize(message),
 </span></span><span style="display:flex;"><span>                  Encoding.UTF8,
 </span></span><span style="display:flex;"><span>                  <span style="color:#e6db74">&#34;application/json&#34;</span>));
@@ -427,7 +427,7 @@ Instead of using an <code>IServiceCollection</code> extension method we’re cre
 </span></span><span style="display:flex;"><span>  }
 </span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">catch</span> (Exception ex)
 </span></span><span style="display:flex;"><span>  {
-</span></span><span style="display:flex;"><span>      <span style="color:#ae81ff">_l</span>ogger.LogError(<span style="color:#e6db74">$&#34;There was an error processing the message: {ex} &#34;</span>);
+</span></span><span style="display:flex;"><span>      _logger.LogError(<span style="color:#e6db74">$&#34;There was an error processing the message: {ex} &#34;</span>);
 </span></span><span style="display:flex;"><span>  }
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
@@ -443,7 +443,7 @@ Instead of using an <code>IServiceCollection</code> extension method we’re cre
 </span></span><span style="display:flex;"><span>  }
 </span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">catch</span> (Exception ex)
 </span></span><span style="display:flex;"><span>  {
-</span></span><span style="display:flex;"><span>      <span style="color:#ae81ff">_l</span>ogger.LogError(<span style="color:#e6db74">$&#34;Failed to extract trace context: {ex}&#34;</span>);
+</span></span><span style="display:flex;"><span>      _logger.LogError(<span style="color:#e6db74">$&#34;Failed to extract trace context: {ex}&#34;</span>);
 </span></span><span style="display:flex;"><span>  }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> Enumerable.Empty&lt;<span style="color:#66d9ef">string</span>&gt;();
@@ -482,17 +482,17 @@ The setup of the OTEL client looks almost identical as the other ones, but with 
 <p>The auto-instrumentation will create an activity of <code>Kind=Activity.Client</code> for every downstream call made to S3, and it will also add some tags to the activity, those tags will contain metadata about the AWS services being invoked.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">S3Repository</span> : IS3Repository
 </span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IAmazonS3 <span style="color:#ae81ff">_</span>s3Client;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger&lt;S3Repository&gt; <span style="color:#ae81ff">_l</span>ogger;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IConfiguration <span style="color:#ae81ff">_</span>configuration;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IAmazonS3 _s3Client;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger&lt;S3Repository&gt; _logger;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IConfiguration _configuration;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> S3Repository(IAmazonS3 s3Client, 
 </span></span><span style="display:flex;"><span>        ILogger&lt;S3Repository&gt; logger, 
 </span></span><span style="display:flex;"><span>        IConfiguration configuration)
 </span></span><span style="display:flex;"><span>    {
-</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">_</span>s3Client = s3Client;
-</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">_l</span>ogger = logger;
-</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">_</span>configuration = configuration;
+</span></span><span style="display:flex;"><span>        _s3Client = s3Client;
+</span></span><span style="display:flex;"><span>        _logger = logger;
+</span></span><span style="display:flex;"><span>        _configuration = configuration;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task Persist(<span style="color:#66d9ef">string</span> message)
@@ -504,15 +504,15 @@ The setup of the OTEL client looks almost identical as the other ones, but with 
 </span></span><span style="display:flex;"><span>            {
 </span></span><span style="display:flex;"><span>                InputStream = ms,
 </span></span><span style="display:flex;"><span>                Key = <span style="color:#e6db74">$&#34;file-{DateTime.UtcNow}&#34;</span>,
-</span></span><span style="display:flex;"><span>                BucketName = <span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;S3:BucketName&#34;</span>]
+</span></span><span style="display:flex;"><span>                BucketName = _configuration[<span style="color:#e6db74">&#34;S3:BucketName&#34;</span>]
 </span></span><span style="display:flex;"><span>            };
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> fileTransferUtility = <span style="color:#66d9ef">new</span> TransferUtility(<span style="color:#ae81ff">_</span>s3Client);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> fileTransferUtility = <span style="color:#66d9ef">new</span> TransferUtility(_s3Client);
 </span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">await</span> fileTransferUtility.UploadAsync(uploadRequest);
 </span></span><span style="display:flex;"><span>        } 
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">catch</span> (Exception ex)
 </span></span><span style="display:flex;"><span>        {
-</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">_l</span>ogger.LogError(<span style="color:#e6db74">&#34;Error trying to upload file to S3 bucket&#34;</span>, ex);
+</span></span><span style="display:flex;"><span>            _logger.LogError(<span style="color:#e6db74">&#34;Error trying to upload file to S3 bucket&#34;</span>, ex);
 </span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">throw</span>;          
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    }
@@ -525,22 +525,22 @@ The <code>AWSTraceHeader</code> is a message system attribute reserved by Amazon
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SqsRepository</span>: ISqsRepository
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IAmazonSQS <span style="color:#ae81ff">_</span>client;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IConfiguration <span style="color:#ae81ff">_</span>configuration;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IAmazonSQS _client;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IConfiguration _configuration;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> SqsRepository(IAmazonSQS client, 
 </span></span><span style="display:flex;"><span>        IConfiguration configuration)
 </span></span><span style="display:flex;"><span>    {
-</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">_</span>client = client;
-</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">_</span>configuration = configuration;
+</span></span><span style="display:flex;"><span>        _client = client;
+</span></span><span style="display:flex;"><span>        _configuration = configuration;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task Publish(IEvent evt)
 </span></span><span style="display:flex;"><span>    {
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">await</span> <span style="color:#ae81ff">_</span>client.SendMessageAsync(<span style="color:#66d9ef">new</span> SendMessageRequest
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">await</span> _client.SendMessageAsync(<span style="color:#66d9ef">new</span> SendMessageRequest
 </span></span><span style="display:flex;"><span>            {
 </span></span><span style="display:flex;"><span>                MessageBody = (evt <span style="color:#66d9ef">as</span> MessagePersistedEvent)?.Message,
-</span></span><span style="display:flex;"><span>                QueueUrl = <span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;Sqs:Uri&#34;</span>],
+</span></span><span style="display:flex;"><span>                QueueUrl = _configuration[<span style="color:#e6db74">&#34;Sqs:Uri&#34;</span>],
 </span></span><span style="display:flex;"><span>            });      
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
@@ -575,20 +575,20 @@ This is because Amazon SQS is not push-based like RabbitMQ, instead of that you 
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> ActivitySource Activity = <span style="color:#66d9ef">new</span>(nameof(Worker));
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger&lt;Worker&gt; <span style="color:#ae81ff">_l</span>ogger;
-</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IConfiguration <span style="color:#ae81ff">_</span>configuration;
-</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IAmazonSQS <span style="color:#ae81ff">_</span>sqs;
-</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IAmazonDynamoDB <span style="color:#ae81ff">_d</span>ynamoDb;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger&lt;Worker&gt; _logger;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IConfiguration _configuration;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IAmazonSQS _sqs;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IAmazonDynamoDB _dynamoDb;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">public</span> Worker(ILogger&lt;Worker&gt; logger,
 </span></span><span style="display:flex;"><span>      IConfiguration configuration, 
 </span></span><span style="display:flex;"><span>      IAmazonSQS sqs, 
 </span></span><span style="display:flex;"><span>      IAmazonDynamoDB dynamoDb)
 </span></span><span style="display:flex;"><span>  {
-</span></span><span style="display:flex;"><span>      <span style="color:#ae81ff">_l</span>ogger = logger;
-</span></span><span style="display:flex;"><span>      <span style="color:#ae81ff">_</span>configuration = configuration;
-</span></span><span style="display:flex;"><span>      <span style="color:#ae81ff">_</span>sqs = sqs;
-</span></span><span style="display:flex;"><span>      <span style="color:#ae81ff">_d</span>ynamoDb = dynamoDb;
+</span></span><span style="display:flex;"><span>      _logger = logger;
+</span></span><span style="display:flex;"><span>      _configuration = configuration;
+</span></span><span style="display:flex;"><span>      _sqs = sqs;
+</span></span><span style="display:flex;"><span>      _dynamoDb = dynamoDb;
 </span></span><span style="display:flex;"><span>  }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">async</span> Task ExecuteAsync(CancellationToken stoppingToken)
@@ -599,13 +599,13 @@ This is because Amazon SQS is not push-based like RabbitMQ, instead of that you 
 </span></span><span style="display:flex;"><span>          {
 </span></span><span style="display:flex;"><span>              <span style="color:#66d9ef">var</span> request = <span style="color:#66d9ef">new</span> ReceiveMessageRequest
 </span></span><span style="display:flex;"><span>              {
-</span></span><span style="display:flex;"><span>                  QueueUrl = <span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;SQS:URI&#34;</span>],
+</span></span><span style="display:flex;"><span>                  QueueUrl = _configuration[<span style="color:#e6db74">&#34;SQS:URI&#34;</span>],
 </span></span><span style="display:flex;"><span>                  MaxNumberOfMessages = <span style="color:#ae81ff">1</span>,
 </span></span><span style="display:flex;"><span>                  WaitTimeSeconds = <span style="color:#ae81ff">5</span>,
 </span></span><span style="display:flex;"><span>                  AttributeNames = <span style="color:#66d9ef">new</span> List&lt;<span style="color:#66d9ef">string</span>&gt; { <span style="color:#e6db74">&#34;All&#34;</span> }
 </span></span><span style="display:flex;"><span>              };
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>              <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">await</span> <span style="color:#ae81ff">_</span>sqs.ReceiveMessageAsync(request, stoppingToken);
+</span></span><span style="display:flex;"><span>              <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">await</span> _sqs.ReceiveMessageAsync(request, stoppingToken);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>              <span style="color:#66d9ef">if</span> (result.Messages.Any())
 </span></span><span style="display:flex;"><span>              {
@@ -614,17 +614,17 @@ This is because Amazon SQS is not push-based like RabbitMQ, instead of that you 
 </span></span><span style="display:flex;"><span>          }
 </span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">catch</span> (Exception ex)
 </span></span><span style="display:flex;"><span>          {
-</span></span><span style="display:flex;"><span>              <span style="color:#ae81ff">_l</span>ogger.LogError(ex.ToString());
+</span></span><span style="display:flex;"><span>              _logger.LogError(ex.ToString());
 </span></span><span style="display:flex;"><span>          }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">&#34;Worker running at: {time}&#34;</span>, DateTime.UtcNow);
+</span></span><span style="display:flex;"><span>          _logger.LogInformation(<span style="color:#e6db74">&#34;Worker running at: {time}&#34;</span>, DateTime.UtcNow);
 </span></span><span style="display:flex;"><span>          Thread.Sleep(<span style="color:#ae81ff">10000</span>);
 </span></span><span style="display:flex;"><span>      }
 </span></span><span style="display:flex;"><span>  }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">async</span> Task ProcessMessage(Message msg, CancellationToken cancellationToken)
 </span></span><span style="display:flex;"><span>  {
-</span></span><span style="display:flex;"><span>      <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">&#34;Processing messages from SQS&#34;</span>);
+</span></span><span style="display:flex;"><span>      _logger.LogInformation(<span style="color:#e6db74">&#34;Processing messages from SQS&#34;</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">var</span> propagator = Propagators.DefaultTextMapPropagator;
 </span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">var</span> parentContext = propagator.Extract(<span style="color:#66d9ef">default</span>,
@@ -639,9 +639,9 @@ This is because Amazon SQS is not push-based like RabbitMQ, instead of that you 
 </span></span><span style="display:flex;"><span>      {
 </span></span><span style="display:flex;"><span>          ActivityHelper.AddActivityTags(activity);
 </span></span><span style="display:flex;"><span>          
-</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">&#34;Add item to DynamoDb&#34;</span>);
+</span></span><span style="display:flex;"><span>          _logger.LogInformation(<span style="color:#e6db74">&#34;Add item to DynamoDb&#34;</span>);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">var</span> items = Table.LoadTable(<span style="color:#ae81ff">_d</span>ynamoDb, <span style="color:#e6db74">&#34;Items&#34;</span>);
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">var</span> items = Table.LoadTable(_dynamoDb, <span style="color:#e6db74">&#34;Items&#34;</span>);
 </span></span><span style="display:flex;"><span>          
 </span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">var</span> doc = <span style="color:#66d9ef">new</span> Document
 </span></span><span style="display:flex;"><span>          {
@@ -651,7 +651,7 @@ This is because Amazon SQS is not push-based like RabbitMQ, instead of that you 
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">await</span> items.PutItemAsync(doc, cancellationToken);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">await</span> <span style="color:#ae81ff">_</span>sqs.DeleteMessageAsync(<span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;SQS:URI&#34;</span>], msg.ReceiptHandle, cancellationToken);
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">await</span> _sqs.DeleteMessageAsync(_configuration[<span style="color:#e6db74">&#34;SQS:URI&#34;</span>], msg.ReceiptHandle, cancellationToken);
 </span></span><span style="display:flex;"><span>          
 </span></span><span style="display:flex;"><span>      }
 </span></span><span style="display:flex;"><span>  }
@@ -762,9 +762,9 @@ Also, we&rsquo;ll need to create a couple of extra ActivitySources:</p>
 </span></span></code></pre></div><p>For the <code>SQS.DeleteMessage</code> Activity will set the following tags:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>sqsActivity?.SetTag(<span style="color:#e6db74">&#34;aws.service&#34;</span>, <span style="color:#e6db74">&#34;SQS&#34;</span>);
 </span></span><span style="display:flex;"><span>sqsActivity?.SetTag(<span style="color:#e6db74">&#34;aws.operation&#34;</span>, <span style="color:#e6db74">&#34;DeleteMessage&#34;</span>);
-</span></span><span style="display:flex;"><span>sqsActivity?.SetTag(<span style="color:#e6db74">&#34;aws.queue_url&#34;</span>, <span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;SQS:URI&#34;</span>]);
+</span></span><span style="display:flex;"><span>sqsActivity?.SetTag(<span style="color:#e6db74">&#34;aws.queue_url&#34;</span>, _configuration[<span style="color:#e6db74">&#34;SQS:URI&#34;</span>]);
 </span></span><span style="display:flex;"><span>sqsActivity?.SetTag(<span style="color:#e6db74">&#34;aws.region&#34;</span>, <span style="color:#e6db74">&#34;eu-west-1&#34;</span>);
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> response = <span style="color:#66d9ef">await</span> <span style="color:#ae81ff">_</span>sqs.DeleteMessageAsync(<span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;SQS:URI&#34;</span>], msg.ReceiptHandle, cancellationToken);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> response = <span style="color:#66d9ef">await</span> _sqs.DeleteMessageAsync(_configuration[<span style="color:#e6db74">&#34;SQS:URI&#34;</span>], msg.ReceiptHandle, cancellationToken);
 </span></span><span style="display:flex;"><span>sqsActivity?.SetTag(<span style="color:#e6db74">&#34;aws.requestId&#34;</span>, response.ResponseMetadata.RequestId);
 </span></span><span style="display:flex;"><span>sqsActivity?.SetTag(<span style="color:#e6db74">&#34;http.status_code&#34;</span>, (<span style="color:#66d9ef">int</span>)response.HttpStatusCode);
 </span></span></code></pre></div><p>Here&rsquo;s how the Worker Service looks like after making those changes:</p>
@@ -774,20 +774,20 @@ Also, we&rsquo;ll need to create a couple of extra ActivitySources:</p>
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> ActivitySource ActivityDynamo = <span style="color:#66d9ef">new</span>(<span style="color:#e6db74">&#34;Dynamo.PutItem&#34;</span>);
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> ActivitySource ActivitySQSDelete = <span style="color:#66d9ef">new</span>(<span style="color:#e6db74">&#34;SQS.DeleteMessage&#34;</span>);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger&lt;Worker&gt; <span style="color:#ae81ff">_l</span>ogger;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IConfiguration <span style="color:#ae81ff">_</span>configuration;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IAmazonSQS <span style="color:#ae81ff">_</span>sqs;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IAmazonDynamoDB <span style="color:#ae81ff">_d</span>ynamoDb;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger&lt;Worker&gt; _logger;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IConfiguration _configuration;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IAmazonSQS _sqs;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IAmazonDynamoDB _dynamoDb;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> Worker(ILogger&lt;Worker&gt; logger,
 </span></span><span style="display:flex;"><span>        IConfiguration configuration, 
 </span></span><span style="display:flex;"><span>        IAmazonSQS sqs, 
 </span></span><span style="display:flex;"><span>        IAmazonDynamoDB dynamoDb)
 </span></span><span style="display:flex;"><span>    {
-</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">_l</span>ogger = logger;
-</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">_</span>configuration = configuration;
-</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">_</span>sqs = sqs;
-</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">_d</span>ynamoDb = dynamoDb;
+</span></span><span style="display:flex;"><span>        _logger = logger;
+</span></span><span style="display:flex;"><span>        _configuration = configuration;
+</span></span><span style="display:flex;"><span>        _sqs = sqs;
+</span></span><span style="display:flex;"><span>        _dynamoDb = dynamoDb;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">async</span> Task ExecuteAsync(CancellationToken stoppingToken)
@@ -798,13 +798,13 @@ Also, we&rsquo;ll need to create a couple of extra ActivitySources:</p>
 </span></span><span style="display:flex;"><span>            {
 </span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">var</span> request = <span style="color:#66d9ef">new</span> ReceiveMessageRequest
 </span></span><span style="display:flex;"><span>                {
-</span></span><span style="display:flex;"><span>                    QueueUrl = <span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;SQS:URI&#34;</span>],
+</span></span><span style="display:flex;"><span>                    QueueUrl = _configuration[<span style="color:#e6db74">&#34;SQS:URI&#34;</span>],
 </span></span><span style="display:flex;"><span>                    MaxNumberOfMessages = <span style="color:#ae81ff">1</span>,
 </span></span><span style="display:flex;"><span>                    WaitTimeSeconds = <span style="color:#ae81ff">5</span>,
 </span></span><span style="display:flex;"><span>                    AttributeNames = <span style="color:#66d9ef">new</span> List&lt;<span style="color:#66d9ef">string</span>&gt; { <span style="color:#e6db74">&#34;All&#34;</span> }
 </span></span><span style="display:flex;"><span>                };
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">await</span> <span style="color:#ae81ff">_</span>sqs.ReceiveMessageAsync(request, stoppingToken);
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">await</span> _sqs.ReceiveMessageAsync(request, stoppingToken);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (result.Messages.Any())
 </span></span><span style="display:flex;"><span>                {
@@ -813,17 +813,17 @@ Also, we&rsquo;ll need to create a couple of extra ActivitySources:</p>
 </span></span><span style="display:flex;"><span>            }
 </span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">catch</span> (Exception ex)
 </span></span><span style="display:flex;"><span>            {
-</span></span><span style="display:flex;"><span>                <span style="color:#ae81ff">_l</span>ogger.LogError(ex.ToString());
+</span></span><span style="display:flex;"><span>                _logger.LogError(ex.ToString());
 </span></span><span style="display:flex;"><span>            }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">&#34;Worker running at: {time}&#34;</span>, DateTime.UtcNow);
+</span></span><span style="display:flex;"><span>            _logger.LogInformation(<span style="color:#e6db74">&#34;Worker running at: {time}&#34;</span>, DateTime.UtcNow);
 </span></span><span style="display:flex;"><span>            Thread.Sleep(<span style="color:#ae81ff">10000</span>);
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">async</span> Task ProcessMessage(Message msg, CancellationToken cancellationToken)
 </span></span><span style="display:flex;"><span>    {
-</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">&#34;Processing messages from SQS&#34;</span>);
+</span></span><span style="display:flex;"><span>        _logger.LogInformation(<span style="color:#e6db74">&#34;Processing messages from SQS&#34;</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> propagator = Propagators.DefaultTextMapPropagator;
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> parentContext = propagator.Extract(<span style="color:#66d9ef">default</span>,
@@ -842,14 +842,14 @@ Also, we&rsquo;ll need to create a couple of extra ActivitySources:</p>
 </span></span><span style="display:flex;"><span>            {
 </span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">try</span>
 </span></span><span style="display:flex;"><span>                {
-</span></span><span style="display:flex;"><span>                    <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">&#34;Add item to DynamoDb&#34;</span>);
+</span></span><span style="display:flex;"><span>                    _logger.LogInformation(<span style="color:#e6db74">&#34;Add item to DynamoDb&#34;</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>                    dynamoActivity?.SetTag(<span style="color:#e6db74">&#34;aws.service&#34;</span>, <span style="color:#e6db74">&#34;DynamoDbV2&#34;</span>);
 </span></span><span style="display:flex;"><span>                    dynamoActivity?.SetTag(<span style="color:#e6db74">&#34;aws.operation&#34;</span>, <span style="color:#e6db74">&#34;PutItem&#34;</span>);
 </span></span><span style="display:flex;"><span>                    dynamoActivity?.SetTag(<span style="color:#e6db74">&#34;aws.table_name&#34;</span>, <span style="color:#e6db74">&#34;Items&#34;</span>);
 </span></span><span style="display:flex;"><span>                    dynamoActivity?.SetTag(<span style="color:#e6db74">&#34;aws.region&#34;</span>, <span style="color:#e6db74">&#34;eu-west-1&#34;</span>);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">var</span> items = Table.LoadTable(<span style="color:#ae81ff">_d</span>ynamoDb, <span style="color:#e6db74">&#34;Items&#34;</span>);
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">var</span> items = Table.LoadTable(_dynamoDb, <span style="color:#e6db74">&#34;Items&#34;</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">var</span> doc = <span style="color:#66d9ef">new</span> Document
 </span></span><span style="display:flex;"><span>                    {
@@ -875,13 +875,13 @@ Also, we&rsquo;ll need to create a couple of extra ActivitySources:</p>
 </span></span><span style="display:flex;"><span>            {
 </span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">try</span>
 </span></span><span style="display:flex;"><span>                {
-</span></span><span style="display:flex;"><span>                     <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">&#34;Delete message from SQS&#34;</span>);
+</span></span><span style="display:flex;"><span>                     _logger.LogInformation(<span style="color:#e6db74">&#34;Delete message from SQS&#34;</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>                    sqsActivity?.SetTag(<span style="color:#e6db74">&#34;aws.service&#34;</span>, <span style="color:#e6db74">&#34;SQS&#34;</span>);
 </span></span><span style="display:flex;"><span>                    sqsActivity?.SetTag(<span style="color:#e6db74">&#34;aws.operation&#34;</span>, <span style="color:#e6db74">&#34;DeleteMessage&#34;</span>);
-</span></span><span style="display:flex;"><span>                    sqsActivity?.SetTag(<span style="color:#e6db74">&#34;aws.queue_url&#34;</span>, <span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;SQS:URI&#34;</span>]);
+</span></span><span style="display:flex;"><span>                    sqsActivity?.SetTag(<span style="color:#e6db74">&#34;aws.queue_url&#34;</span>, _configuration[<span style="color:#e6db74">&#34;SQS:URI&#34;</span>]);
 </span></span><span style="display:flex;"><span>                    sqsActivity?.SetTag(<span style="color:#e6db74">&#34;aws.region&#34;</span>, <span style="color:#e6db74">&#34;eu-west-1&#34;</span>);
-</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">var</span> response = <span style="color:#66d9ef">await</span> <span style="color:#ae81ff">_</span>sqs.DeleteMessageAsync(<span style="color:#ae81ff">_</span>configuration[<span style="color:#e6db74">&#34;SQS:URI&#34;</span>], msg.ReceiptHandle, cancellationToken);
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">var</span> response = <span style="color:#66d9ef">await</span> _sqs.DeleteMessageAsync(_configuration[<span style="color:#e6db74">&#34;SQS:URI&#34;</span>], msg.ReceiptHandle, cancellationToken);
 </span></span><span style="display:flex;"><span>                    sqsActivity?.SetTag(<span style="color:#e6db74">&#34;aws.requestId&#34;</span>, response.ResponseMetadata.RequestId);
 </span></span><span style="display:flex;"><span>                    sqsActivity?.SetTag(<span style="color:#e6db74">&#34;http.status_code&#34;</span>, (<span style="color:#66d9ef">int</span>)response.HttpStatusCode);
 </span></span><span style="display:flex;"><span>              
