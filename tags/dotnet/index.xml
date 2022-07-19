@@ -9,10 +9,30 @@
     <description>Recent content in dotnet on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 16 May 2022 10:05:01 +0200</lastBuildDate>
+    <lastBuildDate>Tue, 19 Jul 2022 10:00:40 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/dotnet/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>How to deploy a SignalR Core application to AWS</title>
+      <link>https://www.mytechramblings.com/posts/deploying-a-signalr-core-app-on-aws/</link>
+      <pubDate>Tue, 19 Jul 2022 10:00:40 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/deploying-a-signalr-core-app-on-aws/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          This post is about which AWS services can be used and how to set them up properly when you want to deploy a SignalR Core application to AWS.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>Linting a .NET 6 app Dockerfile using Hadolint, dockerfile_lint and Azure Pipelines</title>

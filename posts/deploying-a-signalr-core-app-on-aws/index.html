@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>How to deploy a SignalR Core application to AWS :: my tech ramblings — A blog for writing about my techie ramblings</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Once every full moon I get asked by someone that wants to deploy a SignalR Core app on AWS, and usually the questions are more in line with wanting to know about which AWS services should they use to have a functional SignalR Core app on AWS. Some of the questions are along these lines:
+Can I use this service to deploy my SignalR app? Should I deploy my app on a Windows VM?"/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://www.mytechramblings.com/posts/deploying-a-signalr-core-app-on-aws/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/assets/style.css">
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.mytechramblings.com/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://www.mytechramblings.com/img/favicon.png">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="How to deploy a SignalR Core application to AWS"/>
+<meta name="twitter:description" content="This post is about which AWS services can be used and how to set them up properly when you want to deploy a SignalR Core application to AWS."/>
+
+
+
+<meta property="og:title" content="How to deploy a SignalR Core application to AWS" />
+<meta property="og:description" content="This post is about which AWS services can be used and how to set them up properly when you want to deploy a SignalR Core application to AWS." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.mytechramblings.com/posts/deploying-a-signalr-core-app-on-aws/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-07-19T10:00:40+02:00" />
+<meta property="article:modified_time" content="2022-07-19T10:00:40+02:00" /><meta property="og:site_name" content="my tech ramblings" />
+
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://www.mytechramblings.com/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">my tech ramblings</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/deploying-a-signalr-core-app-on-aws/">How to deploy a SignalR Core application to AWS</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2022-07-19
+        </span>
+
+        
+          
+            
+
+
+
+          
+        
+      
+
+      
+      
+        <span class="post-read-time">— 17 min read</span>
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          #<a href="https://www.mytechramblings.com/tags/aws/">aws</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/signalr/">signalr</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/dotnet/">dotnet</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <p>Once every full moon I get asked by someone that wants to deploy a SignalR Core app on AWS, and usually the questions are more in line with wanting to know about which AWS services should they use to have a functional SignalR Core app on AWS. Some of the questions are along these lines:</p>
+<ul>
+<li>Can I use this service to deploy my SignalR app?</li>
+<li>Should I deploy my app on a Windows VM? Can I use a Linux VM?</li>
+<li>Can I use an API Gateway in front of my SignalR application?</li>
+<li>How a load balancer should be configured to work properly with WebSockets?</li>
+<li>I need to scale out the SignalR app, which AWS service should I use for the backplane?</li>
+<li>Can I use the Azure SignalR Service if my application is hosted on AWS?</li>
+</ul>
+<p>I usually find that there is a gap of knowledge when trying to deploy a SignalR Core app on AWS, so in this post I&rsquo;m going to talk a little bit about which AWS services can be used and how to set them up properly when you want to deploy a SignalR Core application to AWS.</p>
+<h1 id="network"><strong>Network</strong></h1>
+<p>In this first section I want to talk about AWS services that controls and balances network traffic and how to use them with SignalR Core.</p>
+<p>The services we&rsquo;re going to review are the following ones:</p>
+<ul>
+<li><strong>AWS Application Load Balancer</strong></li>
+<li><strong>AWS WebSocket Api Gateway</strong></li>
+</ul>
+<h2 id="1-aws-application-load-balancer"><strong>1. AWS Application Load Balancer</strong></h2>
+<p>There are 2 things worth mentioning when setting up an AWS ALB: WebSockets and Sticky Sessions.</p>
+<h3 id="websockets"><strong>WebSockets</strong></h3>
+<p>The ALB allows us to forward the traffic to an application by leveraging a couple of resources:</p>
+<ul>
+<li>A Target Group.</li>
+<li>A Listener.</li>
+</ul>
+<p>The Target Group defines where to send the traffic. We can configure the port and protocol of the traffic that is forwarded, as well as a health check, so that the load balancer doesn&rsquo;t send traffic to a dead service.</p>
+<p>The Listener defines how the load balancer gets its traffic from outside. That&rsquo;s where you define the port and the protocol to reach the load balancer, and what is the default behavior for the traffic hitting that listener.</p>
+<p>Amazon ALB Listeners only offer HTTP or HTTPS protocol, but the good news is that WebSocket initially contacts the server with HTTP if you use ws:// or HTTPS if you use wss://.</p>
+<p>Your server will then reply with <code>101 Switching Protocols</code>, telling the client to upgrade to a WebSocket connection and from this point forward the communication will be via WebSocket.</p>
+<p>SignalR uses the WebSocket transport where available and falls back to older transports where necessary.</p>
+<p>You <strong>don&rsquo;t need to do any extra configuration on the ALB to start using WebSockets</strong>, but it&rsquo;s good to know how it works.</p>
+<h3 id="sticky-sessions"><strong>Sticky sessions</strong></h3>
+<p>SignalR requires that all HTTP requests for a specific connection be handled by the same instance. When a SignalR app is running behind a load balancer with multiple instances of the same service, <strong>sticky sessions must be used</strong>.</p>
+<p>The only circumstances in which sticky sessions are not required are:</p>
+<ul>
+<li>When hosting on a single instance of the application.</li>
+<li>When using the Azure SignalR Service (later we&rsquo;ll talk a little bit about it).</li>
+<li>When all clients are configured to only use WebSockets.</li>
+</ul>
+<p>The next code snippet shows an example of a CDK app that creates an ALB Target Group with sticky sesion enabled.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">new</span> ApplicationTargetGroup(<span style="color:#66d9ef">this</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;tg-app-ecs-signalr-core-demo&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">new</span> ApplicationTargetGroupProps
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        TargetGroupName = <span style="color:#e6db74">&#34;tg-app-ecs-signalr-core-demo&#34;</span>,
+</span></span><span style="display:flex;"><span>        Vpc = vpc,
+</span></span><span style="display:flex;"><span>        TargetType = TargetType.IP,
+</span></span><span style="display:flex;"><span>        ProtocolVersion = ApplicationProtocolVersion.HTTP1,
+</span></span><span style="display:flex;"><span>        StickinessCookieDuration = Duration.Days(<span style="color:#ae81ff">1</span>),
+</span></span><span style="display:flex;"><span>        HealthCheck = <span style="color:#66d9ef">new</span> HealthCheck
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Protocol = Amazon.CDK.AWS.ElasticLoadBalancingV2.Protocol.HTTP,
+</span></span><span style="display:flex;"><span>            HealthyThresholdCount = <span style="color:#ae81ff">3</span>,
+</span></span><span style="display:flex;"><span>            Path = <span style="color:#e6db74">&#34;/health&#34;</span>,
+</span></span><span style="display:flex;"><span>            Port = <span style="color:#e6db74">&#34;80&#34;</span>,
+</span></span><span style="display:flex;"><span>            Interval = Duration.Millis(<span style="color:#ae81ff">10000</span>),
+</span></span><span style="display:flex;"><span>            Timeout = Duration.Millis(<span style="color:#ae81ff">8000</span>),
+</span></span><span style="display:flex;"><span>            UnhealthyThresholdCount = <span style="color:#ae81ff">10</span>,
+</span></span><span style="display:flex;"><span>            HealthyHttpCodes = <span style="color:#e6db74">&#34;200&#34;</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        Port = <span style="color:#ae81ff">80</span>,
+</span></span><span style="display:flex;"><span>        Targets = <span style="color:#66d9ef">new</span> IApplicationLoadBalancerTarget[] { target }
+</span></span><span style="display:flex;"><span>    });
+</span></span></code></pre></div><h2 id="2-aws-websocket-api-gateway"><strong>2. AWS WebSocket Api Gateway</strong></h2>
+<p>In AWS API Gateway you can create a WebSocket API, which can be use as a stateful frontend for an AWS service or an HTTP endpoint.<br>
+The WebSocket API invokes your backend based on the content of the messages it receives from client apps.</p>
+<p>I was <strong>unable to make a SignalR Core app work with AWS WebSocket Api Gateway</strong>.</p>
+<p>The problem lies with how the API Gateway handles the connections and route messages. The API Gateway uses three predefined routes to communicate with the app: <code>$connect</code>, <code>$disconnect</code>, and <code>$default</code>.</p>
+<ul>
+<li>API Gateway calls the <code>$connect</code> route when a persistent connection between the client and a WebSocket API is being initiated.</li>
+<li>API Gateway calls the <code>$disconnect</code> route when the client or the server disconnects from the API.</li>
+<li>API Gateway calls the <code>$default</code> route if the route selection expression cannot be evaluated against the message or if no matching route is found.</li>
+</ul>
+<p>This is a very specific way to handle connections and route messages and does not sit well with SignalR. In fact, it seems that integrating a SignalR Core app with an AWS WebSocket Api Gateway is not possible.</p>
+<p>If someone knows a way to do it, contact me.</p>
+<h1 id="backplane"><strong>Backplane</strong></h1>
+<p>A SignalR application needs to keep track of ALL connected clients, which creates a problem in an environment like AWS where applications can scale out automatically.</p>
+<p>On the diagram below we have 2 instances of a SignalR Core application behind a load balancer. When client A interacts with the application it gets routed to instance A. When client B interacts with the application it gets routed to instance B. <br>
+In this scenario instance A is unaware of the connected clients on instance B, and viceversa, so if a client who is connected to instance A tries to broadcast a message, only the clients connected to instance A will receive the message.</p>
+<p><img src="/img/signalr-lb.png" alt="signalr-core-application-lb"></p>
+<p>This is where a backplane becomes necessary. When a client makes a connection, the connection information is passed to the backplane. When a server wants to send a message to all clients, it sends it to the backplane. The backplane knows all connected clients and which servers they&rsquo;re on.</p>
+<p><img src="/img/signalr-lb-backplane.png" alt="signalr-core-application-lb-backplane"></p>
+<p>In  this section will review a few AWS services that can be used as a SignalR backplane, those services are the following ones:</p>
+<ul>
+<li><strong>AWS ElastiCache for Redis</strong>.</li>
+<li><strong>AWS MemoryDb</strong>.</li>
+<li><strong>AWS RDS for SQL Server</strong>.</li>
+<li><strong>Azure SignalR Service</strong>.</li>
+</ul>
+<h2 id="1-aws-elasticache-for-redis"><strong>1. AWS ElastiCache for Redis</strong></h2>
+<p>Amazon ElastiCache is a fully managed, in-memory caching service. You can use ElastiCache for caching or as a primary data store for use cases that don&rsquo;t require durability like session stores, gaming leaderboards, streaming, and analytics. ElastiCache is compatible with Redis and Memcached.</p>
+<p>Using Redis as a backplane is the recommended way for scaling-out SignalR Core apps hosted on AWS, and ElastiCache is probably the best fit.</p>
+<p>How it works? The SignalR Redis backplane uses the Redis pub/sub feature to forward messages to other servers. When a client makes a connection, the connection information is passed to the backplane. When a server wants to send a message to all clients, it sends to the backplane. The backplane knows all connected clients and which servers they&rsquo;re on. It sends the message to all clients via their respective servers.</p>
+<h3 id="how-to-configure-the-service"><strong>How to configure the service</strong></h3>
+<p>There is no extra configuration required on ElastiCache to make it work as a SignalR backplane.</p>
+<h3 id="how-to-configure-the-application"><strong>How to configure the application</strong></h3>
+<ol>
+<li>Install the <code>Microsoft.AspNetCore.SignalR.StackExchangeRedis</code> NuGet package.</li>
+<li>In <code>ConfigureServices</code> in <code>Startup.cs</code>, configure SignalR with <code>.AddStackExchangeRedis()</code>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>services
+</span></span><span style="display:flex;"><span>    .AddSignalR()
+</span></span><span style="display:flex;"><span>    .AddStackExchangeRedis(<span style="color:#e6db74">&#34;elasticache_redis_connection_string&#34;</span>);
+</span></span></code></pre></div><p>If you&rsquo;re using a single ElastiCache server for multiple SignalR apps, use a different channel prefix for each app. Like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>services
+</span></span><span style="display:flex;"><span>    .AddSignalR()
+</span></span><span style="display:flex;"><span>    .AddStackExchangeRedis(<span style="color:#e6db74">&#34;elasticache_redis_connection_string&#34;</span>, opts =&gt; {
+</span></span><span style="display:flex;"><span>        opts.Configuration.ChannelPrefix = <span style="color:#e6db74">&#34;ChatRoom&#34;</span>;
+</span></span><span style="display:flex;"><span>    });
+</span></span></code></pre></div><p>Setting a channel prefix isolates one SignalR app from others that use different channel prefixes.</p>
+<p>If you don&rsquo;t assign different prefixes, a message sent from one app to all of its own clients will go to all clients of all apps that use the Redis server as a backplane.</p>
+<h2 id="2-aws-memorydb"><strong>2. AWS MemoryDb</strong></h2>
+<p>Amazon MemoryDB for Redis is a another Redis-compatible, in-memory database service that is based in part on the open source Redis platform.</p>
+<h3 id="what-is-the-difference-between-memorydb-or-elasticcache--which-one-should-i-use"><strong>What is the difference between MemoryDb or ElasticCache?  Which one should I use?</strong></h3>
+<p>The difference between Amazon ElastiCache and MemoryDB is that the former is intended as an in-memory cache that works alongside a primary database, whereas MemoryDB is a full database service in itself that is designed to operate on its own.</p>
+<p>We could say that MemoryDB for Redis is AWS&rsquo;s answer to Redis Enterprise and it exists to try to fill the gap for customers seeking a durable counterpart to ElastiCache. Consider Amazon MemoryDB, in essence, a premium tier of ElastiCache for Redis.</p>
+<p>Both MemoryDb and ElastiCache supports the Redis pub/sub feature, so you can use both services as a SignalR backplane.</p>
+<p>I tend to prefer ElastiCache over MemoryDb, for two reasons:</p>
+<ul>
+<li>ElastiCache is cheaper.</li>
+<li>The extra features that MemoryDb has over ElastiCache, like durability and persistence, are not really useful for a backplane.</li>
+</ul>
+<h3 id="how-to-configure-the-service-1"><strong>How to configure the service</strong></h3>
+<p>There is no extra configuration required on MemoryDb to make it work as a SignalR backplane.</p>
+<h3 id="how-to-configure-the-application-1"><strong>How to configure the application</strong></h3>
+<p>Go read the previous section where I talked about how to configure your application with a ElastiCache as a backplane, because the use is exactly the same for both services.</p>
+<p>The only thing worth mentioning is that when creating a MemoryDb Cluster you have to set up authentication, meanwhile authentication on ElastiCache is optional, which means that when configuring your SignalR app to use MemoryDb as a backplane you&rsquo;ll need to specify the user and password, like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>services
+</span></span><span style="display:flex;"><span>    .AddSignalR()
+</span></span><span style="display:flex;"><span>    .AddStackExchangeRedis(<span style="color:#e6db74">&#34;memorydb_redis_connection_string&#34;</span>, opts =&gt; {
+</span></span><span style="display:flex;"><span>        opts.Configuration.ChannelPrefix = <span style="color:#e6db74">&#34;ChatRoom&#34;</span>;
+</span></span><span style="display:flex;"><span>        opts.Configuration.User = <span style="color:#e6db74">&#34;user1&#34;</span>;
+</span></span><span style="display:flex;"><span>        opts.Configuration.Password = <span style="color:#e6db74">&#34;pasword12345!&#34;</span>;
+</span></span><span style="display:flex;"><span>        opts.Configuration.Ssl = <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>    });
+</span></span></code></pre></div><h2 id="3-amazon-rds-for-sql-server"><strong>3. Amazon RDS for SQL Server</strong></h2>
+<p>Amazon RDS for SQL Server makes it easy to set up, operate, and scale SQL Servers in the cloud.</p>
+<p>Using SQL Server as a backplane is not the right solution for applications with a need for very high throughput, or very high degrees of scale-out. Consider to use one of the Redis services (ElasticCache or MemoryDb)  for such cases.</p>
+<p>There is no official Microsoft implementation to use SQL Server as a backplane, if you want to use it you&rsquo;ll need to use the <code>IntelliTect.AspNetCore.SignalR.SqlServer</code> NuGet package.<br>
+More info about this package here:</p>
+<ul>
+<li><a href="https://github.com/IntelliTect/IntelliTect.AspNetCore.SignalR.SqlServer">https://github.com/IntelliTect/IntelliTect.AspNetCore.SignalR.SqlServer</a></li>
+</ul>
+<h3 id="how-to-configure-the-service-2"><strong>How to configure the service</strong></h3>
+<p>There is no extra configuration required on RDS for SQL Server to make it work as a SignalR backplane.</p>
+<h3 id="how-to-configure-the-application-2"><strong>How to configure the application</strong></h3>
+<ol>
+<li>Install the <code>IntelliTect.AspNetCore.SignalR.SqlServer</code> NuGet package.</li>
+<li>In <code>ConfigureServices</code> in <code>Startup.cs</code>, configure SignalR with <code>.UseSqlServer()</code>:</li>
+</ol>
+<p>Simple configuration:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>services
+</span></span><span style="display:flex;"><span>    .AddSignalR()
+</span></span><span style="display:flex;"><span>    .AddSqlServer(Configuration.GetConnectionString(<span style="color:#e6db74">&#34;rds_sqlserver_connection_string&#34;</span>));
+</span></span></code></pre></div><p>Advanced configuration:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>services
+</span></span><span style="display:flex;"><span>    .AddSignalR()
+</span></span><span style="display:flex;"><span>    .AddSqlServer(o =&gt;
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        o.ConnectionString = Configuration.GetConnectionString(<span style="color:#e6db74">&#34;rds_sqlserver_connection_string&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// See above - attempts to enable Service Broker on the database at startup</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// if not already enabled. Default false, as this can hang if the database has other sessions.</span>
+</span></span><span style="display:flex;"><span>        o.AutoEnableServiceBroker = <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// Every hub has its own message table(s). </span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// This determines the part of the table named that is derived from the hub name.</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// IF THIS IS NOT UNIQUE AMONG ALL HUBS, YOUR HUBS WILL COLLIDE AND MESSAGES MIX.</span>
+</span></span><span style="display:flex;"><span>        o.TableSlugGenerator = hubType =&gt; hubType.Name;
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// The number of tables per Hub to use. Adding a few extra could increase throughput</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// by reducing table contention, but all servers must agree on the number of tables used.</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// If you find that you need to increase this, it is probably a hint that you need to switch to Redis.</span>
+</span></span><span style="display:flex;"><span>        o.TableCount = <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// The SQL Server schema to use for the backing tables for this backplane.</span>
+</span></span><span style="display:flex;"><span>        o.SchemaName = <span style="color:#e6db74">&#34;SignalRCore&#34;</span>;
+</span></span><span style="display:flex;"><span>    });
+</span></span></code></pre></div><h2 id="4-azure-signalr-service"><strong>4. Azure SignalR Service</strong></h2>
+<p>Azure SignalR Service is a managed SignalR backplane, it eliminates the need of having to manage your own Redis/SQL Server instance.</p>
+<p>This services has a few advantages over the other backplane alternatives:</p>
+<ul>
+<li>Sticky sessions are not required, because clients are immediately redirected to the Azure SignalR Service when they connect.</li>
+<li>A SignalR app can scale out based on the number of messages sent, while the Azure SignalR Service scales to handle any number of connections. For example, there could be thousands of clients, but if only a few messages per second are sent, the SignalR app won&rsquo;t need to scale out to multiple servers just to handle the connections themselves.</li>
+<li>A SignalR app won&rsquo;t use significantly more connection resources than a web app without SignalR.</li>
+</ul>
+<p>Another nice feature this service provides is the &ldquo;Live Trace Tool&rdquo;, it is is a single web application that exposes SignalR traces that went through the service. <br>
+The traces includes: connection connected/disconnected events and message received/left events.</p>
+<p><img src="/img/signalr-trace-live-tool.png" alt="azure-signalr-service-live-trace-tool"></p>
+<p>Probably you&rsquo;re asking yourself why I&rsquo;m talking about an Azure service, that&rsquo;s because you can use the Azure SignalR Service as a backplane with a SignalR Core app hosted in AWS as long as both: application and service are visible.</p>
+<p>The optimal solution when choosing a backplane service is having the backplane as close as possible to the app, having the backplane on another cloud provider seems far from ideal, so if you want to use it be mindful about network latency, throughput and the amount of data that will be transferred outside of AWS.</p>
+<h3 id="how-to-configure-the-application-3"><strong>How to configure the application</strong></h3>
+<ol>
+<li>Install the <code>Microsoft.Azure.SignalR</code> NuGet package.</li>
+<li>In <code>ConfigureServices</code> in <code>Startup.cs</code>, configure SignalR with <code>.AddAzureSignalR()</code>:</li>
+</ol>
+<p>Simple configuration:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>services
+</span></span><span style="display:flex;"><span>    .AddSignalR()
+</span></span><span style="display:flex;"><span>    .AddAzureSignalR(<span style="color:#e6db74">&#34;azure_signalr_service_connection_string&#34;</span>);
+</span></span></code></pre></div><p>The <code>AddAzureSignalR()</code> method can be used without passing the &ldquo;connection string&rdquo; parameter, in this case it tries to use the default configuration key: <code>Azure:SignalR:ConnectionString</code>.</p>
+<p>Advanced configuration:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>services
+</span></span><span style="display:flex;"><span>    .AddSignalR()
+</span></span><span style="display:flex;"><span>    .AddAzureSignalR(o =&gt;
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        options.ConnectionCount = <span style="color:#ae81ff">10</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// This option controls the initial count of connections per hub between application </span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// server and Azure SignalR Service. Usually keep it as the default value is enough. </span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// During runtime, the SDK might start new server connections for performance tuning or </span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// load balancing. When you have big number of clients, you can give it a larger number </span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// for better throughput.</span>
+</span></span><span style="display:flex;"><span>        options.AccessTokenLifetime = TimeSpan.FromDays(<span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// This option controls the valid lifetime of the access token, which is generated by</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// Service SDK for each client. The access token is returned in the response to client&#39;s </span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// negotiate request.</span>
+</span></span><span style="display:flex;"><span>        options.ClaimsProvider = context =&gt; context.User.Claims;
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// This option controls what claims you want to associate with the client connection. It </span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// will be used when Service SDK generates access token for client in client&#39;s negotiate </span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// request. By default, all claims from HttpContext.User of the negotiate request will </span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// be reserved. They can be accessed at Hub.Context.User.</span>
+</span></span><span style="display:flex;"><span>        options.GracefulShutdown.Mode = GracefulShutdownMode.WaitForClientsClose;
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// This option specifies the behavior after the app server receives a SIGINT (CTRL + C).</span>
+</span></span><span style="display:flex;"><span>        options.GracefulShutdown.Timeout = TimeSpan.FromSeconds(<span style="color:#ae81ff">10</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// This option specifies the longest time in waiting for clients to be closed/migrated.</span>
+</span></span><span style="display:flex;"><span>    });
+</span></span></code></pre></div><h1 id="compute"><strong>Compute</strong></h1>
+<p>In the last section I want to talk about a few AWS services that can be used to deploy your SignalR Core application, those services are the following ones:</p>
+<ul>
+<li><strong>AWS ECS</strong></li>
+<li><strong>AWS EC2</strong></li>
+<li><strong>AWS EKS</strong></li>
+</ul>
+<h2 id="1-aws-ecs"><strong>1. AWS ECS</strong></h2>
+<p>Just build the container like any other .NET6 application and deploy it. No extra steps or configuration required here.</p>
+<p>Just remember to enable sticky sessions on the ALB Target Group and to setup a proper backplane.</p>
+<h2 id="2-aws-ec2"><strong>2. AWS EC2</strong></h2>
+<p>The part where you deploy the SignalR app into the server is business as usual, it&rsquo;s like deploying any kind of .NET6 application. On the other hand setting up the web server tends to be more problematic, so let&rsquo;s talk a little bit about it.</p>
+<h3 id="using-a-windows-ec2-with-iis-as-webserver"><strong>Using a Windows EC2 with IIS as WebServer</strong></h3>
+<ul>
+<li>Enable WebSockets.
+<ul>
+<li>You can do it in a single command using Powershell: <code>Enable-WindowsOptionalFeature -Online -FeatureName IIS-WebSockets</code>.</li>
+</ul>
+</li>
+<li>Sticky session should be set on the load balancer not in the WebServer.</li>
+</ul>
+<h3 id="using-a-linux-ec2-with-apache-as-webserver"><strong>Using a Linux EC2 with Apache as WebServer</strong></h3>
+<ul>
+<li>Create a VirtualHost configuration to enable WebServer communication. Like this:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;VirtualHost</span> <span style="color:#960050;background-color:#1e0010">*:80</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    ProxyPass / ws://127.0.0.1:5000/
+</span></span><span style="display:flex;"><span>    ProxyPassReverse / ws://127.0.0.1:5000/
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/VirtualHost&gt;</span>
+</span></span></code></pre></div><p><code>127.0.0.1:5000</code> is the local address where the SignalR app is running.</p>
+<p>If you set the VirtualHost configuration to use <code>http</code> instead of <code>ws</code>, like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;VirtualHost</span> <span style="color:#960050;background-color:#1e0010">*:80</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    ProxyPass / http://127.0.0.1:5000/
+</span></span><span style="display:flex;"><span>    ProxyPassReverse / http://127.0.0.1:5000/
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/VirtualHost&gt;</span>
+</span></span></code></pre></div><p>It will use SSE (Server Sent Events) instead of WebSockets.</p>
+<ul>
+<li>Sticky session should be set on the load balancer not in the WebServer.</li>
+</ul>
+<h3 id="using-a-linux-ec2-with-nginx-as-webserver"><strong>Using a Linux EC2 with NGINX as WebServer</strong></h3>
+<ul>
+<li>Create a new configuration on the &ldquo;http&rdquo; section. Like this one:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#a6e22e">map</span> <span style="color:#a6e22e">$http_connection</span> <span style="color:#a6e22e">$connection_upgrade</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;~*Upgrade&#34;</span> <span style="color:#a6e22e">$http_connection</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">default</span> <span style="color:#a6e22e">keep</span><span style="color:#f92672">-</span><span style="color:#a6e22e">alive</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>Create a new &ldquo;Location&rdquo; configuration on the &ldquo;server&rdquo; section. Like this one:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#a6e22e">location</span> <span style="color:#f92672">/</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#960050;background-color:#1e0010">#</span> <span style="color:#a6e22e">App</span> <span style="color:#a6e22e">server</span> <span style="color:#a6e22e">url</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">proxy_pass</span> <span style="color:#a6e22e">http</span><span style="color:#f92672">:</span><span style="color:#75715e">//localhost:5000;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>    <span style="color:#960050;background-color:#1e0010">#</span> <span style="color:#a6e22e">Configuration</span> <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">WebSockets</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">proxy_set_header</span> <span style="color:#a6e22e">Upgrade</span> <span style="color:#a6e22e">$http_upgrade</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">proxy_set_header</span> <span style="color:#a6e22e">Connection</span> <span style="color:#a6e22e">$connection_upgrade</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">proxy_cache</span> <span style="color:#a6e22e">off</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#960050;background-color:#1e0010">#</span> <span style="color:#a6e22e">WebSockets</span> <span style="color:#a6e22e">were</span> <span style="color:#a6e22e">implemented</span> <span style="color:#a6e22e">after</span> <span style="color:#a6e22e">http</span><span style="color:#f92672">/</span><span style="color:#ae81ff">1.0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">proxy_http_version</span> <span style="color:#ae81ff">1.1</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#960050;background-color:#1e0010">#</span> <span style="color:#a6e22e">Configuration</span> <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">ServerSentEvents</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">proxy_buffering</span> <span style="color:#a6e22e">off</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#960050;background-color:#1e0010">#</span> <span style="color:#a6e22e">Configuration</span> <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">LongPolling</span> <span style="color:#a6e22e">or</span> <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">your</span> <span style="color:#a6e22e">KeepAliveInterval</span> <span style="color:#a6e22e">is</span> <span style="color:#a6e22e">longer</span> <span style="color:#a6e22e">than</span> <span style="color:#ae81ff">60</span> <span style="color:#a6e22e">seconds</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">proxy_read_timeout</span> <span style="color:#ae81ff">100</span><span style="color:#a6e22e">s</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">proxy_set_header</span> <span style="color:#a6e22e">Host</span> <span style="color:#a6e22e">$host</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">proxy_set_header</span> <span style="color:#a6e22e">X</span><span style="color:#f92672">-</span><span style="color:#a6e22e">Forwarded</span><span style="color:#f92672">-</span><span style="color:#a6e22e">For</span> <span style="color:#a6e22e">$proxy_add_x_forwarded_for</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">proxy_set_header</span> <span style="color:#a6e22e">X</span><span style="color:#f92672">-</span><span style="color:#a6e22e">Forwarded</span><span style="color:#f92672">-</span><span style="color:#a6e22e">Proto</span> <span style="color:#a6e22e">$scheme</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>Sticky session should be set on the load balancer not in the WebServer.</li>
+</ul>
+<h2 id="3-aws-eks"><strong>3. AWS EKS</strong></h2>
+<p>Just build the container like any other .NET6 application and deploy it into the EKS cluster. No extra steps or configuration required here.</p>
+<p>The tricky part here is configuring the Ingress Controller properly.</p>
+<h3 id="using-aws-load-balancer-controller"><strong>Using AWS Load Balancer Controller</strong></h3>
+<p>AWS Load Balancer Controller is a controller that helps manage Elastic Load Balancers for a EKS cluster.</p>
+<ul>
+<li>It satisfies Kubernetes Ingress resources by provisioning Application Load Balancers.</li>
+<li>It satisfies Kubernetes Service resources by provisioning Network Load Balancers.</li>
+</ul>
+<p>For our SignalR app we need <strong>to create an Ingress resource</strong>.</p>
+<p>Here&rsquo;s a quick explanation about how the AWS Load Balancer Controller creates and configures an ALB for us.</p>
+<ul>
+<li>The controller watches for ingress events from the API server. When it finds ingress resources that satisfy its requirements, it begins the creation of AWS resources.</li>
+<li>An ALB is created in AWS for the new ingress resource. This ALB can be internet-facing or internal. You can also specify the subnets it&rsquo;s created in using annotations.</li>
+<li>Target Groups are created in AWS for each unique Kubernetes service described in the ingress resource.</li>
+<li>Listeners are created for every port detailed in your ingress resource annotations. When no port is specified, sensible defaults (80 or 443) are used. Certificates may also be attached via annotations.</li>
+<li>Rules are created for each path specified in your ingress resource. This ensures traffic to a specific path is routed to the correct Kubernetes Service.</li>
+</ul>
+<p>I&rsquo;m not going into further detail about how the AWS Load Balancer Controller works, because this is out of scope for this post, for a SignalR Core app the only thing you&rsquo;ll need to know is that you need to add the <code>alb.ingress.kubernetes.io/target-group-attributes</code> metadata when the Ingress resource is created.</p>
+<ul>
+<li><code>alb.ingress.kubernetes.io/target-group-attributes</code> specifies Target Group Attributes which should be applied to Target Groups.</li>
+</ul>
+<p>Previously on the &ldquo;Network&rdquo; section, I talked about how you need to enable &ldquo;sticky sessions&rdquo; for a SignalR Core app to work properly with an ALB. Now, we&rsquo;re going to use the <code>alb.ingress.kubernetes.io/target-group-attributes</code> metadata annotation to tell the AWS ALB Controller that when he creates the Target Group it needs to enable &ldquo;sticky session&rdquo;.</p>
+<p>Like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">alb.ingress.kubernetes.io/target-group-attributes</span>: <span style="color:#ae81ff">stickiness.enabled=true,stickiness.lb_cookie.duration_seconds=86400</span>
+</span></span></code></pre></div><p>For better understanding of how to setup the Ingress Resource, here&rsquo;s an example of a  Kubernetes manifest that contains an Ingress, a Service and a Deployment resource.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># Source: chat/templates/ingress.yaml</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">networking.k8s.io/v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Ingress</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">chat</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">labels</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">helm.sh/chart</span>: <span style="color:#ae81ff">chat-0.1.0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">app.kubernetes.io/name</span>: <span style="color:#ae81ff">chat</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">app.kubernetes.io/instance</span>: <span style="color:#ae81ff">chat</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">app.kubernetes.io/version</span>: <span style="color:#e6db74">&#34;1.16.0&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">app.kubernetes.io/managed-by</span>: <span style="color:#ae81ff">Helm</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">annotations</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">alb.ingress.kubernetes.io/scheme</span>: <span style="color:#ae81ff">internet-facing</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">alb.ingress.kubernetes.io/target-group-attributes</span>: <span style="color:#ae81ff">stickiness.enabled=true,stickiness.lb_cookie.duration_seconds=86400</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">alb.ingress.kubernetes.io/target-type</span>: <span style="color:#ae81ff">ip</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">kubernetes.io/ingress.class</span>: <span style="color:#ae81ff">alb</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">rules</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">http</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">paths</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">path</span>: <span style="color:#ae81ff">/</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">pathType</span>: <span style="color:#ae81ff">Prefix</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">backend</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">service</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">name</span>: <span style="color:#ae81ff">chat</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">port</span>:
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">number</span>: <span style="color:#ae81ff">80</span>
+</span></span><span style="display:flex;"><span>---              
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Source: chat/templates/service.yaml</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">chat</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">labels</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">helm.sh/chart</span>: <span style="color:#ae81ff">chat-0.1.0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">app.kubernetes.io/name</span>: <span style="color:#ae81ff">chat</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">app.kubernetes.io/instance</span>: <span style="color:#ae81ff">chat</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">app.kubernetes.io/version</span>: <span style="color:#e6db74">&#34;1.16.0&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">app.kubernetes.io/managed-by</span>: <span style="color:#ae81ff">Helm</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">ClusterIP</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">port</span>: <span style="color:#ae81ff">80</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">http</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">protocol</span>: <span style="color:#ae81ff">TCP</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">name</span>: <span style="color:#ae81ff">http</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">selector</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">app.kubernetes.io/name</span>: <span style="color:#ae81ff">chat</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">app.kubernetes.io/instance</span>: <span style="color:#ae81ff">chat</span>
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Source: chat/templates/deployment.yaml</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Deployment</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">chat</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">labels</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">helm.sh/chart</span>: <span style="color:#ae81ff">chat-0.1.0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">app.kubernetes.io/name</span>: <span style="color:#ae81ff">chat</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">app.kubernetes.io/instance</span>: <span style="color:#ae81ff">chat</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">app.kubernetes.io/version</span>: <span style="color:#e6db74">&#34;1.16.0&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">app.kubernetes.io/managed-by</span>: <span style="color:#ae81ff">Helm</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">replicas</span>: <span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">selector</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">matchLabels</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">app.kubernetes.io/name</span>: <span style="color:#ae81ff">chat</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">app.kubernetes.io/instance</span>: <span style="color:#ae81ff">chat</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">template</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">labels</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">app.kubernetes.io/name</span>: <span style="color:#ae81ff">chat</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">app.kubernetes.io/instance</span>: <span style="color:#ae81ff">chat</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">serviceAccountName</span>: <span style="color:#ae81ff">chat</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">securityContext</span>:
+</span></span><span style="display:flex;"><span>        {}
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">containers</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">chat</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">securityContext</span>:
+</span></span><span style="display:flex;"><span>            {}
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">image</span>: <span style="color:#e6db74">&#34;242519123014.dkr.ecr.eu-west-1.amazonaws.com/signalr-chatroom:latest&#34;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">imagePullPolicy</span>: <span style="color:#ae81ff">Always</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>            - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">http</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">80</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">protocol</span>: <span style="color:#ae81ff">TCP</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">livenessProbe</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">httpGet</span>:
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">path</span>: <span style="color:#ae81ff">/health</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">port</span>: <span style="color:#ae81ff">http</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">readinessProbe</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">httpGet</span>:
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">path</span>: <span style="color:#ae81ff">/health</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">port</span>: <span style="color:#ae81ff">http</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">resources</span>:
+</span></span><span style="display:flex;"><span>            {}
+</span></span></code></pre></div><p>I&rsquo;m aware that there are other ways to consume a SignalR app that has been deployed into EKS, for example using a NGINX Ingress Controller, but I&rsquo;m not going to talk about them in this section because I lack knowledge about them.</p>
+<h1 id="example">Example</h1>
+<p>On my GitHub account you can find a repository that contains a quick example about how to deploy a SignalR Core App on AWS.</p>
+<p>The source code can be found here:</p>
+<ul>
+<li><a href="https://github.com/karlospn/deploy-signalr-core-app-on-aws">https://github.com/karlospn/deploy-signalr-core-app-on-aws</a></li>
+</ul>
+<p>The repository contains a <code>/cdk</code> folder, where you can find a CDK app, that creates the following infrastructure on AWS:</p>
+<ul>
+<li>A VPC.</li>
+<li>An Application Load Balancer.</li>
+<li>A Fargate service.</li>
+<li>An ElasticCache instance.</li>
+<li>A NAT Gateway.</li>
+</ul>
+<p><img src="/img/signalr_core_application.png" alt="signalr-core-application-diagram"></p>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://www.mytechramblings.com/posts/testing-private-dns-resolution-over-a-p2s-vpn-using-azure-dns-private-resolver/">
+                  <span class="button__text">Testing Azure Private Endpoints DNS resolution over an Azure P2S VPN connection</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2022 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>Theme created by <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://www.mytechramblings.com/assets/main.js"></script>
+<script src="https://www.mytechramblings.com/assets/prism.js"></script>
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('carlospons', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Donate',
+    'floating-chat.donateButton.background-color': '#ff5f5f',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
+
+      
+    </div>
+
+    
+      
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-170300931-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+    
+  </body>
+</html>
