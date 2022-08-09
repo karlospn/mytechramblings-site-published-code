@@ -9,10 +9,30 @@
     <description>Recent content in dotnet on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 19 Jul 2022 10:00:40 +0200</lastBuildDate>
+    <lastBuildDate>Tue, 09 Aug 2022 10:01:21 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/dotnet/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>How to easily check on your CI/CD pipelines if your app has a NuGet package with a security vulnerability</title>
+      <link>https://www.mytechramblings.com/posts/check-if-your-dotnet-app-dependencies-has-a-security-vulnerability-on-you-cicd-pipelines/</link>
+      <pubDate>Tue, 09 Aug 2022 10:01:21 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/check-if-your-dotnet-app-dependencies-has-a-security-vulnerability-on-you-cicd-pipelines/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          Almost any dotnet application has several NuGet dependencies, and those dependencies may have their own dependencies, and so on and so forth. What if any of those dependencies you&#39;re using contains a security vulnerability? You can check on your CI/CD pipeline if your application has any known NuGet vulnerability with just a couple of lines of bash script.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>How to deploy a SignalR Core application to AWS</title>

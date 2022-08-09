@@ -9,17 +9,17 @@
     <description>Recent content in Tags on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 19 Jul 2022 10:00:40 +0200</lastBuildDate>
+    <lastBuildDate>Tue, 09 Aug 2022 10:01:21 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>aws</title>
-      <link>https://www.mytechramblings.com/tags/aws/</link>
-      <pubDate>Tue, 19 Jul 2022 10:00:40 +0200</pubDate>
+      <title>devops</title>
+      <link>https://www.mytechramblings.com/tags/devops/</link>
+      <pubDate>Tue, 09 Aug 2022 10:01:21 +0200</pubDate>
       
-      <guid>https://www.mytechramblings.com/tags/aws/</guid>
+      <guid>https://www.mytechramblings.com/tags/devops/</guid>
       <description>
         
           
@@ -37,9 +37,49 @@
     <item>
       <title>dotnet</title>
       <link>https://www.mytechramblings.com/tags/dotnet/</link>
-      <pubDate>Tue, 19 Jul 2022 10:00:40 +0200</pubDate>
+      <pubDate>Tue, 09 Aug 2022 10:01:21 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/dotnet/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>nuget</title>
+      <link>https://www.mytechramblings.com/tags/nuget/</link>
+      <pubDate>Tue, 09 Aug 2022 10:01:21 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/nuget/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>aws</title>
+      <link>https://www.mytechramblings.com/tags/aws/</link>
+      <pubDate>Tue, 19 Jul 2022 10:00:40 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/aws/</guid>
       <description>
         
           
@@ -180,26 +220,6 @@
       <pubDate>Mon, 16 May 2022 10:05:01 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/csharp/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>devops</title>
-      <link>https://www.mytechramblings.com/tags/devops/</link>
-      <pubDate>Mon, 16 May 2022 10:05:01 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/devops/</guid>
       <description>
         
           
@@ -880,26 +900,6 @@
       <pubDate>Wed, 02 Sep 2020 10:01:20 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/.net/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>nuget</title>
-      <link>https://www.mytechramblings.com/tags/nuget/</link>
-      <pubDate>Wed, 02 Sep 2020 10:01:20 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/nuget/</guid>
       <description>
         
           

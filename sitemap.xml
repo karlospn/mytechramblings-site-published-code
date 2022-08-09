@@ -2,25 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://www.mytechramblings.com/tags/aws/</loc>
-    <lastmod>2022-07-19T10:00:40+02:00</lastmod>
+    <loc>https://www.mytechramblings.com/tags/devops/</loc>
+    <lastmod>2022-08-09T10:01:21+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/dotnet/</loc>
+    <lastmod>2022-08-09T10:01:21+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/check-if-your-dotnet-app-dependencies-has-a-security-vulnerability-on-you-cicd-pipelines/</loc>
+    <lastmod>2022-08-09T10:01:21+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/</loc>
+    <lastmod>2022-08-09T10:01:21+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/nuget/</loc>
+    <lastmod>2022-08-09T10:01:21+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/</loc>
+    <lastmod>2022-08-09T10:01:21+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/</loc>
+    <lastmod>2022-08-09T10:01:21+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/aws/</loc>
     <lastmod>2022-07-19T10:00:40+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/posts/deploying-a-signalr-core-app-on-aws/</loc>
     <lastmod>2022-07-19T10:00:40+02:00</lastmod>
   </url><url>
-    <loc>https://www.mytechramblings.com/</loc>
-    <lastmod>2022-07-19T10:00:40+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/posts/</loc>
-    <lastmod>2022-07-19T10:00:40+02:00</lastmod>
-  </url><url>
     <loc>https://www.mytechramblings.com/tags/signalr/</loc>
-    <lastmod>2022-07-19T10:00:40+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/</loc>
     <lastmod>2022-07-19T10:00:40+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/azure/</loc>
@@ -42,9 +51,6 @@
     <lastmod>2022-05-16T10:05:01+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/csharp/</loc>
-    <lastmod>2022-05-16T10:05:01+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/devops/</loc>
     <lastmod>2022-05-16T10:05:01+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/docker/</loc>
@@ -213,9 +219,6 @@
     <lastmod>2020-09-02T10:01:20+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/posts/centrally-manage-nuget-versions/</loc>
-    <lastmod>2020-09-02T10:01:20+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/nuget/</loc>
     <lastmod>2020-09-02T10:01:20+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/posts/gitops-with-azure-devops-helm-acr-flux-and-k8s/</loc>
