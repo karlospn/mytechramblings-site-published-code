@@ -9,15 +9,55 @@
     <description>Recent content in Tags on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 09 Aug 2022 10:01:21 +0200</lastBuildDate>
+    <lastBuildDate>Thu, 08 Sep 2022 11:06:41 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
+      <title>aws</title>
+      <link>https://www.mytechramblings.com/tags/aws/</link>
+      <pubDate>Thu, 08 Sep 2022 11:06:41 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/aws/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>containers</title>
+      <link>https://www.mytechramblings.com/tags/containers/</link>
+      <pubDate>Thu, 08 Sep 2022 11:06:41 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/containers/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
       <title>devops</title>
       <link>https://www.mytechramblings.com/tags/devops/</link>
-      <pubDate>Tue, 09 Aug 2022 10:01:21 +0200</pubDate>
+      <pubDate>Thu, 08 Sep 2022 11:06:41 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/devops/</guid>
       <description>
@@ -35,11 +75,51 @@
     </item>
     
     <item>
+      <title>docker</title>
+      <link>https://www.mytechramblings.com/tags/docker/</link>
+      <pubDate>Thu, 08 Sep 2022 11:06:41 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/docker/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
       <title>dotnet</title>
       <link>https://www.mytechramblings.com/tags/dotnet/</link>
-      <pubDate>Tue, 09 Aug 2022 10:01:21 +0200</pubDate>
+      <pubDate>Thu, 08 Sep 2022 11:06:41 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/dotnet/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>ecr</title>
+      <link>https://www.mytechramblings.com/tags/ecr/</link>
+      <pubDate>Thu, 08 Sep 2022 11:06:41 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/ecr/</guid>
       <description>
         
           
@@ -60,26 +140,6 @@
       <pubDate>Tue, 09 Aug 2022 10:01:21 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/nuget/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>aws</title>
-      <link>https://www.mytechramblings.com/tags/aws/</link>
-      <pubDate>Tue, 19 Jul 2022 10:00:40 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/aws/</guid>
       <description>
         
           
@@ -195,51 +255,11 @@
     </item>
     
     <item>
-      <title>containers</title>
-      <link>https://www.mytechramblings.com/tags/containers/</link>
-      <pubDate>Mon, 16 May 2022 10:05:01 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/containers/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
       <title>csharp</title>
       <link>https://www.mytechramblings.com/tags/csharp/</link>
       <pubDate>Mon, 16 May 2022 10:05:01 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/csharp/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>docker</title>
-      <link>https://www.mytechramblings.com/tags/docker/</link>
-      <pubDate>Mon, 16 May 2022 10:05:01 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/docker/</guid>
       <description>
         
           
@@ -820,26 +840,6 @@
       <pubDate>Tue, 24 Nov 2020 10:04:40 +0100</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/webapps/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>ecr</title>
-      <link>https://www.mytechramblings.com/tags/ecr/</link>
-      <pubDate>Tue, 10 Nov 2020 10:10:18 +0100</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/ecr/</guid>
       <description>
         
           

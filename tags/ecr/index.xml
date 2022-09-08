@@ -9,10 +9,30 @@
     <description>Recent content in ecr on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 10 Nov 2020 10:10:18 +0100</lastBuildDate>
+    <lastBuildDate>Thu, 08 Sep 2022 11:06:41 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/ecr/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Keep your .NET platform images up to date using AWS ECR and Azure Pipelines</title>
+      <link>https://www.mytechramblings.com/posts/keep-your-platform-images-updated-when-using-aws-ecr-with-azure-pipelines/</link>
+      <pubDate>Thu, 08 Sep 2022 11:06:41 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/keep-your-platform-images-updated-when-using-aws-ecr-with-azure-pipelines/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          When talking about containers security on the enterprise one of the best practices is to use your own platform images, those platform images are the base for your company applications. In this post I&#39;m going to show you an opinionated implementation of how to automate the creation and update of your own .NET platform images using Azure Pipelines and AWS ECR.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>An opinionated approach about how to create an AWS ECS Fargate cluster and deploy apps on it using Azure DevOps Pipelines</title>

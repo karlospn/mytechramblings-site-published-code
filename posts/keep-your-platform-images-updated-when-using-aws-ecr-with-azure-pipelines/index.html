@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>Keep your .NET platform images up to date using AWS ECR and Azure Pipelines :: my tech ramblings — A blog for writing about my techie ramblings</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Just show me the code!
+As always, if you don’t care about the post I have uploaded the source code on my Github.
+In this post I&amp;rsquo;m going to show you an opinionated implementation of how to automate the creation and update your own .NET platform images.
+This implementation is going to be built to work solely with:
+AWS Elastic Container Registry (AWS ECR) as image registry. Azure Repos as VCS (Version Control Sofware)."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://www.mytechramblings.com/posts/keep-your-platform-images-updated-when-using-aws-ecr-with-azure-pipelines/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/assets/style.css">
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.mytechramblings.com/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://www.mytechramblings.com/img/favicon.png">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Keep your .NET platform images up to date using AWS ECR and Azure Pipelines"/>
+<meta name="twitter:description" content="When talking about containers security on the enterprise one of the best practices is to use your own platform images, those platform images are the base for your company applications. In this post I&#39;m going to show you an opinionated implementation of how to automate the creation and update of your own .NET platform images using Azure Pipelines and AWS ECR."/>
+
+
+
+<meta property="og:title" content="Keep your .NET platform images up to date using AWS ECR and Azure Pipelines" />
+<meta property="og:description" content="When talking about containers security on the enterprise one of the best practices is to use your own platform images, those platform images are the base for your company applications. In this post I&#39;m going to show you an opinionated implementation of how to automate the creation and update of your own .NET platform images using Azure Pipelines and AWS ECR." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.mytechramblings.com/posts/keep-your-platform-images-updated-when-using-aws-ecr-with-azure-pipelines/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-09-08T11:06:41+02:00" />
+<meta property="article:modified_time" content="2022-09-08T11:06:41+02:00" /><meta property="og:site_name" content="my tech ramblings" />
+
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://www.mytechramblings.com/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">my tech ramblings</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/keep-your-platform-images-updated-when-using-aws-ecr-with-azure-pipelines/">Keep your .NET platform images up to date using AWS ECR and Azure Pipelines</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2022-09-08
+        </span>
+
+        
+          
+            
+
+
+
+          
+        
+      
+
+      
+      
+        <span class="post-read-time">— 27 min read</span>
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          #<a href="https://www.mytechramblings.com/tags/aws/">aws</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/dotnet/">dotnet</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/devops/">devops</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/ecr/">ecr</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/containers/">containers</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/docker/">docker</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <blockquote>
+<p><strong>Just show me the code!</strong><br>
+As always, if you don’t care about the post I have uploaded the source code on my <a href="https://github.com/karlospn/keep-your-platform-images-updated-when-using-aws-ecr-and-azure-pipelines">Github</a>.</p>
+</blockquote>
+<p>In this post I&rsquo;m going to show you an opinionated implementation of how to automate the creation and update your own .NET platform images.</p>
+<p>This implementation is going to be built to work solely with:</p>
+<ul>
+<li><strong>AWS Elastic Container Registry</strong> (AWS ECR) as image registry.</li>
+<li><strong>Azure Repos</strong> as VCS (Version Control Sofware).</li>
+<li><strong>Azure Pipelines</strong> as a runner to execute the process of creation/update of your .NET platform images.</li>
+</ul>
+<p>But first, let&rsquo;s talk a little bit about what&rsquo;s a platform image.</p>
+<h1 id="1-whats-a-platform-image"><strong>1. What&rsquo;s a platform image?</strong></h1>
+<p>When talking about containers security on the enterprise one of the best practices is to use your own platform images, those platform images are the base for your company applications.</p>
+<p><img src="/img/platform-images.png" alt="platform-images-diagram"></p>
+<p>The point of having a platform image instead of directly using a base image is to ensure that the resulting containers are hardened according to any corporate policies before being deployed to production.<br>
+Also if your enterprise applications need some kind of software baked into the images to run properly, it is far better to install it on the platform images, instead of having to install it in each and every one of the application images.</p>
+<p>When working with .NET, there are quite a few official base images available (<a href="https://hub.docker.com/_/microsoft-dotnet/)">https://hub.docker.com/_/microsoft-dotnet/)</a>, but we don&rsquo;t want to use those images directly on our enterprise applications, instead we want to use those official images from Microsoft as a base image to build a platform image that is going to be own by our company.</p>
+<p>The official Microsoft .NET images are not inherently bad and often include many security best practices, but a more secure way is to not rely solely on third party images, because you lose the ability to control scanning, patching, and hardening across your organization. The recommended way is using the official Microsoft images as the base for building every one of your company platform images.</p>
+<h1 id="2-create-and-update-a-net-platform-image"><strong>2. Create and update a .NET platform image</strong></h1>
+<p>Create a new platform image is an easy task, but you also want to keep the image up to date.</p>
+<p>Every time the base image gets a new update from Microsoft you&rsquo;ll want to update your platform image, because the latest version it&rsquo;s usually the most secure one.</p>
+<p>The Microsoft image update policy for .NET images is the following one:</p>
+<ul>
+<li>The .NET base images are updated within 12 hours of any updates to the underlying OS (e.g. debian:buster-slim, windows/nanoserver:ltsc2022, buildpack-deps:bionic-scm, etc.).</li>
+<li>When a new version of .NET (includes major/minor and servicing versions) gets released the dotnet base images gets updated.</li>
+</ul>
+<p>The .NET base images might get updated quite frequently according to these policies, which means that automating the creation and update of our platform images is paramount, but automation is not the only important step, it is also important being able to manually update an existing platform image (maybe because we have installed a new piece of software on the platform image or set some permissions or whatever).</p>
+<p>There are 3 main flows to implement when trying to automate the creation/update of a platform image:</p>
+<ul>
+<li>Create a new platform image from scratch.</li>
+<li>Update an existing platform image because the base image has a new update available.</li>
+<li>Update an existing platform image because we have modified something on the platform image itself and we need to create a new version of the image.</li>
+</ul>
+<h1 id="3-net-platform-image-creationupdate-process-diagram"><strong>3. .NET platform image creation/update process diagram</strong></h1>
+<h2 id="diagram"><strong>Diagram</strong></h2>
+<p>The following diagram shows the necessary steps we&rsquo;re going to build to automate the creation/update of a .NET platform image.</p>
+<p>The platform image creation/update process is going to be executed on an <strong>Azure DevOps Pipeline</strong>.<br>
+Every platform image will have its own Azure DevOps pipeline.</p>
+<p><img src="/img/update-platform-images-pipeline.png" alt="pipeline-diagram"></p>
+<p>The pipeline uses a scheduled trigger because we need to periodically poll the Microsoft container registry (<a href="https://mcr.microsoft.com/">https://mcr.microsoft.com/</a>) to check if there is any update available for the base image.</p>
+<p>When trying to update a platform image if there is NO new update available on the base image then the pipeline needs to end there.</p>
+<p>If there is a new updated version of the base image on the Microsoft registry then the pipeline needs to create a new version of the platform image, test it, store it into ECR and notify that an update has ocurred via Teams channel.</p>
+<p>If you modify an existing platform image (for example, install some new software, update some existing one, set some permissions, etc) and want to create a new version of the platform image right away, you will be able to do it by setting the <code>force_update</code> pipeline parameter to <code>true</code>, that parameter will skip the Microsoft container registry update check and go straight into creating a new platform image.</p>
+<h2 id="how-to-know-if-a-net-base-image-has-been-updated"><strong>How to know if a .NET base image has been updated</strong></h2>
+<p>If you&rsquo;re using Azure Container Registry (ACR) as your container registry you can use ACR Tasks to automate the creation of a new platform image when a container base image is updated.</p>
+<ul>
+<li>More info about it: <a href="https://docs.microsoft.com/en-us/azure/container-registry/container-registry-tutorial-base-image-update">https://docs.microsoft.com/en-us/azure/container-registry/container-registry-tutorial-base-image-update</a></li>
+</ul>
+<p>But this kind of functionality does not exist for AWS ECR, so you need to build something on the side.</p>
+<p>There are some third party tools like Diun or image-watch that allows us to receive notifications when a Docker image is updated on a Docker registry, but there is a much easier approach that using those tools:</p>
+<ul>
+<li><strong>Using Azure Pipelines (or any other CI/CD runner like GitHub Actions) with a cron trigger that periodically runs a pipeline thats checks if the base image has a new update available.</strong></li>
+</ul>
+<p><em>But, how do we know if a .NET base image has been updated?</em></p>
+<p>We can query the Microsoft Artifact Registry (<a href="https://mcr.microsoft.com">https://mcr.microsoft.com</a>) to obtain when was the last time any .NET image was pushed into the registry.</p>
+<p>Let me show you an example:</p>
+<p>If we want to know when the <code>mcr.microsoft.com/dotnet/runtime:6.0-bullseye-slim</code> image was pushed last image we can fetch that information from here:</p>
+<ul>
+<li><a href="https://mcr.microsoft.com/api/v1/catalog/dotnet/runtime/tags">https://mcr.microsoft.com/api/v1/catalog/dotnet/runtime/tags</a></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;6.0-bullseye-slim&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;digest&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;sha256:f078e58251eeaec4622e3b2ceb2ec144ff1e3e74ea32748b62f9aea5b9331e6b&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;repository&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;dotnet/runtime&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;operatingSystem&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">null</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;architecture&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">null</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;lastModifiedDate&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2022-09-06T13:29:50.0000000+00:00&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Manifest List&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;size&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">null</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The <code>mcr.microsoft.com/dotnet/runtime:6.0-bullseye-slim</code> last update was <code>2022-09-06T13:29:50.0000000+00:00</code>. <br>
+From this point forward we can also fetch the last time our platform image was pushed into AWS ECR and if that value is <strong>LOWER</strong> than the <code>lastModifiedDate</code> from the Microsoft Registry it means we&rsquo;re not using the most up to date base image and a new platform image needs to be built.</p>
+<h2 id="whats-the-test-step-about"><strong>What&rsquo;s the test step about?</strong></h2>
+<p>In the diagram above, you&rsquo;ll see a &ldquo;Test Platform Image&rdquo; step, but what does it do?</p>
+<p>When creating a new version of a platform image we need to validate that this new image doesn&rsquo;t have any potential breaking change that could affect our enterprise applications.</p>
+<p>The pipeline test step validates that you can run the new platform image version that you&rsquo;re building on a real .NET application without any error.</p>
+<h2 id="what-tagging-strategy-to-use"><strong>What tagging strategy to use</strong></h2>
+<p>A tagging strategy is important for managing multiple versions of platform images and make consuming it easier across your organization.</p>
+<p>The platform images will be tagged using the upstream version of the base image with some minor tweaks.</p>
+<p>This is how Microsoft tags their .NET images:</p>
+<ul>
+<li><em>(dotnet-version)-{os-version}-{architecture-os}</em></li>
+</ul>
+<p>Here&rsquo;s an example of how the Microsoft .NET6 runtime image is tagged:</p>
+<ul>
+<li>6.0.8-bullseye-slim-amd64</li>
+<li>6.0-bullseye-slim-amd64</li>
+<li>6.0.8-bullseye-slim</li>
+<li>6.0-bullseye-slim</li>
+<li>6.0.8</li>
+<li>6.0</li>
+</ul>
+<p>One thing about the Microsoft tagging strategy is that some of the tags are NOT immutable, let&rsquo;s take the above example, when a new version of the .NET6 runtime image is going to be released there are some tags like &ldquo;6.0&rdquo; or &ldquo;6.0-bullseye-slim&rdquo; that are going to be removed from the current image and applied to the new one.<br>
+That&rsquo;s an interesting strategy because every time you rebuild your application image if you&rsquo;re using for example the &ldquo;6.0&rdquo; tag on the <code>FROM</code> statement you&rsquo;ll always get the most up to date .NET6 runtime base image available.</p>
+<p>For my platform images I&rsquo;m going to use a similar approach with a couple of minor changes.</p>
+<ul>
+<li><em>{dotnet-version}-{os-version}-{versioning}</em></li>
+</ul>
+<p>I&rsquo;m going to drop the &ldquo;architecture os&rdquo; part and I&rsquo;m going to add a &ldquo;versioning&rdquo; at the end of the tag, that &ldquo;versioning&rdquo; helps if the necessity to use a previous version of the platform image arises in the future. <br>
+This is how I will tag the platform images:</p>
+<ul>
+<li>6.0-bullseye-slim-1.0.0</li>
+<li>6.0-bullseye-slim-1.1.0</li>
+<li>6.0-bullseye-slim-1.2.0</li>
+</ul>
+<h1 id="4-building-the-net-platform-image-creationupdate-process"><strong>4. Building the .NET platform image creation/update process</strong></h1>
+<h2 id="key-points"><strong>Key points</strong></h2>
+<p>From the previous sections I can extract the following key points to keep in mind when building this solution:</p>
+<ul>
+<li>Platform images are going to be stored in AWS ECR.</li>
+<li>Azure Pipelines to execute the process of creation/update the platform images.</li>
+<li>An Azure Pipeline scheduled trigger will be used to periodically check if any .NET base image has been updated.</li>
+<li>Every platform image will have its own pipeline.</li>
+<li>The <code>Dockerfile</code> for every platform image will be hosted on Azure Repos.</li>
+<li>Every time a new version of a platform is created a notification to a Teams Channel needs to be sent.</li>
+</ul>
+<h2 id="repository-structure"><strong>Repository structure</strong></h2>
+<p>The repository will have 2 main folder: A <code>shared</code> folder and a <code>platform-images</code> folder.</p>
+<p>Here&rsquo;s an example about how the repository will look like with a few platform images on it:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>|
+</span></span><span style="display:flex;"><span>+---platform-images
+</span></span><span style="display:flex;"><span>|   +---net6
+</span></span><span style="display:flex;"><span>|   |   +---runtime
+</span></span><span style="display:flex;"><span>|   |   |       azure-pipelines.yml
+</span></span><span style="display:flex;"><span>|   |   |       Dockerfile
+</span></span><span style="display:flex;"><span>|   |   |
+</span></span><span style="display:flex;"><span>|   |   <span style="color:#ae81ff">\-</span>--sdk
+</span></span><span style="display:flex;"><span>|   |           azure-pipelines.yml
+</span></span><span style="display:flex;"><span>|   |           Dockerfile
+</span></span><span style="display:flex;"><span>|   |
+</span></span><span style="display:flex;"><span>|   <span style="color:#ae81ff">\-</span>--net7
+</span></span><span style="display:flex;"><span>|       +---runtime
+</span></span><span style="display:flex;"><span>|       |       azure-pipelines.yml
+</span></span><span style="display:flex;"><span>|       |       Dockerfile
+</span></span><span style="display:flex;"><span>|       |
+</span></span><span style="display:flex;"><span>|       +---runtime -deps
+</span></span><span style="display:flex;"><span>|       |       azure-pipelines.yml
+</span></span><span style="display:flex;"><span>|       |       Dockerfile
+</span></span><span style="display:flex;"><span>|       |
+</span></span><span style="display:flex;"><span>|       <span style="color:#ae81ff">\-</span>--sdk
+</span></span><span style="display:flex;"><span>|               azure-pipelines.yml
+</span></span><span style="display:flex;"><span>|               Dockerfile
+</span></span><span style="display:flex;"><span>|
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">\-</span>--shared
+</span></span><span style="display:flex;"><span>    +---integration-tests
+</span></span><span style="display:flex;"><span>    |   +---net6
+</span></span><span style="display:flex;"><span>    |   |   |   .dockerignore
+</span></span><span style="display:flex;"><span>    |   |   |   appsettings.Development.json
+</span></span><span style="display:flex;"><span>    |   |   |   appsettings.json
+</span></span><span style="display:flex;"><span>    |   |   |   Dockerfile
+</span></span><span style="display:flex;"><span>    |   |   |   IntegrationTest.WebApi.csproj
+</span></span><span style="display:flex;"><span>    |   |   |   IntegrationTest.WebApi.sln
+</span></span><span style="display:flex;"><span>    |   |   |   Program.cs
+</span></span><span style="display:flex;"><span>    |   |   |
+</span></span><span style="display:flex;"><span>    |   |   +---Controllers
+</span></span><span style="display:flex;"><span>    |   |   |       MyServiceController.cs
+</span></span><span style="display:flex;"><span>    |   |   |
+</span></span><span style="display:flex;"><span>    |   |   +---DTO
+</span></span><span style="display:flex;"><span>    |   |   |       FooRqDto.cs
+</span></span><span style="display:flex;"><span>    |   |   |       FooRsDto.cs
+</span></span><span style="display:flex;"><span>    |   |   |
+</span></span><span style="display:flex;"><span>    |   |   <span style="color:#ae81ff">\-</span>--Properties
+</span></span><span style="display:flex;"><span>    |   |           launchSettings.json
+</span></span><span style="display:flex;"><span>    |   |
+</span></span><span style="display:flex;"><span>    |   <span style="color:#ae81ff">\-</span>--net7
+</span></span><span style="display:flex;"><span>    |       |   .dockerignore
+</span></span><span style="display:flex;"><span>    |       |   appsettings.Development.json
+</span></span><span style="display:flex;"><span>    |       |   appsettings.json
+</span></span><span style="display:flex;"><span>    |       |   Dockerfile
+</span></span><span style="display:flex;"><span>    |       |   IntegrationTest.WebApi.csproj
+</span></span><span style="display:flex;"><span>    |       |   IntegrationTest.WebApi.sln
+</span></span><span style="display:flex;"><span>    |       |   Program.cs
+</span></span><span style="display:flex;"><span>    |       |
+</span></span><span style="display:flex;"><span>    |       +---Controllers
+</span></span><span style="display:flex;"><span>    |       |       MyServiceController.cs
+</span></span><span style="display:flex;"><span>    |       |
+</span></span><span style="display:flex;"><span>    |       +---DTO
+</span></span><span style="display:flex;"><span>    |       |       FooRqDto.cs
+</span></span><span style="display:flex;"><span>    |       |       FooRsDto.cs
+</span></span><span style="display:flex;"><span>    |       |
+</span></span><span style="display:flex;"><span>    |       <span style="color:#ae81ff">\-</span>--Properties
+</span></span><span style="display:flex;"><span>    |               launchSettings.json
+</span></span><span style="display:flex;"><span>    |
+</span></span><span style="display:flex;"><span>    +---scripts
+</span></span><span style="display:flex;"><span>    |       check-if-ecr-repository-exists.sh
+</span></span><span style="display:flex;"><span>    |       check-if-update-is-needed.sh
+</span></span><span style="display:flex;"><span>    |       docker-build.sh
+</span></span><span style="display:flex;"><span>    |       force-update-process.sh
+</span></span><span style="display:flex;"><span>    |       integration-test.sh
+</span></span><span style="display:flex;"><span>    |       push-to-private-ecr.sh
+</span></span><span style="display:flex;"><span>    |       send-teams-notification.sh
+</span></span><span style="display:flex;"><span>    |
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">\-</span>--templates
+</span></span><span style="display:flex;"><span>            automatic-update-platform-image-template.yml
+</span></span></code></pre></div><h3 id="shared-folder"><strong>/shared folder</strong></h3>
+<p>This folder contains a set of scripts and assets used by the platform images pipelines.</p>
+<ul>
+<li>The <code>/scripts</code> folder contains a set of shell scripts used by the Azure Pipelines YAML template.</li>
+<li>The <code>/templates</code> folder contains an Azure Pipeline YAML template. This template is used by every platform image pipeline.</li>
+<li>The <code>/integration-tests/{dotnet version}</code> folder contains some real .NET applications that are going to be used to test if the platform image we&rsquo;re building contains any breaking change.</li>
+</ul>
+<h3 id="platform-images-folder"><strong>/platform-images folder</strong></h3>
+<p>The <code>/platform-images</code> folder will contain all your platform images, the platform images will be segregated by dotnet version (net5, net6, net7, etc).</p>
+<p>For any platform image you&rsquo;ll need:</p>
+<ul>
+<li>A <code>Dockerfile</code> which contains a set of instructions and commands that will be used to build the platform image.</li>
+<li>An <code>azure-pipelines.yml</code> pipeline that it will be used to create and update the corresponding platform image.</li>
+</ul>
+<h2 id="integration-test-step"><strong>Integration Test step</strong></h2>
+<p>When updating a platform image we need to validate that the update doesn&rsquo;t break anything that could potentially affect our applications.</p>
+<p>The <code>/shared/integration-tests</code> folder will contain a series of applications that are going to be used as an integration test application. Every dotnet version will have its own integration test application.<br>
+When building a new version of a platform image, we will test that the new image doesn&rsquo;t break anything by using the platform image as a base image on the integration test app.</p>
+<p>The integration test step runs the following commands:</p>
+<ul>
+<li>Retrieves the test application from the <code>/integration-tests/{dotnet version}</code></li>
+<li>Overrides the <code>FROM</code> statement from the application <code>Dockerfile</code> with the current platform image we&rsquo;re building.</li>
+<li>Builds an image of the integration test app  and checks that the <code>docker build</code> process didn&rsquo;t thrown any warning or error.</li>
+<li>Starts the application using the <code>docker run</code> command.</li>
+<li>Sends an Http Request to the running application using cURL and expects that the response is a 200 OK status Code.</li>
+</ul>
+<p>If all those steps run without any problem then the integration test step is a success, if any of those steps fails then the integration test fails step and breaks the pipeline execution.</p>
+<h2 id="building-the-pipeline"><strong>Building the pipeline</strong></h2>
+<p>Now it&rsquo;s time to start building the pipeline. Let me remind you again what I&rsquo;ll be building.</p>
+<p><img src="/img/update-platform-images-pipeline.png" alt="pipeline-diagram"></p>
+<p>I decided to use shell script to implement every step of the pipeline. Let&rsquo;s get to it.</p>
+<h3 id="force-update-process-script"><strong>force-update-process script</strong></h3>
+<p>This particular script runs only if the <code>force_update</code> parameter is set to <code>true</code> in the pipeline.</p>
+<p>The <code>force_update</code> parameter is used to manually force the creation of a new version of the platform image. It skips the Microsoft container registry update check and goes straight into creating a new platform image.</p>
+<p>This script does the following steps:</p>
+<ul>
+<li>Uses the <code>aws ecr describe-images</code> command to retrieve the version tag of the current platform image.</li>
+<li>Creates a new version tag and stores the value in a pipeline variable.</li>
+</ul>
+<p>For example, if our current platform image stored in ECR has the tag <em>&ldquo;6.0-bullseye-slim-1.3.0&rdquo;</em>, we&rsquo;ll want to create the tag <em>&ldquo;6.0-bullseye-slim-1.4.0&rdquo;</em> for the platform image we&rsquo;re building right now.</p>
+<blockquote>
+<p>The version tag that this script stores in a pipeline variable will be used later on when it&rsquo;s time to push the image into ECR.</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;&#39;aws_ecr_repository_name&#39; parameter not found.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    aws_ecr_repository_name<span style="color:#f92672">=</span>$1
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$2<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;&#39;aws_ecr_tag_without_version&#39; parameter not found.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    aws_ecr_tag_without_version<span style="color:#f92672">=</span>$2
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;==========================================&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;Script parameters summary&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;aws_ecr_repository_name: </span>$aws_ecr_repository_name<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;aws_ecr_tag_without_version: </span>$aws_ecr_tag_without_version<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;==========================================&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>aws_image<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>aws ecr describe-images --repository-name $aws_ecr_repository_name --image-ids imageTag<span style="color:#f92672">=</span>latest<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;Checking image tags from the ECR image...&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> row  in <span style="color:#66d9ef">$(</span>echo $aws_image | jq -r <span style="color:#e6db74">&#39;.imageDetails[0].imageTags&#39;</span><span style="color:#66d9ef">)</span>; <span style="color:#66d9ef">do</span>   
+</span></span><span style="display:flex;"><span>    sub<span style="color:#f92672">=</span>$aws_ecr_tag_without_version
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> <span style="color:#e6db74">&#34;</span>$row<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">==</span> *<span style="color:#e6db74">&#34;</span>$sub<span style="color:#e6db74">&#34;</span>* <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>        aws_image_tag<span style="color:#f92672">=</span>$row
+</span></span><span style="display:flex;"><span>        break
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">done</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$aws_image_tag<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;Tag was not found on the ECR image.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;Image tag found: </span>$aws_image_tag<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;Now calculating new image tag...&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>version<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>echo $aws_image_tag | sed <span style="color:#e6db74">&#39;s/.*-//&#39;</span><span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$version<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;Tag version was not found on the ECR image.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>major<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>echo $version |  tr -d <span style="color:#e6db74">&#39;&#34;&#39;</span> | cut -d <span style="color:#e6db74">&#39;.&#39;</span> -f 1<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$major<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;Tag major version was not found on the ECR image.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>minor<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>echo $version |  tr -d <span style="color:#e6db74">&#39;&#34;&#39;</span> | cut -d <span style="color:#e6db74">&#39;.&#39;</span> -f 2<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$minor<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;Tag minor version was not found on the ECR image.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>patch<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>echo $version |  tr -d <span style="color:#e6db74">&#39;&#34;&#39;</span> | tr -d <span style="color:#e6db74">&#39;,&#39;</span> | cut -d <span style="color:#e6db74">&#39;.&#39;</span> -f 3<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$patch<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;Tag patch version was not found on the ECR image.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>update_minor<span style="color:#f92672">=</span><span style="color:#66d9ef">$((</span>$minor<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span><span style="color:#66d9ef">))</span>
+</span></span><span style="display:flex;"><span>new_tag_version<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$aws_ecr_tag_without_version<span style="color:#e6db74">-</span>$major<span style="color:#e6db74">.</span>$update_minor<span style="color:#e6db74">.0&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;New image tag is: </span>$new_tag_version<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;Now setting this as a pipeline environment variable.&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;##vso[task.setvariable variable=aws_tag_version]</span>$new_tag_version<span style="color:#e6db74">&#34;</span>
+</span></span></code></pre></div><h3 id="check-if-ecr-repository-exists-script"><strong>check-if-ecr-repository-exists script</strong></h3>
+<p>This script checks if the ECR repository exists using the <code>aws ecr describe-repositories</code> command.</p>
+<ul>
+<li>If the repository doesn&rsquo;t exist:
+<ul>
+<li>It sets the version tag to 1.0.0 and stores the value in a pipeline variable.</li>
+<li>It sets the <code>skip_update_check</code> pipeline variable to <code>true</code>.
+<ul>
+<li>This variable is used to skip the pipeline step that checks if there is a new updated version available in the Microsoft registry.</li>
+<li>If the repository doesn&rsquo;t exists it means that we&rsquo;re building a new platform image from the ground up, so it makes no sense to check if there is a new base image update available because we&rsquo;re already using the latest one.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>The version tag that this script stores in a pipeline variable will be used later on when it&rsquo;s time to push the image into ECR.</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;&#39;aws_ecr_repository_name&#39; parameter not found.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    aws_ecr_repository_name<span style="color:#f92672">=</span>$1
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$2<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;&#39;aws_ecr_tag_without_version&#39; parameter not found.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    aws_ecr_tag_without_version<span style="color:#f92672">=</span>$2
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;==========================================&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;Script parameters summary&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;aws_ecr_repository_name: </span>$aws_ecr_repository_name<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;aws_ecr_tag_without_version: </span>$aws_ecr_tag_without_version<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;==========================================&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;Check if private ECR Repository exists...&#34;</span>
+</span></span><span style="display:flex;"><span>output<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>aws ecr describe-repositories --repository-names $aws_ecr_repository_name 2&gt;&amp;1<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> $? -ne <span style="color:#ae81ff">0</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> echo <span style="color:#e6db74">${</span>output<span style="color:#e6db74">}</span> | grep -q RepositoryNotFoundException; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;ECR Repository not found&#34;</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;Set environment variables to skip update check step&#34;</span>
+</span></span><span style="display:flex;"><span>    new_tag_version<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$aws_ecr_tag_without_version<span style="color:#e6db74">-1.0.0&#34;</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;Set environment variables tag version: </span>$new_tag_version<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;##vso[task.setvariable variable=aws_tag_version]</span>$new_tag_version<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;##vso[task.setvariable variable=skip_update_check]true&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;Error running the &#39;ecr describe-repositories&#39; command&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;Private ECR Repository found&#34;</span>
+</span></span></code></pre></div><h3 id="check-if-update-is-needed-script"><strong>check-if-update-is-needed script</strong></h3>
+<p>This script checks if there is a new base image available.</p>
+<p>How we do that? The script runs the following commands:</p>
+<ul>
+<li>Queries the Microsoft Artifact Registry (<a href="https://mcr.microsoft.com">https://mcr.microsoft.com</a>) to obtain the <code>lastModifiedDate</code> property of the base image.</li>
+<li>Retrieves when was the last time that our platform image was pushed into AWS ECR, if this value is inferior than the <code>lastModifiedDate</code> from the Microsoft Artifact Registry then it means we&rsquo;re not using the most up to date base image and a new platform image needs to be built.</li>
+<li>Uses the <code>aws ecr describe-images</code> command to retrieve the version tag of the current platform image.</li>
+<li>Creates a new version tag and stores the value in a pipeline variable.</li>
+</ul>
+<p>For example, if our current platform image stored in ECR has the tag <em>&ldquo;6.0-bullseye-slim-1.3.0&rdquo;</em>, we&rsquo;ll want to create the tag <em>&ldquo;6.0-bullseye-slim-1.4.0&rdquo;</em> for the platform image we&rsquo;re building right now.</p>
+<blockquote>
+<p>The version tag that this script stores in a pipeline variable will be used later on when it&rsquo;s time to push the image into ECR.</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;&#39;mcr_registry_uri&#39; parameter not found.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    mcr_registry_uri<span style="color:#f92672">=</span>$1
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$2<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;&#39;mcr_tag_name&#39; parameter not found.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    mcr_tag_name<span style="color:#f92672">=</span>$2
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$3<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;&#39;aws_ecr_repository_name&#39; parameter not found.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    aws_ecr_repository_name<span style="color:#f92672">=</span>$3
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$4<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;&#39;aws_ecr_tag_without_version&#39; parameter not found.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    aws_ecr_tag_without_version<span style="color:#f92672">=</span>$4
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;==========================================&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;Script parameters summary&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;mcr_registry_uri: </span>$mcr_registry_uri<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;mcr_tag_name: </span>$mcr_tag_name<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;aws_ecr_repository_name: </span>$aws_ecr_repository_name<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;aws_ecr_tag_without_version: </span>$aws_ecr_tag_without_version<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;==========================================&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>http_response<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>curl -s -o response.txt -w <span style="color:#e6db74">&#34;%{http_code}&#34;</span> $mcr_registry_uri<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> $http_response !<span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;200&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>   echo <span style="color:#e6db74">&#34;Error retrieving container image information from Microsoft MCR Registry.&#34;</span>
+</span></span><span style="display:flex;"><span>   exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>body<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>cat response.txt<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$body<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;Container image information response from Microsoft MCR Registry came empty.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>mcr_push_date<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>jq --arg mcr_tag_name <span style="color:#e6db74">&#34;</span>$mcr_tag_name<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#39;.[] | select(.name==$mcr_tag_name) | .lastModifiedDate&#39;</span> response.txt<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$mcr_push_date<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;Container image information not found on Microsoft MCR Registry.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>mcr_push_date_cleaned<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>echo $mcr_push_date | tr -d <span style="color:#e6db74">&#39;&#34;&#39;</span> | cut -d <span style="color:#e6db74">&#34;T&#34;</span> -f 1<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;Container with name: </span>$mcr_tag_name<span style="color:#e6db74"> was pushed last time on the MCR registry at: </span>$mcr_push_date_cleaned<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>aws_image<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>aws ecr describe-images --repository-name $aws_ecr_repository_name --image-ids imageTag<span style="color:#f92672">=</span>latest<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$aws_image<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;Image </span>$aws_ecr_repository_name<span style="color:#e6db74"> not found on ECR.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>aws_image_pushed_at<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>echo $aws_image | jq -r <span style="color:#e6db74">&#39;.imageDetails[0].imagePushedAt&#39;</span> | cut -d <span style="color:#e6db74">&#34;T&#34;</span> -f 1<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$aws_image_pushed_at<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;Image </span>$aws_ecr_repository_name<span style="color:#e6db74"> on ECR do not contain a imagePushedAt attribute.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;Contaimer with name: </span>$aws_ecr_repository_name<span style="color:#e6db74"> was pushed on ECR last time at: </span>$aws_image_pushed_at<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> <span style="color:#e6db74">&#34;</span>$aws_image_pushed_at<span style="color:#e6db74">&#34;</span> &gt; <span style="color:#e6db74">&#34;</span>$mcr_push_date_cleaned<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span> ;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;There are no new versions of the image in the MCR registry. Nothing further to do.&#34;</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;##vso[task.setvariable variable=skip_tasks]true&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;Now checking image tags from the ECR image...&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> row  in <span style="color:#66d9ef">$(</span>echo $aws_image | jq -r <span style="color:#e6db74">&#39;.imageDetails[0].imageTags&#39;</span><span style="color:#66d9ef">)</span>; <span style="color:#66d9ef">do</span>   
+</span></span><span style="display:flex;"><span>    sub<span style="color:#f92672">=</span>$aws_ecr_tag_without_version
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> <span style="color:#e6db74">&#34;</span>$row<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">==</span> *<span style="color:#e6db74">&#34;</span>$sub<span style="color:#e6db74">&#34;</span>* <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>        aws_image_tag<span style="color:#f92672">=</span>$row
+</span></span><span style="display:flex;"><span>        break
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">done</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$aws_image_tag<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;Tag was not found on the ECR image.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;Image tag found: </span>$aws_image_tag<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;Now calculating new image tag...&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>version<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>echo $aws_image_tag | sed <span style="color:#e6db74">&#39;s/.*-//&#39;</span><span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$version<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;Tag version was not found on the ECR image.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>major<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>echo $version |  tr -d <span style="color:#e6db74">&#39;&#34;&#39;</span> | cut -d <span style="color:#e6db74">&#39;.&#39;</span> -f 1<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$major<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;Tag major version was not found on the ECR image.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>minor<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>echo $version |  tr -d <span style="color:#e6db74">&#39;&#34;&#39;</span> | cut -d <span style="color:#e6db74">&#39;.&#39;</span> -f 2<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$minor<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;Tag minor version was not found on the ECR image.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>patch<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>echo $version |  tr -d <span style="color:#e6db74">&#39;&#34;&#39;</span> | tr -d <span style="color:#e6db74">&#39;,&#39;</span> | cut -d <span style="color:#e6db74">&#39;.&#39;</span> -f 3<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$patch<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;Tag patch version was not found on the ECR image.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>update_minor<span style="color:#f92672">=</span><span style="color:#66d9ef">$((</span>$minor<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span><span style="color:#66d9ef">))</span>
+</span></span><span style="display:flex;"><span>new_tag_version<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$aws_ecr_tag_without_version<span style="color:#e6db74">-</span>$major<span style="color:#e6db74">.</span>$update_minor<span style="color:#e6db74">.0&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;New image tag is: </span>$new_tag_version<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;Now setting this as a pipeline environment variable.&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;##vso[task.setvariable variable=aws_tag_version]</span>$new_tag_version<span style="color:#e6db74">&#34;</span>
+</span></span></code></pre></div><h3 id="docker-build-script"><strong>docker-build script</strong></h3>
+<p>This script builds the platform image. Simple as that.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;&#39;image_context&#39; parameter not found.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    image_context<span style="color:#f92672">=</span>$1
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;==========================================&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;Script parameters summary&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;image_context: </span>$image_context<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;==========================================&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>docker build -t platform.image:tmp $image_context
+</span></span></code></pre></div><h3 id="integration-test-script"><strong>integration-test script</strong></h3>
+<p>This script validates that the platform image created in the script above works in a real .NET application without any error or warning.</p>
+<p>This script does the following steps:</p>
+<ul>
+<li>Retrieves the test application from the <code>/integration-tests/{dotnet version}</code></li>
+<li>Overrides the <code>FROM</code> statement from the application <code>Dockerfile</code> with the current platform image we&rsquo;re building.</li>
+<li>Checks that the <code>docker build</code> process didn&rsquo;t thrown any warning or error.</li>
+<li>Starts the application using the <code>docker run</code> command.</li>
+<li>Sends an Http Request to the running application using cURL and expects that the response is a 200 OK status Code.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;&#39;aws_ecr_repository_name&#39; parameter not found.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    aws_ecr_repository_name<span style="color:#f92672">=</span>$1
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$2<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;&#39;integration_test_dockerfile_local_path&#39; parameter not found.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    integration_test_dockerfile_local_path<span style="color:#f92672">=</span>$2
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$3<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;&#39;integration_test_dockerfile_local_overwrite_image_name&#39; parameter not found.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    integration_test_dockerfile_local_overwrite_image_name<span style="color:#f92672">=</span>$3
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$4<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;&#39;integration_test_dockerfile_context&#39; parameter not found.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    integration_test_dockerfile_context<span style="color:#f92672">=</span>$4
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;==========================================&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;Script parameters summary&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;aws_ecr_repository_name: </span>$aws_ecr_repository_name<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;integration_test_dockerfile_local_path: </span>$integration_test_dockerfile_local_path<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;integration_test_dockerfile_local_overwrite_image_name: </span>$integration_test_dockerfile_local_overwrite_image_name<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;integration_test_dockerfile_context: </span>$integration_test_dockerfile_context<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;==========================================&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>export DOCKER_BUILDKIT<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> -f <span style="color:#e6db74">&#34;</span>$integration_test_dockerfile_local_path<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;</span>$integration_test_dockerfile_local_path<span style="color:#e6db74"> exists.&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;</span>$integration_test_dockerfile_local_path<span style="color:#e6db74"> file does not exist&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;Replacing content on Dockerfile...&#34;</span>
+</span></span><span style="display:flex;"><span>sed -i <span style="color:#e6db74">&#34;/</span>$integration_test_dockerfile_local_overwrite_image_name<span style="color:#e6db74">/c\FROM platform.image:tmp&#34;</span> $integration_test_dockerfile_local_path
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;Output dockerfile content&#34;</span>
+</span></span><span style="display:flex;"><span>cat $integration_test_dockerfile_local_path
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;Building image...&#34;</span>
+</span></span><span style="display:flex;"><span>docker build -t testapp:latest --progress<span style="color:#f92672">=</span>plain  -f $integration_test_dockerfile_local_path $integration_test_dockerfile_context 2&gt;&amp;<span style="color:#ae81ff">1</span> | tee build.log
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;Analyze docker build log output...&#34;</span>
+</span></span><span style="display:flex;"><span>grep -q <span style="color:#e6db74">&#34;warning&#34;</span> build.log; <span style="color:#f92672">[</span> $? -eq <span style="color:#ae81ff">0</span> <span style="color:#f92672">]</span> <span style="color:#f92672">&amp;&amp;</span> echo <span style="color:#e6db74">&#34;warnings found on the docker build log&#34;</span> <span style="color:#f92672">&amp;&amp;</span> exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;No errors or warnings found on docker build log output&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;Run image...&#34;</span>
+</span></span><span style="display:flex;"><span>container_id<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>docker run -d -p 5055:8080 testapp:latest<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>sleep <span style="color:#ae81ff">20</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;Print docker logs...&#34;</span>
+</span></span><span style="display:flex;"><span>docker logs $container_id
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;Run integration test...&#34;</span>
+</span></span><span style="display:flex;"><span>status_code<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>curl -X <span style="color:#e6db74">&#39;POST&#39;</span> --write-out %<span style="color:#f92672">{</span>http_code<span style="color:#f92672">}</span> -k --silent --output /dev/null <span style="color:#e6db74">&#39;http://localhost:5055/MyService&#39;</span> -H <span style="color:#e6db74">&#39;accept: application/json&#39;</span> -H <span style="color:#e6db74">&#39;Content-Type: application/json-patch+json&#39;</span> -d <span style="color:#e6db74">&#39;{ &#34;data&#34;: &#34;string&#34;, &#34;color&#34;: &#34;Red&#34;}&#39;</span><span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>echo $status_code
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> <span style="color:#e6db74">&#34;</span>$status_code<span style="color:#e6db74">&#34;</span> -ne <span style="color:#ae81ff">200</span> <span style="color:#f92672">]]</span> ; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;Integration Test failed.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;Integration Test succeeded.&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span></code></pre></div><h3 id="push-to-private-ecr-script"><strong>push-to-private-ecr script</strong></h3>
+<p>This script creates the ECR repository if it doesn&rsquo;t exists and afterwards it pushes the platform image and tags into the repository.</p>
+<p>It does the following steps:</p>
+<ul>
+<li>Creates the ECR repository using the <code>aws ecr create-repository</code> command, if needed.</li>
+<li>Retrieves the tag version set in the previous scripts and tags the image with it.</li>
+<li>Tags the image with the <code>latest</code> tag and some extra tags we can pass them as input parameters.</li>
+<li>Pushes the image and the corresponding tags into ECR.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;&#39;aws_account&#39; parameter not found.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    aws_account<span style="color:#f92672">=</span>$1
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$2<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;&#39;aws_region&#39; parameter not found.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    aws_region<span style="color:#f92672">=</span>$2
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$3<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;&#39;aws_ecr_repository_name&#39; parameter not found.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    aws_ecr_repository_name<span style="color:#f92672">=</span>$3
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$4<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;&#39;aws_tag_version&#39; environment variable not found.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    aws_tag_version<span style="color:#f92672">=</span>$4
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$5<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;&#39;aws_extra_tags&#39; parameter not found.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    aws_extra_tags<span style="color:#f92672">=</span>$5
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;==========================================&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;Script parameters summary&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;aws_account: </span>$aws_account<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;aws_region: </span>$aws_region<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;aws_ecr_repository_name: </span>$aws_ecr_repository_name<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;aws_tag_version: </span>$aws_tag_version<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;aws_extra_tags: </span>$aws_extra_tags<span style="color:#e6db74">&#34;</span> 
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;==========================================&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>aws ecr get-login-password --region $aws_region | docker login --username AWS --password-stdin $aws_account.dkr.ecr.$aws_region.amazonaws.com
+</span></span><span style="display:flex;"><span>aws ecr create-repository --repository-name $aws_ecr_repository_name --region $aws_region --image-scanning-configuration scanOnPush<span style="color:#f92672">=</span>true
+</span></span><span style="display:flex;"><span>docker tag platform.image:tmp $aws_account.dkr.ecr.$aws_region.amazonaws.com/$aws_ecr_repository_name:$aws_tag_version
+</span></span><span style="display:flex;"><span>docker tag platform.image:tmp $aws_account.dkr.ecr.$aws_region.amazonaws.com/$aws_ecr_repository_name:latest
+</span></span><span style="display:flex;"><span>docker push $aws_account.dkr.ecr.$aws_region.amazonaws.com/$aws_ecr_repository_name:$aws_tag_version
+</span></span><span style="display:flex;"><span>docker push $aws_account.dkr.ecr.$aws_region.amazonaws.com/$aws_ecr_repository_name:latest
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>array_tags<span style="color:#f92672">=(</span> $aws_extra_tags <span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> extra_tag in <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>array_tags[@]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>    docker tag platform.image:tmp $aws_account.dkr.ecr.$aws_region.amazonaws.com/$aws_ecr_repository_name:$extra_tag
+</span></span><span style="display:flex;"><span>    docker push $aws_account.dkr.ecr.$aws_region.amazonaws.com/$aws_ecr_repository_name:$extra_tag
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">done</span>
+</span></span></code></pre></div><h3 id="send-teams-notification-script"><strong>send-teams-notification script</strong></h3>
+<p>This script notifies to a Teams Channel that a new platform image is available.</p>
+<p>The script does the following steps:</p>
+<ul>
+<li>Builds an adaptative card for Microsoft Teams.</li>
+<li>Sends a message to a Microsoft Teams channel using an &ldquo;Incoming HTTP WebHook&rdquo;.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;&#39;aws_ecr_repository_name&#39; parameter not found.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    aws_ecr_repository_name<span style="color:#f92672">=</span>$1
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$2<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;&#39;aws_tag_version&#39; environment variable not found.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    aws_tag_version<span style="color:#f92672">=</span>$2
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$3<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;&#39;teams_webhook_uri&#39; environment variable not found.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    teams_webhook_uri<span style="color:#f92672">=</span>$3
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;==========================================&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;Script parameters summary&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;aws_ecr_repository_name: </span>$aws_ecr_repository_name<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;aws_tag_version: </span>$aws_tag_version<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;teams_webhook_uri: </span>$teams_webhook_uri<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;==========================================&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>date_now<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>date +<span style="color:#e6db74">&#34;%Y-%m-%d %T&#34;</span><span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>message<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;{&#34;type&#34;:&#34;message&#34;,&#34;attachments&#34;:[{&#34;contentType&#34;:&#34;application/vnd.microsoft.card.adaptive&#34;,&#34;content&#34;:{&#34;type&#34;:&#34;AdaptiveCard&#34;,&#34;body&#34;:[{&#34;type&#34;:&#34;TextBlock&#34;,&#34;size&#34;:&#34;High&#34;,&#34;weight&#34;:&#34;Bolder&#34;,&#34;text&#34;:&#34;New platform image available.&#34;},{&#34;type&#34;:&#34;TextBlock&#34;,&#34;size&#34;:&#34;Medium&#34;,&#34;weight&#34;:&#34;Bolder&#34;,&#34;text&#34;:&#34;A new platform image is **available** and **ready** to use.&#34;},{&#34;type&#34;:&#34;FactSet&#34;,&#34;facts&#34;:[{&#34;title&#34;:&#34;Image Name:&#34;,&#34;value&#34;:&#34;&#39;</span><span style="color:#e6db74">&#34;</span>$aws_ecr_repository_name<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">&#39;&#34;},{&#34;title&#34;:&#34;Version Tag:&#34;,&#34;value&#34;:&#34;&#39;</span><span style="color:#e6db74">&#34;</span>$aws_tag_version<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">&#39;&#34;},{&#34;title&#34;:&#34;Creation Time:&#34;,&#34;value&#34;:&#34;&#39;</span><span style="color:#e6db74">&#34;</span>$date_now<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">&#39;&#34;}]}],&#34;$schema&#34;:&#34;http://adaptivecards.io/schemas/adaptive-card.json&#34;,&#34;version&#34;:&#34;1.0&#34;,&#34;msteams&#34;:{&#34;width&#34;:&#34;Full&#34;}}}]}&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>status_code<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>curl --write-out %<span style="color:#f92672">{</span>http_code<span style="color:#f92672">}</span> -k --silent --output /dev/null -H <span style="color:#e6db74">&#34;Content-Type: application/json&#34;</span> -H <span style="color:#e6db74">&#34;Accept: application/json&#34;</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>teams_webhook_uri<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> -d <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>message<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>echo $status_code
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> <span style="color:#e6db74">&#34;</span>$status_code<span style="color:#e6db74">&#34;</span> -ne <span style="color:#ae81ff">200</span> <span style="color:#f92672">]]</span> ; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;Webhook post failed.&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;Webhook post succeed.&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span></code></pre></div><h2 id="create-the-azure-devops-pipeline"><strong>Create the Azure DevOps Pipeline</strong></h2>
+<h3 id="create-a-yaml-template"><strong>Create a YAML template</strong></h3>
+<p>In the previous section I have been building the different steps we&rsquo;re going to need on our pipeline, now it&rsquo;s time to put them all together.</p>
+<p>I decided to build an Azure DevOps YAML Template (<a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates">https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates</a>) and reuse it in every platform image pipeline.</p>
+<p>Here&rsquo;s how the resulting Azure DevOps YAML template looks like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">parameters</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">aws_credentials</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">string</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">aws_account</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">string</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">private_ecr_region</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">string</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">aws_ecr_repository_name</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">string</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">aws_ecr_tag_without_version</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">string</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">aws_ecr_extra_tags</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">object  </span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">mcr_registry_uri</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">string</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">mcr_tag_name</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">string</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">dockerfile_context_path</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">string</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">integration_test_dockerfile_local_path</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">string</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">integration_test_dockerfile_local_overwrite_image_name</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">string</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">integration_test_dockerfile_context</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">string</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">teams_webhook_uri</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">string</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">force_update</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">string</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">default</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">variables</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">aws_ecr_extra_tags_stringified</span>: <span style="color:#ae81ff">${{join(&#39; &#39;,parameters.aws_ecr_extra_tags)}}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">steps</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AWSShellScript@1</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">displayName</span>: <span style="color:#e6db74">&#39;Check if forced update has been specified&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">condition</span>: <span style="color:#ae81ff">and(succeeded(), eq(&#39;${{ parameters.force_update }}&#39;, &#39;true&#39;))</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">awsCredentials</span>: <span style="color:#e6db74">&#39;${{ parameters.aws_credentials }}&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">regionName</span>: <span style="color:#e6db74">&#39;${{ parameters.private_ecr_region }}&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">arguments</span>: <span style="color:#e6db74">&#39;${{ parameters.aws_ecr_repository_name }} ${{ parameters.aws_ecr_tag_without_version }}&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">scriptType</span>: <span style="color:#e6db74">&#39;filePath&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">filePath</span>: <span style="color:#e6db74">&#39;$(System.DefaultWorkingDirectory)/shared/scripts/force-update-process.sh&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AWSShellScript@1</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">displayName</span>: <span style="color:#e6db74">&#39;Check if ECR repository exists&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">condition</span>: <span style="color:#ae81ff">and(succeeded(), eq(&#39;${{ parameters.force_update }}&#39;, &#39;false&#39;))</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">awsCredentials</span>: <span style="color:#e6db74">&#39;${{ parameters.aws_credentials }}&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">regionName</span>: <span style="color:#e6db74">&#39;${{ parameters.private_ecr_region }}&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">arguments</span>: <span style="color:#e6db74">&#39;${{ parameters.aws_ecr_repository_name }} ${{ parameters.aws_ecr_tag_without_version }}&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">scriptType</span>: <span style="color:#e6db74">&#39;filePath&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">filePath</span>: <span style="color:#e6db74">&#39;$(System.DefaultWorkingDirectory)/shared/scripts/check-if-ecr-repository-exists.sh&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AWSShellScript@1</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">displayName</span>: <span style="color:#e6db74">&#39;Check if there is a new update&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">condition</span>: <span style="color:#ae81ff">and(succeeded(), ne(variables[&#39;skip_update_check&#39;], &#39;true&#39;), eq(&#39;${{ parameters.force_update }}&#39;, &#39;false&#39;))</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">awsCredentials</span>: <span style="color:#e6db74">&#39;${{ parameters.aws_credentials }}&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">regionName</span>: <span style="color:#e6db74">&#39;${{ parameters.private_ecr_region }}&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">arguments</span>: <span style="color:#e6db74">&#39;${{ parameters.mcr_registry_uri}} ${{ parameters.mcr_tag_name }} ${{ parameters.aws_ecr_repository_name }} ${{ parameters.aws_ecr_tag_without_version }} ${{ parameters.force_update}}&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">scriptType</span>: <span style="color:#e6db74">&#39;filePath&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">filePath</span>: <span style="color:#e6db74">&#39;$(System.DefaultWorkingDirectory)/shared/scripts/check-if-update-is-needed.sh&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">displayName</span>: <span style="color:#e6db74">&#39;Build new image&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">condition</span>: <span style="color:#ae81ff">and(succeeded(), ne(variables[&#39;skip_tasks&#39;], &#39;true&#39;))</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">filePath</span>: <span style="color:#e6db74">&#39;$(System.DefaultWorkingDirectory)/shared/scripts/docker-build.sh&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">arguments</span>: <span style="color:#e6db74">&#39;${{ parameters.dockerfile_context_path }} $(Build.BuildNumber)&#39;</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">displayName</span>: <span style="color:#e6db74">&#39;Integration Test&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">condition</span>: <span style="color:#ae81ff">and(succeeded(), ne(variables[&#39;skip_tasks&#39;], &#39;true&#39;))</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">filePath</span>: <span style="color:#e6db74">&#39;$(System.DefaultWorkingDirectory)/shared/scripts/integration-test.sh&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">arguments</span>: <span style="color:#e6db74">&#39;${{ parameters.aws_ecr_repository_name }} ${{ parameters.integration_test_dockerfile_local_path }} ${{ parameters.integration_test_dockerfile_local_overwrite_image_name }} ${{ parameters.integration_test_dockerfile_context }}&#39;</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AWSShellScript@1</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">displayName</span>: <span style="color:#e6db74">&#39;Publish new image to private ECR registry&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">condition</span>: <span style="color:#ae81ff">and(succeeded(), ne(variables[&#39;skip_tasks&#39;], &#39;true&#39;))</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">awsCredentials</span>: <span style="color:#e6db74">&#39;${{ parameters.aws_credentials }}&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">regionName</span>: <span style="color:#e6db74">&#39;${{ parameters.private_ecr_region }}&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">arguments</span>: <span style="color:#e6db74">&#39;${{ parameters.aws_account }} ${{ parameters.private_ecr_region }} ${{ parameters.aws_ecr_repository_name }} $(aws_tag_version) &#34;$(aws_ecr_extra_tags_stringified)&#34;&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">scriptType</span>: <span style="color:#e6db74">&#39;filePath&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">filePath</span>: <span style="color:#e6db74">&#39;$(System.DefaultWorkingDirectory)/shared/scripts/push-to-private-ecr.sh&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">displayName</span>: <span style="color:#e6db74">&#39;Send notification to teams&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">condition</span>: <span style="color:#ae81ff">and(succeeded(), ne(variables[&#39;skip_tasks&#39;], &#39;true&#39;))</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">filePath</span>: <span style="color:#e6db74">&#39;$(System.DefaultWorkingDirectory)/shared/scripts/send-teams-notification.sh&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">arguments</span>: <span style="color:#e6db74">&#39;${{ parameters.aws_ecr_repository_name }} $(aws_tag_version) $(teams_webhook_uri)&#39;</span>
+</span></span></code></pre></div><p>This YAML template has the following parameters:</p>
+<ul>
+<li><code>aws_credentials</code>: An Azure DevOps Service Connection to AWS.</li>
+<li><code>aws_account</code>: AWS Account Number.</li>
+<li><code>private_ecr_region</code>: AWS Region</li>
+<li><code>aws_ecr_repository_name</code>: Name of the ECR repository where the image is going to be stored.</li>
+<li><code>aws_ecr_tag_without_version</code>: The main tag we want to add to the platform image. The main tag will be automatically versioned by the pipeline.<br>
+For example, let&rsquo;s say we set it to <code>6.0-bullseye-slim</code>, if the platform image doesn&rsquo;t exist yet a tag named <code>6.0-bullseye-slim-1.0.0</code> will be added to the image , if the platform image already exists a tag named <code>6.0-bullseye-slim-1.1.0</code> will be added to the image, and so forth and so on in the following executions.</li>
+<li><code>aws_ecr_extra_tags</code>: Extra tags we want to add to this platform image, like the build ID, build Number, dotnet version, etc.</li>
+<li><code>mcr_registry_uri</code>: The URI of the Microsoft Registry that will be used to check if the base image contains a new update.<br>
+For example, if the platform image is using the <code>dotnet/runtime:6.0-bullseye-slim</code> image as a base image, then the <code>mcr_registry_uri</code> has to be  <code>https://mcr.microsoft.com/api/v1/catalog/dotnet/runtime/tags</code>.<br>
+If the platform image is using the <code>dotnet/runtime-deps:6.0-bullseye-slim</code> image as a base image, then the <code>mcr_registry_uri</code> has to be <code>https://mcr.microsoft.com/api/v1/catalog/dotnet/runtime-deps/tags</code>.</li>
+<li><code>mcr_tag_name</code>: The specific image tag from the Microsoft Registry that will be used to check if the base image contains a new update.<br>
+For example, if the platform image is using the <code>dotnet/runtime:6.0-bullseye-slim</code> image as a base image, then the <code>mcr_tag_name</code> has to be  <code>6.0-bullseye-slim</code></li>
+<li><code>dockerfile_context_path</code>: The location of the platform image build context.</li>
+<li><code>integration_test_dockerfile_local_path</code>: The location of the integration test Dockerfile.</li>
+<li><code>integration_test_dockerfile_local_overwrite_image_name</code>: Which <code>FROM</code> statement needs to be overridden on the integration test app Dockerfile.</li>
+<li><code>integration_test_dockerfile_context</code>: The location of the integration test build context.</li>
+<li><code>teams_webhook_uri</code>: A Teams WebHook Uri. The pipeline notifies to a Teams Channel when a new platform image has been created or updated.</li>
+<li><code>force_update</code>: This parameter is used if you want to manually force the creation of a new version of the platform image. It skips the Microsoft container registry update check and goes straight into creating a new platform image.</li>
+</ul>
+<h3 id="create-an-azure-devops-pipeline-using-the-yaml-template"><strong>Create an Azure DevOps Pipeline using the YAML Template</strong></h3>
+<p>Now it&rsquo;s time to create an actual platform image pipeline.</p>
+<p>The pipeline needs to contain the following features:</p>
+<ul>
+<li>The <code>trigger</code> attribute set to <code>none</code> because there is no need for a push trigger. The only way to generate a platform image will be via the scheduled trigger or using the <code>force_update</code> parameter.</li>
+<li>An scheduled trigger to periodically execute the pipeline. The schedule functionality will be used to poll the Microsoft Container Registry (<a href="https://mcr.microsoft.com/">https://mcr.microsoft.com/</a>) to check if there is any update available for the base image.</li>
+<li>The <code>force_update</code> parameter is going to be a runtime parameter (<a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/process/runtime-parameters)">https://docs.microsoft.com/en-us/azure/devops/pipelines/process/runtime-parameters)</a>. This parameter is used if you want to manually create a new version of a platform image.</li>
+<li>The pipelines needs tu use the YAML template we have built in the section above.</li>
+</ul>
+<p>Here&rsquo;s a real example of how a pipeline will look like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">trigger</span>: <span style="color:#ae81ff">none</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">schedules</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">cron</span>: <span style="color:#e6db74">&#34;0 6 * * 1&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Run At 06:00 UTC every Monday</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">branches</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">include</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">parameters</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">force_update</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">boolean</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">default</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">pool</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">vmImage</span>: <span style="color:#ae81ff">ubuntu-latest</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">extends</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">template</span>: <span style="color:#ae81ff">../../../shared/templates/automatic-update-platform-image-template.yml</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">parameters</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">aws_credentials</span>: <span style="color:#e6db74">&#39;aws-dev&#39;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">aws_account</span>: <span style="color:#e6db74">&#39;951281301247&#39;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">private_ecr_region</span>: <span style="color:#e6db74">&#39;eu-west-1&#39;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">aws_ecr_repository_name</span>: <span style="color:#e6db74">&#39;runtime&#39;</span> 
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">aws_ecr_tag_without_version</span>: <span style="color:#e6db74">&#39;6.0-bullseye-slim&#39;</span> 
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">aws_ecr_extra_tags</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">6.0</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">$(Build.BuildNumber)</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">mcr_registry_uri</span>: <span style="color:#e6db74">&#39;https://mcr.microsoft.com/api/v1/catalog/dotnet/runtime/tags&#39;</span> 
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">mcr_tag_name</span>: <span style="color:#e6db74">&#39;6.0-bullseye-slim&#39;</span> 
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">dockerfile_context_path</span>: <span style="color:#e6db74">&#39;$(System.DefaultWorkingDirectory)/platform-images/net6/runtime&#39;</span> 
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">integration_test_dockerfile_local_path</span>: <span style="color:#e6db74">&#39;$(System.DefaultWorkingDirectory)/shared/integration-tests/net6/Dockerfile&#39;</span> 
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">integration_test_dockerfile_local_overwrite_image_name</span>: <span style="color:#e6db74">&#39;runtime:6.0-bullseye-slim&#39;</span> 
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">integration_test_dockerfile_context</span>: <span style="color:#e6db74">&#39;$(System.DefaultWorkingDirectory)/shared/integration-tests/net6&#39;</span> 
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">teams_webhook_uri</span>: <span style="color:#e6db74">&#39;$(TEAMS_WEBHOOK_URI)&#39;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">force_update</span>: <span style="color:#ae81ff">${{ parameters.force_update }}</span>
+</span></span></code></pre></div><h1 id="5-testing-everything-out"><strong>5. Testing everything out</strong></h1>
+<p>Let&rsquo;s start by building a <code>Dockerfile</code> for our new platform image.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ae81ff">FROM mcr.microsoft.com/dotnet/runtime:6.0-bullseye-slim</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Set non-root user</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN groupadd -r devsecops &amp;&amp; useradd -r --uid 1000 -g devsecops devsecops \</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">&amp;&amp;</span> <span style="color:#ae81ff">mkdir /app \</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">&amp;&amp;</span> <span style="color:#ae81ff">mkdir /home/devsecops \</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">&amp;&amp;</span> <span style="color:#ae81ff">chown -R devsecops /app \</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">&amp;&amp;</span> <span style="color:#ae81ff">chown -R devsecops /home/devsecops</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Set the default user</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">USER devsecops</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Non-user root cannot start on port 80</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">ENV ASPNETCORE_URLS=http://+:8080</span>
+</span></span></code></pre></div><p>This platform image contains the following features:</p>
+<ul>
+<li>Uses the <code>dotnet/runtime:6.0-bullseye-slim</code> as a base image.</li>
+<li>Uses a non-root container image.</li>
+<li>Sets the starting port to <code>8080</code>.</li>
+</ul>
+<p>By default a .NET app runs as root inside a container. Root in a container is not the same as root on the host, Docker restricts users in containers but to decrease the security-attack surface you’d want to run the container as an unprivileged user.<br>
+Also a non-root user cannot run Kestrel on port 80. A new port needs to be specified.</p>
+<p>Now let&rsquo;s create the Azure DevOps pipeline that will be used to create and update this platform image.</p>
+<ul>
+<li>The main tag for this image is going to be <code>6.0-bullseye-slim</code>. This tag will be automatically version by the pipeline, which means that after the first execution the image will have assoaciated the <code>6.0-bullseye-slim-1.0.0</code> tag.</li>
+<li>The Microsoft Registry Artifact endpoint that we want to monitor to check if a new version of the base image is available is this one: <code>https://mcr.microsoft.com/api/v1/catalog/dotnet/runtime/tags</code>.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">trigger</span>: <span style="color:#ae81ff">none</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">schedules</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">cron</span>: <span style="color:#e6db74">&#34;0 6 * * 1&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Run At 06:00 UTC every Monday</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">branches</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">include</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">parameters</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">force_update</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">boolean</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">default</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">pool</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">vmImage</span>: <span style="color:#ae81ff">ubuntu-latest</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">extends</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">template</span>: <span style="color:#ae81ff">../../../shared/templates/automatic-update-platform-image-template.yml</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">parameters</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">aws_credentials</span>: <span style="color:#e6db74">&#39;aws-dev&#39;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">aws_account</span>: <span style="color:#e6db74">&#39;951281301247&#39;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">private_ecr_region</span>: <span style="color:#e6db74">&#39;eu-west-1&#39;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">aws_ecr_repository_name</span>: <span style="color:#e6db74">&#39;runtime&#39;</span> 
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">aws_ecr_tag_without_version</span>: <span style="color:#e6db74">&#39;6.0-bullseye-slim&#39;</span> 
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">aws_ecr_extra_tags</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">6.0</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">$(Build.BuildNumber)</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">mcr_registry_uri</span>: <span style="color:#e6db74">&#39;https://mcr.microsoft.com/api/v1/catalog/dotnet/runtime/tags&#39;</span> 
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">mcr_tag_name</span>: <span style="color:#e6db74">&#39;6.0-bullseye-slim&#39;</span> 
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">dockerfile_context_path</span>: <span style="color:#e6db74">&#39;$(System.DefaultWorkingDirectory)/platform-images/net6/runtime&#39;</span> 
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">integration_test_dockerfile_local_path</span>: <span style="color:#e6db74">&#39;$(System.DefaultWorkingDirectory)/shared/integration-tests/net6/Dockerfile&#39;</span> 
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">integration_test_dockerfile_local_overwrite_image_name</span>: <span style="color:#e6db74">&#39;runtime:6.0-bullseye-slim&#39;</span> 
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">integration_test_dockerfile_context</span>: <span style="color:#e6db74">&#39;$(System.DefaultWorkingDirectory)/shared/integration-tests/net6&#39;</span> 
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">teams_webhook_uri</span>: <span style="color:#e6db74">&#39;$(TEAMS_WEBHOOK_URI)&#39;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">force_update</span>: <span style="color:#ae81ff">${{ parameters.force_update }}</span>
+</span></span></code></pre></div><p>Now let&rsquo;s run this pipeline a few times to test it out. But first we need to add an &ldquo;Incoming WebHook&rdquo; into a Microsoft Teams channel. This WebHook will be used by the pipeline to notify that a new version of the platform image is available.</p>
+<p><img src="/img/platform-img-incoming-webhook.png" alt="platform-img-incoming-webhook"></p>
+<p>After creating the WebHook we have to add the WebHook URL as a Pipeline variable.</p>
+<p><img src="/img/platform-img-teams-webhook.uri.png" alt="platform-img-teams-webhook.uri"></p>
+<p>Let&rsquo;s run the pipeline for the first time. Here&rsquo;s the result:</p>
+<p><img src="/img/platform-img-new-pipeline-execution.png" alt="platform-img-new-pipeline-execution"></p>
+<p>As you can see the step that checks if a new update is available has not been executed because we&rsquo;re creating a platform image for the first time.</p>
+<p>If we take a look at the Microsoft Teams channel where we added the &ldquo;Incoming WebHook&rdquo; a new notification has popped up.</p>
+<p><img src="/img/platform-img-channel-notification.png" alt="platform-img-channel-notification"></p>
+<p>Now let&rsquo;s wait for the scheduled trigger to execute the pipeline, here&rsquo;s the result of the pipeline execution:</p>
+<p><img src="/img/platform-img-existing-pipeline-execution.png" alt="platform-img-existing-pipeline-execution"></p>
+<p>As you can see the pipeline was executed successfully, but the execution stopped on the &ldquo;Check if there is a new update&rdquo; step, if we drill-down on this concrete step.</p>
+<p><img src="/img/platform-img-no-new-update.png" alt="platform-img-no-new-update"></p>
+<p>In the image above you can see that there were no new updates available on the Microsoft Artifact Registry so the pipeline ended there.</p>
+<p>Now let&rsquo;s force the creation of a new version of the platform image, to do that we need to check the <code>force_update</code> parameter when trying to manually execute the pipeline.</p>
+<p><img src="/img/platform-img-force-update.png" alt="platform-img-force-update"></p>
+<p>Let&rsquo;s take a look at the AWS ECR repository after creating a couple more versions of this image.</p>
+<p><img src="/img/platform-img-autoincrement-version-tag.png" alt="platform-img-autoincrement-version-tag"></p>
+<p>As you can see in the image above.</p>
+<ul>
+<li>The tag <em>&ldquo;6.0-bullseye-slim&rdquo;</em> has been automatically versioned everytime a new version of the platform image has been pushed into ECR.</li>
+<li>The <code>latest</code> tag is a mutable tag that always points at the latest version of the platform image.</li>
+<li>The <code>6</code> is a mutable tag that always points at the latest version of the platform image.</li>
+</ul>
+<p>And that&rsquo;s it!</p>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://www.mytechramblings.com/posts/check-if-your-dotnet-app-dependencies-has-a-security-vulnerability-on-you-cicd-pipelines/">
+                  <span class="button__text">How to easily check on your CI/CD pipelines if your app has a NuGet package with a security vulnerability</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2022 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>Theme created by <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://www.mytechramblings.com/assets/main.js"></script>
+<script src="https://www.mytechramblings.com/assets/prism.js"></script>
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('carlospons', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Donate',
+    'floating-chat.donateButton.background-color': '#ff5f5f',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
+
+      
+    </div>
+
+    
+      
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-170300931-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+    
+  </body>
+</html>
