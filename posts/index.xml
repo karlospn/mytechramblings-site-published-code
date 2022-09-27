@@ -9,10 +9,30 @@
     <description>Recent content in Posts on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 08 Sep 2022 11:06:41 +0200</lastBuildDate>
+    <lastBuildDate>Tue, 27 Sep 2022 10:01:32 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Getting started with OpenTelemetry Metrics in .NET. Part 1: Key concepts</title>
+      <link>https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-metrics-and-dotnet-part-1/</link>
+      <pubDate>Tue, 27 Sep 2022 10:01:32 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-metrics-and-dotnet-part-1/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          In this 2 part series-post I’m going to show you how to use OpenTelemetry to generate custom metrics and how to visualize those metrics using Prometheus and Grafana. In part 1 I’ll be talking about some key concepts that you should know when using OpenTelemetry Metrics with .NET.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>Keep your .NET platform images up to date using AWS ECR and Azure Pipelines</title>
