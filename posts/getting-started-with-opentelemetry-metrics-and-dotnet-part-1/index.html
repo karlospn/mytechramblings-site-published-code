@@ -165,7 +165,7 @@ Part 1: Key concepts that you should know when using OpenTelemetry Metrics with 
 <p>OpenTelemetry is a set of APIs, SDKs, tooling and integrations that are designed for the creation and management of telemetry data such as <strong>traces</strong>, <strong>metrics</strong>, and <strong>logs</strong>.</p>
 <p>In one of my <a href="https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-and-dotnet-core/">previous posts</a> I talked about how to get started with OpenTelemetry and distributed tracing, today I want to <strong>focus on metrics</strong>.</p>
 <p>At the end of this 2 part-series post we will have a .NET6 app that emits a series of metrics, those metrics will be send to the OpenTelemetry Collector, a Prometheus Server will receive the metrics from the OTEL Collector and we will have a Grafana dashboard to visualize them.</p>
-<p><img src="/img/app-otel-metrics-diagram.png" alt="app-otel-metrics-diagram"></p>
+<p><img src="/img/otel-metrics-app-diagram.png" alt="otel-metrics-app-diagram"></p>
 <p>But before jumping to the practical part there are a few key concepts about using OpenTelemetry Metrics with .NET that are worth talking about.</p>
 <h1 id="metrics-api"><strong>Metrics API</strong></h1>
 <p>The Metrics API allows users to capture measurements at runtime. The Metrics API is designed to process raw measurements, generally with the intent to produce continuous summaries of those measurements.</p>
