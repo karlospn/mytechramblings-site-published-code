@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>Getting started with OpenTelemetry Metrics in .NET. Part 2: Instrumenting the BookStore API :: my tech ramblings — A blog for writing about my techie ramblings</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="This is a 2 part-series post.
+Part 1: Key concepts that you should know when using OpenTelemetry Metrics with .NET. If you want to read it, click here. Part 2: A practical example about how to add OpenTelemetry Metrics on a real life .NET app and how to visualize those metrics using Prometheus and Grafana. Just show me the code!
+As always, if you don’t care about the post I have uploaded the source code on my Github."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-metrics-and-dotnet-part-2/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/assets/style.css">
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.mytechramblings.com/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://www.mytechramblings.com/img/favicon.png">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Getting started with OpenTelemetry Metrics in .NET. Part 2: Instrumenting the BookStore API"/>
+<meta name="twitter:description" content="In this 2 part series-post I’m going to show you how to use OpenTelemetry to generate custom metrics and how to visualize those metrics using Prometheus and Grafana. In part 2 I’ll be showing you how to add OpenTelemetry Metrics on a real life .NET app and how to visualize those metrics using Prometheus and Grafana."/>
+
+
+
+<meta property="og:title" content="Getting started with OpenTelemetry Metrics in .NET. Part 2: Instrumenting the BookStore API" />
+<meta property="og:description" content="In this 2 part series-post I’m going to show you how to use OpenTelemetry to generate custom metrics and how to visualize those metrics using Prometheus and Grafana. In part 2 I’ll be showing you how to add OpenTelemetry Metrics on a real life .NET app and how to visualize those metrics using Prometheus and Grafana." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-metrics-and-dotnet-part-2/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-09-28T10:01:53+02:00" />
+<meta property="article:modified_time" content="2022-09-28T10:01:53+02:00" /><meta property="og:site_name" content="my tech ramblings" />
+
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://www.mytechramblings.com/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">my tech ramblings</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-metrics-and-dotnet-part-2/">Getting started with OpenTelemetry Metrics in .NET. Part 2: Instrumenting the BookStore API</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2022-09-28
+        </span>
+
+        
+          
+            
+
+
+
+          
+        
+      
+
+      
+      
+        <span class="post-read-time">— 15 min read</span>
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          #<a href="https://www.mytechramblings.com/tags/opentelemetry/">opentelemetry</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/dotnet/">dotnet</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/csharp/">csharp</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/metrics/">metrics</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/prometheus/">prometheus</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/grafana/">grafana</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <blockquote>
+<p>This is a 2 part-series post.</p>
+<ul>
+<li><strong>Part 1</strong>: Key concepts that you should know when using OpenTelemetry Metrics with .NET.  If you want to read it, click <a href="https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-metrics-and-dotnet-part-1/">here</a>.</li>
+<li><strong>Part 2</strong>: A practical example about how to add OpenTelemetry Metrics on a real life .NET app and how to visualize those metrics using Prometheus and Grafana.</li>
+</ul>
+</blockquote>
+<p><strong>Just show me the code!</strong><br>
+As always, if you don’t care about the post I have uploaded the source code on my <a href="https://github.com/karlospn/opentelemetry-metrics-demo">Github</a>.</p>
+<p>In part 1 we talked about some OpenTelemetry Metrics key concepts, now it’s time to focus
+on instrumenting a real application.</p>
+<p>This is what we are going to build.</p>
+<p><img src="/img/otel-metrics-app-diagram.png" alt="otel-metrics-app-diagram"></p>
+<ul>
+<li>The <strong>BookStore WebAPI</strong> will generate some business metrics and use the OTLP exporter package (<code>OpenTelemetry.Exporter.OpenTelemetryProtocol</code>) to send the metric data to the <strong>OpenTelemetry Collector</strong>.</li>
+<li><strong>Prometheus</strong> will obtain the metric data from the OpenTelemetry Collector.</li>
+<li>We will have a <strong>Grafana</strong> dashboard to visualize the metrics emitted by the BookStore WebApi.</li>
+</ul>
+<h1 id="application"><strong>Application</strong></h1>
+<p>The application we&rsquo;re going to instrument using OpenTelemetry Metrics is a BookStore API built using .NET6.<br>
+The API can do the following actions:</p>
+<ul>
+<li>Get, add, update and delete book categories.</li>
+<li>Get, add, update and delete books.</li>
+<li>Get, add, update and delete inventory.</li>
+<li>Get, add and update orders.</li>
+</ul>
+<p>For a better understanding, here&rsquo;s how the database diagram looks like:</p>
+<p><img src="/img/otel-metrics-bookstore-database-diagram.png" alt="otel-metrics-bookstore-database-diagram"></p>
+<h1 id="opentelemetry-metrics"><strong>OpenTelemetry Metrics</strong></h1>
+<p>The first step before writing any code is to decide what we want to measure and what kind of instruments are we going to use.</p>
+<h2 id="bookstore-api-custom-metrics">BookStore API custom metrics</h2>
+<p>The following business metrics will be instrumented directly on the application using the Metrics API.</p>
+<ul>
+<li><code>BooksAddedCounter</code> is a <code>Counter</code> that counts books added to the store.</li>
+<li><code>BooksDeletedCounter</code> is a <code>Counter</code> that counts books deleted from the store.</li>
+<li><code>BooksUpdatedCounter</code> is a <code>Counter</code> that counts books updated.</li>
+<li><code>TotalBooksGauge</code> is an <code>ObservableGauge</code> that contains the total number of books that the store has at any given time.</li>
+<li><code>CategoriesAddedCounter</code> is a <code>Counter</code> that counts book categories added to the store.</li>
+<li><code>CategoriesDeletedCounter</code> is a <code>Counter</code> that counts book categories deleted from the store.</li>
+<li><code>CategoriesUpdatedCounter</code> is a <code>Counter</code> that counts book categories updated.</li>
+<li><code>TotalCategoriesGauge</code> is an <code>ObservableGauge</code> that contains the total number of book categories that the store has at any given time</li>
+<li><code>OrdersPriceHistogram</code> is a <code>Histogram</code> that records the price distribution of the orders.</li>
+<li><code>NumberOfBooksPerOrderHistogram</code> is a <code>Histogram</code> that records the number of books distribution per order.</li>
+<li><code>OrdersCanceledCounter</code> is an <code>ObservableCounter</code> that counts the total number of orders cancelled.</li>
+<li><code>TotalOrdersCounter</code> is a <code>Counter</code> that counts the total number of orders that the store has received.</li>
+</ul>
+<h2 id="http-requests-metrics">Http requests metrics</h2>
+<p>Those metrics are generated by the <code>OpenTelemetry.Instrumentation.AspNetCore</code> NuGet package. <br>
+This is an instrumentation library, which instruments .NET and creates metrics about incoming web requests.</p>
+<p>There is no need to instrument anything on the application. To start using the <code>OpenTelemetry.Instrumentation.AspNetCore</code> package you only need to add the <code>AddAspNetCoreInstrumentation()</code> extension method when setting up the .NET OpenTelemetry <code>MeterProvider</code> component. Here&rsquo;s an example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Microsoft.Extensions.DependencyInjection;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> OpenTelemetry.Trace;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    services.AddOpenTelemetryTracing((builder) =&gt; builder
+</span></span><span style="display:flex;"><span>        .AddAspNetCoreInstrumentation()
+</span></span><span style="display:flex;"><span>    );
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="systemruntime-performance-metrics">System.Runtime performance metrics</h2>
+<p>Those metrics are generated by the <code>OpenTelemetry.Instrumentation.Runtime</code> NuGet package. This is an instrumentation library, which instruments .NET Runtime and collects runtime performance metrics.</p>
+<p>There is no need to instrument anything on the application. To start using the <code>OpenTelemetry.Instrumentation.Runtime</code> package you only need to add the <code>AddRuntimeInstrumentation()</code> extension method when setting up the .NET OpenTelemetry <code>MeterProvider</code> component. Here&rsquo;s an example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Microsoft.Extensions.DependencyInjection;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> OpenTelemetry.Trace;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    services.AddOpenTelemetryTracing((builder) =&gt; builder
+</span></span><span style="display:flex;"><span>        .AddRuntimeInstrumentation()
+</span></span><span style="display:flex;"><span>    );
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The  <code>OpenTelemetry.Instrumentation.Runtime</code> package collects telemetry about the following <code>System.Runtime</code> counters:</p>
+<ul>
+<li><code>process.runtime.dotnet.gc.collections.count</code>: Number of garbage collections that have occurred since process start.</li>
+<li><code>process.runtime.dotnet.gc.allocations.size</code>: Count of bytes allocated on the managed GC heap since the process start</li>
+<li><code>process.runtime.dotnet.gc.committed_memory.size</code>: The amount of committed virtual memory for the managed GC heap, as observed during the latest garbage collection.</li>
+<li><code>process.runtime.dotnet.gc.heap.size</code>: The heap size (including fragmentation), as observed during the latest garbage collection.</li>
+<li><code>process.runtime.dotnet.gc.heap.fragmentation.size</code>: The heap fragmentation, as observed during the latest garbage collection.</li>
+<li><code>process.runtime.dotnet.jit.il_compiled.size</code>: Count of bytes of intermediate language that have been compiled since the process start.</li>
+<li><code>process.runtime.dotnet.jit.methods_compiled.count</code>: The number of times the JIT compiler compiled a method since the process start.</li>
+<li><code>process.runtime.dotnet.jit.compilation_time</code>: The amount of time the JIT compiler has spent compiling methods since the process start.</li>
+<li><code>process.runtime.dotnet.monitor.lock_contention.count</code>: The number of times there was contention when trying to acquire a monitor lock since the process start.</li>
+<li><code>process.runtime.dotnet.thread_pool.threads.count</code>: The number of thread pool threads that currently exist.</li>
+<li><code>process.runtime.dotnet.thread_pool.completed_items.count</code>: The number of work items that have been processed by the thread pool since the process start.</li>
+<li><code>process.runtime.dotnet.thread_pool.queue.length</code>: The number of work items that are currently queued to be processed by the thread pool.</li>
+<li><code>process.runtime.dotnet.timer.count</code>: The number of timer instances that are currently active.</li>
+<li><code>process.runtime.dotnet.assemblies.count</code>: The number of .NET assemblies that are currently loaded.</li>
+<li><code>process.runtime.dotnet.exceptions.count</code>: Count of exceptions that have been thrown in managed code, since the observation started.</li>
+</ul>
+<p>Some of the GC related metrics will be unavailable until at least one garbage collection has occurred.</p>
+<h1 id="opentelemetry-net-client"><strong>OpenTelemetry .NET Client</strong></h1>
+<p>To get started with OpenTelemetry Metrics we’re going to need the following packages.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;OpenTelemetry.Extensions.Hosting&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.0.0-rc9.6&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;OpenTelemetry.Instrumentation.AspNetCore&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.0.0-rc9.6&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;OpenTelemetry.Instrumentation.Runtime&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.0.0&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;OpenTelemetry.Exporter.OpenTelemetryProtocol&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.3.1&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span></code></pre></div><ul>
+<li>The <strong>OpenTelemetry.Extensions.Hosting</strong> package contains some extensions that allows us to configure the <strong>MeterProvider</strong>.</li>
+<li>The <strong>OpenTelemetry.Instrumentation.</strong>* packages are instrumentation libraries. These packages are instrumenting common libraries/functionalities/classes so we don’t have to do all the heavy lifting by ourselves. In our application we’re using the following ones:
+<ul>
+<li>The <strong>OpenTelemetry.Instrumentation.AspNetCore</strong> package generats and collects metrics about incoming web requests.</li>
+<li>The <strong>OpenTelemetry.Instrumentation.Runtime</strong> package collects runtime performance metrics.</li>
+</ul>
+</li>
+<li>The <strong>OpenTelemetry.Exporter.OpenTelemetryProtocol</strong> package allows us to export the metrics to the OpenTelemetry Collector using the OTLP protocol.</li>
+</ul>
+<h1 id="add-opentelemetry-metrics-on-the-bookstore-app"><strong>Add OpenTelemetry Metrics on the BookStore app</strong></h1>
+<h2 id="1---setup-the-meterprovider"><strong>1 - Setup the MeterProvider</strong></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> meters = <span style="color:#66d9ef">new</span> OtelMetrics();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>builder.Services.AddOpenTelemetryMetrics(opts =&gt; opts
+</span></span><span style="display:flex;"><span>    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(<span style="color:#e6db74">&#34;BookStore.WebApi&#34;</span>))
+</span></span><span style="display:flex;"><span>    .AddMeter(meters.MetricName)
+</span></span><span style="display:flex;"><span>    .AddAspNetCoreInstrumentation()
+</span></span><span style="display:flex;"><span>    .AddRuntimeInstrumentation()
+</span></span><span style="display:flex;"><span>    .AddOtlpExporter(opts =&gt;
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        opts.Endpoint = <span style="color:#66d9ef">new</span> Uri(builder.Configuration[<span style="color:#e6db74">&#34;Otlp:Endpoint&#34;</span>]);
+</span></span><span style="display:flex;"><span>    }));
+</span></span></code></pre></div><p>Let&rsquo;s review what we’re doing line by line.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>AddOpenTelemetryMetrics()
+</span></span></code></pre></div><p>OpenTelemetry Metrics works by using the <code>MeterProvider</code> to create a <code>Meter</code> and associating it with one or more <code>Instruments</code>, each of which is used to create a series of <code>Measurements</code>.</p>
+<p>The <code>MeterProvider</code> holds the configuration for metrics like Meter names, Readers or Views.</p>
+<p>The <code>MeterProvider</code> must be configured using the <code>AddOpenTelemetryMetrics()</code> extension method.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(<span style="color:#e6db74">&#34;BookStore.WebApi&#34;</span>))
+</span></span></code></pre></div><p>A <code>Resource</code> is the immutable representation of the entity producing the telemetry.
+With the <code>SetResourceBuilder</code> method we’re configuring the <code>Resource</code> for the application.</p>
+<p>The <code>SetResourceBuilder</code> gives us the possibility to configure attributes like the service name or the application name amongst others.</p>
+<p>Using the <code>AddService(&quot;BookStore.Webapi&quot;)</code> method we can set the service name as an attribute of the metric data. For example, if we take a look at the <code>OrdersCanceledCounter</code> instrument on Prometheus, we will see the following information:</p>
+<p><img src="/img/otel-metrics-prometheus-resource-builder.png" alt="otel-metrics-prometheus-resource-builder"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>AddMeter(meters.MetricName)
+</span></span></code></pre></div><p>Any <code>Instrument</code> that we create in our application needs to be associated with a <code>Meter</code>. The <code>AddMeter()</code> extension method configures OpenTelemetry to transmit all the metrics collected by this concrete <code>Meter</code>.</p>
+<p>As you&rsquo;ll see later, in the BookStore app I have a single <code>Meter</code> with multiple <code>Instruments</code> on it, but you can also have multiple <code>Meters</code> in a single application, in that case you&rsquo;ll need to add multiple calls to the <code>AddMeter()</code>  method.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>AddAspNetCoreInstrumentation()
+</span></span></code></pre></div><p>This method comes from the <code>OpenTelemetry.Instrumentation.AspNetCore</code> NuGet package, it instruments .NET and collects metrics and traces about incoming web requests.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>AddRuntimeInstrumentation()
+</span></span></code></pre></div><p>This method comes from the <code>OpenTelemetry.Instrumentation.Runtime</code> NuGet package, it instruments .NET and collects metrics and collects runtime performance metrics.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>AddOtlpExporter(opts =&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    opts.Endpoint = <span style="color:#66d9ef">new</span> Uri(builder.Configuration[<span style="color:#e6db74">&#34;Otlp:Endpoint&#34;</span>]);
+</span></span><span style="display:flex;"><span>}));
+</span></span></code></pre></div><p>The <code>AddOtlpExporter</code> method is used to configure the exporter that sends all the metric data to the OpenTelemetry Collector.</p>
+<h2 id="2---create-the-meter-and-instruments"><strong>2 - Create the Meter and Instruments</strong></h2>
+<p>After setting up the <code>MeterProvider</code>, it&rsquo;s time to create a <code>Meter</code> and use it to create <code>Instruments</code>.</p>
+<p>There are a few ways to do that, but I&rsquo;m going to show you how I tend to do it.<br>
+First of all, I&rsquo;m going to create a <code>Singleton</code> class which will contain:</p>
+<ul>
+<li>A meter.</li>
+<li>The instruments associated with the meter.</li>
+<li>A series of helper methods to record measurements with those instruments.</li>
+</ul>
+<p>Here&rsquo;s how the class looks like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.Collections.Generic;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.Diagnostics.Metrics;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.Threading;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> BookStore.Infrastructure.Metrics
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">OtelMetrics</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//Books meters</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span>  Counter&lt;<span style="color:#66d9ef">int</span>&gt; BooksAddedCounter { <span style="color:#66d9ef">get</span>; }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span>  Counter&lt;<span style="color:#66d9ef">int</span>&gt; BooksDeletedCounter { <span style="color:#66d9ef">get</span>; }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span>  Counter&lt;<span style="color:#66d9ef">int</span>&gt; BooksUpdatedCounter { <span style="color:#66d9ef">get</span>; }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span>  ObservableGauge&lt;<span style="color:#66d9ef">int</span>&gt; TotalBooksGauge { <span style="color:#66d9ef">get</span>; }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> _totalBooks = <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//Categories meters</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> Counter&lt;<span style="color:#66d9ef">int</span>&gt; CategoriesAddedCounter { <span style="color:#66d9ef">get</span>; }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> Counter&lt;<span style="color:#66d9ef">int</span>&gt; CategoriesDeletedCounter { <span style="color:#66d9ef">get</span>; }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> Counter&lt;<span style="color:#66d9ef">int</span>&gt; CategoriesUpdatedCounter { <span style="color:#66d9ef">get</span>; }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> ObservableGauge&lt;<span style="color:#66d9ef">int</span>&gt; TotalCategoriesGauge { <span style="color:#66d9ef">get</span>; }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> _totalCategories = <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//Order meters</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> Histogram&lt;<span style="color:#66d9ef">double</span>&gt; OrdersPriceHistogram { <span style="color:#66d9ef">get</span>; }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> Histogram&lt;<span style="color:#66d9ef">int</span>&gt; NumberOfBooksPerOrderHistogram { <span style="color:#66d9ef">get</span>; }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> ObservableCounter&lt;<span style="color:#66d9ef">int</span>&gt; OrdersCanceledCounter { <span style="color:#66d9ef">get</span>; }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> _ordersCanceled = <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> Counter&lt;<span style="color:#66d9ef">int</span>&gt; TotalOrdersCounter { <span style="color:#66d9ef">get</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> MetricName { <span style="color:#66d9ef">get</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> OtelMetrics(<span style="color:#66d9ef">string</span> meterName = <span style="color:#e6db74">&#34;BookStore&#34;</span>)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> meter = <span style="color:#66d9ef">new</span> Meter(meterName);
+</span></span><span style="display:flex;"><span>            MetricName = meterName;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            BooksAddedCounter = meter.CreateCounter&lt;<span style="color:#66d9ef">int</span>&gt;(<span style="color:#e6db74">&#34;books-added&#34;</span>, <span style="color:#e6db74">&#34;Book&#34;</span>);
+</span></span><span style="display:flex;"><span>            BooksDeletedCounter = meter.CreateCounter&lt;<span style="color:#66d9ef">int</span>&gt;(<span style="color:#e6db74">&#34;books-deleted&#34;</span>, <span style="color:#e6db74">&#34;Book&#34;</span>);
+</span></span><span style="display:flex;"><span>            BooksUpdatedCounter = meter.CreateCounter&lt;<span style="color:#66d9ef">int</span>&gt;(<span style="color:#e6db74">&#34;books-updated&#34;</span>, <span style="color:#e6db74">&#34;Book&#34;</span>);
+</span></span><span style="display:flex;"><span>            TotalBooksGauge = meter.CreateObservableGauge&lt;<span style="color:#66d9ef">int</span>&gt;(<span style="color:#e6db74">&#34;total-books&#34;</span>, () =&gt; <span style="color:#66d9ef">new</span>[] { <span style="color:#66d9ef">new</span> Measurement&lt;<span style="color:#66d9ef">int</span>&gt;(_totalBooks) });
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>            CategoriesAddedCounter = meter.CreateCounter&lt;<span style="color:#66d9ef">int</span>&gt;(<span style="color:#e6db74">&#34;categories-added&#34;</span>, <span style="color:#e6db74">&#34;Category&#34;</span>);
+</span></span><span style="display:flex;"><span>            CategoriesDeletedCounter = meter.CreateCounter&lt;<span style="color:#66d9ef">int</span>&gt;(<span style="color:#e6db74">&#34;categories-deleted&#34;</span>, <span style="color:#e6db74">&#34;Category&#34;</span>);
+</span></span><span style="display:flex;"><span>            CategoriesUpdatedCounter = meter.CreateCounter&lt;<span style="color:#66d9ef">int</span>&gt;(<span style="color:#e6db74">&#34;categories-updated&#34;</span>, <span style="color:#e6db74">&#34;Category&#34;</span>);
+</span></span><span style="display:flex;"><span>            TotalCategoriesGauge = meter.CreateObservableGauge&lt;<span style="color:#66d9ef">int</span>&gt;(<span style="color:#e6db74">&#34;total-categories&#34;</span>, () =&gt; _totalCategories);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            OrdersPriceHistogram = meter.CreateHistogram&lt;<span style="color:#66d9ef">double</span>&gt;(<span style="color:#e6db74">&#34;orders-price&#34;</span>, <span style="color:#e6db74">&#34;Euros&#34;</span>, <span style="color:#e6db74">&#34;Price distribution of book orders&#34;</span>);
+</span></span><span style="display:flex;"><span>            NumberOfBooksPerOrderHistogram = meter.CreateHistogram&lt;<span style="color:#66d9ef">int</span>&gt;(<span style="color:#e6db74">&#34;orders-number-of-books&#34;</span>, <span style="color:#e6db74">&#34;Books&#34;</span>, <span style="color:#e6db74">&#34;Number of books per order&#34;</span>);
+</span></span><span style="display:flex;"><span>            OrdersCanceledCounter = meter.CreateObservableCounter&lt;<span style="color:#66d9ef">int</span>&gt;(<span style="color:#e6db74">&#34;orders-canceled&#34;</span>, () =&gt; _ordersCanceled);
+</span></span><span style="display:flex;"><span>            TotalOrdersCounter = meter.CreateCounter&lt;<span style="color:#66d9ef">int</span>&gt;(<span style="color:#e6db74">&#34;total-orders&#34;</span>, <span style="color:#e6db74">&#34;Orders&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//Books meters</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> AddBook() =&gt; BooksAddedCounter.Add(<span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> DeleteBook() =&gt; BooksDeletedCounter.Add(<span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> UpdateBook() =&gt; BooksUpdatedCounter.Add(<span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> IncreaseTotalBooks() =&gt; _totalBooks++;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> DecreaseTotalBooks() =&gt; _totalBooks--;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//Categories meters</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> AddCategory() =&gt; CategoriesAddedCounter.Add(<span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> DeleteCategory() =&gt; CategoriesDeletedCounter.Add(<span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> UpdateCategory() =&gt; CategoriesUpdatedCounter.Add(<span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> IncreaseTotalCategories() =&gt; _totalCategories++;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> DecreaseTotalCategories() =&gt; _totalCategories--;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//Orders meters</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> RecordOrderTotalPrice(<span style="color:#66d9ef">double</span> price) =&gt; OrdersPriceHistogram.Record(price);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> RecordNumberOfBooks(<span style="color:#66d9ef">int</span> amount) =&gt; NumberOfBooksPerOrderHistogram.Record(amount);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> IncreaseOrdersCanceled() =&gt; _ordersCanceled++;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> IncreaseTotalOrders(<span style="color:#66d9ef">string</span> city) =&gt; TotalOrdersCounter.Add(<span style="color:#ae81ff">1</span>, KeyValuePair.Create&lt;<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">object</span>&gt;(<span style="color:#e6db74">&#34;City&#34;</span>, city));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>In the class constructor, we create the meter and then use it to create every necessary instrument. Also we create a series of public helper methods to record measurements.</p>
+<ul>
+<li><em>Why create all those helper methods?</em></li>
+</ul>
+<p>To improve code readability, it is easier to understand what this line of code <code>_meters.AddBook()</code> is doing, rather than this other one <code>BooksAddedCounter.Add(1)</code>.</p>
+<h2 id="3---record-measurements-using-the-instruments"><strong>3 - Record measurements using the instruments</strong></h2>
+<p>Now it&rsquo;s time to use the instruments we have created in the previous section to start recording measurements.</p>
+<p>You just need to inject the <code>OtelMetrics</code> instance whenever we want to record a measurement and use any of the helper methods exposed on the <code>OtelMetrics</code> class.</p>
+<h3 id="record-book-metrics"><strong>Record book metrics</strong></h3>
+<ul>
+<li>Every time a new book gets added into the database.
+<ul>
+<li>Increase +1 the <code>BooksAddedCounter</code> instrument and increase +1 the  <code>TotalBooksGauge</code> instrument.</li>
+</ul>
+</li>
+<li>Every time a new book gets updated.
+<ul>
+<li>Increase +1 the <code>BooksUpdatedCounter</code> instrument.</li>
+</ul>
+</li>
+<li>Every time a new book gets deleted from the database.
+<ul>
+<li>Increase +1 the <code>BooksDeletedCounter</code> instrument and decrease -1 the <code>TotalBooksGauge</code> instrument.</li>
+</ul>
+</li>
+</ul>
+<p>The next snippet of code shows how to record those measurements every time a book gets added, updated or deleted from the database.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BookRepository</span> : Repository&lt;Book&gt;, IBookRepository
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> OtelMetrics _meters;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> BookRepository(
+</span></span><span style="display:flex;"><span>        BookStoreDbContext context, 
+</span></span><span style="display:flex;"><span>        OtelMetrics meters) : <span style="color:#66d9ef">base</span>(context)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        _meters = meters;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">async</span> Task&lt;List&lt;Book&gt;&gt; GetAll()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">await</span> Db.Books.Include(b =&gt; b.Category)
+</span></span><span style="display:flex;"><span>            .OrderBy(b =&gt; b.Name)
+</span></span><span style="display:flex;"><span>            .ToListAsync();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">async</span> Task&lt;Book&gt; GetById(<span style="color:#66d9ef">int</span> id)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">await</span> Db.Books.Include(b =&gt; b.Category)
+</span></span><span style="display:flex;"><span>            .Where(b =&gt; b.Id == id)
+</span></span><span style="display:flex;"><span>            .FirstOrDefaultAsync();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;IEnumerable&lt;Book&gt;&gt; GetBooksByCategory(<span style="color:#66d9ef">int</span> categoryId)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">await</span> Search(b =&gt; b.CategoryId == categoryId);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;IEnumerable&lt;Book&gt;&gt; SearchBookWithCategory(<span style="color:#66d9ef">string</span> searchedValue)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">await</span> Db.Books.AsNoTracking()
+</span></span><span style="display:flex;"><span>            .Include(b =&gt; b.Category)
+</span></span><span style="display:flex;"><span>            .Where(b =&gt; b.Name.Contains(searchedValue) || 
+</span></span><span style="display:flex;"><span>                        b.Author.Contains(searchedValue) ||
+</span></span><span style="display:flex;"><span>                        b.Description.Contains(searchedValue) ||
+</span></span><span style="display:flex;"><span>                        b.Category.Name.Contains(searchedValue))
+</span></span><span style="display:flex;"><span>            .ToListAsync();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">async</span> Task Add(Book entity)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">base</span>.Add(entity);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        _meters.AddBook();
+</span></span><span style="display:flex;"><span>        _meters.IncreaseTotalBooks();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">async</span> Task Update(Book entity)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">base</span>.Update(entity);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        _meters.UpdateBook();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">async</span> Task Remove(Book entity)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">base</span>.Remove(entity);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        _meters.DeleteBook();
+</span></span><span style="display:flex;"><span>        _meters.DecreaseTotalBooks();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="record-book-categories-metrics"><strong>Record book categories metrics</strong></h3>
+<ul>
+<li>Every time a new book category gets added into the database.
+<ul>
+<li>Increase +1 the <code>CategoriesAddedCounter</code> instrument and increase +1 the  <code>TotalCategoriesGauge</code> instrument.</li>
+</ul>
+</li>
+<li>Every time a new book category gets updated.
+<ul>
+<li>Increase +1 the <code>CategoriesUpdatedCounter</code> instrument.</li>
+</ul>
+</li>
+<li>Every time a new book category gets deleted from the database.
+<ul>
+<li>Increase +1 the <code>CategoriesDeletedCounter</code> instrument and decrease -1 the <code>TotalCategoriesGauge</code> instrument.</li>
+</ul>
+</li>
+</ul>
+<p>The next snippet of code shows how to record those measurements every time a book category gets added, updated or deleted from the database.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CategoryRepository</span> : Repository&lt;Category&gt;, ICategoryRepository
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> OtelMetrics _meters;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> CategoryRepository(BookStoreDbContext context, 
+</span></span><span style="display:flex;"><span>        OtelMetrics meters) : <span style="color:#66d9ef">base</span>(context)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        _meters = meters;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">async</span> Task Add(Category entity)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">base</span>.Add(entity);
+</span></span><span style="display:flex;"><span>        _meters.AddCategory();
+</span></span><span style="display:flex;"><span>        _meters.IncreaseTotalCategories();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">async</span> Task Update(Category entity)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">base</span>.Update(entity);
+</span></span><span style="display:flex;"><span>        _meters.UpdateCategory();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">async</span> Task Remove(Category entity)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">base</span>.Remove(entity);
+</span></span><span style="display:flex;"><span>        _meters.DeleteCategory();
+</span></span><span style="display:flex;"><span>        _meters.DecreaseTotalCategories();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="record-orders-metrics"><strong>Record orders metrics</strong></h3>
+<ul>
+<li>Every time a new order gets added into the database.
+<ul>
+<li>Increase +1 the <code>TotalOrdersCounter</code> instrument.</li>
+<li>Record the order total price using the <code>OrdersPriceHistogram</code> instrument.</li>
+<li>Record the amount of books in the order using the <code>NumberOfBooksPerOrderHistogram</code> instrument.</li>
+</ul>
+</li>
+<li>Every time a new order gets updated.
+<ul>
+<li>Increase +1 the <code>OrdersCanceledCounter</code> instrument.</li>
+</ul>
+</li>
+</ul>
+<p>The next snippet of code shows how to record those measurements every time an order gets added or updated.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">OrderRepository</span> : Repository&lt;Order&gt;, IOrderRepository
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> OtelMetrics _meters;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> OrderRepository(BookStoreDbContext context, OtelMetrics meters) 
+</span></span><span style="display:flex;"><span>        : <span style="color:#66d9ef">base</span>(context)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        _meters = meters;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">async</span> Task&lt;Order&gt; GetById(<span style="color:#66d9ef">int</span> id)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">await</span> Db.Orders
+</span></span><span style="display:flex;"><span>            .Include(b =&gt; b.Books)
+</span></span><span style="display:flex;"><span>            .FirstOrDefaultAsync(x =&gt; x.Id == id);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">async</span> Task&lt;List&lt;Order&gt;&gt; GetAll()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">await</span> Db.Orders
+</span></span><span style="display:flex;"><span>            .Include(b =&gt; b.Books)
+</span></span><span style="display:flex;"><span>            .ToListAsync();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">async</span> Task Add(Order entity)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        DbSet.Add(entity);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">base</span>.SaveChanges();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        _meters.RecordOrderTotalPrice(entity.TotalAmount);
+</span></span><span style="display:flex;"><span>        _meters.RecordNumberOfBooks(entity.Books.Count);
+</span></span><span style="display:flex;"><span>        _meters.IncreaseTotalOrders(entity.City);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">async</span> Task Update(Order entity)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">base</span>.Update(entity);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        _meters.IncreaseOrdersCanceled();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;List&lt;Order&gt;&gt; GetOrdersByBookId(<span style="color:#66d9ef">int</span> bookId)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">await</span> Db.Orders.AsNoTracking()
+</span></span><span style="display:flex;"><span>            .Include(b =&gt; b.Books)
+</span></span><span style="display:flex;"><span>            .Where(x =&gt; x.Books.Any(y =&gt; y.Id == bookId))
+</span></span><span style="display:flex;"><span>            .ToListAsync();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>As you can see from the snippets of code from this section recording a measurement it&rsquo;s a really simple task, just invoke the instrument function wherever you want to record a measurement, and that&rsquo;s it!</p>
+<h2 id="4---setup-the-histogram-bucket-aggregation-accordingly"><strong>4 - Setup the Histogram bucket aggregation accordingly</strong></h2>
+<p>A <code>Histogram</code> is a graphical representation of the distribution of numerical data. It groups values into buckets and then counts how many values fall into each bucket.</p>
+<p>When using a <code>Histogram</code> instrument, it’s important to make sure the buckets are also configured properly. The bucket histogram aggregation default values are [ 0, 5, 10, 25, 50, 75, 100, 250, 500, 1000 ], and that’s not always ideal.</p>
+<p>In the BookStore app we are using 2 <code>Histograms</code>:</p>
+<ul>
+<li><code>OrdersPriceHistogram</code>: Shows the price distribution of the orders.</li>
+<li><code>NumberOfBooksPerOrderHistogram</code>: Shows the number of books per order distribution.</li>
+</ul>
+<p>For the <code>NumberOfBooksPerOrderHistogram</code> makes no sense using the bucket aggregation default values because no one is going to make an order that contains 250, 500 or 1000 books. And the same could be said for the <code>OrdersPriceHistogram</code>.</p>
+<p>To customize the bucket aggregation values accordingly to every <code>Histogram</code> we need to use a <code>View</code>.<br>
+A <code>View</code> in OpenTelemetry defines an aggregation, which takes a series of measurements and expresses them as a single metric value at that point in time.</p>
+<p>To create a <code>View</code> we can use the <code>AddView</code> extension method from the <code>MeterProvider</code>. Like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>builder.Services.AddOpenTelemetryMetrics(opts =&gt; opts
+</span></span><span style="display:flex;"><span>    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(<span style="color:#e6db74">&#34;BookStore.WebApi&#34;</span>))
+</span></span><span style="display:flex;"><span>    .AddMeter(meters.MetricName)
+</span></span><span style="display:flex;"><span>    .AddAspNetCoreInstrumentation()
+</span></span><span style="display:flex;"><span>    .AddRuntimeInstrumentation()
+</span></span><span style="display:flex;"><span>    .AddView(
+</span></span><span style="display:flex;"><span>        instrumentName: <span style="color:#e6db74">&#34;orders-price&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">new</span> ExplicitBucketHistogramConfiguration { Boundaries = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">double</span>[] { <span style="color:#ae81ff">15</span>, <span style="color:#ae81ff">30</span>, <span style="color:#ae81ff">45</span>, <span style="color:#ae81ff">60</span>, <span style="color:#ae81ff">75</span> } })
+</span></span><span style="display:flex;"><span>    .AddView(
+</span></span><span style="display:flex;"><span>        instrumentName: <span style="color:#e6db74">&#34;orders-number-of-books&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">new</span> ExplicitBucketHistogramConfiguration { Boundaries = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">double</span>[] { <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">5</span> } })
+</span></span><span style="display:flex;"><span>    .AddOtlpExporter(opts =&gt;
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        opts.Endpoint = <span style="color:#66d9ef">new</span> Uri(builder.Configuration[<span style="color:#e6db74">&#34;Otlp:Endpoint&#34;</span>]);
+</span></span><span style="display:flex;"><span>    }));
+</span></span></code></pre></div><h1 id="opentelemetry-collector"><strong>OpenTelemetry Collector</strong></h1>
+<p>The OpenTelemetry Collector consists of three components:</p>
+<ul>
+<li><code>Receivers</code>: Can be push or pull based, is how data gets into the Collector.</li>
+<li><code>Processors</code>: Run on data between being received and being exported.</li>
+<li><code>Exporters</code>: Can be push or pull based, is how you send data to one or more backends/destinations.</li>
+</ul>
+<p>In this case, the OpenTelemetry Collector receives metrics from the BookStore API via gRPC and exports them into Prometheus.<br>
+Here&rsquo;s how the OTEL Collector config file looks like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">receivers</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">otlp</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">protocols</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">grpc</span>:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">exporters</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">prometheus</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">endpoint</span>: <span style="color:#e6db74">&#34;0.0.0.0:8889&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">processors</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">batch</span>:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">extensions</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">health_check</span>:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">service</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">extensions</span>: [<span style="color:#ae81ff">health_check]</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">pipelines</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">metrics</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">receivers</span>: [<span style="color:#ae81ff">otlp]</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">processors</span>: [<span style="color:#ae81ff">batch]</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">exporters</span>: [<span style="color:#ae81ff">prometheus]</span>
+</span></span></code></pre></div><h1 id="prometheus"><strong>Prometheus</strong></h1>
+<p>Prometheus must be configured to scrape the OpenTelemetry Collector metrics endpoints.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">global</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">scrape_interval</span>: <span style="color:#ae81ff">15s</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">scrape_configs</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">job_name</span>: <span style="color:#e6db74">&#39;otel-collector&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">scrape_interval</span>: <span style="color:#ae81ff">5s</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">static_configs</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">targets</span>: [<span style="color:#e6db74">&#39;otel-collector:8889&#39;</span>]
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">targets</span>: [<span style="color:#e6db74">&#39;otel-collector:8888&#39;</span>]
+</span></span></code></pre></div><p>After setting up Prometheus, we are going to generate traffic on the BookStore API and afterwards access Prometheus to start analyzing the metrics that the app is sending us.</p>
+<p>The business metrics from the BookStore API are all available in Prometheus.</p>
+<p><img src="/img/otel-metrics-prometheus-metrics-explorer.png" alt="otel-metrics-prometheus-metrics-explorer"></p>
+<p>If we take a peek at the &ldquo;orders-price&rdquo; <code>Histogram</code> we can see that the bucket aggregation values are the correct ones that we defined in the <code>MeterProvider</code> using the <code>AddView</code> extension method.</p>
+<p><img src="/img/otel-metrics-prometheus-orders-price-histogram.png" alt="otel-metrics-prometheus-orders-price-histogram.png"></p>
+<p>The metrics about incoming requests generated by the <code>OpenTelemetry.Instrumentation.AspNetCore</code> NuGet package are also available on Prometheus.</p>
+<p><img src="/img/otel-metrics-prometheus-incoming-requests-metrics.png" alt="otel-metrics-prometheus-incoming-requests-metrics.png"></p>
+<p>And the performance metrics generated by the <code>OpenTelemetry.Instrumentation.Runtime</code> NuGet package are also being ingested by Prometheus.</p>
+<p><img src="/img/otel-metrics-prometheus-perf-counter-metrics.png" alt="otel-metrics-prometheus-perf-counter-metrics"></p>
+<h1 id="grafana"><strong>Grafana</strong></h1>
+<p>Having the metric data from the BookStore API in Prometheus is great at all, but we need to visualize them in a friendly manner, so let&rsquo;s build a few Grafana dashboards.</p>
+<blockquote>
+<p><em>Not going to explain how to build a Grafana dashboard, that&rsquo;s out of the scope for this post.</em></p>
+</blockquote>
+<p>I ended up building 3 dashboards.</p>
+<h2 id="custom-metrics-dashboard"><strong>Custom metrics dashboard</strong></h2>
+<p>This dashboard uses the business metrics instrumented directly on the application using the Metrics API.</p>
+<p><img src="/img/otel-metrics-bookstore-custom-metrics.png" alt="otel-metrics-bookstore-custom-metrics"></p>
+<p>Here&rsquo;s a closer look of how the &ldquo;Orders&rdquo; panel from the dashboard look like:</p>
+<p><img src="/img/otel-metrics-bookstore-custom-orders-metrics.png" alt="otel-metrics-bookstore-custom-orders-metrics"></p>
+<h2 id="http-requests-dashboard"><strong>Http Requests dashboard</strong></h2>
+<p>This dashboard uses the metrics generated by the <code>OpenTelemetry.Instrumentation.AspNetCore</code> NuGet package.</p>
+<p><img src="/img/otel-metrics-http-requests-dashboard.png" alt="otel-metrics-http-requests-dashboard"></p>
+<h2 id="performance-counters-dashboard"><strong>Performance counters dashboard</strong></h2>
+<p>This dashboard uses the metrics generated by the <code>OpenTelemetry.Instrumentation.Runtime</code> NuGet package.</p>
+<p><img src="/img/otel-metrics-perf-counters-dashboard.png" alt="otel-metrics-perf-counters-dashboard.png"></p>
+<h1 id="how-to-test-the-bookstore-api"><strong>How to test the BookStore Api</strong></h1>
+<p>If you want to take a look at the source code, you can go to my <a href="https://github.com/karlospn/opentelemetry-metrics-demo">GitHub repository</a>.</p>
+<p>If you want to execute the BookStore API for yourselves, I have uploaded a <code>docker-compose</code> file that starts up the app and also the external dependencies.<br>
+The external dependencies (Prometheus, MSSQL Server, Grafana and OpenTelemetry Collector) are already preconfigured so you don&rsquo;t need to do any extra setup. Just run <code>docker-compose</code> up and you&rsquo;re good to go!</p>
+<p>Here’s how the <code>docker-compose</code> file looks like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">version</span>: <span style="color:#e6db74">&#39;3.8&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">metrics</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">bookstore-network</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span><span style="color:#f92672">services</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">mssql</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">build</span>: 
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">context</span>: <span style="color:#ae81ff">./scripts/sql</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;1433:1433&#34;</span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">environment</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">SA_PASSWORD</span>: <span style="color:#e6db74">&#34;P@ssw0rd?&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">ACCEPT_EULA</span>: <span style="color:#e6db74">&#34;Y&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">metrics</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">prometheus</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">build</span>: 
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">context</span>: <span style="color:#ae81ff">./scripts/prometheus</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">depends_on</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">app</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">9090</span>:<span style="color:#ae81ff">9090</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">metrics</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">grafana</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">build</span>: 
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">context</span>: <span style="color:#ae81ff">./scripts/grafana</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">depends_on</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">prometheus</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">3000</span>:<span style="color:#ae81ff">3000</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">metrics</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">otel-collector</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">otel/opentelemetry-collector:0.60.0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">command</span>: [<span style="color:#e6db74">&#34;--config=/etc/otel-collector-config.yaml&#34;</span>]
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">volumes</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">./scripts/otel-collector/otel-collector-config.yaml:/etc/otel-collector-config.yaml</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;8888:8888&#34;</span> 
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;8889:8889&#34;</span> 
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;13133:13133&#34;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;4317:4317&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">metrics</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">app</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">build</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">context</span>: <span style="color:#ae81ff">./</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">dockerfile</span>: <span style="color:#ae81ff">./src/BookStore.WebApi/Dockerfile</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">depends_on</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">mssql</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">otel-collector</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">5001</span>:<span style="color:#ae81ff">8080</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">environment</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">ConnectionStrings__DbConnection</span>: <span style="color:#ae81ff">Server=mssql;Database=BookStore;User Id=SA;Password=P@ssw0rd?</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">Otlp__Endpoint</span>: <span style="color:#ae81ff">http://otel-collector:4317</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">metrics</span>
+</span></span></code></pre></div><h1 id="how-to-generate-metrics-to-test-the-grafana-dashboards"><strong>How to generate metrics to test the Grafana dashboards</strong></h1>
+<p>In my GitHub repository you&rsquo;ll also find a <code>seed-data.sh</code> Shell script, this script  will invoke some endpoints of the BookStore API via cURL.</p>
+<p><strong>To execute the <code>seed-data.sh</code> you need to have cURL installed on your local machine.</strong></p>
+<p>The <code>seed-data.sh</code> script runs the following actions:</p>
+<ul>
+<li>Add 8 book categories.</li>
+<li>Update 3 book categories.</li>
+<li>Delete 2 book categories.</li>
+<li>Add 17 books into the store.</li>
+<li>Update 4 existing books.</li>
+<li>Delete 2 existing books.</li>
+<li>Add inventory for every book on the store.</li>
+<li>Create 10 orders.</li>
+<li>Cancel 3 existing orders.</li>
+</ul>
+<p>The purpose behind this script is to generate a decent amount of business metrics that later can be visualized in Grafana and Prometheus.</p>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-metrics-and-dotnet-part-1/">
+                  <span class="button__text">Getting started with OpenTelemetry Metrics in .NET. Part 1: Key concepts</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2022 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>Theme created by <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://www.mytechramblings.com/assets/main.js"></script>
+<script src="https://www.mytechramblings.com/assets/prism.js"></script>
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('carlospons', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Donate',
+    'floating-chat.donateButton.background-color': '#ff5f5f',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
+
+      
+    </div>
+
+    
+      
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-170300931-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+    
+  </body>
+</html>
