@@ -9,10 +9,170 @@
     <description>Recent content in Tags on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 28 Sep 2022 10:01:53 +0200</lastBuildDate>
+    <lastBuildDate>Tue, 18 Oct 2022 10:01:12 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>aws</title>
+      <link>https://www.mytechramblings.com/tags/aws/</link>
+      <pubDate>Tue, 18 Oct 2022 10:01:12 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/aws/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>cdk</title>
+      <link>https://www.mytechramblings.com/tags/cdk/</link>
+      <pubDate>Tue, 18 Oct 2022 10:01:12 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/cdk/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>devops</title>
+      <link>https://www.mytechramblings.com/tags/devops/</link>
+      <pubDate>Tue, 18 Oct 2022 10:01:12 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/devops/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>eventbridge</title>
+      <link>https://www.mytechramblings.com/tags/eventbridge/</link>
+      <pubDate>Tue, 18 Oct 2022 10:01:12 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/eventbridge/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>iac</title>
+      <link>https://www.mytechramblings.com/tags/iac/</link>
+      <pubDate>Tue, 18 Oct 2022 10:01:12 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/iac/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>lambda</title>
+      <link>https://www.mytechramblings.com/tags/lambda/</link>
+      <pubDate>Tue, 18 Oct 2022 10:01:12 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/lambda/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>python</title>
+      <link>https://www.mytechramblings.com/tags/python/</link>
+      <pubDate>Tue, 18 Oct 2022 10:01:12 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/python/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>teams</title>
+      <link>https://www.mytechramblings.com/tags/teams/</link>
+      <pubDate>Tue, 18 Oct 2022 10:01:12 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/teams/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>csharp</title>
@@ -135,51 +295,11 @@
     </item>
     
     <item>
-      <title>aws</title>
-      <link>https://www.mytechramblings.com/tags/aws/</link>
-      <pubDate>Thu, 08 Sep 2022 11:06:41 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/aws/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
       <title>containers</title>
       <link>https://www.mytechramblings.com/tags/containers/</link>
       <pubDate>Thu, 08 Sep 2022 11:06:41 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/containers/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>devops</title>
-      <link>https://www.mytechramblings.com/tags/devops/</link>
-      <pubDate>Thu, 08 Sep 2022 11:06:41 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/devops/</guid>
       <description>
         
           
@@ -355,26 +475,6 @@
     </item>
     
     <item>
-      <title>iac</title>
-      <link>https://www.mytechramblings.com/tags/iac/</link>
-      <pubDate>Tue, 19 Apr 2022 12:30:10 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/iac/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
       <title>powershell</title>
       <link>https://www.mytechramblings.com/tags/powershell/</link>
       <pubDate>Tue, 19 Apr 2022 12:30:10 +0200</pubDate>
@@ -480,26 +580,6 @@
       <pubDate>Wed, 15 Dec 2021 11:20:04 +0100</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/functions/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>python</title>
-      <link>https://www.mytechramblings.com/tags/python/</link>
-      <pubDate>Wed, 15 Dec 2021 11:20:04 +0100</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/python/</guid>
       <description>
         
           
@@ -700,46 +780,6 @@
       <pubDate>Thu, 17 Jun 2021 10:01:29 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/vs/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>cdk</title>
-      <link>https://www.mytechramblings.com/tags/cdk/</link>
-      <pubDate>Tue, 25 May 2021 10:01:46 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/cdk/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>lambda</title>
-      <link>https://www.mytechramblings.com/tags/lambda/</link>
-      <pubDate>Tue, 25 May 2021 10:01:46 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/lambda/</guid>
       <description>
         
           

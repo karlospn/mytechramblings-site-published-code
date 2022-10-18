@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>lambda on my tech ramblings</title>
+    <title>teams on my tech ramblings</title>
     
     
     
-    <link>https://www.mytechramblings.com/tags/lambda/</link>
-    <description>Recent content in lambda on my tech ramblings</description>
+    <link>https://www.mytechramblings.com/tags/teams/</link>
+    <description>Recent content in teams on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 18 Oct 2022 10:01:12 +0200</lastBuildDate>
     
-	<atom:link href="https://www.mytechramblings.com/tags/lambda/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://www.mytechramblings.com/tags/teams/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -29,26 +29,6 @@
         
         
           An AWS event indicates a change in a service, and in this post I want to show you how you can notify those events to a Microsoft Teams channel using AWS EventBridge and AWS Lambda.
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>4 ways to deploy a .NET Core Lambda using AWS CDK</title>
-      <link>https://www.mytechramblings.com/posts/deploy-dotnet-lambdas-with-aws-cdk/</link>
-      <pubDate>Tue, 25 May 2021 10:01:46 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/posts/deploy-dotnet-lambdas-with-aws-cdk/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          In today&#39;s post I want to show you 4 available options for deploying a .NET Core lambda with AWS CDK.
           
         
         </description>

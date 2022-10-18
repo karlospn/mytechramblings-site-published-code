@@ -2,6 +2,42 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://www.mytechramblings.com/tags/aws/</loc>
+    <lastmod>2022-10-18T10:01:12+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/cdk/</loc>
+    <lastmod>2022-10-18T10:01:12+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/devops/</loc>
+    <lastmod>2022-10-18T10:01:12+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/eventbridge/</loc>
+    <lastmod>2022-10-18T10:01:12+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/notify-aws-events-to-microsoft-teams/</loc>
+    <lastmod>2022-10-18T10:01:12+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/iac/</loc>
+    <lastmod>2022-10-18T10:01:12+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/lambda/</loc>
+    <lastmod>2022-10-18T10:01:12+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/</loc>
+    <lastmod>2022-10-18T10:01:12+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/</loc>
+    <lastmod>2022-10-18T10:01:12+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/python/</loc>
+    <lastmod>2022-10-18T10:01:12+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/</loc>
+    <lastmod>2022-10-18T10:01:12+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/teams/</loc>
+    <lastmod>2022-10-18T10:01:12+02:00</lastmod>
+  </url><url>
     <loc>https://www.mytechramblings.com/tags/csharp/</loc>
     <lastmod>2022-09-28T10:01:53+02:00</lastmod>
   </url><url>
@@ -17,31 +53,16 @@
     <loc>https://www.mytechramblings.com/tags/metrics/</loc>
     <lastmod>2022-09-28T10:01:53+02:00</lastmod>
   </url><url>
-    <loc>https://www.mytechramblings.com/</loc>
-    <lastmod>2022-09-28T10:01:53+02:00</lastmod>
-  </url><url>
     <loc>https://www.mytechramblings.com/tags/opentelemetry/</loc>
-    <lastmod>2022-09-28T10:01:53+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/posts/</loc>
     <lastmod>2022-09-28T10:01:53+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/prometheus/</loc>
     <lastmod>2022-09-28T10:01:53+02:00</lastmod>
   </url><url>
-    <loc>https://www.mytechramblings.com/tags/</loc>
-    <lastmod>2022-09-28T10:01:53+02:00</lastmod>
-  </url><url>
     <loc>https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-metrics-and-dotnet-part-1/</loc>
     <lastmod>2022-09-27T10:01:32+02:00</lastmod>
   </url><url>
-    <loc>https://www.mytechramblings.com/tags/aws/</loc>
-    <lastmod>2022-09-08T11:06:41+02:00</lastmod>
-  </url><url>
     <loc>https://www.mytechramblings.com/tags/containers/</loc>
-    <lastmod>2022-09-08T11:06:41+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/devops/</loc>
     <lastmod>2022-09-08T11:06:41+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/docker/</loc>
@@ -86,9 +107,6 @@
     <loc>https://www.mytechramblings.com/posts/how-to-bootstrap-terraform-and-azdo-to-start-deploying-iac-to-azure/</loc>
     <lastmod>2022-04-19T12:30:10+02:00</lastmod>
   </url><url>
-    <loc>https://www.mytechramblings.com/tags/iac/</loc>
-    <lastmod>2022-04-19T12:30:10+02:00</lastmod>
-  </url><url>
     <loc>https://www.mytechramblings.com/tags/powershell/</loc>
     <lastmod>2022-04-19T12:30:10+02:00</lastmod>
   </url><url>
@@ -120,9 +138,6 @@
     <lastmod>2021-12-15T11:20:04+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/functions/</loc>
-    <lastmod>2021-12-15T11:20:04+01:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/python/</loc>
     <lastmod>2021-12-15T11:20:04+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/serverless/</loc>
@@ -174,12 +189,6 @@
     <lastmod>2021-06-14T00:07:29+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/posts/deploy-dotnet-lambdas-with-aws-cdk/</loc>
-    <lastmod>2021-05-25T10:01:46+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/cdk/</loc>
-    <lastmod>2021-05-25T10:01:46+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/lambda/</loc>
     <lastmod>2021-05-25T10:01:46+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-and-dotnet-core/</loc>

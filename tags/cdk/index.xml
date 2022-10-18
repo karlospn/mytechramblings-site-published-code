@@ -9,10 +9,30 @@
     <description>Recent content in cdk on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 25 May 2021 10:01:46 +0200</lastBuildDate>
+    <lastBuildDate>Tue, 18 Oct 2022 10:01:12 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/cdk/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>How to notify AWS events to Microsoft Teams using AWS EventBridge and AWS Lambda</title>
+      <link>https://www.mytechramblings.com/posts/notify-aws-events-to-microsoft-teams/</link>
+      <pubDate>Tue, 18 Oct 2022 10:01:12 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/notify-aws-events-to-microsoft-teams/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          An AWS event indicates a change in a service, and in this post I want to show you how you can notify those events to a Microsoft Teams channel using AWS EventBridge and AWS Lambda.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>4 ways to deploy a .NET Core Lambda using AWS CDK</title>
