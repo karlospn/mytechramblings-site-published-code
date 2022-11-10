@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>How to deploy an Azure resource using Terraform when it is not available in the AzureRM official provider :: my tech ramblings — A blog for writing about my techie ramblings</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Just show me the code!
+As always, if you don’t care about the post I have uploaded the source code on my Github.
+Everyone who has worked long enough with Terraform in Azure has been in the position of wanting to deploy a resource that&amp;rsquo;s not available on the official Azure Terraform provider.
+The same situation also happens when trying to enable a feature on an existing resource, and that feature is missing from the AzureRM Terraform provider."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://www.mytechramblings.com/posts/deploy-az-resources-when-not-available-on-azurerm/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/assets/style.css">
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.mytechramblings.com/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://www.mytechramblings.com/img/favicon.png">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="How to deploy an Azure resource using Terraform when it is not available in the AzureRM official provider"/>
+<meta name="twitter:description" content="This post is going to walk you through the options available when we want to create or update a service on Azure using Terraform, but it is not available on the AzureRM Terraform provider."/>
+
+
+
+<meta property="og:title" content="How to deploy an Azure resource using Terraform when it is not available in the AzureRM official provider" />
+<meta property="og:description" content="This post is going to walk you through the options available when we want to create or update a service on Azure using Terraform, but it is not available on the AzureRM Terraform provider." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.mytechramblings.com/posts/deploy-az-resources-when-not-available-on-azurerm/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-11-10T10:30:40+01:00" />
+<meta property="article:modified_time" content="2022-11-10T10:30:40+01:00" /><meta property="og:site_name" content="my tech ramblings" />
+
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://www.mytechramblings.com/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">my tech ramblings</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/deploy-az-resources-when-not-available-on-azurerm/">How to deploy an Azure resource using Terraform when it is not available in the AzureRM official provider</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2022-11-10
+        </span>
+
+        
+          
+            
+
+
+
+          
+        
+      
+
+      
+      
+        <span class="post-read-time">— 20 min read</span>
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          #<a href="https://www.mytechramblings.com/tags/azure/">azure</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/devops/">devops</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/iac/">iac</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/terraform/">terraform</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/cloud/">cloud</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <blockquote>
+<p><strong>Just show me the code!</strong><br>
+As always, if you don’t care about the post I have uploaded the source code on my <a href="https://github.com/karlospn/deploy-az-resource-using-terraform-when-not-available-on-azurerm-provider">Github</a>.</p>
+</blockquote>
+<p>Everyone who has worked long enough with Terraform in Azure has been in the position of wanting to deploy a resource that&rsquo;s not available on the official <a href="https://registry.terraform.io/providers/hashicorp/azurerm">Azure Terraform provider</a>.</p>
+<p>The same situation also happens when trying to enable a feature on an existing resource, and that feature is missing from the AzureRM Terraform provider.</p>
+<p>A solution to those problems might be to switch to Bicep or Azure ARM Templates, but if all my cloud infrastructure is written as code using Terraform, why should I switch to another tool? What can I do to keep using Terraform?</p>
+<p>Well, that&rsquo;s the point of this post, <strong>to review which options we have available when we want to create or update a service on Azure using Terraform, but it is not available on the AzureRM Terraform provider.</strong></p>
+<p>Before we dive further into this post, let me remind you that if you can avoid using any of the options we&rsquo;re going to discuss in this post then do so. <br>
+Doing what we&rsquo;re going to discuss here should be a last resort and it makes sense only <strong>when the AzureRM provider doesn&rsquo;t have an implementation for the service we want to create or update</strong>.</p>
+<h1 id="available-options-for-creating-or-updating-an-azure-resource-when-it-is-not-available-in-the-azurerm-provider"><strong>Available options for creating or updating an Azure resource when it is not available in the AzureRM provider</strong></h1>
+<p>Nowadays there are <strong>3 options available</strong>:</p>
+<ul>
+<li>Using the  <code>null_resource</code> alongside with the <code>local-exec</code> provisioner to execute a script that uses the <code>Azure CLI</code> or the <code>Azure Az Powershell Module</code>.</li>
+<li>Using the <code>azurerm_resource_group_template_deployment</code> from the AzureRM provider to deploy an <code>ARM Template</code>.</li>
+<li>Using the <code>AzAPI</code> provider.</li>
+</ul>
+<p>In the following sections we&rsquo;re going to talk about benefits and downsides for all the above options.</p>
+<h1 id="using-the-null_resource--local-exec-provisioner--azure-cli-or-azure-az-powershell-module"><strong>Using the null_resource + local-exec provisioner + Azure CLI or Azure Az Powershell Module</strong></h1>
+<blockquote>
+<p><strong>Important</strong>: Use this approach as a <strong>last resort</strong>. The other options discussed in this post are a far better alternative.</p>
+</blockquote>
+<p>The  <code>null_resource</code>  is a Terraform resource that doesn&rsquo;t do anything.<br>
+If you need to run provisioners that aren&rsquo;t directly associated with a specific resource, you can associate them with a <code>null_resource</code>.</p>
+<p>The <code>local-exec</code> provisioner is used to invoke a local executable on the machine running Terraform.</p>
+<p>Pairing the <code>null_resource</code>  with the <code>local-exec</code> provisioner allows us to define a Terraform resource that can run a local executable on our local machine, such as an external script that uses the Azure CLI to create a new resource on Azure.</p>
+<p>The next code snippet shows an example of how you could execute a script that creates an Azure Resource Group using  the <code>null_resource</code> and the <code>local-exec</code> provisioner.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;null_resource&#34;</span> <span style="color:#e6db74">&#34;res_group&#34;</span> {
+</span></span><span style="display:flex;"><span>    triggers = {
+</span></span><span style="display:flex;"><span>        location = <span style="color:#e6db74">&#34;westeurope&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    provisioner <span style="color:#e6db74">&#34;local-exec&#34;</span> {
+</span></span><span style="display:flex;"><span>        command = <span style="color:#e6db74">&#34;./create_resource_group.sh ${self.triggers.location}&#34;</span> 
+</span></span><span style="display:flex;"><span>        interpreter = [<span style="color:#e6db74">&#34;bash&#34;</span>, <span style="color:#e6db74">&#34;-c&#34;</span>]
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The <code>triggers</code> argument allows specifying an arbitrary set of values that, when changed, will cause the resource to be replaced.</p>
+<p>The <code>create_resource_group.sh</code> script will look like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>LOCATION<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>az group create -l $LOCATION -n MyResourceGroup
+</span></span></code></pre></div><h2 id="how-to-destroy-a-resource-using-the-local-exec-provisioner"><strong>How to destroy a resource using the local-exec provisioner</strong></h2>
+<p>By default, the <code>local-exec</code> provisioner will run only when the resources they are defined within is created. It only runs during resource creation, not during updating or any other lifecycle.</p>
+<p>If we want that our resource gets deleted using the <code>local-exec</code> provisioner we need to use the <code>when</code> argument. If  <code>when = destroy</code> argument is specified, the provisioner will run when the resource is destroyed.</p>
+<p>The next code snippet shows an example of how you could use the <code>null_resource</code> and the <code>local-exec</code> provisioner to run a script that creates an Azure Resource Group and another one that deletes it.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;null_resource&#34;</span> <span style="color:#e6db74">&#34;res_group&#34;</span> {
+</span></span><span style="display:flex;"><span>    triggers = {
+</span></span><span style="display:flex;"><span>        location = <span style="color:#e6db74">&#34;westeurope&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    provisioner <span style="color:#e6db74">&#34;local-exec&#34;</span> {
+</span></span><span style="display:flex;"><span>        command = <span style="color:#e6db74">&#34;./create_resource_group.sh ${self.triggers.location}&#34;</span> 
+</span></span><span style="display:flex;"><span>        interpreter = [<span style="color:#e6db74">&#34;bash&#34;</span>, <span style="color:#e6db74">&#34;-c&#34;</span>]
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    provisioner <span style="color:#e6db74">&#34;local-exec&#34;</span> {
+</span></span><span style="display:flex;"><span>        when = destroy
+</span></span><span style="display:flex;"><span>        command = <span style="color:#e6db74">&#34;./destroy_resource_group.sh&#34;</span>
+</span></span><span style="display:flex;"><span>        interpreter = [<span style="color:#e6db74">&#34;bash&#34;</span>, <span style="color:#e6db74">&#34;-c&#34;</span>]
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The <code>destroy_resource_group.sh</code> script will look like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>az group delete -n MyResourceGroup --yes
+</span></span></code></pre></div><p>There is one big problem with this approach.</p>
+<p>When we remove a resource from the Terraform file and execute the <code>apply</code> command normally the resource gets deleted from the Terraform state file and from Azure, that&rsquo;s the common behaviour of Terraform, but it doesn&rsquo;t apply to the <code>local-exec</code> provisioner.</p>
+<p>If a  <code>null_resource</code> block with a <code>local-exec</code> provisioner  gets removed entirely from the Terraform file the resource <strong>won&rsquo;t be destroyed</strong> at all. To work around this, a multi-step process needs to be used to safely remove a resource:</p>
+<ul>
+<li>Update the resource configuration to include count = 0.</li>
+<li>Apply the configuration to destroy any existing instances of the resource, including running the destroy provisioner.</li>
+<li>Remove the resource block entirely from configuration, along with its provisioner blocks.</li>
+<li>Apply again, at which point no further action should be taken since the resources were already destroyed.</li>
+</ul>
+<p>The next code snippet shows an example of how you could destroy an Azure Resource Group that&rsquo;s been created using the <code>null_resource</code> and the <code>local-exec</code> provisioner.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;null_resource&#34;</span> <span style="color:#e6db74">&#34;res_group&#34;</span> {
+</span></span><span style="display:flex;"><span>    count = <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    triggers = {
+</span></span><span style="display:flex;"><span>        location = <span style="color:#e6db74">&#34;westeurope&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    provisioner <span style="color:#e6db74">&#34;local-exec&#34;</span> {
+</span></span><span style="display:flex;"><span>        command = <span style="color:#e6db74">&#34;./create_resource_group.sh ${self.triggers.location}&#34;</span> 
+</span></span><span style="display:flex;"><span>        interpreter = [<span style="color:#e6db74">&#34;bash&#34;</span>, <span style="color:#e6db74">&#34;-c&#34;</span>]
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    provisioner <span style="color:#e6db74">&#34;local-exec&#34;</span> {
+</span></span><span style="display:flex;"><span>        when = destroy
+</span></span><span style="display:flex;"><span>        command = <span style="color:#e6db74">&#34;./destroy_resource_group.sh&#34;</span>
+</span></span><span style="display:flex;"><span>        interpreter = [<span style="color:#e6db74">&#34;bash&#34;</span>, <span style="color:#e6db74">&#34;-c&#34;</span>]
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="benefits"><strong>Benefits</strong></h2>
+<ul>
+<li>The ability to execute any command available in the Azure CLI using Terraform.</li>
+</ul>
+<h2 id="downsides"><strong>Downsides</strong></h2>
+<ul>
+<li>The information about the resource we have created or modified is not present in the state file. The only data available in the state file is the one present on the <code>triggers</code> attribute.</li>
+<li>If an error is thrown during the script execution, your state file might end up in an inconsistent state. It depends on how you build the script.</li>
+<li>Destroying a resource requires a multi-step process.</li>
+<li>Everytime you want to provision a resource you have to write 2 scripts: one for provisioning the resource and another one for destroying it.</li>
+<li>You can&rsquo;t run an in-place update on a resource in a subsequent <code>apply</code> command, you can only destroy and recreate the resource.</li>
+</ul>
+<h1 id="using-the-azurerm_resource_group_template_deployment-resource--arm-template"><strong>Using the azurerm_resource_group_template_deployment resource + ARM Template</strong></h1>
+<p>The <code>azurerm_resource_group_template_deployment</code> is a resource from the official AzureRM Terraform provider and it allows us to manage a Resource Group Template Deployment using an ARM template.</p>
+<ul>
+<li><a href="https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group_template_deployment">https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group_template_deployment</a></li>
+</ul>
+<p>This approach is the equivalent of deploying an Azure ARM Template, but using Terraform to do it.</p>
+<p>The next code snippet shows an example of how you could use the <code>azurerm_resource_group_template_deployment</code> to manage an <code>Azure Network Watcher</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azurerm_resource_group&#34;</span> <span style="color:#e6db74">&#34;res_group&#34;</span> {
+</span></span><span style="display:flex;"><span>    name      = <span style="color:#e6db74">&#34;rg-test&#34;</span>
+</span></span><span style="display:flex;"><span>    location  = <span style="color:#e6db74">&#34;West US&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azurerm_resource_group_template_deployment&#34;</span> <span style="color:#e6db74">&#34;network_watcher&#34;</span> {
+</span></span><span style="display:flex;"><span>    name                  = <span style="color:#e6db74">&#34;network-watcher-deployment&#34;</span>
+</span></span><span style="display:flex;"><span>    resource_group_name   = azurerm_resource_group.res_group.name
+</span></span><span style="display:flex;"><span>    deployment_mode       = <span style="color:#e6db74">&#34;Incremental&#34;</span>
+</span></span><span style="display:flex;"><span>    template_content      = file(<span style="color:#e6db74">&#34;template.json&#34;</span>)
+</span></span><span style="display:flex;"><span>    parameters_content  = &lt;&lt;PARAMETERS
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;name&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;network-wather-example&#34;</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;location&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;${azurerm_resource_group.res_group.location}&#34;</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    PARAMETERS 
+</span></span><span style="display:flex;"><span>    depends_on = [
+</span></span><span style="display:flex;"><span>        azurerm_resource_group.res_group
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>And the ARM Template looks like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;$schema&#34;</span>: <span style="color:#e6db74">&#34;https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;contentVersion&#34;</span>: <span style="color:#e6db74">&#34;1.0.0.0&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;parameters&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;name&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;String&#34;</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;location&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;String&#34;</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;variables&#34;</span>: {},
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;resources&#34;</span>: [
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;Microsoft.Network/networkWatchers&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;apiVersion&#34;</span>: <span style="color:#e6db74">&#34;2022-01-01&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;name&#39;)]&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;location&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;location&#39;)]&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;properties&#34;</span>: {}
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="benefits-1"><strong>Benefits</strong></h2>
+<ul>
+<li>The ability to deploy any resource available on the Azure ARM REST Api.</li>
+</ul>
+<h2 id="downsides-1"><strong>Downsides</strong></h2>
+<ul>
+<li>When an ARM template execution fails in Terraform, Terraform doesn&rsquo;t record the fact that the deployment was physically created in the state file. Which means that the next time you try to deploy the Terraform ARM template it will be error out, from this point forward the only solution is to manually delete the Azure deployment.</li>
+<li>Terraform only understands changes made to the ARM template. If you modify a resource directly in Azure, Terraform is not capable to pick up those changes.</li>
+<li>It is not easy if you want to update an attribute of an existing resource. You&rsquo;ll have to describe the entire resource on your ARM template even if you only want to update a single property of the existing resource.</li>
+</ul>
+<h1 id="using-the-azapi-provider"><strong>Using the AzAPI provider</strong></h1>
+<blockquote>
+<p><strong>Important</strong>: Right now, using the <code>AzApi</code> provider is the best available solution when trying to create or update an Azure resource that is missing in the AzureRM provider.</p>
+</blockquote>
+<p>The <code>AzAPI</code> provider is a very thin layer on top of the Azure ARM REST APIs (This API is the same one that is used when we deploy an ARM Template).</p>
+<p>The <code>AzAPI</code> provider contains only 3 resources:</p>
+<ul>
+<li><code>azapi_resource</code>:  Used for managing Azure resources.</li>
+<li><code>azapi_update_resource</code>: Used to add or modify properties on an existing resource. If you delete an <code>azapi_update_resource</code> block from your Terraform file, no operation will be performed and these properties will stay unchanged. If you want to restore the modified properties, you must re-apply the restored properties before deleting.</li>
+<li><code>azapi_resource_action</code>: Used to perform any resource action. It&rsquo;s recommended to use this resource to perform actions which change a resource state.</li>
+</ul>
+<p>The next code snippet shows an example of how you could use the <code>AzApi</code> provider to manage an <code>Azure DNS Resolver</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azurerm_resource_group&#34;</span> <span style="color:#e6db74">&#34;res_group&#34;</span> {
+</span></span><span style="display:flex;"><span>    name      = <span style="color:#e6db74">&#34;rg-test&#34;</span>
+</span></span><span style="display:flex;"><span>    location  = <span style="color:#e6db74">&#34;West US&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azurerm_virtual_network&#34;</span> <span style="color:#e6db74">&#34;vnet&#34;</span> {
+</span></span><span style="display:flex;"><span>    name                = <span style="color:#e6db74">&#34;vnet-test&#34;</span>
+</span></span><span style="display:flex;"><span>    location            = azurerm_resource_group.res_group.location
+</span></span><span style="display:flex;"><span>    resource_group_name = azurerm_resource_group.res_group.name
+</span></span><span style="display:flex;"><span>    address_space       = [<span style="color:#e6db74">&#34;10.18.0.0/16&#34;</span>]
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azapi_resource&#34;</span> <span style="color:#e6db74">&#34;dns_resolver&#34;</span> {
+</span></span><span style="display:flex;"><span>    type      = <span style="color:#e6db74">&#34;Microsoft.Network/dnsResolvers@2020-04-01-preview&#34;</span>
+</span></span><span style="display:flex;"><span>    name      = <span style="color:#e6db74">&#34;resolver-test&#34;</span>
+</span></span><span style="display:flex;"><span>    parent_id = azurerm_resource_group.res_group.id
+</span></span><span style="display:flex;"><span>    location  = azurerm_resource_group.res_group.location
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    body =  jsonencode({
+</span></span><span style="display:flex;"><span>        properties = {
+</span></span><span style="display:flex;"><span>            virtualNetwork = {
+</span></span><span style="display:flex;"><span>                id = azurerm_virtual_network.vnet.id
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>    response_export_values = [<span style="color:#e6db74">&#34;*&#34;</span>]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>When creating or update a resource using the <code>AzApi</code> resource you&rsquo;ll need to specify the following attributes:</p>
+<ul>
+<li>
+<p><code>type</code>: The value for this field is the resource-type and the api-version, following the convention: <code>&lt;resource-type&gt;@&lt;api-version&gt;</code> as an example <code>Microsoft.Network/dnsResolvers@2020-04-01-preview</code>.</p>
+</li>
+<li>
+<p><code>parent_id</code> Is the Id of the resource or item is deployed within, such as a resource group id.</p>
+</li>
+<li>
+<p><code>body</code>: Is the JSON object that contains the request body used to either create or update the Azure resource in question.</p>
+</li>
+</ul>
+<h2 id="documentation"><strong>Documentation</strong></h2>
+<p>This is the &ldquo;go to&rdquo; website when using the <code>AzApi</code> provider:</p>
+<ul>
+<li><a href="https://learn.microsoft.com/es-es/azure/templates/?view=azurermps-6.0.0">https://learn.microsoft.com/es-es/azure/templates/?view=azurermps-6.0.0</a></li>
+</ul>
+<p>You&rsquo;ll find an inventory of all the Azure resources available and how to create them using the <code>AzApi</code> provider.</p>
+<h2 id="benefits-2"><strong>Benefits</strong></h2>
+<ul>
+<li>The ability to deploy any resource available on the Azure ARM REST Api.</li>
+<li>Full Terraform state file fidelity.</li>
+<li>It is really easy to update an attribute on an existing resource.</li>
+<li>There is no need to use any external file, such as an script or an ARM Template.</li>
+<li>It is the most &ldquo;Terraform syntax friendly&rdquo; from the 3 options we have discussed in this post.</li>
+</ul>
+<h2 id="downsides-2"><strong>Downsides</strong></h2>
+<ul>
+<li>The fact that the <code>body</code> attribute is a <code>jsonencode</code> object might sometimes show you a false change when running the <code>terraform plan</code> command.</li>
+</ul>
+<h1 id="examples"><strong>Examples</strong></h1>
+<p>During this post we have seen some really simple examples of how to create or update an Azure resource using the <code>local-exec</code> provisioner, the <code>azurerm_resource_group_template_deployment</code> resource or the <code>AzApi</code> provider.</p>
+<p>Before ending this post, let me show you a couple more complex ones.</p>
+<h1 id="example-1-create-an-azure-app-configuration"><strong>Example 1: Create an Azure App Configuration</strong></h1>
+<p>I&rsquo;m aware that you can create an <code>Azure App Configuration</code> using the <code>azurerm_app_configuration</code> resource available on the AzureRM provider, but this is just an example of how you can provision an Azure resource using Terraform without the AzureRM provider.</p>
+<h2 id="using-the-null_resource-local-exec-provisioner-and-the-az-cli"><strong>Using the null_resource, local-exec provisioner and the AZ CLI</strong></h2>
+<ul>
+<li>This example uses:
+<ul>
+<li>An  <code>azurerm_resource_group</code> to create a resource group.</li>
+<li>A <code>null_resource</code> with a couple of <code>local-exec</code> provisioners to create the <code>Azure App Configuration</code>.
+<ul>
+<li>The first <code>local-exec</code> provisioner is triggered when the resource needs to be created and it invokes the <code>create_app_config.sh</code> script.</li>
+<li>The second <code>local-exec</code> provisioner contains a <code>when = destroy</code> attribute, which mean that it will be triggered when the resource needs to be destroyed. This second provisioner will invoke the <code>destroy_app_config.sh</code> script.</li>
+</ul>
+</li>
+<li>The <code>Azure App Configuration</code> creation/deletion is done inside the Shell scripts.
+<ul>
+<li>It uses the <code>AZ CLI</code> to create or delete the <code>App Configuration</code>.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Here&rsquo;s how the Terraform file looks like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>locals {
+</span></span><span style="display:flex;"><span>    resource_group_name = <span style="color:#e6db74">&#34;rg-provisioning-demo&#34;</span>
+</span></span><span style="display:flex;"><span>    app_conf_name = <span style="color:#e6db74">&#34;appconf-demo-dev&#34;</span>
+</span></span><span style="display:flex;"><span>    app_conf_sku = <span style="color:#e6db74">&#34;Free&#34;</span>
+</span></span><span style="display:flex;"><span>    app_conf_enable_public_network = <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>    app_conf_disable_local_auth = <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>    app_conf_location = <span style="color:#e6db74">&#34;westeurope&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Create Resource Group
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azurerm_resource_group&#34;</span> <span style="color:#e6db74">&#34;rg_demo&#34;</span> {
+</span></span><span style="display:flex;"><span>    name      = local.resource_group_name
+</span></span><span style="display:flex;"><span>    location  = <span style="color:#e6db74">&#34;West Europe&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Create App Configuration <span style="color:#66d9ef">using</span> an external script
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;null_resource&#34;</span> <span style="color:#e6db74">&#34;app_conf&#34;</span> {
+</span></span><span style="display:flex;"><span>    triggers = {
+</span></span><span style="display:flex;"><span>        app_conf_name = local.app_conf_name
+</span></span><span style="display:flex;"><span>        res_group_name = local.resource_group_name
+</span></span><span style="display:flex;"><span>        sku = local.app_conf_sku
+</span></span><span style="display:flex;"><span>        enable_public_network = local.app_conf_enable_public_network
+</span></span><span style="display:flex;"><span>        disable_local_auth = local.app_conf_disable_local_auth
+</span></span><span style="display:flex;"><span>        location = local.app_conf_location
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    provisioner <span style="color:#e6db74">&#34;local-exec&#34;</span> {
+</span></span><span style="display:flex;"><span>        command = <span style="color:#e6db74">&#34;./create_app_config.sh ${self.triggers.app_conf_name} ${self.triggers.res_group_name} ${self.triggers.sku} ${self.triggers.enable_public_network} ${self.triggers.disable_local_auth} ${self.triggers.location}&#34;</span> 
+</span></span><span style="display:flex;"><span>        interpreter = [<span style="color:#e6db74">&#34;bash&#34;</span>, <span style="color:#e6db74">&#34;-c&#34;</span>]
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    provisioner <span style="color:#e6db74">&#34;local-exec&#34;</span> {
+</span></span><span style="display:flex;"><span>        when = destroy
+</span></span><span style="display:flex;"><span>        command = <span style="color:#e6db74">&#34;./destroy_app_config.sh ${self.triggers.app_conf_name} ${self.triggers.res_group_name} ${self.triggers.sku} ${self.triggers.enable_public_network} ${self.triggers.disable_local_auth}&#34;</span>
+</span></span><span style="display:flex;"><span>        interpreter = [<span style="color:#e6db74">&#34;bash&#34;</span>, <span style="color:#e6db74">&#34;-c&#34;</span>]
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    depends_on = [
+</span></span><span style="display:flex;"><span>        azurerm_resource_group.rg_demo
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The <code>create_app_config.sh</code> script executes the following steps:</p>
+<ul>
+<li>It checks if an App Configuration with the given name already exists.</li>
+<li>If it doesn&rsquo;t exists, it creates a new <code>App Configuration</code> using the <code>az appconfig create</code> command.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>APP_CONFIG_NAME<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>RES_GROUP_NAME<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$2<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>SKU<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$3<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>ENABLE_PUBLIC_NETWORK<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$4<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>DISABLE_LOCAL_AUTH<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$5<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>LOCATION<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$6<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>app_config_instance<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>az appconfig list | jq --arg name <span style="color:#e6db74">&#34;</span>$APP_CONFIG_NAME<span style="color:#e6db74">&#34;</span> -e <span style="color:#e6db74">&#39;.[]|select(.name==$name).name&#39;</span><span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$app_config_instance<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;App Config does not exists. Creating a new one.&#34;</span>
+</span></span><span style="display:flex;"><span>    az appconfig create --name $APP_CONFIG_NAME --resource-group $RES_GROUP_NAME --sku $SKU --enable-public-network $ENABLE_PUBLIC_NETWORK --disable-local-auth $DISABLE_LOCAL_AUTH --location $LOCATION
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span></code></pre></div><p>The <code>destroy_app_config.sh</code> script executes the following steps:</p>
+<ul>
+<li>It checks if an App Configuration with the given name already exists.</li>
+<li>If it exists, it deletes the <code>App Configuration</code> using the <code>az appconfig delete</code> command.</li>
+<li>Sleeps during 30 seconds.</li>
+</ul>
+<p>The <code>local-exec</code> provisioner can’t run an in-place update on a resource in a subsequent <code>terraform apply</code> command, the only option available is to delete it and afterwards recreate it with the new updated attributes, which means that the <code>App Configuration</code> creation happens instantly after the deletion, so an error might appear saying that the <code>App Configuration</code> still exists, that&rsquo;s the reason why we&rsquo;re executing a <code>sleep</code> command after deleting the resource, to let Azure enough time to catch up.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>APP_CONFIG_NAME<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>RES_GROUP_NAME<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$2<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>SKU<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$3<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>ENABLE_PUBLIC_NETWORK<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$4<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>DISABLE_LOCAL_AUTH<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$5<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>app_config_instance<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>az appconfig list | jq --arg name <span style="color:#e6db74">&#34;</span>$APP_CONFIG_NAME<span style="color:#e6db74">&#34;</span> -e <span style="color:#e6db74">&#39;.[]|select(.name==$name).name&#39;</span><span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$app_config_instance<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;App Config does not exist. No need to delete anything.&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;App Config found. Trying to destroy the resource.&#34;</span>
+</span></span><span style="display:flex;"><span>    az appconfig delete --name $APP_CONFIG_NAME --resource-group $RES_GROUP_NAME --yes
+</span></span><span style="display:flex;"><span>    sleep 30s
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span></code></pre></div><h2 id="using-the-azurerm_resource_group_template_deployment-resource"><strong>Using the azurerm_resource_group_template_deployment resource</strong></h2>
+<ul>
+<li>This example uses:
+<ul>
+<li>An  <code>azurerm_resource_group</code> to create a resource group.</li>
+<li>An <code>azurerm_resource_group_template_deployment</code>  to create the <code>App Configuration</code>
+<ul>
+<li>This resource uses an ARM Template that can be found on the <code>template.json</code> file.</li>
+<li>Parameters can be passed from the Terraform file to the ARM template using the <code>parameters_content</code> attribute.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Here&rsquo;s how the Terraform file looks like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>locals {
+</span></span><span style="display:flex;"><span>    resource_group_name = <span style="color:#e6db74">&#34;rg-provisioning-demo&#34;</span>
+</span></span><span style="display:flex;"><span>    app_conf_name = <span style="color:#e6db74">&#34;appconf-demo-dev&#34;</span>
+</span></span><span style="display:flex;"><span>    app_conf_sku = <span style="color:#e6db74">&#34;free&#34;</span>
+</span></span><span style="display:flex;"><span>    app_conf_public_network_access = <span style="color:#e6db74">&#34;Enabled&#34;</span>
+</span></span><span style="display:flex;"><span>    app_conf_disable_local_auth = <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>    app_conf_location = <span style="color:#e6db74">&#34;westeurope&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Create Resource Group
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azurerm_resource_group&#34;</span> <span style="color:#e6db74">&#34;rg_demo&#34;</span> {
+</span></span><span style="display:flex;"><span>    name      = local.resource_group_name
+</span></span><span style="display:flex;"><span>    location  = <span style="color:#e6db74">&#34;West Europe&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Create App Configuration <span style="color:#66d9ef">using</span> the resource <span style="color:#66d9ef">group</span> arm template resource
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azurerm_resource_group_template_deployment&#34;</span> <span style="color:#e6db74">&#34;appconf&#34;</span> {
+</span></span><span style="display:flex;"><span>    name                  = <span style="color:#e6db74">&#34;app-conf-deploy&#34;</span>
+</span></span><span style="display:flex;"><span>    resource_group_name   = local.resource_group_name
+</span></span><span style="display:flex;"><span>    deployment_mode       = <span style="color:#e6db74">&#34;Incremental&#34;</span>
+</span></span><span style="display:flex;"><span>    template_content      = file(<span style="color:#e6db74">&#34;template.json&#34;</span>)
+</span></span><span style="display:flex;"><span>    parameters_content  = &lt;&lt;PARAMETERS
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;name&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;${local.app_conf_name}&#34;</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;location&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;${local.app_conf_location}&#34;</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;sku&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;${local.app_conf_sku}&#34;</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;public_network_access&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;${local.app_conf_public_network_access}&#34;</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;disable_local_auth&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;${local.app_conf_disable_local_auth}&#34;</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    PARAMETERS 
+</span></span><span style="display:flex;"><span>    depends_on = [
+</span></span><span style="display:flex;"><span>        azurerm_resource_group.rg_demo
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>And here&rsquo;s how the ARM template file looks like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;$schema&#34;</span>: <span style="color:#e6db74">&#34;https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;contentVersion&#34;</span>: <span style="color:#e6db74">&#34;1.0.0.0&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;parameters&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;name&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;String&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;metadata&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;description&#34;</span>: <span style="color:#e6db74">&#34;Specifies the name of the App Configuration.&#34;</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;location&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;String&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;metadata&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;description&#34;</span>: <span style="color:#e6db74">&#34;Specifies the location of the App Configuration.&#34;</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;sku&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;String&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;metadata&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;description&#34;</span>: <span style="color:#e6db74">&#34;The SKU name of the App Configuration&#34;</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;public_network_access&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;String&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;metadata&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;description&#34;</span>: <span style="color:#e6db74">&#34;The Public Network Access setting of the App Configuration&#34;</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;disable_local_auth&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;String&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;metadata&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;description&#34;</span>: <span style="color:#e6db74">&#34;Whether local authentication methods is enabled.&#34;</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;variables&#34;</span>: {},
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;resources&#34;</span>: [
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;Microsoft.AppConfiguration/configurationStores&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;apiVersion&#34;</span>: <span style="color:#e6db74">&#34;2022-05-01&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;name&#39;)]&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;location&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;location&#39;)]&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;sku&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;sku&#39;)]&#34;</span>
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;properties&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;encryption&#34;</span>: {},
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;publicNetworkAccess&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;public_network_access&#39;)]&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;disableLocalAuth&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;disable_local_auth&#39;)]&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;softDeleteRetentionInDays&#34;</span>: <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;enablePurgeProtection&#34;</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="using-azapi-provider"><strong>Using AzApi provider</strong></h2>
+<ul>
+<li>This example uses:
+<ul>
+<li>An  <code>azurerm_resource_group</code> to create a resource group.</li>
+<li>An <code>azapi_resource</code>  to create the <code>App Configuration</code>.</li>
+</ul>
+</li>
+</ul>
+<p>Here&rsquo;s how the Terraform file looks like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>locals {
+</span></span><span style="display:flex;"><span>    resource_group_name = <span style="color:#e6db74">&#34;rg-provisioning-demo&#34;</span>
+</span></span><span style="display:flex;"><span>    app_conf_name = <span style="color:#e6db74">&#34;appconf-demo-dev&#34;</span>
+</span></span><span style="display:flex;"><span>    app_conf_sku = <span style="color:#e6db74">&#34;free&#34;</span>
+</span></span><span style="display:flex;"><span>    app_conf_public_network_access = <span style="color:#e6db74">&#34;Enabled&#34;</span>
+</span></span><span style="display:flex;"><span>    app_conf_disable_local_auth = <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Create Resource Group
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azurerm_resource_group&#34;</span> <span style="color:#e6db74">&#34;rg_demo&#34;</span> {
+</span></span><span style="display:flex;"><span>    name      = local.resource_group_name
+</span></span><span style="display:flex;"><span>    location  = <span style="color:#e6db74">&#34;West Europe&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Create App Configuration <span style="color:#66d9ef">using</span> the AzApi provider
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azapi_resource&#34;</span> <span style="color:#e6db74">&#34;appconf&#34;</span> {
+</span></span><span style="display:flex;"><span>    type      = <span style="color:#e6db74">&#34;Microsoft.AppConfiguration/configurationStores@2022-05-01&#34;</span>
+</span></span><span style="display:flex;"><span>    name      = local.app_conf_name
+</span></span><span style="display:flex;"><span>    parent_id = azurerm_resource_group.rg_demo.id
+</span></span><span style="display:flex;"><span>    location  = azurerm_resource_group.rg_demo.location
+</span></span><span style="display:flex;"><span>    body =  jsonencode({      
+</span></span><span style="display:flex;"><span>        sku = {
+</span></span><span style="display:flex;"><span>            name = local.app_conf_sku
+</span></span><span style="display:flex;"><span>        } 
+</span></span><span style="display:flex;"><span>        properties = {
+</span></span><span style="display:flex;"><span>            publicNetworkAccess = local.app_conf_public_network_access
+</span></span><span style="display:flex;"><span>            disableLocalAuth = local.app_conf_disable_local_auth
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>    response_export_values = [<span style="color:#e6db74">&#34;*&#34;</span>]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="example-2--enable-sftp-support-on-an-existing-azure-storage-account"><strong>Example 2:  Enable SFTP support on an existing Azure Storage Account</strong></h1>
+<p>This is an example that shows how to update an existing resource without using the AzureRM Terraform provider.</p>
+<p>To be more precise we&rsquo;re going to enable the <a href="https://learn.microsoft.com/en-us/azure/storage/blobs/secure-file-transfer-protocol-support">SFTP support for Azure Blob Storage</a> on an existing Azure Storage Account.</p>
+<blockquote>
+<p><em>Right now (11/09/2022) it is impossible to enable the <a href="https://learn.microsoft.com/en-us/azure/storage/blobs/secure-file-transfer-protocol-support">SFTP support for Azure Blob Storage</a> using the AzureRM Terraform provider, so this is going to be a more realistic example than the previous one.</em></p>
+</blockquote>
+<h2 id="using-the-null_resource-local-exec-provisioner-and-the-az-cli-1"><strong>Using the null_resource, local-exec provisioner and the AZ CLI</strong></h2>
+<ul>
+<li>This example uses:
+<ul>
+<li>An  <code>azurerm_resource_group</code> to create a resource group.</li>
+<li>An <code>azurerm_storage_account</code> resource to create a storage account.</li>
+<li>An <code>azurerm_storage_container</code> resource to create a container within the storage account.</li>
+<li>A <code>null_resource</code> with a couple of <code>local-exec</code> provisioners to enable the SFTP support and create a local user with permissions to access the SFTP.
+<ul>
+<li>The first <code>local-exec</code> provisioner executes the <code>enable_sftp_create_localuser.sh</code> script that enables the SFTP support and creates an SFTP local user.</li>
+<li>The second <code>local-exec</code> provisioner contains the <code>when = destroy</code> attribute. This provisioner is triggered when the resource needs to be destroyed and it invokes the <code>disable_sftp_and_localuser.sh</code> script that deletes the SFTP local user.</li>
+</ul>
+</li>
+<li>Enabling or disabling the SFTP support is done via Shell script.
+<ul>
+<li>The Shell script uses the <code>AZ CLI</code> to enable or disable the SFTP support.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Here&rsquo;s how the Terraform file looks like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>locals {
+</span></span><span style="display:flex;"><span>    resource_group_name = <span style="color:#e6db74">&#34;rg-provisioning-demo&#34;</span>
+</span></span><span style="display:flex;"><span>    storage_account_name = <span style="color:#e6db74">&#34;stsftprovdev&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Create Resource Group
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azurerm_resource_group&#34;</span> <span style="color:#e6db74">&#34;rg_demo&#34;</span> {
+</span></span><span style="display:flex;"><span>    name      = local.resource_group_name
+</span></span><span style="display:flex;"><span>    location  = <span style="color:#e6db74">&#34;West Europe&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Create Storage Account
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azurerm_storage_account&#34;</span> <span style="color:#e6db74">&#34;sftp_storage_acct&#34;</span> {
+</span></span><span style="display:flex;"><span>    name                        = local.storage_account_name
+</span></span><span style="display:flex;"><span>    location                    = azurerm_resource_group.rg_demo.location
+</span></span><span style="display:flex;"><span>    resource_group_name         = azurerm_resource_group.rg_demo.name
+</span></span><span style="display:flex;"><span>    account_tier                = <span style="color:#e6db74">&#34;Standard&#34;</span>
+</span></span><span style="display:flex;"><span>    account_replication_type    = <span style="color:#e6db74">&#34;LRS&#34;</span>
+</span></span><span style="display:flex;"><span>    min_tls_version             = <span style="color:#e6db74">&#34;TLS1_2&#34;</span>
+</span></span><span style="display:flex;"><span>    is_hns_enabled           = <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span> Create container
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azurerm_storage_container&#34;</span> <span style="color:#e6db74">&#34;azurerm_storage_container&#34;</span> {
+</span></span><span style="display:flex;"><span>  name                  = <span style="color:#e6db74">&#34;container&#34;</span>
+</span></span><span style="display:flex;"><span>  storage_account_name  = azurerm_storage_account.sftp_storage_acct.name
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Enable SFTP and create SFTP local users <span style="color:#66d9ef">using</span> an external script
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;null_resource&#34;</span> <span style="color:#e6db74">&#34;sftp_enable&#34;</span> {
+</span></span><span style="display:flex;"><span>    triggers = {
+</span></span><span style="display:flex;"><span>        storage_account_name = local.storage_account_name
+</span></span><span style="display:flex;"><span>        res_group_name = local.resource_group_name
+</span></span><span style="display:flex;"><span>        sftp_user = <span style="color:#e6db74">&#34;ftpuser&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    provisioner <span style="color:#e6db74">&#34;local-exec&#34;</span> {
+</span></span><span style="display:flex;"><span>        command = <span style="color:#e6db74">&#34;./enable_sftp_create_localuser.sh ${self.triggers.storage_account_name} ${self.triggers.res_group_name} ${self.triggers.sftp_user}&#34;</span>
+</span></span><span style="display:flex;"><span>        interpreter = [<span style="color:#e6db74">&#34;bash&#34;</span>, <span style="color:#e6db74">&#34;-c&#34;</span>]
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    provisioner <span style="color:#e6db74">&#34;local-exec&#34;</span> {
+</span></span><span style="display:flex;"><span>        when = destroy
+</span></span><span style="display:flex;"><span>        command = <span style="color:#e6db74">&#34;./disable_sftp_and_localuser.sh ${self.triggers.storage_account_name} ${self.triggers.res_group_name} ${self.triggers.sftp_user}&#34;</span> 
+</span></span><span style="display:flex;"><span>        interpreter = [<span style="color:#e6db74">&#34;bash&#34;</span>, <span style="color:#e6db74">&#34;-c&#34;</span>]
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    depends_on = [
+</span></span><span style="display:flex;"><span>        azurerm_storage_container.azurerm_storage_container
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The <code>enable_sftp_create_localuser.sh</code> script executes the following steps:</p>
+<ul>
+<li>Checks if the <code>AllowSFTP</code> feature is enabled in your Azure subscription, if it is not enabled it throws and error.</li>
+<li>Checks if the <code>az storage-preview</code> extension is installed on your machine. If it is not installed, it installs it.</li>
+<li>Enables SFTP support on the storage account.</li>
+<li>Creates a SFTP local user.</li>
+<li>Retrieves the user password.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>STORAGE_ACCT_NAME<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>RES_GROUP_NAME<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$2<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>SFTP_USER<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$3<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>state<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>az feature show --namespace Microsoft.Storage --name AllowSFTP |  jq <span style="color:#e6db74">&#39;.properties.state&#39;</span><span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> $state !<span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#34;Registered&#34;&#39;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;Feature not registered. Registration is an asynchronous operation, it must be done manually.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>extension<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>az extension list | jq -e <span style="color:#e6db74">&#39;.[]|select(.name==&#34;storage-preview&#34;).name&#39;</span><span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$extension<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;Storage-preview extension missing. Installing it.&#34;</span>
+</span></span><span style="display:flex;"><span>    az extension add -n storage-preview
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>az storage account update -g $RES_GROUP_NAME -n $STORAGE_ACCT_NAME --enable-sftp true
+</span></span><span style="display:flex;"><span>az storage account local-user create --account-name $STORAGE_ACCT_NAME -g  $RES_GROUP_NAME -n $SFTP_USER --home-directory <span style="color:#e6db74">&#34;container&#34;</span> --has-ssh-password true --has-ssh-key true --permission-scope permissions<span style="color:#f92672">=</span>rw service<span style="color:#f92672">=</span>blob resource-name<span style="color:#f92672">=</span>container
+</span></span><span style="display:flex;"><span>az storage account local-user regenerate-password --account-name $STORAGE_ACCT_NAME -g $RES_GROUP_NAME -n $SFTP_USER
+</span></span></code></pre></div><p>The <code>disable_sftp_and_localuser.sh</code> script executes the following steps:</p>
+<ul>
+<li>Deletes the SFTP local user.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>STORAGE_ACCT_NAME<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>RES_GROUP_NAME<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$2<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>SFTP_USER<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$3<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>az storage account local-user delete --account-name $STORAGE_ACCT_NAME -g  $RES_GROUP_NAME -n $SFTP_USER
+</span></span></code></pre></div><h2 id="using-the-azurerm_resource_group_template_deployment-resource-1"><strong>Using the azurerm_resource_group_template_deployment resource</strong></h2>
+<ul>
+<li>This example uses:
+<ul>
+<li>An  <code>azurerm_resource_group</code> to create a resource group.</li>
+<li>An <code>azurerm_storage_account</code> resource to create a storage account.</li>
+<li>An <code>azurerm_storage_container</code> resource to create a container within the storage account.</li>
+<li>An <code>azurerm_resource_group_template_deployment</code>  to enable the SFTP support and to create a SFTP local user.
+<ul>
+<li>The <code>azurerm_resource_group_template_deployment</code>  resource uses an ARM Template that can be found on the <code>template.json</code> file.</li>
+<li>To enable SFTP support we only need to set the Storage Account <code>isSftpEnabled</code> attribute to <code>true</code>, but the entire object must be described nonetheless.</li>
+<li>Any change we make on the Terraform <code>azurerm_storage_account</code> resource must also be changed on the ARM template, or it will get overriden.</li>
+<li>Parameters can be passed from the Terraform file to the ARM template using the <code>parameters_content</code> attribute.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Here&rsquo;s how the Terraform file looks like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>locals {
+</span></span><span style="display:flex;"><span>    resource_group_name         = <span style="color:#e6db74">&#34;rg-provisioning-demo&#34;</span>
+</span></span><span style="display:flex;"><span>    storage_account_name        = <span style="color:#e6db74">&#34;stsftprovdev&#34;</span>
+</span></span><span style="display:flex;"><span>    storage_account_tier        = <span style="color:#e6db74">&#34;Standard&#34;</span>
+</span></span><span style="display:flex;"><span>    storage_account_replication = <span style="color:#e6db74">&#34;LRS&#34;</span>
+</span></span><span style="display:flex;"><span>    storage_account_min_tls     = <span style="color:#e6db74">&#34;TLS1_2&#34;</span>
+</span></span><span style="display:flex;"><span>    storage_account_hns_enabled = <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>    sftp_user                   = <span style="color:#e6db74">&#34;ftpuser2&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Create Resource Group
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azurerm_resource_group&#34;</span> <span style="color:#e6db74">&#34;rg_demo&#34;</span> {
+</span></span><span style="display:flex;"><span>    name      = local.resource_group_name
+</span></span><span style="display:flex;"><span>    location  = <span style="color:#e6db74">&#34;West Europe&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Create Storage Account
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azurerm_storage_account&#34;</span> <span style="color:#e6db74">&#34;sftp_storage_acct&#34;</span> {
+</span></span><span style="display:flex;"><span>    name                        = local.storage_account_name
+</span></span><span style="display:flex;"><span>    location                    = azurerm_resource_group.rg_demo.location
+</span></span><span style="display:flex;"><span>    resource_group_name         = azurerm_resource_group.rg_demo.name
+</span></span><span style="display:flex;"><span>    account_tier                = local.storage_account_tier
+</span></span><span style="display:flex;"><span>    account_replication_type    = local.storage_account_replication
+</span></span><span style="display:flex;"><span>    min_tls_version             = local.storage_account_min_tls
+</span></span><span style="display:flex;"><span>    is_hns_enabled              = local.storage_account_hns_enabled
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span> Create container
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azurerm_storage_container&#34;</span> <span style="color:#e6db74">&#34;azurerm_storage_container&#34;</span> {
+</span></span><span style="display:flex;"><span>  name                  = <span style="color:#e6db74">&#34;container&#34;</span>
+</span></span><span style="display:flex;"><span>  storage_account_name  = azurerm_storage_account.sftp_storage_acct.name
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Enable SFTP and <span style="color:#66d9ef">add</span> local users <span style="color:#66d9ef">using</span> the resource <span style="color:#66d9ef">group</span> arm template resource
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azurerm_resource_group_template_deployment&#34;</span> <span style="color:#e6db74">&#34;sftp&#34;</span> {
+</span></span><span style="display:flex;"><span>    name                  = <span style="color:#e6db74">&#34;sftp-deploy&#34;</span>
+</span></span><span style="display:flex;"><span>    resource_group_name   = local.resource_group_name
+</span></span><span style="display:flex;"><span>    deployment_mode       = <span style="color:#e6db74">&#34;Incremental&#34;</span>
+</span></span><span style="display:flex;"><span>    template_content      = file(<span style="color:#e6db74">&#34;template.json&#34;</span>)
+</span></span><span style="display:flex;"><span>    parameters_content  = &lt;&lt;PARAMETERS
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;storage_account_name&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;${local.storage_account_name}&#34;</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;storage_account_tier&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;${local.storage_account_tier}&#34;</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;storage_account_replication&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;${local.storage_account_replication}&#34;</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;storage_account_min_tls&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;${local.storage_account_min_tls}&#34;</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;storage_account_hns_enabled&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;value&#34;</span>: <span style="color:#960050;background-color:#1e0010">$</span>{local.storage_account_hns_enabled}
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;sftp_user&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;${local.sftp_user}&#34;</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    PARAMETERS 
+</span></span><span style="display:flex;"><span>    depends_on = [
+</span></span><span style="display:flex;"><span>        azurerm_resource_group.rg_demo,
+</span></span><span style="display:flex;"><span>        azurerm_storage_account.sftp_storage_acct,
+</span></span><span style="display:flex;"><span>        azurerm_storage_container.azurerm_storage_container
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>And here&rsquo;s how the ARM template file looks like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;$schema&#34;</span>: <span style="color:#e6db74">&#34;https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;contentVersion&#34;</span>: <span style="color:#e6db74">&#34;1.0.0.0&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;parameters&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;storage_account_name&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;String&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;metadata&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;description&#34;</span>: <span style="color:#e6db74">&#34;Specifies the name of the Storage Account.&#34;</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;storage_account_tier&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;String&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;metadata&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;description&#34;</span>: <span style="color:#e6db74">&#34;Defines the Tier to use for this storage account.&#34;</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;storage_account_replication&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;String&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;metadata&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;description&#34;</span>: <span style="color:#e6db74">&#34;Defines the type of replication to use for this storage account.&#34;</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;storage_account_min_tls&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;String&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;metadata&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;description&#34;</span>: <span style="color:#e6db74">&#34;The minimum supported TLS version for the storage account.&#34;</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;storage_account_hns_enabled&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;Bool&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;metadata&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;description&#34;</span>: <span style="color:#e6db74">&#34;Is Hierarchical Namespace enabled?.&#34;</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;sftp_user&#34;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;String&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;metadata&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;description&#34;</span>: <span style="color:#e6db74">&#34;The SFTP local username.&#34;</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;variables&#34;</span>: {},
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;resources&#34;</span>: [
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;Microsoft.Storage/storageAccounts&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;apiVersion&#34;</span>: <span style="color:#e6db74">&#34;2022-05-01&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;storage_account_name&#39;)]&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;location&#34;</span>: <span style="color:#e6db74">&#34;westeurope&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;sku&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;[concat(parameters(&#39;storage_account_tier&#39;), &#39;_&#39;, parameters(&#39;storage_account_replication&#39;))]&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;tier&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;storage_account_tier&#39;)]&#34;</span>
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;kind&#34;</span>: <span style="color:#e6db74">&#34;StorageV2&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;identity&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;None&#34;</span>
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;properties&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;defaultToOAuthAuthentication&#34;</span>: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;publicNetworkAccess&#34;</span>: <span style="color:#e6db74">&#34;Enabled&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;allowCrossTenantReplication&#34;</span>: <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;isNfsV3Enabled&#34;</span>: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;isLocalUserEnabled&#34;</span>: <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;isSftpEnabled&#34;</span>: <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;minimumTlsVersion&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;storage_account_min_tls&#39;)]&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;allowBlobPublicAccess&#34;</span>: <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;allowSharedKeyAccess&#34;</span>: <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;isHnsEnabled&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;storage_account_hns_enabled&#39;)]&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;networkAcls&#34;</span>: {
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">&#34;bypass&#34;</span>: <span style="color:#e6db74">&#34;AzureServices&#34;</span>,
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">&#34;virtualNetworkRules&#34;</span>: [],
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">&#34;ipRules&#34;</span>: [],
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">&#34;defaultAction&#34;</span>: <span style="color:#e6db74">&#34;Allow&#34;</span>
+</span></span><span style="display:flex;"><span>                },
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;supportsHttpsTrafficOnly&#34;</span>: <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;encryption&#34;</span>: {
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">&#34;services&#34;</span>: {
+</span></span><span style="display:flex;"><span>                        <span style="color:#f92672">&#34;file&#34;</span>: {
+</span></span><span style="display:flex;"><span>                            <span style="color:#f92672">&#34;keyType&#34;</span>: <span style="color:#e6db74">&#34;Account&#34;</span>,
+</span></span><span style="display:flex;"><span>                            <span style="color:#f92672">&#34;enabled&#34;</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>                        },
+</span></span><span style="display:flex;"><span>                        <span style="color:#f92672">&#34;blob&#34;</span>: {
+</span></span><span style="display:flex;"><span>                            <span style="color:#f92672">&#34;keyType&#34;</span>: <span style="color:#e6db74">&#34;Account&#34;</span>,
+</span></span><span style="display:flex;"><span>                            <span style="color:#f92672">&#34;enabled&#34;</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>                        }
+</span></span><span style="display:flex;"><span>                    },
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">&#34;keySource&#34;</span>: <span style="color:#e6db74">&#34;Microsoft.Storage&#34;</span>
+</span></span><span style="display:flex;"><span>                },
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;accessTier&#34;</span>: <span style="color:#e6db74">&#34;Hot&#34;</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;Microsoft.Storage/storageAccounts/blobServices&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;apiVersion&#34;</span>: <span style="color:#e6db74">&#34;2022-05-01&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;[concat(parameters(&#39;storage_account_name&#39;), &#39;/default&#39;)]&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;dependsOn&#34;</span>: [
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;[resourceId(&#39;Microsoft.Storage/storageAccounts&#39;, parameters(&#39;storage_account_name&#39;))]&#34;</span>
+</span></span><span style="display:flex;"><span>            ],
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;sku&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;[concat(parameters(&#39;storage_account_tier&#39;), &#39;_&#39;, parameters(&#39;storage_account_replication&#39;))]&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;tier&#34;</span>: <span style="color:#e6db74">&#34;[parameters(&#39;storage_account_tier&#39;)]&#34;</span>
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;properties&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;cors&#34;</span>: {
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">&#34;corsRules&#34;</span>: []
+</span></span><span style="display:flex;"><span>                },
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;deleteRetentionPolicy&#34;</span>: {
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">&#34;allowPermanentDelete&#34;</span>: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">&#34;enabled&#34;</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;Microsoft.Storage/storageAccounts/localusers&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;apiVersion&#34;</span>: <span style="color:#e6db74">&#34;2022-05-01&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;[concat(parameters(&#39;storage_account_name&#39;), &#39;/&#39;, parameters(&#39;sftp_user&#39;))]&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;dependsOn&#34;</span>: [
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;[resourceId(&#39;Microsoft.Storage/storageAccounts&#39;, parameters(&#39;storage_account_name&#39;))]&#34;</span>
+</span></span><span style="display:flex;"><span>            ],
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;properties&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;hasSshPassword&#34;</span>: <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;permissionScopes&#34;</span>: [
+</span></span><span style="display:flex;"><span>                    {
+</span></span><span style="display:flex;"><span>                        <span style="color:#f92672">&#34;permissions&#34;</span>: <span style="color:#e6db74">&#34;rw&#34;</span>,
+</span></span><span style="display:flex;"><span>                        <span style="color:#f92672">&#34;service&#34;</span>: <span style="color:#e6db74">&#34;blob&#34;</span>,
+</span></span><span style="display:flex;"><span>                        <span style="color:#f92672">&#34;resourceName&#34;</span>: <span style="color:#e6db74">&#34;container&#34;</span>
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                ],
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;homeDirectory&#34;</span>: <span style="color:#e6db74">&#34;container&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;hasSharedKey&#34;</span>: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;hasSshKey&#34;</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;Microsoft.Storage/storageAccounts/blobServices/containers&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;apiVersion&#34;</span>: <span style="color:#e6db74">&#34;2022-05-01&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;[concat(parameters(&#39;storage_account_name&#39;), &#39;/default/container&#39;)]&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;dependsOn&#34;</span>: [
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;[resourceId(&#39;Microsoft.Storage/storageAccounts/blobServices&#39;, parameters(&#39;storage_account_name&#39;), &#39;default&#39;)]&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;[resourceId(&#39;Microsoft.Storage/storageAccounts&#39;, parameters(&#39;storage_account_name&#39;))]&#34;</span>
+</span></span><span style="display:flex;"><span>            ],
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;properties&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;defaultEncryptionScope&#34;</span>: <span style="color:#e6db74">&#34;$account-encryption-key&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;denyEncryptionScopeOverride&#34;</span>: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;publicAccess&#34;</span>: <span style="color:#e6db74">&#34;None&#34;</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="using-azapi-provider-1"><strong>Using AzApi provider</strong></h2>
+<ul>
+<li>This example uses:
+<ul>
+<li>An  <code>azurerm_resource_group</code> to create a resource group.</li>
+<li>An <code>azurerm_storage_account</code> resource to create a storage account.</li>
+<li>An <code>azurerm_storage_container</code> resource to create a container within the storage account.</li>
+<li>An <code>azapi_update_resource</code>  to enable the SFTP support.</li>
+<li>An <code>azapi_resource</code> to create a SFTP local user.</li>
+<li>An <code>azapi_resource_action</code> to retrieve the user password.</li>
+</ul>
+</li>
+</ul>
+<p>Here&rsquo;s how the Terraform file looks like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>locals {
+</span></span><span style="display:flex;"><span>    resource_group_name = <span style="color:#e6db74">&#34;rg-provisioning-demo&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Create Resource Group
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azurerm_resource_group&#34;</span> <span style="color:#e6db74">&#34;rg_demo&#34;</span> {
+</span></span><span style="display:flex;"><span>    name      = local.resource_group_name
+</span></span><span style="display:flex;"><span>    location  = <span style="color:#e6db74">&#34;West Europe&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">##</span> Create Storage Account
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azurerm_storage_account&#34;</span> <span style="color:#e6db74">&#34;sftp_storage_acct&#34;</span> {
+</span></span><span style="display:flex;"><span>    name                        = <span style="color:#e6db74">&#34;stsftprovdev&#34;</span>
+</span></span><span style="display:flex;"><span>    location                    = azurerm_resource_group.rg_demo.location
+</span></span><span style="display:flex;"><span>    resource_group_name         = azurerm_resource_group.rg_demo.name
+</span></span><span style="display:flex;"><span>    account_tier                = <span style="color:#e6db74">&#34;Standard&#34;</span>
+</span></span><span style="display:flex;"><span>    account_replication_type    = <span style="color:#e6db74">&#34;LRS&#34;</span>
+</span></span><span style="display:flex;"><span>    min_tls_version             = <span style="color:#e6db74">&#34;TLS1_2&#34;</span>
+</span></span><span style="display:flex;"><span>    is_hns_enabled              = <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span> Create container
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azurerm_storage_container&#34;</span> <span style="color:#e6db74">&#34;sftp_storage_acct_container&#34;</span> {
+</span></span><span style="display:flex;"><span>  name                  = <span style="color:#e6db74">&#34;container&#34;</span>
+</span></span><span style="display:flex;"><span>  storage_account_name  = azurerm_storage_account.sftp_storage_acct.name
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span> Enable SFTP
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azapi_update_resource&#34;</span> <span style="color:#e6db74">&#34;sftp_azpi_sftp&#34;</span> {
+</span></span><span style="display:flex;"><span>  type        = <span style="color:#e6db74">&#34;Microsoft.Storage/storageAccounts@2021-09-01&#34;</span>
+</span></span><span style="display:flex;"><span>  resource_id = azurerm_storage_account.sftp_storage_acct.id
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  body = jsonencode({
+</span></span><span style="display:flex;"><span>    properties = {
+</span></span><span style="display:flex;"><span>      isSftpEnabled = <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  })
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  depends_on = [
+</span></span><span style="display:flex;"><span>    azurerm_storage_account.sftp_storage_acct,
+</span></span><span style="display:flex;"><span>    azurerm_storage_container.sftp_storage_acct_container
+</span></span><span style="display:flex;"><span>  ]
+</span></span><span style="display:flex;"><span>  response_export_values = [<span style="color:#e6db74">&#34;*&#34;</span>]
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span> Create local user
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azapi_resource&#34;</span> <span style="color:#e6db74">&#34;sftp_local_user&#34;</span> {
+</span></span><span style="display:flex;"><span>  type        = <span style="color:#e6db74">&#34;Microsoft.Storage/storageAccounts/localUsers@2021-09-01&#34;</span>
+</span></span><span style="display:flex;"><span>  parent_id = azurerm_storage_account.sftp_storage_acct.id
+</span></span><span style="display:flex;"><span>  name = <span style="color:#e6db74">&#34;ftpuser&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  body = jsonencode({
+</span></span><span style="display:flex;"><span>    properties = {
+</span></span><span style="display:flex;"><span>      hasSshPassword = <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>      homeDirectory = <span style="color:#e6db74">&#34;container&#34;</span>
+</span></span><span style="display:flex;"><span>      hasSharedKey = <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>      hasSshKey = <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>      permissionScopes = [{
+</span></span><span style="display:flex;"><span>        permissions = <span style="color:#e6db74">&#34;rl&#34;</span>,
+</span></span><span style="display:flex;"><span>        service = <span style="color:#e6db74">&#34;blob&#34;</span>,
+</span></span><span style="display:flex;"><span>        resourceName = <span style="color:#e6db74">&#34;container&#34;</span>
+</span></span><span style="display:flex;"><span>      }]
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  })
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  response_export_values = [<span style="color:#e6db74">&#34;*&#34;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  depends_on = [
+</span></span><span style="display:flex;"><span>    azurerm_storage_account.sftp_storage_acct,
+</span></span><span style="display:flex;"><span>    azurerm_storage_container.sftp_storage_acct_container,
+</span></span><span style="display:flex;"><span>    azapi_update_resource.sftp_azpi_sftp
+</span></span><span style="display:flex;"><span>  ]
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span> Retrieve password
+</span></span><span style="display:flex;"><span>resource <span style="color:#e6db74">&#34;azapi_resource_action&#34;</span> <span style="color:#e6db74">&#34;generate_sftp_user_password&#34;</span> {
+</span></span><span style="display:flex;"><span>  type        = <span style="color:#e6db74">&#34;Microsoft.Storage/storageAccounts/localUsers@2022-05-01&#34;</span>
+</span></span><span style="display:flex;"><span>  resource_id = azapi_resource.sftp_local_user.id
+</span></span><span style="display:flex;"><span>  action      = <span style="color:#e6db74">&#34;regeneratePassword&#34;</span>
+</span></span><span style="display:flex;"><span>  body = jsonencode({
+</span></span><span style="display:flex;"><span>    username = azapi_resource.sftp_local_user.name
+</span></span><span style="display:flex;"><span>  })
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  response_export_values = [<span style="color:#e6db74">&#34;sshPassword&#34;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  depends_on = [
+</span></span><span style="display:flex;"><span>    azurerm_storage_account.sftp_storage_acct,
+</span></span><span style="display:flex;"><span>    azurerm_storage_container.sftp_storage_acct_container,
+</span></span><span style="display:flex;"><span>    azapi_update_resource.sftp_azpi_sftp,
+</span></span><span style="display:flex;"><span>    azapi_resource.sftp_local_user
+</span></span><span style="display:flex;"><span>  ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="useful-links"><strong>Useful links</strong></h1>
+<ul>
+<li><a href="https://learn.microsoft.com/es-es/azure/templates/?view=azurermps-6.0.0">https://learn.microsoft.com/es-es/azure/templates/?view=azurermps-6.0.0</a></li>
+<li><a href="https://registry.terraform.io/providers/Azure/azapi/1.0.0">https://registry.terraform.io/providers/Azure/azapi/1.0.0</a></li>
+<li><a href="https://registry.terraform.io/providers/hashicorp/azurerm/3.30.0">https://registry.terraform.io/providers/hashicorp/azurerm/3.30.0</a></li>
+<li><a href="https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group_template_deployment">https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group_template_deployment</a></li>
+</ul>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://www.mytechramblings.com/posts/notify-aws-events-to-microsoft-teams/">
+                  <span class="button__text">How to notify AWS events to Microsoft Teams using AWS EventBridge and AWS Lambda</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2022 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>Theme created by <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://www.mytechramblings.com/assets/main.js"></script>
+<script src="https://www.mytechramblings.com/assets/prism.js"></script>
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('carlospons', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Donate',
+    'floating-chat.donateButton.background-color': '#ff5f5f',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
+
+      
+    </div>
+
+    
+      
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-170300931-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+    
+  </body>
+</html>

@@ -9,10 +9,30 @@
     <description>Recent content in azure on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 14 Jun 2022 10:10:47 +0200</lastBuildDate>
+    <lastBuildDate>Thu, 10 Nov 2022 10:30:40 +0100</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/azure/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>How to deploy an Azure resource using Terraform when it is not available in the AzureRM official provider</title>
+      <link>https://www.mytechramblings.com/posts/deploy-az-resources-when-not-available-on-azurerm/</link>
+      <pubDate>Thu, 10 Nov 2022 10:30:40 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/deploy-az-resources-when-not-available-on-azurerm/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          This post is going to walk you through the options available when we want to create or update a service on Azure using Terraform, but it is not available on the AzureRM Terraform provider.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>Testing Azure Private Endpoints DNS resolution over an Azure P2S VPN connection</title>

@@ -9,10 +9,110 @@
     <description>Recent content in Tags on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 18 Oct 2022 10:01:12 +0200</lastBuildDate>
+    <lastBuildDate>Thu, 10 Nov 2022 10:30:40 +0100</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>azure</title>
+      <link>https://www.mytechramblings.com/tags/azure/</link>
+      <pubDate>Thu, 10 Nov 2022 10:30:40 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/azure/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>cloud</title>
+      <link>https://www.mytechramblings.com/tags/cloud/</link>
+      <pubDate>Thu, 10 Nov 2022 10:30:40 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/cloud/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>devops</title>
+      <link>https://www.mytechramblings.com/tags/devops/</link>
+      <pubDate>Thu, 10 Nov 2022 10:30:40 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/devops/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>iac</title>
+      <link>https://www.mytechramblings.com/tags/iac/</link>
+      <pubDate>Thu, 10 Nov 2022 10:30:40 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/iac/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>terraform</title>
+      <link>https://www.mytechramblings.com/tags/terraform/</link>
+      <pubDate>Thu, 10 Nov 2022 10:30:40 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/terraform/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>aws</title>
@@ -55,51 +155,11 @@
     </item>
     
     <item>
-      <title>devops</title>
-      <link>https://www.mytechramblings.com/tags/devops/</link>
-      <pubDate>Tue, 18 Oct 2022 10:01:12 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/devops/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
       <title>eventbridge</title>
       <link>https://www.mytechramblings.com/tags/eventbridge/</link>
       <pubDate>Tue, 18 Oct 2022 10:01:12 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/eventbridge/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>iac</title>
-      <link>https://www.mytechramblings.com/tags/iac/</link>
-      <pubDate>Tue, 18 Oct 2022 10:01:12 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/iac/</guid>
       <description>
         
           
@@ -395,71 +455,11 @@
     </item>
     
     <item>
-      <title>azure</title>
-      <link>https://www.mytechramblings.com/tags/azure/</link>
-      <pubDate>Tue, 14 Jun 2022 10:10:47 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/azure/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>cloud</title>
-      <link>https://www.mytechramblings.com/tags/cloud/</link>
-      <pubDate>Tue, 14 Jun 2022 10:10:47 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/cloud/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
       <title>dns</title>
       <link>https://www.mytechramblings.com/tags/dns/</link>
       <pubDate>Tue, 14 Jun 2022 10:10:47 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/dns/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>terraform</title>
-      <link>https://www.mytechramblings.com/tags/terraform/</link>
-      <pubDate>Tue, 14 Jun 2022 10:10:47 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/terraform/</guid>
       <description>
         
           

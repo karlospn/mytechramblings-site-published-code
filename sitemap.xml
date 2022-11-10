@@ -2,13 +2,37 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://www.mytechramblings.com/tags/azure/</loc>
+    <lastmod>2022-11-10T10:30:40+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/cloud/</loc>
+    <lastmod>2022-11-10T10:30:40+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/devops/</loc>
+    <lastmod>2022-11-10T10:30:40+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/deploy-az-resources-when-not-available-on-azurerm/</loc>
+    <lastmod>2022-11-10T10:30:40+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/iac/</loc>
+    <lastmod>2022-11-10T10:30:40+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/</loc>
+    <lastmod>2022-11-10T10:30:40+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/</loc>
+    <lastmod>2022-11-10T10:30:40+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/</loc>
+    <lastmod>2022-11-10T10:30:40+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/terraform/</loc>
+    <lastmod>2022-11-10T10:30:40+01:00</lastmod>
+  </url><url>
     <loc>https://www.mytechramblings.com/tags/aws/</loc>
     <lastmod>2022-10-18T10:01:12+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/cdk/</loc>
-    <lastmod>2022-10-18T10:01:12+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/devops/</loc>
     <lastmod>2022-10-18T10:01:12+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/eventbridge/</loc>
@@ -17,22 +41,10 @@
     <loc>https://www.mytechramblings.com/posts/notify-aws-events-to-microsoft-teams/</loc>
     <lastmod>2022-10-18T10:01:12+02:00</lastmod>
   </url><url>
-    <loc>https://www.mytechramblings.com/tags/iac/</loc>
-    <lastmod>2022-10-18T10:01:12+02:00</lastmod>
-  </url><url>
     <loc>https://www.mytechramblings.com/tags/lambda/</loc>
     <lastmod>2022-10-18T10:01:12+02:00</lastmod>
   </url><url>
-    <loc>https://www.mytechramblings.com/</loc>
-    <lastmod>2022-10-18T10:01:12+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/posts/</loc>
-    <lastmod>2022-10-18T10:01:12+02:00</lastmod>
-  </url><url>
     <loc>https://www.mytechramblings.com/tags/python/</loc>
-    <lastmod>2022-10-18T10:01:12+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/</loc>
     <lastmod>2022-10-18T10:01:12+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/teams/</loc>
@@ -86,16 +98,7 @@
     <loc>https://www.mytechramblings.com/tags/signalr/</loc>
     <lastmod>2022-07-19T10:00:40+02:00</lastmod>
   </url><url>
-    <loc>https://www.mytechramblings.com/tags/azure/</loc>
-    <lastmod>2022-06-14T10:10:47+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/cloud/</loc>
-    <lastmod>2022-06-14T10:10:47+02:00</lastmod>
-  </url><url>
     <loc>https://www.mytechramblings.com/tags/dns/</loc>
-    <lastmod>2022-06-14T10:10:47+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/terraform/</loc>
     <lastmod>2022-06-14T10:10:47+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/posts/testing-private-dns-resolution-over-a-p2s-vpn-using-azure-dns-private-resolver/</loc>
