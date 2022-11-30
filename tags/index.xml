@@ -9,17 +9,117 @@
     <description>Recent content in Tags on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 10 Nov 2022 10:30:40 +0100</lastBuildDate>
+    <lastBuildDate>Wed, 30 Nov 2022 10:01:13 +0100</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
+      <title>aws</title>
+      <link>https://www.mytechramblings.com/tags/aws/</link>
+      <pubDate>Wed, 30 Nov 2022 10:01:13 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/aws/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
       <title>azure</title>
       <link>https://www.mytechramblings.com/tags/azure/</link>
-      <pubDate>Thu, 10 Nov 2022 10:30:40 +0100</pubDate>
+      <pubDate>Wed, 30 Nov 2022 10:01:13 +0100</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/azure/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>containers</title>
+      <link>https://www.mytechramblings.com/tags/containers/</link>
+      <pubDate>Wed, 30 Nov 2022 10:01:13 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/containers/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>devops</title>
+      <link>https://www.mytechramblings.com/tags/devops/</link>
+      <pubDate>Wed, 30 Nov 2022 10:01:13 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/devops/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>docker</title>
+      <link>https://www.mytechramblings.com/tags/docker/</link>
+      <pubDate>Wed, 30 Nov 2022 10:01:13 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/docker/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>dotnet</title>
+      <link>https://www.mytechramblings.com/tags/dotnet/</link>
+      <pubDate>Wed, 30 Nov 2022 10:01:13 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/dotnet/</guid>
       <description>
         
           
@@ -40,26 +140,6 @@
       <pubDate>Thu, 10 Nov 2022 10:30:40 +0100</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/cloud/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>devops</title>
-      <link>https://www.mytechramblings.com/tags/devops/</link>
-      <pubDate>Thu, 10 Nov 2022 10:30:40 +0100</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/devops/</guid>
       <description>
         
           
@@ -100,26 +180,6 @@
       <pubDate>Thu, 10 Nov 2022 10:30:40 +0100</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/terraform/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>aws</title>
-      <link>https://www.mytechramblings.com/tags/aws/</link>
-      <pubDate>Tue, 18 Oct 2022 10:01:12 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/aws/</guid>
       <description>
         
           
@@ -255,26 +315,6 @@
     </item>
     
     <item>
-      <title>dotnet</title>
-      <link>https://www.mytechramblings.com/tags/dotnet/</link>
-      <pubDate>Wed, 28 Sep 2022 10:01:53 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/dotnet/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
       <title>grafana</title>
       <link>https://www.mytechramblings.com/tags/grafana/</link>
       <pubDate>Wed, 28 Sep 2022 10:01:53 +0200</pubDate>
@@ -340,46 +380,6 @@
       <pubDate>Wed, 28 Sep 2022 10:01:53 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/prometheus/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>containers</title>
-      <link>https://www.mytechramblings.com/tags/containers/</link>
-      <pubDate>Thu, 08 Sep 2022 11:06:41 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/containers/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>docker</title>
-      <link>https://www.mytechramblings.com/tags/docker/</link>
-      <pubDate>Thu, 08 Sep 2022 11:06:41 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/docker/</guid>
       <description>
         
           

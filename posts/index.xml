@@ -9,10 +9,30 @@
     <description>Recent content in Posts on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 10 Nov 2022 10:30:40 +0100</lastBuildDate>
+    <lastBuildDate>Wed, 30 Nov 2022 10:01:13 +0100</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Trying out the built-in container support for the .NET SDK</title>
+      <link>https://www.mytechramblings.com/posts/trying-out-the-built-in-container-support-for-the-dotnet-7-sdk/</link>
+      <pubDate>Wed, 30 Nov 2022 10:01:13 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/trying-out-the-built-in-container-support-for-the-dotnet-7-sdk/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          A few months ago the built-in container support for the .NET SDK was announced. In this post I&#39;ll put this feature to test, I&#39;ll try to migrate from an application that contains a rather complex Dockerfile to a new version that has no Dockerfile and instead uses the container support feature.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>How to deploy an Azure resource using Terraform when it is not available in the AzureRM official provider</title>

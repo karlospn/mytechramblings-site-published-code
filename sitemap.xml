@@ -2,13 +2,37 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://www.mytechramblings.com/tags/azure/</loc>
-    <lastmod>2022-11-10T10:30:40+01:00</lastmod>
+    <loc>https://www.mytechramblings.com/tags/aws/</loc>
+    <lastmod>2022-11-30T10:01:13+01:00</lastmod>
   </url><url>
-    <loc>https://www.mytechramblings.com/tags/cloud/</loc>
-    <lastmod>2022-11-10T10:30:40+01:00</lastmod>
+    <loc>https://www.mytechramblings.com/tags/azure/</loc>
+    <lastmod>2022-11-30T10:01:13+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/containers/</loc>
+    <lastmod>2022-11-30T10:01:13+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/devops/</loc>
+    <lastmod>2022-11-30T10:01:13+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/docker/</loc>
+    <lastmod>2022-11-30T10:01:13+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/dotnet/</loc>
+    <lastmod>2022-11-30T10:01:13+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/</loc>
+    <lastmod>2022-11-30T10:01:13+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/</loc>
+    <lastmod>2022-11-30T10:01:13+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/</loc>
+    <lastmod>2022-11-30T10:01:13+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/trying-out-the-built-in-container-support-for-the-dotnet-7-sdk/</loc>
+    <lastmod>2022-11-30T10:01:13+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/cloud/</loc>
     <lastmod>2022-11-10T10:30:40+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/posts/deploy-az-resources-when-not-available-on-azurerm/</loc>
@@ -17,20 +41,8 @@
     <loc>https://www.mytechramblings.com/tags/iac/</loc>
     <lastmod>2022-11-10T10:30:40+01:00</lastmod>
   </url><url>
-    <loc>https://www.mytechramblings.com/</loc>
-    <lastmod>2022-11-10T10:30:40+01:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/posts/</loc>
-    <lastmod>2022-11-10T10:30:40+01:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/</loc>
-    <lastmod>2022-11-10T10:30:40+01:00</lastmod>
-  </url><url>
     <loc>https://www.mytechramblings.com/tags/terraform/</loc>
     <lastmod>2022-11-10T10:30:40+01:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/aws/</loc>
-    <lastmod>2022-10-18T10:01:12+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/cdk/</loc>
     <lastmod>2022-10-18T10:01:12+02:00</lastmod>
@@ -53,9 +65,6 @@
     <loc>https://www.mytechramblings.com/tags/csharp/</loc>
     <lastmod>2022-09-28T10:01:53+02:00</lastmod>
   </url><url>
-    <loc>https://www.mytechramblings.com/tags/dotnet/</loc>
-    <lastmod>2022-09-28T10:01:53+02:00</lastmod>
-  </url><url>
     <loc>https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-metrics-and-dotnet-part-2/</loc>
     <lastmod>2022-09-28T10:01:53+02:00</lastmod>
   </url><url>
@@ -73,12 +82,6 @@
   </url><url>
     <loc>https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-metrics-and-dotnet-part-1/</loc>
     <lastmod>2022-09-27T10:01:32+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/containers/</loc>
-    <lastmod>2022-09-08T11:06:41+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/docker/</loc>
-    <lastmod>2022-09-08T11:06:41+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/ecr/</loc>
     <lastmod>2022-09-08T11:06:41+02:00</lastmod>

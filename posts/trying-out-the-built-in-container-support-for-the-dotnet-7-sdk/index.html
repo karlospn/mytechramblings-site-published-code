@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>Trying out the built-in container support for the .NET SDK :: my tech ramblings — A blog for writing about my techie ramblings</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Just show me the code!
+As always, if you don’t care about the post I have uploaded the source code on my Github.
+A few months ago, the built-in container support for the .NET SDK was announced. This feature allows us to containerize our application using the dotnet publish command, with no need of having to write a Dockerfile.
+To make it work we just have to add a series of properties in the application project file (."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://www.mytechramblings.com/posts/trying-out-the-built-in-container-support-for-the-dotnet-7-sdk/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/assets/style.css">
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.mytechramblings.com/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://www.mytechramblings.com/img/favicon.png">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Trying out the built-in container support for the .NET SDK"/>
+<meta name="twitter:description" content="A few months ago the built-in container support for the .NET SDK was announced. In this post I&#39;ll put this feature to test, I&#39;ll try to migrate from an application that contains a rather complex Dockerfile to a new version that has no Dockerfile and instead uses the container support feature."/>
+
+
+
+<meta property="og:title" content="Trying out the built-in container support for the .NET SDK" />
+<meta property="og:description" content="A few months ago the built-in container support for the .NET SDK was announced. In this post I&#39;ll put this feature to test, I&#39;ll try to migrate from an application that contains a rather complex Dockerfile to a new version that has no Dockerfile and instead uses the container support feature." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.mytechramblings.com/posts/trying-out-the-built-in-container-support-for-the-dotnet-7-sdk/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-11-30T10:01:13+01:00" />
+<meta property="article:modified_time" content="2022-11-30T10:01:13+01:00" /><meta property="og:site_name" content="my tech ramblings" />
+
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://www.mytechramblings.com/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">my tech ramblings</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/trying-out-the-built-in-container-support-for-the-dotnet-7-sdk/">Trying out the built-in container support for the .NET SDK</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2022-11-30
+        </span>
+
+        
+          
+            
+
+
+
+          
+        
+      
+
+      
+      
+        <span class="post-read-time">— 12 min read</span>
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          #<a href="https://www.mytechramblings.com/tags/dotnet/">dotnet</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/docker/">docker</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/containers/">containers</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/aws/">aws</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/devops/">devops</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/azure/">azure</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <blockquote>
+<p><strong>Just show me the code!</strong><br>
+As always, if you don’t care about the post I have uploaded the source code on my <a href="https://github.com/karlospn/trying-out-the-built-in-container-support-for-the-dotnet-7-sdk">Github</a>.</p>
+</blockquote>
+<p>A few months ago, the built-in container support for the .NET SDK was announced. This feature allows us to containerize our application using the <code>dotnet publish</code> command, with no need of having to write a  <code>Dockerfile</code>.</p>
+<p>To make it work we just have to add a series of properties in the application project file (.csproj), install the <code>Microsoft.NET.Build.Containers</code> package and run the <code>dotnet publish</code> command, the output artifact will be a container image of our app.</p>
+<p>I&rsquo;ve been wanting to try this new feature for quite a while, but I don&rsquo;t want to use it with a simple &ldquo;Hello World&rdquo; .NET app, because I know that it will work well with it. <br>
+Instead, <strong>I decided that I&rsquo;ll try to migrate an app that has a rather &ldquo;complex&rdquo; <code>Dockerfile</code> to a new version that has no <code>Dockerfile</code> and instead uses the built-in container support feature</strong>.</p>
+<h1 id="application--dockerfile"><strong>Application &amp; Dockerfile</strong></h1>
+<p>The application is a BookStore API built using .NET 7. It allows us to do the following actions:</p>
+<ul>
+<li>Get, add, update and delete book categories.</li>
+<li>Get, add, update and delete books.</li>
+<li>Get, add, update and delete inventory.</li>
+<li>Get, add and delete orders.</li>
+</ul>
+<p>But the application per se doesn&rsquo;t matter at all, the important part of the app is the <code>Dockerfile</code>.</p>
+<blockquote>
+<p>Remember that the purpose of this post is to evaluate if we can move from an app that uses a complex <code>Dockerfile</code>  to a <em>&ldquo;dockerfile-less&rdquo;</em> app that uses the container support for .NET SDK.</p>
+</blockquote>
+<p>The first step is to know what the BookStore API <code>Dockerfile</code> is doing, so we can replicate those same features with the container support for .NET.</p>
+<p>The BookStore API <code>Dockerfile</code> contains the following features:</p>
+<ul>
+<li>It uses a multi-stage build.</li>
+<li>It uses 2 private platform images as base images. Those images are hosted on a private <code>AWS ECR</code> repository.</li>
+<li>The API references a few private NuGet packages hosted on my private <code>Azure Artifacts NuGet feed</code>, which means that the <code>Dockerfile</code> has to make use of the <a href="https://github.com/microsoft/artifacts-credprovider">Azure Artifacts Credential Provider</a> when trying to run the <code>dotnet restore</code> command.</li>
+<li>The application is published using the <code>PublishTrimmed</code> feature. This feature removes unnecessary framework components from the resulting artifact.</li>
+<li>The app is published using the <code>self-contained</code> mode.</li>
+<li>The container uses a <code>non-root user</code> to run the API <em>(This is done in the base image, not in the application Dockerfile. More info in the next section)</em>.</li>
+</ul>
+<p>The next code snippet shows how the <code>Dockerfile</code> looks like.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ae81ff">FROM 823934831816.dkr.ecr.eu-west-1.amazonaws.com/sdk:7.0-bullseye-slim-1.0.0 AS build-env</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">WORKDIR /app</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Get Azure DevOps PAT from args</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">ARG AZDO_PAT</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Setup cred-provider</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">ENV VSS_NUGET_EXTERNAL_FEED_ENDPOINTS {\&#34;endpointCredentials\&#34;: [{\&#34;endpoint\&#34;:\&#34;https://pkgs.dev.azure.com/cponsn/_packaging/my-very-private-feed/nuget/v3/index.json\&#34;, \&#34;username\&#34;:\&#34;build\&#34;, \&#34;password\&#34;:\&#34;$AZDO_PAT\&#34;}]}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Copy everything and restore packages</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY . ./</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet restore -s &#34;https://pkgs.dev.azure.com/cponsn/_packaging/my-very-private-feed/nuget/v3/index.json&#34; \</span>
+</span></span><span style="display:flex;"><span>    -<span style="color:#ae81ff">s &#34;https://api.nuget.org/v3/index.json&#34; \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#ae81ff">runtime linux-x64	</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Build project</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet build &#34;./src/BookStore.WebApi/BookStore.WebApi.csproj&#34; \ </span>
+</span></span><span style="display:flex;"><span>    -<span style="color:#ae81ff">c Release \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#ae81ff">runtime linux-x64 \ </span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#ae81ff">self-contained true \	</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#66d9ef">no</span>-<span style="color:#ae81ff">restore</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Publish app</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet publish &#34;./src/BookStore.WebApi/BookStore.WebApi.csproj&#34; \</span>
+</span></span><span style="display:flex;"><span>	-<span style="color:#ae81ff">c Release \</span>
+</span></span><span style="display:flex;"><span>	-<span style="color:#ae81ff">o /app/publish \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#66d9ef">no</span>-<span style="color:#ae81ff">restore \ </span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#66d9ef">no</span>-<span style="color:#ae81ff">build \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#ae81ff">self-contained true \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#ae81ff">runtime linux-x64 \</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">/p:PublishTrimmed=true</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Build runtime image</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">FROM 823934831816.dkr.ecr.eu-west-1.amazonaws.com/runtime-deps:7.0-bullseye-slim-1.0.0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Expose port</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">EXPOSE 8080</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Copy artifact</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">WORKDIR /app</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY --from=build-env /app/publish .</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Set entrypoint</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">ENTRYPOINT [&#34;./BookStore.WebApi&#34;]</span>
+</span></span></code></pre></div><h1 id="platform-images"><strong>Platform images</strong></h1>
+<p>As I stated in the previous section, the BookStore API <code>Dockerfile</code> uses a multi-stage build with a pair of private platform images as base images.</p>
+<blockquote>
+<p>But, what`s a platform image?</p>
+</blockquote>
+<p>When talking about containers security, one of the best practices is to use your own platform images, those platform images are the base for your company applications.</p>
+<p>The point of having a platform image instead of directly using a base image is to ensure that the resulting containers are hardened according to any corporate policies before being deployed to production.</p>
+<p><img src="/img/platform-images.png" alt="platform-images"></p>
+<p>The BookStore API  <code>Dockerfile</code> uses a multi-stage build to create the container image, but the container support feature works a little bit different, when you execute  the <code>dotnet publish</code> command instead of using a multi-stage approach it creates the application artifact locally (on your machine, outside of Docker) and afterwards the artifact is copied inside an image.</p>
+<p>The BookStore API <code>Dockerfile</code> uses those 2 platform images:</p>
+<ul>
+<li><code>sdk:7.0-bullseye-slim-1.0.0</code></li>
+<li><code>runtime-deps:7.0-bullseye-slim-1.0.0</code></li>
+</ul>
+<p>But the container support for .NET SDK only needs a single base image because the build step is done outside of Docker, which means that the only image we need is the one that contains the runtime dependencies: <code>runtime-deps:7.0-bullseye-slim-1.0.0</code></p>
+<p>Let&rsquo;s take a look at what the <code>runtime-deps:7.0-bullseye-slim-1.0.0</code> image contains:</p>
+<ul>
+<li>A user named <code>devsecops</code> is created with the <code>adduser</code> command (The <code>gecos</code> argument prevents the system from asking for additional details).</li>
+<li>The <code>chown</code> command is used to set the <code>devsecops</code> user as owner of the <code>/app</code> directory.</li>
+<li>Non-root users are not allowed to allocate ports below <code>1024</code>, with the <code>ASPNETCORE_URLS</code> environment we&rsquo;re settings the port <code>8080</code> as the running port.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ae81ff">FROM mcr.microsoft.com/dotnet/runtime-deps:7.0-bullseye-slim</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Set internal version</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">ENV INTERNAL_VERSION=11202022.1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Set non-root user</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN adduser --disabled-password \</span>
+</span></span><span style="display:flex;"><span>  --<span style="color:#ae81ff">home /app \</span>
+</span></span><span style="display:flex;"><span>  --<span style="color:#ae81ff">gecos &#39;&#39; devsecops &amp;&amp; chown -R devsecops /app</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Set the default user.</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">USER devsecops</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Non-user root cannot start on port 80</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">ENV ASPNETCORE_URLS=http://+:8080</span>
+</span></span></code></pre></div><h1 id="implementation"><strong>Implementation</strong></h1>
+<p>Now that we know how the <code>Dockerfile</code> on the BookStore API looks like, it&rsquo;s time to delete it from the solution and start using the container support for .NET.</p>
+<h2 id="1-install-the-microsoftnetbuildcontainers-nuget-package"><strong>1. Install the <code>Microsoft.NET.Build.Containers</code> NuGet package.</strong></h2>
+<p>This NuGet is reponsible to enable the container support features.</p>
+<p>Right now (11/29/2022) the latest version of this package is:</p>
+<ul>
+<li><em>0.3.0-alpha.16</em></li>
+</ul>
+<p>This version is not available on nuget.org, you can get it from its <a href="https://github.com/dotnet/sdk-container-builds">GitHub page</a>.</p>
+<h2 id="2configure-the-csproj-file"><strong>2.Configure the csproj file</strong></h2>
+<p>The way to configure the container support for .NET SDK is through a set of MSBuild properties that can be placed into the application project (.csproj) file.</p>
+<p>The container support properties we&rsquo;re going to need are the following ones:</p>
+<ul>
+<li><code>ContainerBaseImage</code>
+<ul>
+<li>Specifies the base image used for your resulting image.</li>
+<li>The value is going to be: <code>823934831816.dkr.ecr.eu-west-1.amazonaws.com/runtime-deps:7.0-bullseye-slim-1.0.0</code></li>
+</ul>
+</li>
+<li><code>ContainerImageName</code>
+<ul>
+<li>This property controls the name of the image itself.</li>
+<li>If a container image is not specified, it will use the <code>AssemblyName</code> of the project. In our case we&rsquo;re going to use: <code>bookstore-webapi</code></li>
+</ul>
+</li>
+<li><code>ContainerImageTags</code>
+<ul>
+<li>This property controls the tags that are generated for the image.</li>
+<li>If a container tag is not specified, it will use the <code>Version</code> of the project. In our case we&rsquo;re going to use: <code>latest</code></li>
+</ul>
+</li>
+<li><code>ContainerPort</code>
+<ul>
+<li>This attribute  adds TCP or UDP ports to the list of known ports for the container, it is the equivalent of the <code>EXPOSE</code> command on the <code>Dockerfile</code>.</li>
+<li>This attribute does absolutely nothing, it is an informative only attribute.</li>
+<li>The value is going to be:  <code>&lt;ContainerPort Include=&quot;8080&quot; Type=&quot;tcp&quot; /&gt;</code></li>
+</ul>
+</li>
+<li><code>PublishProfile</code>
+<ul>
+<li>For containerizing a webapp the property <code>PublishProfile=DefaultContainer</code> is required.</li>
+</ul>
+</li>
+</ul>
+<p>The Bookstore API <code>Dockerfile</code> is also using the <code>PublishTrimmed</code> attribute, to reduce the size of the resulting artifact, and the <code>self-contained</code> attribute to publish the app as an executable, to mimick the same behaviour we&rsquo;re going to add them on the project (csproj) file:</p>
+<ul>
+<li><code>SelfContained</code></li>
+<li><code>PublishTrimmed</code></li>
+</ul>
+<p>Also the <code>RuntimeIdentifier</code> attribute is required. This attribute is used to identify the target platforms where the application needs to run, in this case the value will be <code>linux-x64</code> because we&rsquo;re building a Linux container.</p>
+<p>Instead of putting the <code>SelfContained</code>, <code>RuntimeIdentifier</code> and <code>PublishTrimmed</code> properties on the project file, we can aso specify them when executing the <code>dotnet publish</code> command, like this: <code>dotnet publish --self-contained true --runtime linux-x64 /p:PublishTrimmed=true</code></p>
+<p>If you decide to put those properties on the project file (.csproj) you must know that you won&rsquo;t be able to build the app with Visual Studio on a Windows machine, mainly because you&rsquo;re targeting Linux. Furthermore, the build and debug process on Visual Studio it&rsquo;s going to take longer than usual because it needs to trim and self-contain the application artifact. If any of this bothers you, remove those properties from the csproj and specify them when executing the <code>dotnet publish</code> command.</p>
+<p>Here&rsquo;s how the project file will end up looking like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;Project</span> <span style="color:#a6e22e">Sdk=</span><span style="color:#e6db74">&#34;Microsoft.NET.Sdk.Web&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;PropertyGroup&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;TargetFramework&gt;</span>net7.0<span style="color:#f92672">&lt;/TargetFramework&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;ImplicitUsings&gt;</span>enable<span style="color:#f92672">&lt;/ImplicitUsings&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/PropertyGroup&gt;</span>
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;PropertyGroup&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;RuntimeIdentifier&gt;</span>linux-x64<span style="color:#f92672">&lt;/RuntimeIdentifier&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PublishProfile&gt;</span>DefaultContainer<span style="color:#f92672">&lt;/PublishProfile&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;SelfContained&gt;</span>true<span style="color:#f92672">&lt;/SelfContained&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PublishTrimmed&gt;</span>true<span style="color:#f92672">&lt;/PublishTrimmed&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;ContainerImageName&gt;</span>bookstore-webapi<span style="color:#f92672">&lt;/ContainerImageName&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;ContainerBaseImage&gt;</span>823934831816.dkr.ecr.eu-west-1.amazonaws.com/runtime-deps:7.0-bullseye-slim-1.0.0<span style="color:#f92672">&lt;/ContainerBaseImage&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;ContainerImageTags&gt;</span>latest<span style="color:#f92672">&lt;/ContainerImageTags&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/PropertyGroup&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;ItemGroup&gt;</span>
+</span></span><span style="display:flex;"><span>	  <span style="color:#f92672">&lt;ContainerPort</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;8080&#34;</span> <span style="color:#a6e22e">Type=</span><span style="color:#e6db74">&#34;tcp&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/ItemGroup&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;ItemGroup&gt;</span>
+</span></span><span style="display:flex;"><span>  	<span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;Microsoft.NET.Build.Containers&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;0.3.0-alpha.16&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;AutoMapper.Extensions.Microsoft.DependencyInjection&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;12.0.0&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;Swashbuckle.AspNetCore&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;6.4.0&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;MyOwn.EmailService&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.0.0&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/ItemGroup&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;ItemGroup&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;ProjectReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;..\BookStore.Domain\BookStore.Domain.csproj&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;ProjectReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;..\BookStore.Infrastructure\BookStore.Infrastructure.csproj&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/ItemGroup&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/Project&gt;</span>
+</span></span></code></pre></div><h2 id="3create-the-container"><strong>3.Create the container</strong></h2>
+<p>Now it&rsquo;s time to run the <code>dotnet publish</code> command that creates the container image, but this application is using a few private resources, to be more precise:</p>
+<ul>
+<li>The app has a few references to private packages hosted on my private <code>Azure DevOps</code> feed.</li>
+<li>The app uses the <code>runtime-deps:7.0-bullseye-slim-1.0.0</code> as base image. This image is hosted on my private <code>AWS ECR</code> repository.</li>
+</ul>
+<p>So, before running the <code>dotnet publish</code> command  I have to setup the <code>AWS</code> and <code>Azure DevOps</code> credentials on my local machine to allow the .NET CLI to retrieve them.</p>
+<ul>
+<li>To allow the <code>dotnet publish</code> command to pull the private image from <code>ECR</code>, I&rsquo;m going to make a <code>docker login</code> command and use a <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html">Named Profile</a> alongside the <code>AWS_PROFILE</code> environment variable.</li>
+<li>To allow the .NET CLI to restore the private packages from my private <code>Azure DevOps</code> feed, I&rsquo;m going to place a <code>NuGet.Config</code> with the proper credentials on <a href="https://learn.microsoft.com/en-us/nuget/consume-packages/configuring-nuget-behavior">my computer</a>.</li>
+</ul>
+<p>After settings the credentials properly, let&rsquo;s run the <code>dotnet publish</code> command and the BookStore API container image is  created successfully.</p>
+<p><img src="/img/container-tools-sdk-image-size.png" alt="container-tools-sdk-create-image"></p>
+<p>If you take a look at the picture above, you&rsquo;ll see that the image created with the <code>dotnet publish</code> command (bookstore-webapi) is exactly the same size as the one created using the <code>Dockerfile</code> (bookstore.api).</p>
+<h1 id="building-a-container-image-using-azure-pipelines"><strong>Building a container image using Azure Pipelines</strong></h1>
+<p>We know from the previous section that moving from the BookStore API <code>Dockerfile</code> to a &ldquo;dockerfile-less&rdquo; app that uses the built-in container support for .NET is doable on my local machine, but is it feasible on a CI/CD environment?</p>
+<p>For this test I&rsquo;m going to use <code>Azure Pipelines</code>, if you want to use any other CI/CD runner (GitHub Actions, Bitbucket, etc.) it should be relatively easy to switch, because the idea behind it is the same for any runner.</p>
+<p>The pipeline needs to do the same steps we have done on our local machine:</p>
+<ul>
+<li>Restore the application NuGet packages.
+<ul>
+<li>The app contains some private reference, and those packages are hosted on a private <code>Azure DevOps</code> feed, which means that the pipeline task has to use the <code>vstsFeed</code> attribute to specify which feed will be used when restoring the packages.</li>
+</ul>
+</li>
+<li>Login into the docker registry</li>
+<li>Execute the <code>dotnet publish</code> command.</li>
+<li>And finally, let&rsquo;s try to push the image into an <code>AWS ECR</code> repository, why not?</li>
+</ul>
+<p>The container support for .NET has the <code>ContainerRegistry</code> attribute, which allow us to push the resulting image into a registry, if this value is not present on the csproj then the image gets stored in the local Docker daemon.</p>
+<p>Right now the <code>ContainerRegistry</code> attribute doesn&rsquo;t work with <code>AWS ECR</code>. If you need to push the resulting image into an <code>AWS ECR</code> repository you have to store it in you local Docker machine and then push it onto the repository using the <code>docker push</code> command.</p>
+<p>Here&rsquo;s how the resulting <code>Azure Pipeline</code> looks like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">trigger</span>: <span style="color:#ae81ff">none</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">pool</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">vmImage</span>: <span style="color:#ae81ff">ubuntu-latest</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">variables</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">awsAccount</span>: <span style="color:#e6db74">&#39;823934831816&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">region</span>: <span style="color:#e6db74">&#39;eu-west-1&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">steps</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">UseDotNet@2</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">displayName</span>: <span style="color:#e6db74">&#39;Install .NET Core sdk 7.x&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">packageType</span>: <span style="color:#e6db74">&#39;sdk&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">version</span>: <span style="color:#e6db74">&#39;7.x&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">DotNetCoreCLI@2</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">displayName</span>: <span style="color:#e6db74">&#39;Restore packages&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">command</span>: <span style="color:#e6db74">&#39;restore&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">projects</span>: <span style="color:#e6db74">&#39;**/*.csproj&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">feedsToUse</span>: <span style="color:#e6db74">&#39;select&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">vstsFeed</span>: <span style="color:#e6db74">&#39;a4c874c8-2ab9-4a3a-aa79-6f007f55ee6f&#39;</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AWSShellScript@1</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">displayName</span>: <span style="color:#e6db74">&#39;Build container and publish to AWS ECR&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">awsCredentials</span>: <span style="color:#e6db74">&#39;aws-dev&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">regionName</span>: <span style="color:#e6db74">&#39;$(region)&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">scriptType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">inlineScript</span>: |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      aws ecr get-login-password --region $(region) | docker login --username AWS --password-stdin $(awsAccount).dkr.ecr.$(region).amazonaws.com
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      dotnet publish $(Build.SourcesDirectory)/src/BookStore.WebApi/BookStore.WebApi.csproj --no-restore
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      docker tag bookstore-webapi:latest $(awsAccount).dkr.ecr.$(region).amazonaws.com/bookstore.webapi:latest
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      docker push $(awsAccount).dkr.ecr.$(region).amazonaws.com/bookstore.webapi:latest</span>      
+</span></span></code></pre></div><h1 id="testing-the-resulting-container-image"><strong>Testing the resulting container image</strong></h1>
+<p>We have successfully created the BookStore API container image using the container support for .NET SDK, but does it work?</p>
+<p>Let&rsquo;s run it using the  <code>docker run -d -p 5001:8080 bookstore-webapi</code> command and then let&rsquo;s send a request to <code>https:\\localhost:8080\api\orders</code> using cURL, and it doesn&rsquo;t work&hellip;</p>
+<p>The container appears to be running properly, but what it seems weird is that Kestrel is listening on port <code>80</code> instead of port <code>8080</code> that it was the one we defined on our base image using the <code>ASPNETCORE_URLS</code> environment variable.</p>
+<p><img src="/img/container-tools-sdk-starting-port.png" alt="container-tools-sdk-starting-port"></p>
+<p>If we open a Shell session inside the container using the <code>docker exec -it &lt;container-id&gt; sh</code> command, it seems that the <code>root</code> user owns the <code>/app</code> folder, but have created a non-root user called <code>devsecops</code> who should own this directory.</p>
+<p><img src="/img/container-tools-sdk-pernissions.png" alt="container-tools-sdk-pernissions"></p>
+<p>It seems that the container support for .NET takes a few concessions when creating an image, there are certain values that grt overriden like the running port or the users and permissions, which represents a problem if you&rsquo;re running an app that listens on a non-80 port or uses a non-root user.</p>
+<p>In fact, if we try to run the BookStore API on port 80 using the <code>docker run -d -p 5001:80 bookstore-webapi</code> command, it app works perfectly.</p>
+<ul>
+<li>Taking a look at <a href="https://github.com/dotnet/sdk-container-builds/issues/165">GitHub</a>, it seems that there is an ongoing issue with users and permissions.</li>
+</ul>
+<h1 id="closing-thoughts"><strong>Closing thoughts</strong></h1>
+<p>The purpose of this post was to evaluate if we could move from an app that was using a <code>Dockerfile</code>  to a &ldquo;dockerfile-less&rdquo; app that uses the container support for .NET.</p>
+<p>My overall impressions is that the container support for .NET works pretty well.</p>
+<p>Restoring packages from a private feed on a .NET app is always a pain in the ass when building an image using a multi-stage approach, but the fact that the container support builds the artifact outside of docker makes the process more palatable.</p>
+<p>Concerning the ability to push and pull images to and from a private registry, it is very good news that the container support is able to authenticate to a container registry, which allows us to use our own private base images and not have to rely on public images from Microsoft.<br>
+The fact that the image cannot be pushed to <code>AWS ECR</code> is a shame, but is not a deal breaker at all, you can always store it on your local docker daemon and push it afterwards using the <code>docker push</code> command.</p>
+<p>Right now, the most well-known constraint when using the container support for .NET SDK is the fact that it can&rsquo;t execute <code>RUN</code> commands, for this post this was not important because the BookStore API <code>Dockerfile</code> didn&rsquo;t need to use it, but that&rsquo;s something to keep in mind.<br>
+A possible solution if you&rsquo;re using a <code>RUN</code> command on your <code>Dockerfile</code> and you want to start using the container support is to move the command into a base image.</p>
+<p>Being able to use the container support for .NET SDK on a CI/CD enviroment is feasible and quite easy to do it, and in this post we have demonstrated that it is possible to do it.</p>
+<p>So far, everything related to the container support seems positive, but the fact that you cannot run a container with a non-root user is a deal breaker from me, I cannot fathom any excuse for why you&rsquo;d only allow to create container that can be run by a root user.</p>
+<p>So, if you&rsquo;re in a big enterprise we&rsquo;re security is paramount and everything gets scanned and deeply reviewed, maybe it&rsquo;s not yet the time to move away from the <code>Dockerfile</code>.</p>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://www.mytechramblings.com/posts/deploy-az-resources-when-not-available-on-azurerm/">
+                  <span class="button__text">How to deploy an Azure resource using Terraform when it is not available in the AzureRM official provider</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2022 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>Theme created by <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://www.mytechramblings.com/assets/main.js"></script>
+<script src="https://www.mytechramblings.com/assets/prism.js"></script>
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('carlospons', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Donate',
+    'floating-chat.donateButton.background-color': '#ff5f5f',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
+
+      
+    </div>
+
+    
+      
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-170300931-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+    
+  </body>
+</html>
