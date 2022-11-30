@@ -164,7 +164,7 @@ As always, if you don’t care about the post I have uploaded the source code on
 <p>A few months ago, the built-in container support for the .NET SDK was announced. This feature allows us to containerize our application using the <code>dotnet publish</code> command, with no need of having to write a  <code>Dockerfile</code>.</p>
 <p>To make it work we just have to add a series of properties in the application project file (.csproj), install the <code>Microsoft.NET.Build.Containers</code> package and run the <code>dotnet publish</code> command, the output artifact will be a container image of our app.</p>
 <p>I&rsquo;ve been wanting to try this new feature for quite a while, but I don&rsquo;t want to use it with a simple &ldquo;Hello World&rdquo; .NET app, because I know that it will work well with it. <br>
-Instead, <strong>I decided that I&rsquo;ll try to migrate an app that has a rather &ldquo;complex&rdquo; <code>Dockerfile</code> to a new version that has no <code>Dockerfile</code> and instead uses the built-in container support feature</strong>.</p>
+Instead, <strong>I decided that I&rsquo;ll try to migrate an app that has a rather &ldquo;complex&rdquo; <code>Dockerfile</code> to a new version that has no <code>Dockerfile</code> and uses the built-in container support feature</strong>.</p>
 <h1 id="application--dockerfile"><strong>Application &amp; Dockerfile</strong></h1>
 <p>The application is a BookStore API built using .NET 7. It allows us to do the following actions:</p>
 <ul>
