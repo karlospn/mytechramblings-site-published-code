@@ -9,10 +9,30 @@
     <description>Recent content in azure on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 30 Nov 2022 10:01:13 +0100</lastBuildDate>
+    <lastBuildDate>Wed, 21 Dec 2022 13:03:19 +0100</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/azure/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>How to automatically purge stale images from Azure Container Registry using ACR Tasks</title>
+      <link>https://www.mytechramblings.com/posts/automatically-purge-acr-images-using-acr-tasks/</link>
+      <pubDate>Wed, 21 Dec 2022 13:03:19 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/automatically-purge-acr-images-using-acr-tasks/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          Keeping your container registry free of stale or unwanted images is a task that often gets overlooked when beginning working with containers in the enterprise. In this post, I want to show you how you can use ACR Tasks to automate this process when working with Azure Container Registry.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>Trying out the built-in container support for the .NET SDK</title>
