@@ -430,7 +430,7 @@ This is useful when the machine hostname is different than the hostname that a c
 </span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/Project&gt;</span>
 </span></span></code></pre></div><p>As you can see, the project has been converted to the new SDK-format and also the TFM has been upgraded from .NET 4.7.2 to .NET Standard 2.0.</p>
 <p>Every project attribute present has been ported as well, but if you take a look at them, it&rsquo;s pretty clear that most of them are useless right now. <br>
-A good tip after doing a project this kind of migration is to take a good look at the resulting <code>.csproj</code> file because usually it can be cleaned up of most of the old attributes.</p>
+A good tip after doing a migration using the <code>.NET Upgrade Assistant tool</code> is to take a good look at the resulting <code>.csproj</code> file because usually it can be cleaned up of most of the old attributes.</p>
 <h1 id="3mending-incompatible-dependencies"><strong>3.Mending incompatible dependencies</strong></h1>
 <p>The first step has been to upgrade (manually) the WCF project to .NET 7 and then with the help of the <code>.NET Upgrade Assistant tool</code> we have upgraded the rest of the application projects to .NET Standard 2.0, but some packages incompatibilities still remain.</p>
 <p>The <code>BookingMgmt.Infrastructure</code> and the <code>BookingMgmt.SharedKernel</code> project contains a reference to the version 6.1.1 of <code>EntityFramwork 6</code>, and this version is NOT compatible with .NET Standard.</p>
@@ -463,8 +463,8 @@ The next code snippet shows how the WCF app uses the <code>DatabaseConnectionStr
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">virtual</span> DbSet&lt;Booking&gt; Bookings { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">virtual</span> DbSet&lt;Journey&gt; Journeys { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
 </span></span><span style="display:flex;"><span>    }
-</span></span></code></pre></div><p>Our new CoreWCF app doesn&rsquo;t require a <code>web.config</code>, so we must move those application settings somewhere else, with .NET 7 we can use the <code>IConfiguration</code> native implementation.</p>
-<p>We can simply move the <code>DatabaseConnectionString</code> setting to the <code>appsettings.json</code> and replace the <code>ConfigurationManager.AppSettings</code> method for <code>IConfiguration</code>.</p>
+</span></span></code></pre></div><p>Our new CoreWCF app doesn&rsquo;t have a <code>web.config</code>, so we must move those application settings somewhere else, with .NET 7 we can use the <code>IConfiguration</code> native implementation.</p>
+<p>We can simply move the <code>DatabaseConnectionString</code> setting to the <code>appsettings.json</code> file and replace the <code>ConfigurationManager.AppSettings</code> method for the <code>IConfiguration</code> one.</p>
 <h1 id="5-running-the-app-locally"><strong>5. Running the app locally</strong></h1>
 <p>After fixing the NuGet incompatibilities and moving the application settings into the <code>appsettings.json</code>, we&rsquo;re ready to run our CoreWCF app.</p>
 <p>If we open a browser on the following address: <code>http://localhost:5186/BookingCreatorService.svc</code>, we&rsquo;ll be presented with the svc html page.</p>
@@ -475,15 +475,15 @@ The next code snippet shows how the WCF app uses the <code>DatabaseConnectionStr
 But there are still a few things left to do.</p>
 <h1 id="6-manually-migrating-test-projects"><strong>6. Manually migrating test projects</strong></h1>
 <p>The unit and integration tests are still on .NET 4.7.2 and need to be moved to .NET 7.</p>
-<p>The <code>.NET Upgrade Assistant tool</code> is unable to migrate MSTest project types, which means that the only possible way to migrate those projects is manually. <br>
-For every test project I&rsquo;m going to create a new MSTest project that targets .NET 7 and move over the original source code.</p>
+<p>The <code>.NET Upgrade Assistant tool</code> is unable to migrate MSTest project types, which means that the only possible way to migrate those projects is manually.</p>
+<p>For every test project I&rsquo;m going to create a new MSTest project that targets .NET 7 and move over the original source code.</p>
 <p><img src="/img/corewcf-mstest-project-type.png" alt="corewcf-mstest-project-type"></p>
 <blockquote>
 <p>These test projects are using MSTest, not xUnit. Now would be a good time to also move them from MSTest to xUnit, but then a code refactor is needed, so I&rsquo;m not going to do it.</p>
 </blockquote>
 <p>The test projects are using the <code>NMock3</code> package to mock dependencies, this package is not compatible with .NET 7, which means that we need to use an alternate package.</p>
-<p>I decided to switch over to <code>Moq</code>, but that means that a code refactor needs to be put in place to adjust the mocking code.</p>
-<p>The next code snippet shows a pair of Unit Tests where the mock dependencies have been switched from <code>NMock3</code> to <code>Moq</code>.</p>
+<p>I decided to switch over to <code>Moq</code>, but that means that a code refactor needs to be put in place in order to adjust the mocking code.</p>
+<p>The next code snippet shows some of the project unit tests where the <code>NMock3</code> package has been uninstalled and the source code refactored to work with <code>Moq</code>.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> BookingMgmt.Domain.UnitTest.GivenBooking
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [TestClass]</span>
@@ -567,7 +567,8 @@ For every test project I&rsquo;m going to create a new MSTest project that targe
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><h1 id="7-running-the-app-on-a-linux-container"><strong>7. Running the app on a Linux container</strong></h1>
 <p>The last step is to run this new version of the app on a Linux container.</p>
-<p>What&rsquo;s the purpose of this step? To test that no dependency with the WCF framework remains in the app. The WCF framework only supports Windows, which means that if we try to run it on a Linux container it will throw an error.</p>
+<p>What&rsquo;s the purpose of this step? To test that no dependency with the WCF framework remains in the app. <br>
+The WCF framework only supports Windows, which means that if we try to run it on a Linux container and a reference still remains, the container won&rsquo;t run at all.</p>
 <p>The next code snippet shows how the application <code>Dockerfile</code> looks like.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ae81ff">FROM mcr.microsoft.com/dotnet/sdk:7.0-bullseye-slim AS build-env</span>
 </span></span><span style="display:flex;"><span><span style="color:#ae81ff">WORKDIR /app</span>
@@ -636,10 +637,10 @@ For every test project I&rsquo;m going to create a new MSTest project that targe
 <li>The worst scenario possible: you&rsquo;ll have to build by yourself an alternative.</li>
 </ul>
 <p>Excluding the first option where you can simply upgrade to a newer version of the same package, the rest of the options are going to be a time-sink.</p>
-<p>There is another possible scenario that could affect the migration process, and that&rsquo;s the fact that the WCF Framework only runs in Windows platforms, which means that exists a possibility that your application is using some sort of native Windows API, then the modernization process becomes even harder because there are no alternatives.</p>
-<p>In this post we have been trying to modernize a WCF app called BookingMgmt, this process has been relatively quick and painless. I have spent between 4 and 5 hours to successfully migrate to a .NET 7 CoreWCF app that is hosted on a linux container.<br>
-This app had very few incompatible dependencies, only <code>EntityFramework 6</code>, <code>log4net</code>, <code>fasterflect</code> and <code>NMock3</code> and the solution was quite quick to implement in all cases.</p>
-<p>You should also bear in mind that in this post I did the minimum work required to make the app run with .NET 7 and CoreWCF.<br>
+<p>There is another possible scenario that could affect the migration process, and that&rsquo;s the fact that the WCF Framework only runs in Windows platforms, which means that exists a possibility that your application is using some sort of native Windows API, then the modernization process becomes more cumbersome because there is a good chance that no alternatives is available.</p>
+<p>In this post we have been trying to modernize a WCF app called BookingMgmt, this process has been relatively quick and painless. I have spent 4 - 5 hours to successfully migrate to a .NET 7 CoreWCF app that is hosted on a linux container.<br>
+This app had very few incompatible dependencies, only <code>EntityFramework 6</code>, <code>log4net</code>, <code>fasterflect</code> and <code>NMock3</code> and the remediation was easy and quick to implement in all cases.</p>
+<p>You should also bear in mind that I did the minimum work required to make the app run with .NET 7 and CoreWCF.<br>
 Once the app has been successfully moved to .NET 7 and CoreWCF there are a ton of improvements it could have been made (e.g. move from EF 6 to EFCore 7, which probably will give us a significant performance boost).</p>
 
     </div>
