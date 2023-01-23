@@ -2,6 +2,30 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://www.mytechramblings.com/tags/corewcf/</loc>
+    <lastmod>2023-01-23T10:01:16+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/dotnet/</loc>
+    <lastmod>2023-01-23T10:01:16+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/modernize-wcf-legacy-app-using-corewcf/</loc>
+    <lastmod>2023-01-23T10:01:16+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/</loc>
+    <lastmod>2023-01-23T10:01:16+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/netframework/</loc>
+    <lastmod>2023-01-23T10:01:16+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/</loc>
+    <lastmod>2023-01-23T10:01:16+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/</loc>
+    <lastmod>2023-01-23T10:01:16+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/wcf/</loc>
+    <lastmod>2023-01-23T10:01:16+01:00</lastmod>
+  </url><url>
     <loc>https://www.mytechramblings.com/tags/azure/</loc>
     <lastmod>2022-12-21T13:03:19+01:00</lastmod>
   </url><url>
@@ -14,15 +38,6 @@
     <loc>https://www.mytechramblings.com/posts/automatically-purge-acr-images-using-acr-tasks/</loc>
     <lastmod>2022-12-21T13:03:19+01:00</lastmod>
   </url><url>
-    <loc>https://www.mytechramblings.com/</loc>
-    <lastmod>2022-12-21T13:03:19+01:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/posts/</loc>
-    <lastmod>2022-12-21T13:03:19+01:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/</loc>
-    <lastmod>2022-12-21T13:03:19+01:00</lastmod>
-  </url><url>
     <loc>https://www.mytechramblings.com/tags/terraform/</loc>
     <lastmod>2022-12-21T13:03:19+01:00</lastmod>
   </url><url>
@@ -30,9 +45,6 @@
     <lastmod>2022-11-30T10:01:13+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/devops/</loc>
-    <lastmod>2022-11-30T10:01:13+01:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/dotnet/</loc>
     <lastmod>2022-11-30T10:01:13+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/posts/trying-out-the-built-in-container-support-for-the-dotnet-7-sdk/</loc>
@@ -288,9 +300,6 @@
     <lastmod>2020-07-04T17:30:06+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/legacy/</loc>
-    <lastmod>2020-07-04T17:30:06+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/wcf/</loc>
     <lastmod>2020-07-04T17:30:06+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/posts/how-to-add-healthchecks-to-wcf-apps/</loc>

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>wcf on my tech ramblings</title>
+    <title>netframework on my tech ramblings</title>
     
     
     
-    <link>https://www.mytechramblings.com/tags/wcf/</link>
-    <description>Recent content in wcf on my tech ramblings</description>
+    <link>https://www.mytechramblings.com/tags/netframework/</link>
+    <description>Recent content in netframework on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Mon, 23 Jan 2023 10:01:16 +0100</lastBuildDate>
     
-	<atom:link href="https://www.mytechramblings.com/tags/wcf/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://www.mytechramblings.com/tags/netframework/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -29,26 +29,6 @@
         
         
           CoreWCF is a port of the Windows Communication Foundation (WCF) framework to the latest .NET version. The main goal of the CoreWCF project is to enable existing WCF services to be moved to .NET 7. In this post I&#39;ll show you step by step how easy (or hard) is the process of migrating an existing .NET 4.7 WCF app to .NET 7 using the CoreWCF project.
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>Why and how you should add a healthcheck endpoint to your Wcf legacy applications</title>
-      <link>https://www.mytechramblings.com/posts/how-to-add-healthchecks-to-wcf-apps/</link>
-      <pubDate>Sat, 04 Jul 2020 17:30:06 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/posts/how-to-add-healthchecks-to-wcf-apps/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          What I wanted to talk in these post is how easy is to add a healthcheck endpoint in a WCF application, and how you can use it in case you want to move the application into the Cloud in the near future.
           
         
         </description>

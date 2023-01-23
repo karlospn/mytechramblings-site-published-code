@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>How to modernize a legacy .NET Framework WCF app using CoreWCF and .NET 7 :: my tech ramblings — A blog for writing about my techie ramblings</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Just show me the code
+As always, if you don’t care about the post I have uploaded the source code on my Github.
+If you are not old enough, probably you&amp;rsquo;re asking yourself: &amp;ldquo;What&amp;rsquo;s a WCF?&amp;rdquo;
+WCF stands for &amp;ldquo;Windows Communication Foundation&amp;rdquo;, and if you want to know more about you can read the official Microsoft docs: here
+Nowadays no one is going to create a WCF from zero, it makes no sense, it&amp;rsquo;s a deprecated technology."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://www.mytechramblings.com/posts/modernize-wcf-legacy-app-using-corewcf/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/assets/style.css">
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.mytechramblings.com/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://www.mytechramblings.com/img/favicon.png">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="How to modernize a legacy .NET Framework WCF app using CoreWCF and .NET 7"/>
+<meta name="twitter:description" content="CoreWCF is a port of the Windows Communication Foundation (WCF) framework to the latest .NET version. The main goal of the CoreWCF project is to enable existing WCF services to be moved to .NET 7. In this post I&#39;ll show you step by step how easy (or hard) is the process of migrating an existing .NET 4.7 WCF app to .NET 7 using the CoreWCF project."/>
+
+
+
+<meta property="og:title" content="How to modernize a legacy .NET Framework WCF app using CoreWCF and .NET 7" />
+<meta property="og:description" content="CoreWCF is a port of the Windows Communication Foundation (WCF) framework to the latest .NET version. The main goal of the CoreWCF project is to enable existing WCF services to be moved to .NET 7. In this post I&#39;ll show you step by step how easy (or hard) is the process of migrating an existing .NET 4.7 WCF app to .NET 7 using the CoreWCF project." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.mytechramblings.com/posts/modernize-wcf-legacy-app-using-corewcf/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-01-23T10:01:16+01:00" />
+<meta property="article:modified_time" content="2023-01-23T10:01:16+01:00" /><meta property="og:site_name" content="my tech ramblings" />
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://www.mytechramblings.com/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">my tech ramblings</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/modernize-wcf-legacy-app-using-corewcf/">How to modernize a legacy .NET Framework WCF app using CoreWCF and .NET 7</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2023-01-23
+        </span>
+
+        
+          
+            
+
+
+
+          
+        
+      
+
+      
+      
+        <span class="post-read-time">— 17 min read</span>
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          #<a href="https://www.mytechramblings.com/tags/dotnet/">dotnet</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/wcf/">wcf</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/netframework/">netframework</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/corewcf/">corewcf</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <blockquote>
+<p><strong>Just show me the code</strong><br>
+As always, if you don’t care about the post I have uploaded the source code on my <a href="https://github.com/karlospn/modernize-wcf-app-using-corewcf">Github</a>.</p>
+</blockquote>
+<p>If you are not old enough, probably you&rsquo;re asking yourself: &ldquo;What&rsquo;s a WCF?&rdquo;<br>
+WCF stands for &ldquo;Windows Communication Foundation&rdquo;, and if you want to know more about you can read the official Microsoft docs: <a href="https://learn.microsoft.com/en-us/dotnet/framework/wcf/whats-wcf">here</a></p>
+<p>Nowadays no one is going to create a WCF from zero, it makes no sense, it&rsquo;s a deprecated technology.<br>
+But if you&rsquo;re working for a company that&rsquo;s been around long enough and uses .NET as its main tech stack, it&rsquo;s pretty likely for them to have some legacy applications lying around, and I&rsquo;m quite confident that some of them are going to be WCF applications.</p>
+<p>The WCF framework is not compatible with any .NET Core version, it only works with .NET Full Framework.</p>
+<p>Microsoft recommendation if you want to modernize a WCF app is to move to gRPC, but migrating to gRPC it&rsquo;s not always viable:</p>
+<ul>
+<li>gRPC doesn&rsquo;t support some of the features that WCF does (e.g. Windows integrated authentication).</li>
+<li>Maybe your app must be consumed using SOAP messages ( e.g. some government services).</li>
+<li>Maybe your WCF app is been consumed by some external clients and you can&rsquo;t force them to move to another technology like REST or gRPC.</li>
+</ul>
+<p>So, what are our options to modernize a WCF app if for some reason we can&rsquo;t move away from the WCF framework?</p>
+<ul>
+<li>The response to this question is: <strong>CoreWCF</strong>.</li>
+</ul>
+<p>CoreWCF is a port of the Windows Communication Foundation (WCF) framework to the latest .NET version. The main goal of the CoreWCF project is to enable existing WCF services to be moved to .NET 7.</p>
+<p>In this post <strong>I want to find out how easy (or hard) is the process of modernizing a .NET 4.7 WCF app using the CoreWCF framework.</strong></p>
+<p>To test this modernization process I decided not to use a &ldquo;Hello World&rdquo; app, because there is no real value on that.<br>
+Instead, I&rsquo;ll try to migrate some old WCF app that I have found on my computer lying around, it is a more realistic app that uses an N-Layer and a Domain-Driven Design (DDD) architecture.</p>
+<h1 id="what-is-corewcf"><strong>What is CoreWCF?</strong></h1>
+<p><a href="https://github.com/CoreWCF/CoreWCF">CoreWCF</a> is a community-driven .NET Foundation project that makes WCF surface area available on modern versions of .NET. It is not a Microsoft-owned project, but Microsoft provides support for CoreWCF.</p>
+<p>CoreWCF isn&rsquo;t a straight port of the WCF framework - there are a few changes that were needed as part of the port:</p>
+<ul>
+<li>Using .NET Core as the service host, push pipeline, and the middleware pattern for extensibility.</li>
+<li>Removing the obsolete Asynchronous Programming Model (APM) programming pattern as it made the codebase incredibly hard to work with, which isn&rsquo;t desirable for a community project wanting to encourage external contributions.</li>
+<li>Removing platform-specific and IO code. Refactoring apps into microservices and Linux-based containers is a common requirement, and so CoreWCF needs to be able to run anywhere that .NET core can be run.</li>
+</ul>
+<p>CoreWCF supports many common WCF scenarios, but it does not support all WCF functionality.<br>
+Be aware that your modernization experience may vary depending on the overlap between your WCF usage and the functionality included in CoreWCF.</p>
+<h1 id="application"><strong>Application</strong></h1>
+<p>The app we&rsquo;re going to modernize has the following features:</p>
+<ul>
+<li>It has been built entirely using .NET 4.7.2</li>
+<li>Uses an N-Layer and a Domain-Driven Design architecture.</li>
+<li>It is comprised by the following projects:
+<ul>
+<li>BookingMgmt.WCF.WebService</li>
+<li>BookingMgmt.Contracts</li>
+<li>BookingMgmt.Application</li>
+<li>BookingMgmt.Domain</li>
+<li>BookingMgmt.Database</li>
+<li>BookingMgmt.SharedKernel</li>
+</ul>
+</li>
+<li>It also has a couple of unit tests projects and an integration test project:
+<ul>
+<li>BookingMgmt.Application.UnitTest</li>
+<li>BookingMgmt.Domain.UnitTest</li>
+<li>BookingMgmt.WCF.WebService.IntegrationTest</li>
+</ul>
+</li>
+</ul>
+<p>Here&rsquo;s a look at how it looks in Visual Studio.</p>
+<p><img src="/img/corewcf-project-distribution.png" alt="corewcf-project-distribution"></p>
+<blockquote>
+<p>If you want to take a look at the source code, click <a href="https://github.com/karlospn/modernize-wcf-app-using-corewcf/tree/main/before">here</a>.</p>
+</blockquote>
+<p>But, what this app does? It manages flight bookings. It allows us to do the following actions:</p>
+<ul>
+<li>Create a new booking.</li>
+<li>Cancel a booking.</li>
+<li>List all active bookings.</li>
+<li>List all canceled bookings.</li>
+</ul>
+<p>It uses a MSSQL database to persist every flight booking. The persistance operations are being done using <code>EntityFramework 6</code>.</p>
+<h1 id="start-modernizing-the-app"><strong>Start modernizing the app</strong></h1>
+<p>Let&rsquo;s start by defining the desired end result and what steps must be done:</p>
+<ul>
+<li>Migrate the app from the WCF framework to CoreWCF.</li>
+<li>Upgrade the WCF project (BookingMgmt.WCF.WebService) TFM from .NET 4.7.2 to .NET 7.</li>
+<li>Upgrade the rest of the projects that comprise this application (BookingMgmt.Contracts, BookingMgmt.Application, BookingMgmt.Domain and BookingMgmt.SharedKernel) from .NET 4.7.2 to .NET Standard.</li>
+<li>Upgrade the test projects TFM from .NET 4.7.2 to .NET 7.</li>
+<li>The application is capable of running on a Linux container.</li>
+</ul>
+<p>In the following sections we will be doing the tasks listed above.</p>
+<h1 id="1-moving-the-bookingmgmtwcfwebservice-project-to-corewcf"><strong>1. Moving the BookingMgmt.WCF.WebService project to CoreWCF</strong></h1>
+<p>The first step is to move away from the WCF framework and start using CoreWCF.</p>
+<h2 id="11-trying-to-use-the-net-upgrade-assistant-tool-to-migrate-the-wcf-project"><strong>1.1. Trying to use the .NET Upgrade Assistant tool to migrate the WCF project</strong></h2>
+<p>.<a href="https://dotnet.microsoft.com/en-us/platform/upgrade-assistant">.NET Upgrade Assistant tool</a> is a command-line (CLI) tool that helps users interactively upgrade projects from .NET Framework to .NET Standard and .NET 7.
+This tool is able to assists you in the upgrade of a series of projects types. Currently, the tool supports the following project types:</p>
+<ul>
+<li>ASP.NET MVC</li>
+<li>Windows Forms</li>
+<li>Windows Presentation Foundation (WPF)</li>
+<li>Console</li>
+<li>Libraries</li>
+<li>UWP to Windows App SDK (WinUI)</li>
+<li>Xamarin.Forms to .NET MAUI</li>
+</ul>
+<p>It can also help you upgrade a WCF project to CoreWCF. You can read more about how to do it in the next link:</p>
+<ul>
+<li><a href="https://devblogs.microsoft.com/dotnet/migration-wcf-to-corewcf-upgrade-assistant/">https://devblogs.microsoft.com/dotnet/migration-wcf-to-corewcf-upgrade-assistant/</a></li>
+</ul>
+<p>Let&rsquo;s give it a shot.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ upgrade-assistant upgrade BookingMgmt.WCF.WebService.csproj
+</span></span><span style="display:flex;"><span>-----------------------------------------------------------------------------------------------------------------
+</span></span><span style="display:flex;"><span>Microsoft .NET Upgrade Assistant v0.4.355802+b2aeae2c0e41fbfed35df6ab2e88b82a0c11be2b
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>We are interested in your feedback! Please use the following link to open a survey: https://aka.ms/DotNetUASurvey
+</span></span><span style="display:flex;"><span>-----------------------------------------------------------------------------------------------------------------
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>17:25:38 ERR<span style="color:#f92672">]</span> Support <span style="color:#66d9ef">for</span> WCF Server-side Services is limited to .NET Full Framework. Consider updating to use CoreWCF <span style="color:#f92672">(</span>https://aka.ms/CoreWCF/migration<span style="color:#f92672">)</span> in later provided steps or rewriting to use gRPC <span style="color:#f92672">(</span>https://aka.ms/migrate-wcf-to-grpc<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>17:25:38 ERR<span style="color:#f92672">]</span> Project E:<span style="color:#ae81ff">\C</span>oding<span style="color:#ae81ff">\D</span>otnet<span style="color:#ae81ff">\m</span>odernize-wcf-app-using-corewcf<span style="color:#ae81ff">\b</span>efore<span style="color:#ae81ff">\B</span>ookingMgmt.WCF.WebService<span style="color:#ae81ff">\B</span>ookingMgmt.WCF.WebService.csproj uses feature<span style="color:#f92672">(</span>s<span style="color:#f92672">)</span> that are not supported. If you would like upgrade-assistant to <span style="color:#66d9ef">continue</span> anyways please use the <span style="color:#e6db74">&#34;--ignore-unsupported-features&#34;</span> option.
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>17:25:38 ERR<span style="color:#f92672">]</span> Unable to upgrade project E:<span style="color:#ae81ff">\C</span>oding<span style="color:#ae81ff">\D</span>otnet<span style="color:#ae81ff">\m</span>odernize-wcf-app-using-corewcf<span style="color:#ae81ff">\b</span>efore<span style="color:#ae81ff">\B</span>ookingMgmt.WCF.WebService<span style="color:#ae81ff">\B</span>ookingMgmt.WCF.WebService.csproj
+</span></span></code></pre></div><p>As you can see, the .NET Upgrade Assistant doesn&rsquo;t work with this WCF app, the reason is because it is a web-hosted WCF that uses a .svc file, and that kind of scenario is not supported. <br>
+.NET Upgrade Assistant does not support the following WCF scenarios:</p>
+<p>❌ WCF server that are Web-hosted and use a .svc file. <br>
+❌ Behavior configuration via xml config files except serviceDebug, serviceMetadata, serviceCredentials (clientCertificate, serviceCertificate, userNameAuthentication, and windowsAuthentication).<br>
+❌ Endpoints using bindings other than NetTcpBinding and HTTP-based bindings.</p>
+<h2 id="12-creating-a-new-corewcf-project-from-scratch"><strong>1.2. Creating a new CoreWCF project from scratch</strong></h2>
+<p>Our approach of using the .NET Upgrade tool didn&rsquo;t pan out, so instead of that I&rsquo;m going to <strong>create a new CoreWCF project from scratch and move in the source code from the WCF project</strong> (BookingMgmt.WCF.WebService).</p>
+<p>The best way to create a new CoreWCF project is using the CoreWCF project template, which can be installed using the dotnet tool.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span> dotnet new --install CoreWCF.Templates
+</span></span></code></pre></div><p>After installing the template we can create a new CoreWCF project like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>dotnet new corewcf -n BookingMgmt.CoreWCF.WebService
+</span></span></code></pre></div><p>Here&rsquo;s how a new CoreWCF project looks like:</p>
+<p><img src="/img/corewcf-new-corewcf-project.png" alt="corewcf-new-corewcf-project"></p>
+<p>The first thing we have to do is delete the demo service:  <code>IService.cs</code> (whatever you do, do not delete the <code>Program.cs</code>).</p>
+<p>Now we&rsquo;re ready to move the source code from the WCF project to the newly created CoreWCF project. <br>
+There are a few files that are not needed in CoreWCF:</p>
+<ul>
+<li>The <code>.svc</code> file is not needed, we only need the <code>svc.cs</code> file, which contains the generated code.</li>
+<li>The <code>web.config</code> and the <code>global.asax</code> are useless, with CoreWCF the application setup is done on the <code>Program.cs</code>.</li>
+<li>The CoreWCF project uses the new csproj-SDK format, which means that there is no need for the <code>packages.config</code> file.</li>
+</ul>
+<p>Here&rsquo;s how the project looks like after moving everything we needed into the CoreWCF project:</p>
+<p><img src="/img/corewcf-wcf-project-files.png" alt="corewcf-wcf-project-files"></p>
+<h2 id="13-setting-up-the-programcs"><strong>1.3. Setting up the Program.cs</strong></h2>
+<p>The WCF app uses a <code>global.asax</code>, which allows us to write code that runs in response to &ldquo;system level&rdquo; events, such as the application starting, a session ending, an application error occuring, without having to try and shoe-horn that code into each and every page of your site.</p>
+<p>CoreWCF doesn&rsquo;t use a <code>global.asax</code> file, instead of that, it uses a <code>Program.cs</code> to set up the host and expose the services bindings. <br>
+In fact, if you&rsquo;re familiar with .NET Core or .NET 7, this will look somewhat familiar because CoreWCF uses the same host and builder model, but with some extra middleware that implements WCF services and provides WSDL generation through metadata.</p>
+<p>The next code snippet shows how the <code>Program.cs</code> looks like after configuring it properly.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> builder = WebApplication.CreateBuilder();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>builder.Services.AddServiceModelServices();
+</span></span><span style="display:flex;"><span>builder.Services.AddServiceModelMetadata();
+</span></span><span style="display:flex;"><span>builder.Services.AddSingleton&lt;IServiceBehavior, UseRequestHeadersForMetadataAddressBehavior&gt;();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>builder.Services.AddSingleton&lt;BookingCreatorService&gt;();
+</span></span><span style="display:flex;"><span>builder.Services.AddTransient&lt;IBookingCreatorApplicationServices, BookingCreatorApplicationServices&gt;();
+</span></span><span style="display:flex;"><span>builder.Services.AddTransient&lt;IBookingCreatorDomainServices, BookingCreatorDomainServices&gt;();
+</span></span><span style="display:flex;"><span>builder.Services.AddTransient&lt;IBookingCreatorService, BookingCreatorService&gt; ();
+</span></span><span style="display:flex;"><span>builder.Services.AddTransient&lt;IUnitOfWorkBookingCreator, UnitOfWorkBookingCreator&gt;();
+</span></span><span style="display:flex;"><span>builder.Services.AddTransient&lt;IBookingCreatorValidations, BookingCreatorValidations&gt;();
+</span></span><span style="display:flex;"><span>builder.Services.AddTransient&lt;IBookingFeaturesDomainServices, BookingFeaturesDomainServices&gt;();
+</span></span><span style="display:flex;"><span>builder.Services.AddScoped(<span style="color:#66d9ef">typeof</span>(IRepository&lt;&gt;), <span style="color:#66d9ef">typeof</span>(Repository&lt;&gt;));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> app = builder.Build();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>app.UseServiceModel(serviceBuilder =&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    serviceBuilder.AddService&lt;BookingCreatorService&gt;();
+</span></span><span style="display:flex;"><span>    serviceBuilder.AddServiceEndpoint&lt;BookingCreatorService, IBookingCreatorService&gt;(<span style="color:#66d9ef">new</span> BasicHttpBinding(BasicHttpSecurityMode.None), <span style="color:#e6db74">&#34;/BookingCreatorService.svc&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> serviceMetadataBehavior = app.Services.GetRequiredService&lt;ServiceMetadataBehavior&gt;();
+</span></span><span style="display:flex;"><span>    serviceMetadataBehavior.HttpsGetEnabled = <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>    serviceMetadataBehavior.HttpGetEnabled = <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>});
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>app.Run();
+</span></span></code></pre></div><p>Let&rsquo;s explain a little bit what we&rsquo;re doing in the above code snippet.</p>
+<ul>
+<li>The <code>AddServiceModelServices</code> and <code>AddServiceModelMetadata</code> methods are used to setup the WCF support.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>builder.Services.AddServiceModelServices();
+</span></span><span style="display:flex;"><span>builder.Services.AddServiceModelMetadata();
+</span></span></code></pre></div><ul>
+<li>The <code>UseRequestHeadersForMetadataAddressBehavior</code> is used to modify the generated help page and WSDL document to reflect the hostname and port number that the request came from.  <br>
+This is useful when the machine hostname is different than the hostname that a client uses to connect to the service. For example, if the service is running in a docker container or behind a load balancer.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>builder.Services.AddSingleton&lt;IServiceBehavior, UseRequestHeadersForMetadataAddressBehavior&gt;();
+</span></span></code></pre></div><ul>
+<li>The original WCF app uses <code>Autofac</code> as an IoC container for dependendy injection, we&rsquo;re using CoreWCF alongside with .NET 7, so there is no need for an external IoC container, we can use the native one.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>builder.Services.AddSingleton&lt;BookingCreatorService&gt;();
+</span></span><span style="display:flex;"><span>builder.Services.AddTransient&lt;IBookingCreatorApplicationServices, BookingCreatorApplicationServices&gt;();
+</span></span><span style="display:flex;"><span>builder.Services.AddTransient&lt;IBookingCreatorDomainServices, BookingCreatorDomainServices&gt;();
+</span></span><span style="display:flex;"><span>builder.Services.AddTransient&lt;IBookingCreatorService, BookingCreatorService&gt; ();
+</span></span><span style="display:flex;"><span>builder.Services.AddTransient&lt;IUnitOfWorkBookingCreator, UnitOfWorkBookingCreator&gt;();
+</span></span><span style="display:flex;"><span>builder.Services.AddTransient&lt;IBookingCreatorValidations, BookingCreatorValidations&gt;();
+</span></span><span style="display:flex;"><span>builder.Services.AddTransient&lt;IBookingFeaturesDomainServices, BookingFeaturesDomainServices&gt;();
+</span></span><span style="display:flex;"><span>builder.Services.AddScoped(<span style="color:#66d9ef">typeof</span>(IRepository&lt;&gt;), <span style="color:#66d9ef">typeof</span>(Repository&lt;&gt;));
+</span></span></code></pre></div><ul>
+<li>The <code>UseServieModel</code> method is used to configure which endpoints we want to expose in the host.</li>
+<li>With the <code>serviceBuilder.AddServiceEndpoint&lt;BookingCreatorService, IBookingCreatorService&gt;(new BasicHttpBinding(BasicHttpSecurityMode.None), &quot;/BookingCreatorService.svc&quot;)</code> method we&rsquo;re exposing an endpoint named <code>BookingCreatorService.svc</code>, which has a <code>Basic Http Binding</code> and the message is NOT secured during transfer.</li>
+<li>The <code>HttpGetEnabled</code> and <code>HttpsGetEnabled</code> are used to set how we&rsquo;re going to fetch the metadata/WSDL file. In this case it will be using Http.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>app.UseServiceModel(serviceBuilder =&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    serviceBuilder.AddService&lt;BookingCreatorService&gt;();
+</span></span><span style="display:flex;"><span>    serviceBuilder.AddServiceEndpoint&lt;BookingCreatorService, IBookingCreatorService&gt;(<span style="color:#66d9ef">new</span> BasicHttpBinding(BasicHttpSecurityMode.None), <span style="color:#e6db74">&#34;/BookingCreatorService.svc&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> serviceMetadataBehavior = app.Services.GetRequiredService&lt;ServiceMetadataBehavior&gt;();
+</span></span><span style="display:flex;"><span>    serviceMetadataBehavior.HttpsGetEnabled = <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>    serviceMetadataBehavior.HttpGetEnabled = <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>});
+</span></span></code></pre></div><h1 id="2-using-net-upgrade-assistant-tool-to-migrate-the-rest-of-the-projects"><strong>2. Using .NET Upgrade Assistant tool to migrate the rest of the projects</strong></h1>
+<p>In the previous section we have migrated the WCF project, but this application is using an N-Layer architecture, which means that there are still a few projects that need to be migrated from .NET 4.7.2.</p>
+<p>In this section we&rsquo;re going to migrate the following projects:</p>
+<ul>
+<li>BookingMgmt.Contracts</li>
+<li>BookingMgmt.Application</li>
+<li>BookingMgmt.Domain</li>
+<li>BookingMgmt.Database</li>
+<li>BookingMgmt.SharedKernel</li>
+</ul>
+<p>Those 5 projects need to be migrated from .NET 4.7.2 to .NET Standard, and also from the old csproj SDK-format (with a packages.config) to the new one.</p>
+<p>Doing the migration manually is going to be quite tedious, but thankfully the <code>.NET Upgrade Assistant tool</code> can do it for us, it&rsquo;s really easy, just execute the <code>upgrade-assistant upgrade BookingMgmt.WebService.sln</code> command and follow the on-screen instructions.</p>
+<p><img src="/img/corewcf-net-upgrade-tool-dependencies.png" alt="corewcf-net-upgrade-tool-dependencies"></p>
+<p>After running the <code>.NET Upgrade Assistant tool</code>, here&rsquo;s how the <code>BookingMgmt.Domain.csproj</code> looks like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;Project</span> <span style="color:#a6e22e">Sdk=</span><span style="color:#e6db74">&#34;Microsoft.NET.Sdk&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;PropertyGroup&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;TargetFramework&gt;</span>netstandard2.0<span style="color:#f92672">&lt;/TargetFramework&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;OutputType&gt;</span>Library<span style="color:#f92672">&lt;/OutputType&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;SccProjectName&gt;</span>SAK<span style="color:#f92672">&lt;/SccProjectName&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;SccLocalPath&gt;</span>SAK<span style="color:#f92672">&lt;/SccLocalPath&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;SccAuxPath&gt;</span>SAK<span style="color:#f92672">&lt;/SccAuxPath&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;SccProvider&gt;</span>SAK<span style="color:#f92672">&lt;/SccProvider&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PublishUrl&gt;</span>publish\<span style="color:#f92672">&lt;/PublishUrl&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;Install&gt;</span>true<span style="color:#f92672">&lt;/Install&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;InstallFrom&gt;</span>Disk<span style="color:#f92672">&lt;/InstallFrom&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;UpdateEnabled&gt;</span>false<span style="color:#f92672">&lt;/UpdateEnabled&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;UpdateMode&gt;</span>Foreground<span style="color:#f92672">&lt;/UpdateMode&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;UpdateInterval&gt;</span>7<span style="color:#f92672">&lt;/UpdateInterval&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;UpdateIntervalUnits&gt;</span>Days<span style="color:#f92672">&lt;/UpdateIntervalUnits&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;UpdatePeriodically&gt;</span>false<span style="color:#f92672">&lt;/UpdatePeriodically&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;UpdateRequired&gt;</span>false<span style="color:#f92672">&lt;/UpdateRequired&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;MapFileExtensions&gt;</span>true<span style="color:#f92672">&lt;/MapFileExtensions&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;ApplicationRevision&gt;</span>0<span style="color:#f92672">&lt;/ApplicationRevision&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;ApplicationVersion&gt;</span>1.0.0.%2a<span style="color:#f92672">&lt;/ApplicationVersion&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;IsWebBootstrapper&gt;</span>false<span style="color:#f92672">&lt;/IsWebBootstrapper&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;UseApplicationTrust&gt;</span>false<span style="color:#f92672">&lt;/UseApplicationTrust&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;BootstrapperEnabled&gt;</span>true<span style="color:#f92672">&lt;/BootstrapperEnabled&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;GenerateAssemblyInfo&gt;</span>false<span style="color:#f92672">&lt;/GenerateAssemblyInfo&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/PropertyGroup&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;PropertyGroup</span> <span style="color:#a6e22e">Condition=</span><span style="color:#e6db74">&#34; &#39;$(Configuration)|$(Platform)&#39; == &#39;Debug|AnyCPU&#39; &#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;RunCodeAnalysis&gt;</span>false<span style="color:#f92672">&lt;/RunCodeAnalysis&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/PropertyGroup&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;PropertyGroup</span> <span style="color:#a6e22e">Condition=</span><span style="color:#e6db74">&#34; &#39;$(Configuration)|$(Platform)&#39; == &#39;Release|AnyCPU&#39; &#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;RunCodeAnalysis&gt;</span>true<span style="color:#f92672">&lt;/RunCodeAnalysis&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/PropertyGroup&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;ItemGroup&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;BootstrapperPackage</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;Microsoft.Net.Client.3.5&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;Visible&gt;</span>False<span style="color:#f92672">&lt;/Visible&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;ProductName&gt;</span>.NET Framework 3.5 SP1 Client Profile<span style="color:#f92672">&lt;/ProductName&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;Install&gt;</span>false<span style="color:#f92672">&lt;/Install&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/BootstrapperPackage&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;BootstrapperPackage</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;Microsoft.Net.Framework.3.5.SP1&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;Visible&gt;</span>False<span style="color:#f92672">&lt;/Visible&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;ProductName&gt;</span>.NET Framework 3.5 SP1<span style="color:#f92672">&lt;/ProductName&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;Install&gt;</span>true<span style="color:#f92672">&lt;/Install&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/BootstrapperPackage&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;BootstrapperPackage</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;Microsoft.Windows.Installer.3.1&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;Visible&gt;</span>False<span style="color:#f92672">&lt;/Visible&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;ProductName&gt;</span>Windows Installer 3.1<span style="color:#f92672">&lt;/ProductName&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;Install&gt;</span>true<span style="color:#f92672">&lt;/Install&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/BootstrapperPackage&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/ItemGroup&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;ItemGroup&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;System.Data.DataSetExtensions&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;4.5.0&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;0.4.355802&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;PrivateAssets&gt;</span>all<span style="color:#f92672">&lt;/PrivateAssets&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/PackageReference&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;fasterflect&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;2.1.3&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/ItemGroup&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;ItemGroup&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;ProjectReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;..\BookingMgmt.SharedKernel\BookingMgmt.SharedKernel.csproj&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/ItemGroup&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;ItemGroup&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;log4net&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.2.10&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;Newtonsoft.Json&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;12.0.2&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/ItemGroup&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/Project&gt;</span>
+</span></span></code></pre></div><p>As you can see, the project has been converted to the new SDK-format and also the TFM has been upgraded from .NET 4.7.2 to .NET Standard 2.0.</p>
+<p>Every project attribute present has been ported as well, but if you take a look at them, it&rsquo;s pretty clear that most of them are useless right now. <br>
+A good tip after doing a project this kind of migration is to take a good look at the resulting <code>.csproj</code> file because usually it can be cleaned up of most of the old attributes.</p>
+<h1 id="3mending-incompatible-dependencies"><strong>3.Mending incompatible dependencies</strong></h1>
+<p>The first step has been to upgrade (manually) the WCF project to .NET 7 and then with the help of the <code>.NET Upgrade Assistant tool</code> we have upgraded the rest of the application projects to .NET Standard 2.0, but some packages incompatibilities still remain.</p>
+<p>The <code>BookingMgmt.Infrastructure</code> and the <code>BookingMgmt.SharedKernel</code> project contains a reference to the version 6.1.1 of <code>EntityFramwork 6</code>, and this version is NOT compatible with .NET Standard.</p>
+<p>A possible solution for this incompatibility is to upgrade the <code>EntityFramework 6</code> package to the latest version (right now, 6.4.4).<br>
+The problem with this upgrade is that the 6.4.4 version is only compatible with .NET Standard 2.1 and our projects are targeting .NET Standard 2.0, so <strong>we&rsquo;re going to manually upgrade every project that targets .NET Standard 2.0 to .NET Standard 2.1</strong>.</p>
+<p>The other troublesome dependencies are: <code>fasterflect</code> and <code>log4net</code>, both packages are not compatible with .NET Standard 2.1.<br>
+The good news here is that after moving to .NET 7 I have no real use for those packages, so I can remove them. <br>
+The <code>log4net</code> package can be replaced by the native logging API:<code>ILogger</code>, and the <code>fasterflect</code> dependency can be completely removed from the application.</p>
+<h1 id="4-migrating-application-settings-from-the-webconfig-to-iconfiguration"><strong>4. Migrating application settings from the web.config to IConfiguration</strong></h1>
+<p>The application settings on the original WCF app are defined on the <code>web.config</code>, more specifically on the <code>AppSettings</code> section.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>  <span style="color:#f92672">&lt;appSettings&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;add</span> <span style="color:#a6e22e">key=</span><span style="color:#e6db74">&#34;DatabaseConnectionString&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Flights;Integrated Security=True;Connect Timeout=60;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/appSettings&gt;</span>
+</span></span></code></pre></div><p>The <code>DatabaseConnectionString</code> setting is used via the <code>ConfigurationManager</code> API. This setting is needed for setting up the EntityFramework DbContext.<br>
+The next code snippet shows how the WCF app uses the <code>DatabaseConnectionString</code> app setting.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BookingCreatorContext</span> : DbContextBase
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">static</span> BookingCreatorContext()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Database.SetInitializer&lt;BookingCreatorContext&gt;(<span style="color:#66d9ef">null</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> BookingCreatorContext()
+</span></span><span style="display:flex;"><span>            : <span style="color:#66d9ef">base</span>(ConfigurationManager.AppSettings[<span style="color:#e6db74">&#34;DatabaseConnectionString&#34;</span>])
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Configuration.LazyLoadingEnabled = <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">virtual</span> DbSet&lt;Booking&gt; Bookings { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">virtual</span> DbSet&lt;Journey&gt; Journeys { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><p>Our new CoreWCF app doesn&rsquo;t require a <code>web.config</code>, so we must move those application settings somewhere else, with .NET 7 we can use the <code>IConfiguration</code> native implementation.</p>
+<p>We can simply move the <code>DatabaseConnectionString</code> setting to the <code>appsettings.json</code> and replace the <code>ConfigurationManager.AppSettings</code> method for <code>IConfiguration</code>.</p>
+<h1 id="5-running-the-app-locally"><strong>5. Running the app locally</strong></h1>
+<p>After fixing the NuGet incompatibilities and moving the application settings into the <code>appsettings.json</code>, we&rsquo;re ready to run our CoreWCF app.</p>
+<p>If we open a browser on the following address: <code>http://localhost:5186/BookingCreatorService.svc</code>, we&rsquo;ll be presented with the svc html page.</p>
+<p><img src="/img/corewcf-svc-html.png" alt="corewcf-svc-html"></p>
+<p>If we send a few requests to our app, it responds successfully.</p>
+<p><img src="/img/corewcf-wcftestclient-request.png" alt="corewcf-wcftestclient-request"></p>
+<p>We can say that we have successfully migrated the BookingMgmt app to CoreWCF and .NET 7. <br>
+But there are still a few things left to do.</p>
+<h1 id="6-manually-migrating-test-projects"><strong>6. Manually migrating test projects</strong></h1>
+<p>The unit and integration tests are still on .NET 4.7.2 and need to be moved to .NET 7.</p>
+<p>The <code>.NET Upgrade Assistant tool</code> is unable to migrate MSTest project types, which means that the only possible way to migrate those projects is manually. <br>
+For every test project I&rsquo;m going to create a new MSTest project that targets .NET 7 and move over the original source code.</p>
+<p><img src="/img/corewcf-mstest-project-type.png" alt="corewcf-mstest-project-type"></p>
+<blockquote>
+<p>These test projects are using MSTest, not xUnit. Now would be a good time to also move them from MSTest to xUnit, but then a code refactor is needed, so I&rsquo;m not going to do it.</p>
+</blockquote>
+<p>The test projects are using the <code>NMock3</code> package to mock dependencies, this package is not compatible with .NET 7, which means that we need to use an alternate package.</p>
+<p>I decided to switch over to <code>Moq</code>, but that means that a code refactor needs to be put in place to adjust the mocking code.</p>
+<p>The next code snippet shows a pair of Unit Tests where the mock dependencies have been switched from <code>NMock3</code> to <code>Moq</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> BookingMgmt.Domain.UnitTest.GivenBooking
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [TestClass]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">WhenCancelBooking</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> IBookingCreatorDomainServices _sut;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> Mock&lt;IUnitOfWorkBookingCreator&gt; _unitOfWorkBookingCreator;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> Mock&lt;IRepository&lt;Booking&gt;&gt; _bookingRepository;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> Mock&lt;IRepository&lt;Journey&gt;&gt; _journeyRepository;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> Mock&lt;IBookingFeaturesDomainServices&gt; _bookingFeaturesDomainServices;
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [ClassInitialize]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> ClassInitialize(TestContext context)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            _unitOfWorkBookingCreator = <span style="color:#66d9ef">new</span> Mock&lt;IUnitOfWorkBookingCreator&gt;();
+</span></span><span style="display:flex;"><span>            _bookingRepository = <span style="color:#66d9ef">new</span> Mock&lt;IRepository&lt;Booking&gt;&gt;();
+</span></span><span style="display:flex;"><span>            _journeyRepository = <span style="color:#66d9ef">new</span> Mock&lt;IRepository&lt;Journey&gt;&gt;();
+</span></span><span style="display:flex;"><span>            _unitOfWorkBookingCreator.Setup(x =&gt; x.GetRepository&lt;Booking&gt;()).Returns(_bookingRepository.Object);
+</span></span><span style="display:flex;"><span>            _unitOfWorkBookingCreator.Setup(x =&gt; x.GetRepository&lt;Journey&gt;()).Returns(_journeyRepository.Object);
+</span></span><span style="display:flex;"><span>            _bookingFeaturesDomainServices = <span style="color:#66d9ef">new</span> Mock&lt;IBookingFeaturesDomainServices&gt;();
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span>  iBookingCancelerValidations = <span style="color:#66d9ef">new</span> BookingCreatorValidations(_bookingFeaturesDomainServices.Object);   
+</span></span><span style="display:flex;"><span>            _sut = <span style="color:#66d9ef">new</span> BookingCreatorDomainServices(_unitOfWorkBookingCreator.Object, iBookingCancelerValidations);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [TestMethod]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Then_BookingIsCanceled()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> salesAgent = <span style="color:#e6db74">&#34;web&#34;</span>;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> amountOfBooking = <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> bookingsToCancel = BookingMockedProvider.GetBookings(salesAgent, amountOfBooking);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> firstModificationDate = bookingsToCancel.SingleOrDefault().Modified;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> journeysAmountToCancel = bookingsToCancel.SingleOrDefault().Journeys.Count;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            _bookingRepository.Setup(x =&gt; x.Get(
+</span></span><span style="display:flex;"><span>                It.IsAny&lt;Expression&lt;Func&lt;Booking, <span style="color:#66d9ef">bool</span>&gt;&gt;&gt;(), 
+</span></span><span style="display:flex;"><span>                It.IsAny&lt;Func&lt;IQueryable&lt;Booking&gt;, IOrderedQueryable&lt;Booking&gt;&gt;&gt;(), 
+</span></span><span style="display:flex;"><span>                It.IsAny&lt;List&lt;Expression&lt;Func&lt;Booking, <span style="color:#66d9ef">object</span>&gt;&gt;&gt;&gt;(), 
+</span></span><span style="display:flex;"><span>                It.IsAny&lt;<span style="color:#66d9ef">int?</span>&gt;(), 
+</span></span><span style="display:flex;"><span>                It.IsAny&lt;<span style="color:#66d9ef">int?</span>&gt;(), 
+</span></span><span style="display:flex;"><span>                It.IsAny&lt;<span style="color:#66d9ef">bool</span>&gt;())).Returns(bookingsToCancel);
+</span></span><span style="display:flex;"><span>            _journeyRepository.Setup(x =&gt; x.Delete(It.IsAny&lt;Journey&gt;()));
+</span></span><span style="display:flex;"><span>            _bookingRepository.Setup(x =&gt; x.UpdateRootEntity(It.IsAny&lt;Booking&gt;()));
+</span></span><span style="display:flex;"><span>            _unitOfWorkBookingCreator.Setup(x =&gt; x.Save()).Returns(journeysAmountToCancel);
+</span></span><span style="display:flex;"><span>            _bookingFeaturesDomainServices.Setup(x =&gt; x.IsAgency(It.IsAny&lt;Booking&gt;())).Returns(<span style="color:#66d9ef">false</span>);
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>            _sut.CancelBooking(bookingsToCancel.First().Id);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            Assert.IsTrue(bookingsToCancel.SingleOrDefault()?.Modified &gt; firstModificationDate, <span style="color:#e6db74">&#34;Property Modified in Booking was not modified.&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [TestMethod]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [ExpectedException(typeof(InvalidBookingOperationException))]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Then_BookingIsNotCanceledWhenAgency()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> salesAgent = <span style="color:#e6db74">&#34;agency&#34;</span>;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> amountOfBooking = <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> bookingsToCancel = BookingMockedProvider.GetBookings(salesAgent, amountOfBooking);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> journeysAmountToCancel = bookingsToCancel.SingleOrDefault().Journeys.Count;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            _bookingRepository.Setup(x =&gt; x.Get(
+</span></span><span style="display:flex;"><span>                It.IsAny&lt;Expression&lt;Func&lt;Booking, <span style="color:#66d9ef">bool</span>&gt;&gt;&gt;(),
+</span></span><span style="display:flex;"><span>                It.IsAny&lt;Func&lt;IQueryable&lt;Booking&gt;, IOrderedQueryable&lt;Booking&gt;&gt;&gt;(),
+</span></span><span style="display:flex;"><span>                It.IsAny&lt;List&lt;Expression&lt;Func&lt;Booking, <span style="color:#66d9ef">object</span>&gt;&gt;&gt;&gt;(),
+</span></span><span style="display:flex;"><span>                It.IsAny&lt;<span style="color:#66d9ef">int?</span>&gt;(),
+</span></span><span style="display:flex;"><span>                It.IsAny&lt;<span style="color:#66d9ef">int?</span>&gt;(),
+</span></span><span style="display:flex;"><span>                It.IsAny&lt;<span style="color:#66d9ef">bool</span>&gt;())).Returns(bookingsToCancel);
+</span></span><span style="display:flex;"><span>            _journeyRepository.Setup(x =&gt; x.Delete(It.IsAny&lt;Journey&gt;()));
+</span></span><span style="display:flex;"><span>            _bookingRepository.Setup(x =&gt; x.UpdateRootEntity(It.IsAny&lt;Booking&gt;()));
+</span></span><span style="display:flex;"><span>            _unitOfWorkBookingCreator.Setup(x =&gt; x.Save()).Returns(journeysAmountToCancel);
+</span></span><span style="display:flex;"><span>            _bookingFeaturesDomainServices.Setup(x =&gt; x.IsAgency(It.IsAny&lt;Booking&gt;())).Returns(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>            _sut.CancelBooking(bookingsToCancel.First().Id);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="7-running-the-app-on-a-linux-container"><strong>7. Running the app on a Linux container</strong></h1>
+<p>The last step is to run this new version of the app on a Linux container.</p>
+<p>What&rsquo;s the purpose of this step? To test that no dependency with the WCF framework remains in the app. The WCF framework only supports Windows, which means that if we try to run it on a Linux container it will throw an error.</p>
+<p>The next code snippet shows how the application <code>Dockerfile</code> looks like.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ae81ff">FROM mcr.microsoft.com/dotnet/sdk:7.0-bullseye-slim AS build-env</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">WORKDIR /app</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Copy csproj and restore as distinct layers</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY *.sln ./</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY /BookingMgmt.CoreWCF.WebService/*.csproj ./BookingMgmt.CoreWCF.WebService/</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY /BookingMgmt.Application/*.csproj ./BookingMgmt.Application/</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY /BookingMgmt.Contracts/*.csproj ./BookingMgmt.Contracts/</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY /BookingMgmt.Domain/*.csproj ./BookingMgmt.Domain/</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY /BookingMgmt.Infrastructure/*.csproj ./BookingMgmt.Infrastructure/</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY /BookingMgmt.SharedKernel/*.csproj ./BookingMgmt.SharedKernel/</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet restore &#34;./BookingMgmt.CoreWCF.WebService/BookingMgmt.CoreWCF.WebService.csproj&#34; -s &#34;https://api.nuget.org/v3/index.json&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Copy everything else, build and publish</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY . ./</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet publish BookingMgmt.CoreWCF.WebService/*.csproj -c Release -o /app/publish</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Build runtime image</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">FROM mcr.microsoft.com/dotnet/aspnet:7.0-bullseye-slim</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">WORKDIR /app</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY --from=build-env /app/publish .</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">ENTRYPOINT [&#34;dotnet&#34;, &#34;BookingMgmt.CoreWCF.WebService.dll&#34;]</span>
+</span></span></code></pre></div><p>I&rsquo;m going to use a <code>docker-compose</code> file to run the app alongside its dependencies (MSSQL). The next code snippet shows how it looks like.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">version</span>: <span style="color:#e6db74">&#39;3.8&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">wcf</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">flights-network</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span><span style="color:#f92672">services</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">mssql</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">build</span>: 
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">context</span>: <span style="color:#ae81ff">./scripts/sql</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;1433:1433&#34;</span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">environment</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">SA_PASSWORD</span>: <span style="color:#e6db74">&#34;P@ssw0rd?&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">ACCEPT_EULA</span>: <span style="color:#e6db74">&#34;Y&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">wcf</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">app</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">build</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">context</span>: <span style="color:#ae81ff">./</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">dockerfile</span>: <span style="color:#ae81ff">./Dockerfile</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">depends_on</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">mssql</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">5001</span>:<span style="color:#ae81ff">80</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">environment</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">DatabaseConnectionString</span>: <span style="color:#ae81ff">Server=mssql;Database=Flights;User Id=SA;Password=P@ssw0rd?</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">wcf</span>
+</span></span></code></pre></div><p>And when we execute the <code>docker compose up</code> command, the app runs successfully!</p>
+<h1 id="final-thoughts"><strong>Final thoughts</strong></h1>
+<blockquote>
+<p><em><strong>If you wanna take a look at the end result source code, you can go <a href="https://github.com/karlospn/modernize-wcf-app-using-corewcf/tree/main/after">here</a>.</strong></em></p>
+</blockquote>
+<p>Moving a WCF application from the WCF framework to the CoreWCF implementation is not very complicated, unless your WCF uses some of the more obscure features of the framework.</p>
+<p>The hardest thing when trying to modernize this type of apps is to move away from .NET Framework and its depedencies, the main problem lies in that there is a high probability that your app has some dependencies that are not compatible with the current .NET versions (right now, .NET 7 and .NET Standard 2.1).</p>
+<p>If your app has some incompatible dependencies, you&rsquo;ll have a few options available:</p>
+<ul>
+<li>Check if there is a newer version available and it is compatible with .NET 7, that&rsquo;s the best possible scenario, because there is no need to modify anything on the source code.</li>
+<li>Find another NuGet package that has a similar functionality. If you swap one dependency for another you&rsquo;ll need to update the code accordingly.</li>
+<li>The worst scenario possible: you&rsquo;ll have to build by yourself an alternative.</li>
+</ul>
+<p>Excluding the first option where you can simply upgrade to a newer version of the same package, the rest of the options are going to be a time-sink.</p>
+<p>There is another possible scenario that could affect the migration process, and that&rsquo;s the fact that the WCF Framework only runs in Windows platforms, which means that exists a possibility that your application is using some sort of native Windows API, then the modernization process becomes even harder because there are no alternatives.</p>
+<p>In this post we have been trying to modernize a WCF app called BookingMgmt, this process has been relatively quick and painless. I have spent between 4 and 5 hours to successfully migrate to a .NET 7 CoreWCF app that is hosted on a linux container.<br>
+This app had very few incompatible dependencies, only <code>EntityFramework 6</code>, <code>log4net</code>, <code>fasterflect</code> and <code>NMock3</code> and the solution was quite quick to implement in all cases.</p>
+<p>You should also bear in mind that in this post I did the minimum work required to make the app run with .NET 7 and CoreWCF.<br>
+Once the app has been successfully moved to .NET 7 and CoreWCF there are a ton of improvements it could have been made (e.g. move from EF 6 to EFCore 7, which probably will give us a significant performance boost).</p>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://www.mytechramblings.com/posts/automatically-purge-acr-images-using-acr-tasks/">
+                  <span class="button__text">How to automatically purge stale images from Azure Container Registry using ACR Tasks</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2023 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>Theme created by <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://www.mytechramblings.com/assets/main.js"></script>
+<script src="https://www.mytechramblings.com/assets/prism.js"></script>
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('carlospons', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Donate',
+    'floating-chat.donateButton.background-color': '#ff5f5f',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
+
+      
+    </div>
+
+    
+      
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-170300931-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+    
+  </body>
+</html>

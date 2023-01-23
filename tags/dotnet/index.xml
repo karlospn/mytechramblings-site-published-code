@@ -9,10 +9,30 @@
     <description>Recent content in dotnet on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 30 Nov 2022 10:01:13 +0100</lastBuildDate>
+    <lastBuildDate>Mon, 23 Jan 2023 10:01:16 +0100</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/dotnet/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>How to modernize a legacy .NET Framework WCF app using CoreWCF and .NET 7</title>
+      <link>https://www.mytechramblings.com/posts/modernize-wcf-legacy-app-using-corewcf/</link>
+      <pubDate>Mon, 23 Jan 2023 10:01:16 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/modernize-wcf-legacy-app-using-corewcf/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          CoreWCF is a port of the Windows Communication Foundation (WCF) framework to the latest .NET version. The main goal of the CoreWCF project is to enable existing WCF services to be moved to .NET 7. In this post I&#39;ll show you step by step how easy (or hard) is the process of migrating an existing .NET 4.7 WCF app to .NET 7 using the CoreWCF project.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>Trying out the built-in container support for the .NET SDK</title>

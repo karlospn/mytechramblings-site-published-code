@@ -9,10 +9,90 @@
     <description>Recent content in Tags on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 21 Dec 2022 13:03:19 +0100</lastBuildDate>
+    <lastBuildDate>Mon, 23 Jan 2023 10:01:16 +0100</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>corewcf</title>
+      <link>https://www.mytechramblings.com/tags/corewcf/</link>
+      <pubDate>Mon, 23 Jan 2023 10:01:16 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/corewcf/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>dotnet</title>
+      <link>https://www.mytechramblings.com/tags/dotnet/</link>
+      <pubDate>Mon, 23 Jan 2023 10:01:16 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/dotnet/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>netframework</title>
+      <link>https://www.mytechramblings.com/tags/netframework/</link>
+      <pubDate>Mon, 23 Jan 2023 10:01:16 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/netframework/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>wcf</title>
+      <link>https://www.mytechramblings.com/tags/wcf/</link>
+      <pubDate>Mon, 23 Jan 2023 10:01:16 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/wcf/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>azure</title>
@@ -120,26 +200,6 @@
       <pubDate>Wed, 30 Nov 2022 10:01:13 +0100</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/devops/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>dotnet</title>
-      <link>https://www.mytechramblings.com/tags/dotnet/</link>
-      <pubDate>Wed, 30 Nov 2022 10:01:13 +0100</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/dotnet/</guid>
       <description>
         
           
@@ -1160,26 +1220,6 @@
       <pubDate>Sat, 04 Jul 2020 17:30:06 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/legacy/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>wcf</title>
-      <link>https://www.mytechramblings.com/tags/wcf/</link>
-      <pubDate>Sat, 04 Jul 2020 17:30:06 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/wcf/</guid>
       <description>
         
           
