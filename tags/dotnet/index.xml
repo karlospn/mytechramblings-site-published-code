@@ -9,10 +9,30 @@
     <description>Recent content in dotnet on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 23 Jan 2023 10:01:16 +0100</lastBuildDate>
+    <lastBuildDate>Wed, 08 Feb 2023 10:01:46 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/dotnet/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>5 ways to deploy a .NET Lambda using AWS CDK</title>
+      <link>https://www.mytechramblings.com/posts/deploy-dotnet-lambdas-with-aws-cdk/</link>
+      <pubDate>Wed, 08 Feb 2023 10:01:46 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/deploy-dotnet-lambdas-with-aws-cdk/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          This post is going to walk you through 5 different ways to deploy a .NET lambda using AWS CDK.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>How to modernize a legacy .NET Framework WCF app using CoreWCF and .NET 7</title>
@@ -349,26 +369,6 @@
         
         
           This is a 2 part-series post. In part 1 I&#39;ll be talking about a few key concepts that you should know when creating a .NET template.
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>4 ways to deploy a .NET Core Lambda using AWS CDK</title>
-      <link>https://www.mytechramblings.com/posts/deploy-dotnet-lambdas-with-aws-cdk/</link>
-      <pubDate>Tue, 25 May 2021 10:01:46 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/posts/deploy-dotnet-lambdas-with-aws-cdk/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          In today&#39;s post I want to show you 4 available options for deploying a .NET Core lambda with AWS CDK.
           
         
         </description>

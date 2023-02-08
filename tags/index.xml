@@ -9,17 +9,77 @@
     <description>Recent content in Tags on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 23 Jan 2023 10:01:16 +0100</lastBuildDate>
+    <lastBuildDate>Wed, 08 Feb 2023 10:01:46 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>corewcf</title>
-      <link>https://www.mytechramblings.com/tags/corewcf/</link>
-      <pubDate>Mon, 23 Jan 2023 10:01:16 +0100</pubDate>
+      <title>aws</title>
+      <link>https://www.mytechramblings.com/tags/aws/</link>
+      <pubDate>Wed, 08 Feb 2023 10:01:46 +0200</pubDate>
       
-      <guid>https://www.mytechramblings.com/tags/corewcf/</guid>
+      <guid>https://www.mytechramblings.com/tags/aws/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>cdk</title>
+      <link>https://www.mytechramblings.com/tags/cdk/</link>
+      <pubDate>Wed, 08 Feb 2023 10:01:46 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/cdk/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>containers</title>
+      <link>https://www.mytechramblings.com/tags/containers/</link>
+      <pubDate>Wed, 08 Feb 2023 10:01:46 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/containers/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>docker</title>
+      <link>https://www.mytechramblings.com/tags/docker/</link>
+      <pubDate>Wed, 08 Feb 2023 10:01:46 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/docker/</guid>
       <description>
         
           
@@ -37,9 +97,49 @@
     <item>
       <title>dotnet</title>
       <link>https://www.mytechramblings.com/tags/dotnet/</link>
-      <pubDate>Mon, 23 Jan 2023 10:01:16 +0100</pubDate>
+      <pubDate>Wed, 08 Feb 2023 10:01:46 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/dotnet/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>lambda</title>
+      <link>https://www.mytechramblings.com/tags/lambda/</link>
+      <pubDate>Wed, 08 Feb 2023 10:01:46 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/lambda/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>corewcf</title>
+      <link>https://www.mytechramblings.com/tags/corewcf/</link>
+      <pubDate>Mon, 23 Jan 2023 10:01:16 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/corewcf/</guid>
       <description>
         
           
@@ -115,71 +215,11 @@
     </item>
     
     <item>
-      <title>containers</title>
-      <link>https://www.mytechramblings.com/tags/containers/</link>
-      <pubDate>Wed, 21 Dec 2022 13:03:19 +0100</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/containers/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>docker</title>
-      <link>https://www.mytechramblings.com/tags/docker/</link>
-      <pubDate>Wed, 21 Dec 2022 13:03:19 +0100</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/docker/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
       <title>terraform</title>
       <link>https://www.mytechramblings.com/tags/terraform/</link>
       <pubDate>Wed, 21 Dec 2022 13:03:19 +0100</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/terraform/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>aws</title>
-      <link>https://www.mytechramblings.com/tags/aws/</link>
-      <pubDate>Wed, 30 Nov 2022 10:01:13 +0100</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/aws/</guid>
       <description>
         
           
@@ -255,51 +295,11 @@
     </item>
     
     <item>
-      <title>cdk</title>
-      <link>https://www.mytechramblings.com/tags/cdk/</link>
-      <pubDate>Tue, 18 Oct 2022 10:01:12 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/cdk/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
       <title>eventbridge</title>
       <link>https://www.mytechramblings.com/tags/eventbridge/</link>
       <pubDate>Tue, 18 Oct 2022 10:01:12 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/eventbridge/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>lambda</title>
-      <link>https://www.mytechramblings.com/tags/lambda/</link>
-      <pubDate>Tue, 18 Oct 2022 10:01:12 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/lambda/</guid>
       <description>
         
           
