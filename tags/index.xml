@@ -9,10 +9,90 @@
     <description>Recent content in Tags on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 08 Feb 2023 10:01:46 +0200</lastBuildDate>
+    <lastBuildDate>Tue, 28 Feb 2023 10:55:55 +0100</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>devops</title>
+      <link>https://www.mytechramblings.com/tags/devops/</link>
+      <pubDate>Tue, 28 Feb 2023 10:55:55 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/devops/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>dotnet</title>
+      <link>https://www.mytechramblings.com/tags/dotnet/</link>
+      <pubDate>Tue, 28 Feb 2023 10:55:55 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/dotnet/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>roslyn</title>
+      <link>https://www.mytechramblings.com/tags/roslyn/</link>
+      <pubDate>Tue, 28 Feb 2023 10:55:55 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/roslyn/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>sonarqube</title>
+      <link>https://www.mytechramblings.com/tags/sonarqube/</link>
+      <pubDate>Tue, 28 Feb 2023 10:55:55 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/sonarqube/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>aws</title>
@@ -80,26 +160,6 @@
       <pubDate>Wed, 08 Feb 2023 10:01:46 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/docker/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>dotnet</title>
-      <link>https://www.mytechramblings.com/tags/dotnet/</link>
-      <pubDate>Wed, 08 Feb 2023 10:01:46 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/dotnet/</guid>
       <description>
         
           
@@ -220,26 +280,6 @@
       <pubDate>Wed, 21 Dec 2022 13:03:19 +0100</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/terraform/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>devops</title>
-      <link>https://www.mytechramblings.com/tags/devops/</link>
-      <pubDate>Wed, 30 Nov 2022 10:01:13 +0100</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/devops/</guid>
       <description>
         
           
@@ -695,26 +735,6 @@
     </item>
     
     <item>
-      <title>sonarqube</title>
-      <link>https://www.mytechramblings.com/tags/sonarqube/</link>
-      <pubDate>Tue, 14 Sep 2021 10:05:00 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/sonarqube/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
       <title>aad</title>
       <link>https://www.mytechramblings.com/tags/aad/</link>
       <pubDate>Tue, 24 Aug 2021 10:21:33 +0200</pubDate>
@@ -900,26 +920,6 @@
       <pubDate>Thu, 14 Jan 2021 12:59:43 +0100</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/editorconfig/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>roslyn</title>
-      <link>https://www.mytechramblings.com/tags/roslyn/</link>
-      <pubDate>Thu, 14 Jan 2021 12:59:43 +0100</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/roslyn/</guid>
       <description>
         
           

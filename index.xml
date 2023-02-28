@@ -9,10 +9,30 @@
     <description>Recent content on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 08 Feb 2023 10:01:46 +0200</lastBuildDate>
+    <lastBuildDate>Tue, 28 Feb 2023 10:55:55 +0100</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>How to integrate your Roslyn Analyzer project with SonarQube</title>
+      <link>https://www.mytechramblings.com/posts/how-to-integrate-your-roslyn-analyzers-with-sonarqube/</link>
+      <pubDate>Tue, 28 Feb 2023 10:55:55 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/how-to-integrate-your-roslyn-analyzers-with-sonarqube/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          Right now there are 2 ways to add rules from a Roslyn Analyzer project into SonarQube. In this post I want to show you how both options work and also what&#39;re the pros and cons of one over the other.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>5 ways to deploy a .NET Lambda using AWS CDK</title>
