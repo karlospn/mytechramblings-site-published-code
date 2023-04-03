@@ -979,7 +979,7 @@ On the Powershell part of the script we imported these resources into the Tf sta
 </span></span><span style="display:flex;"><span>      <span style="color:#f92672">ARM_SUBSCRIPTION_ID</span>: <span style="color:#ae81ff">$(sp-bs-tf-iac-subscription-id)</span>
 </span></span><span style="display:flex;"><span>  
 </span></span><span style="display:flex;"><span>  - <span style="color:#f92672">bash</span>: |<span style="color:#e6db74">
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      </span>      <span style="color:#ae81ff">terraform plan -input=false</span>
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      terraform plan -input=false</span>      
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">condition</span>: <span style="color:#ae81ff">and(succeeded(), eq(&#39;${{ parameters.terraform_plan }}&#39;, true))</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">workingDirectory</span>: <span style="color:#ae81ff">$(CURRENT_PATH)</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Plan Terraform changes</span>
@@ -990,7 +990,7 @@ On the Powershell part of the script we imported these resources into the Tf sta
 </span></span><span style="display:flex;"><span>      <span style="color:#f92672">ARM_SUBSCRIPTION_ID</span>: <span style="color:#ae81ff">$(sp-bs-tf-iac-subscription-id)</span>
 </span></span><span style="display:flex;"><span>  
 </span></span><span style="display:flex;"><span>  - <span style="color:#f92672">bash</span>: |<span style="color:#e6db74">
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      </span>      <span style="color:#ae81ff">terraform apply -input=false -auto-approve</span>
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      terraform apply -input=false -auto-approve</span>      
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">condition</span>: <span style="color:#ae81ff">and(succeeded(), eq(&#39;${{ parameters.terraform_apply }}&#39;, true))</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">workingDirectory</span>: <span style="color:#ae81ff">$(CURRENT_PATH)</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Apply Terraform changes</span>
@@ -1000,7 +1000,7 @@ On the Powershell part of the script we imported these resources into the Tf sta
 </span></span><span style="display:flex;"><span>      <span style="color:#f92672">ARM_TENANT_ID</span>: <span style="color:#ae81ff">$(sp-bs-tf-iac-tenant-id)</span>
 </span></span><span style="display:flex;"><span>      <span style="color:#f92672">ARM_SUBSCRIPTION_ID</span>: <span style="color:#ae81ff">$(sp-bs-tf-iac-subscription-id)</span>
 </span></span><span style="display:flex;"><span>  - <span style="color:#f92672">bash</span>: |<span style="color:#e6db74">
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      </span>      <span style="color:#ae81ff">terraform destroy -input=false -auto-approve</span>
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      terraform destroy -input=false -auto-approve</span>      
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">condition</span>: <span style="color:#ae81ff">and(succeeded(), eq(&#39;${{ parameters.terraform_destroy }}&#39;, true))</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">workingDirectory</span>: <span style="color:#ae81ff">$(CURRENT_PATH)</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Destroy Terraform </span>

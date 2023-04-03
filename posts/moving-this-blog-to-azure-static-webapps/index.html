@@ -358,7 +358,7 @@ If you try to do that you&rsquo;re going to end up with 2 pipelines that are doi
 </span></span><span style="display:flex;"><span>      <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Create resource Group </span>
 </span></span><span style="display:flex;"><span>      <span style="color:#f92672">with</span>:  
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">inlineScript</span>: |<span style="color:#e6db74">
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          </span>          <span style="color:#ae81ff">az group create -l ${{ env.resourceGroupRegion }} -n ${{ env.resourceGroupName }}</span>
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          az group create -l ${{ env.resourceGroupRegion }} -n ${{ env.resourceGroupName }}</span>          
 </span></span><span style="display:flex;"><span>    - <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">azure/arm-deploy@v1</span>
 </span></span><span style="display:flex;"><span>      <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Deploy ARM Template</span>
 </span></span><span style="display:flex;"><span>      <span style="color:#f92672">with</span>:

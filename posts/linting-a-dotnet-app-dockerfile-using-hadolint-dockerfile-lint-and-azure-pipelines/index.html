@@ -229,7 +229,7 @@ Docker is no exception to the rule, and good practices are always moving and get
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      </span>      <span style="color:#ae81ff">docker run --rm -i --env HADOLINT_FAILURE_THRESHOLD=warning hadolint/hadolint:latest &lt; Dockerfile</span>
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      docker run --rm -i --env HADOLINT_FAILURE_THRESHOLD=warning hadolint/hadolint:latest &lt; Dockerfile</span>      
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">workingDirectory</span>: <span style="color:#e6db74">&#39;$(System.DefaultWorkingDirectory)&#39;</span>
 </span></span></code></pre></div><h1 id="dockerfile_lint">dockerfile_lint</h1>
 <p>Hadolint already validates that your Dockerfile follows <a href="https://docs.docker.com/develop/develop-images/dockerfile_best-practices/">Docker best practices</a>, so why you need another linter?</p>
@@ -265,13 +265,13 @@ The rule file has 4 sections, a profile section, a general section, a line rule 
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      </span>      <span style="color:#ae81ff">npm install -g dockerfile_lint</span>
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      npm install -g dockerfile_lint</span>      
 </span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Run semantic linter</span>
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      </span>      <span style="color:#ae81ff">dockerfile_lint -f Dockerfile  -r pipelines/linting_rules.yml</span>
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      dockerfile_lint -f Dockerfile  -r pipelines/linting_rules.yml</span>      
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">workingDirectory</span>: <span style="color:#e6db74">&#39;$(System.DefaultWorkingDirectory)&#39;</span>
 </span></span></code></pre></div><h1 id="practical-example">Practical example</h1>
 <p>In the previous section I gave you a brief introduction about how to use both linters: Hadolint and dockerfile_lint.</p>
@@ -669,7 +669,7 @@ To solve this rule I&rsquo;m going to tell Hadolint to ignore it, like this:</p>
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      </span>      <span style="color:#ae81ff">docker run --rm -i --env HADOLINT_FAILURE_THRESHOLD=info --env HADOLINT_IGNORE=DL3059 hadolint/hadolint:latest &lt; Dockerfile</span>
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      docker run --rm -i --env HADOLINT_FAILURE_THRESHOLD=info --env HADOLINT_IGNORE=DL3059 hadolint/hadolint:latest &lt; Dockerfile</span>      
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">workingDirectory</span>: <span style="color:#e6db74">&#39;$(System.DefaultWorkingDirectory)&#39;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
@@ -677,13 +677,13 @@ To solve this rule I&rsquo;m going to tell Hadolint to ignore it, like this:</p>
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      </span>      <span style="color:#ae81ff">npm install -g dockerfile_lint</span>
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      npm install -g dockerfile_lint</span>      
 </span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Run semantic linter</span>
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      </span>      <span style="color:#ae81ff">dockerfile_lint -f Dockerfile  -r pipelines/linting_rules.yml</span>
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      dockerfile_lint -f Dockerfile  -r pipelines/linting_rules.yml</span>      
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">workingDirectory</span>: <span style="color:#e6db74">&#39;$(System.DefaultWorkingDirectory)&#39;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
@@ -691,7 +691,7 @@ To solve this rule I&rsquo;m going to tell Hadolint to ignore it, like this:</p>
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      </span>      <span style="color:#ae81ff">docker build -t  ${{ lower(variables.appName) }}:$(tag) .</span>
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      docker build -t  ${{ lower(variables.appName) }}:$(tag) .</span>      
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">workingDirectory</span>: <span style="color:#e6db74">&#39;$(System.DefaultWorkingDirectory)&#39;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
@@ -699,7 +699,7 @@ To solve this rule I&rsquo;m going to tell Hadolint to ignore it, like this:</p>
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">script</span>: |<span style="color:#e6db74">
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      </span>      <span style="color:#ae81ff">curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin</span>
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin</span>      
 </span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Run security scanner</span>
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
