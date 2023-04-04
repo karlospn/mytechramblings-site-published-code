@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>openai on my tech ramblings</title>
+    
+    
+    
+    <link>https://www.mytechramblings.com/tags/openai/</link>
+    <description>Recent content in openai on my tech ramblings</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 04 Apr 2023 10:01:11 +0200</lastBuildDate>
+    
+	<atom:link href="https://www.mytechramblings.com/tags/openai/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Building a serverless API that tweets about my blog posts using Azure OpenAI and LangChain</title>
+      <link>https://www.mytechramblings.com/posts/build-an-api-that-tweets-using-azure-openai-and-langchain/</link>
+      <pubDate>Tue, 04 Apr 2023 10:01:11 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/build-an-api-that-tweets-using-azure-openai-and-langchain/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          This post is going to show you a simple way of building a serverless Python API that uses LangChain and Azure OpenAI to create tweets summarizing the content of my blog posts.
+          
+        
+        </description>
+    </item>
+    
+  </channel>
+</rss>
