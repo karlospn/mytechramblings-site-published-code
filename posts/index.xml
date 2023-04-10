@@ -9,10 +9,50 @@
     <description>Recent content in Posts on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 04 Apr 2023 10:01:11 +0200</lastBuildDate>
+    <lastBuildDate>Mon, 10 Apr 2023 16:25:55 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Getting started with OpenTelemetry Metrics in .NET. Part 2: Instrumenting the BookStore API</title>
+      <link>https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-metrics-and-dotnet-part-2/</link>
+      <pubDate>Mon, 10 Apr 2023 16:25:55 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-metrics-and-dotnet-part-2/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          In this two-part series I’m going to show you how to use OpenTelemetry to generate custom metrics and how to visualize those metrics using Prometheus and Grafana. In part 2 I’ll be showing you how to add OpenTelemetry Metrics on a real life .NET 7 app and how to visualize those metrics using Prometheus and Grafana.
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>Getting started with OpenTelemetry Metrics in .NET. Part 1: Key concepts</title>
+      <link>https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-metrics-and-dotnet-part-1/</link>
+      <pubDate>Mon, 10 Apr 2023 16:20:55 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-metrics-and-dotnet-part-1/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          In this two-part series I’m going to show you how to use OpenTelemetry to generate custom metrics and how to visualize those metrics using Prometheus and Grafana. In part 1 I’ll be talking about some key concepts that you should know when using OpenTelemetry Metrics with dotnet.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>Building a serverless API that tweets about my blog posts using Azure OpenAI and LangChain</title>
@@ -169,46 +209,6 @@
         
         
           An AWS event indicates a change in a service, and in this post I want to show you how you can notify those events to a Microsoft Teams channel using AWS EventBridge and AWS Lambda.
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>Getting started with OpenTelemetry Metrics in .NET. Part 2: Instrumenting the BookStore API</title>
-      <link>https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-metrics-and-dotnet-part-2/</link>
-      <pubDate>Wed, 28 Sep 2022 10:01:53 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-metrics-and-dotnet-part-2/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          In this 2 part series-post I’m going to show you how to use OpenTelemetry to generate custom metrics and how to visualize those metrics using Prometheus and Grafana. In part 2 I’ll be showing you how to add OpenTelemetry Metrics on a real life .NET app and how to visualize those metrics using Prometheus and Grafana.
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>Getting started with OpenTelemetry Metrics in .NET. Part 1: Key concepts</title>
-      <link>https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-metrics-and-dotnet-part-1/</link>
-      <pubDate>Tue, 27 Sep 2022 10:01:32 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-metrics-and-dotnet-part-1/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          In this 2 part series-post I’m going to show you how to use OpenTelemetry to generate custom metrics and how to visualize those metrics using Prometheus and Grafana. In part 1 I’ll be talking about some key concepts that you should know when using OpenTelemetry Metrics with .NET.
           
         
         </description>

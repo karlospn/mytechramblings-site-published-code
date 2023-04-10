@@ -9,10 +9,130 @@
     <description>Recent content in Tags on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 04 Apr 2023 10:01:11 +0200</lastBuildDate>
+    <lastBuildDate>Mon, 10 Apr 2023 16:25:55 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>csharp</title>
+      <link>https://www.mytechramblings.com/tags/csharp/</link>
+      <pubDate>Mon, 10 Apr 2023 16:25:55 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/csharp/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>dotnet</title>
+      <link>https://www.mytechramblings.com/tags/dotnet/</link>
+      <pubDate>Mon, 10 Apr 2023 16:25:55 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/dotnet/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>grafana</title>
+      <link>https://www.mytechramblings.com/tags/grafana/</link>
+      <pubDate>Mon, 10 Apr 2023 16:25:55 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/grafana/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>metrics</title>
+      <link>https://www.mytechramblings.com/tags/metrics/</link>
+      <pubDate>Mon, 10 Apr 2023 16:25:55 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/metrics/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>OpenTelemetry</title>
+      <link>https://www.mytechramblings.com/tags/opentelemetry/</link>
+      <pubDate>Mon, 10 Apr 2023 16:25:55 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/opentelemetry/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>prometheus</title>
+      <link>https://www.mytechramblings.com/tags/prometheus/</link>
+      <pubDate>Mon, 10 Apr 2023 16:25:55 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/prometheus/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>ai</title>
@@ -140,26 +260,6 @@
       <pubDate>Tue, 28 Feb 2023 10:55:55 +0100</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/devops/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>dotnet</title>
-      <link>https://www.mytechramblings.com/tags/dotnet/</link>
-      <pubDate>Tue, 28 Feb 2023 10:55:55 +0100</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/dotnet/</guid>
       <description>
         
           
@@ -460,106 +560,6 @@
       <pubDate>Tue, 18 Oct 2022 10:01:12 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/teams/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>csharp</title>
-      <link>https://www.mytechramblings.com/tags/csharp/</link>
-      <pubDate>Wed, 28 Sep 2022 10:01:53 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/csharp/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>grafana</title>
-      <link>https://www.mytechramblings.com/tags/grafana/</link>
-      <pubDate>Wed, 28 Sep 2022 10:01:53 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/grafana/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>metrics</title>
-      <link>https://www.mytechramblings.com/tags/metrics/</link>
-      <pubDate>Wed, 28 Sep 2022 10:01:53 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/metrics/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>OpenTelemetry</title>
-      <link>https://www.mytechramblings.com/tags/opentelemetry/</link>
-      <pubDate>Wed, 28 Sep 2022 10:01:53 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/opentelemetry/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>prometheus</title>
-      <link>https://www.mytechramblings.com/tags/prometheus/</link>
-      <pubDate>Wed, 28 Sep 2022 10:01:53 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/prometheus/</guid>
       <description>
         
           

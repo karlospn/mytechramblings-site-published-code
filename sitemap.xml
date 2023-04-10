@@ -2,6 +2,39 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://www.mytechramblings.com/tags/csharp/</loc>
+    <lastmod>2023-04-10T16:25:55+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/dotnet/</loc>
+    <lastmod>2023-04-10T16:25:55+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-metrics-and-dotnet-part-2/</loc>
+    <lastmod>2023-04-10T16:25:55+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/grafana/</loc>
+    <lastmod>2023-04-10T16:25:55+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/metrics/</loc>
+    <lastmod>2023-04-10T16:25:55+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/</loc>
+    <lastmod>2023-04-10T16:25:55+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/opentelemetry/</loc>
+    <lastmod>2023-04-10T16:25:55+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/</loc>
+    <lastmod>2023-04-10T16:25:55+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/prometheus/</loc>
+    <lastmod>2023-04-10T16:25:55+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/</loc>
+    <lastmod>2023-04-10T16:25:55+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-metrics-and-dotnet-part-1/</loc>
+    <lastmod>2023-04-10T16:20:55+02:00</lastmod>
+  </url><url>
     <loc>https://www.mytechramblings.com/tags/ai/</loc>
     <lastmod>2023-04-04T10:01:11+02:00</lastmod>
   </url><url>
@@ -14,13 +47,7 @@
     <loc>https://www.mytechramblings.com/tags/langchain/</loc>
     <lastmod>2023-04-04T10:01:11+02:00</lastmod>
   </url><url>
-    <loc>https://www.mytechramblings.com/</loc>
-    <lastmod>2023-04-04T10:01:11+02:00</lastmod>
-  </url><url>
     <loc>https://www.mytechramblings.com/tags/openai/</loc>
-    <lastmod>2023-04-04T10:01:11+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/posts/</loc>
     <lastmod>2023-04-04T10:01:11+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/python/</loc>
@@ -29,13 +56,7 @@
     <loc>https://www.mytechramblings.com/tags/serverless/</loc>
     <lastmod>2023-04-04T10:01:11+02:00</lastmod>
   </url><url>
-    <loc>https://www.mytechramblings.com/tags/</loc>
-    <lastmod>2023-04-04T10:01:11+02:00</lastmod>
-  </url><url>
     <loc>https://www.mytechramblings.com/tags/devops/</loc>
-    <lastmod>2023-02-28T10:55:55+01:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/dotnet/</loc>
     <lastmod>2023-02-28T10:55:55+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/posts/how-to-integrate-your-roslyn-analyzers-with-sonarqube/</loc>
@@ -103,27 +124,6 @@
   </url><url>
     <loc>https://www.mytechramblings.com/tags/teams/</loc>
     <lastmod>2022-10-18T10:01:12+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/csharp/</loc>
-    <lastmod>2022-09-28T10:01:53+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-metrics-and-dotnet-part-2/</loc>
-    <lastmod>2022-09-28T10:01:53+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/grafana/</loc>
-    <lastmod>2022-09-28T10:01:53+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/metrics/</loc>
-    <lastmod>2022-09-28T10:01:53+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/opentelemetry/</loc>
-    <lastmod>2022-09-28T10:01:53+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/prometheus/</loc>
-    <lastmod>2022-09-28T10:01:53+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-metrics-and-dotnet-part-1/</loc>
-    <lastmod>2022-09-27T10:01:32+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/ecr/</loc>
     <lastmod>2022-09-08T11:06:41+02:00</lastmod>
