@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>Building a Q&amp;A app capable of answering questions related to your enterprise documents using Azure OpenAI&#39;s GPT-4, Pinecone and Streamlit. :: my tech ramblings — A blog for writing about my techie ramblings</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Just show me the code!
+As always, if you don’t care about the post I have uploaded the source code on my Github.
+I won&amp;rsquo;t tell you anything new if I say that there&amp;rsquo;s currently a boom of AI-related topics. Companies are frantically searching for use cases on how to integrate GPT or other LLM models into their ecosystem. Right now, everyone seems to be interested in working with LLM models in one way or another."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://www.mytechramblings.com/posts/building-qa-app-with-openai-pinecone-and-streamlit/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/assets/style.css">
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.mytechramblings.com/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://www.mytechramblings.com/img/favicon.png">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Building a Q&amp;A app capable of answering questions related to your enterprise documents using Azure OpenAI&#39;s GPT-4, Pinecone and Streamlit."/>
+<meta name="twitter:description" content="The purpose of this post is to show you how to build a basic GPT-4 Q&amp;A app in just a couple of hours that is capable of answering questions about your company&#39;s internal documents. We will use Azure OpenAI, Pinecone and Streamlit to build it."/>
+
+
+
+<meta property="og:title" content="Building a Q&amp;A app capable of answering questions related to your enterprise documents using Azure OpenAI&#39;s GPT-4, Pinecone and Streamlit." />
+<meta property="og:description" content="The purpose of this post is to show you how to build a basic GPT-4 Q&amp;A app in just a couple of hours that is capable of answering questions about your company&#39;s internal documents. We will use Azure OpenAI, Pinecone and Streamlit to build it." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.mytechramblings.com/posts/building-qa-app-with-openai-pinecone-and-streamlit/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-05-10T10:03:31+02:00" />
+<meta property="article:modified_time" content="2023-05-10T10:03:31+02:00" /><meta property="og:site_name" content="my tech ramblings" />
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://www.mytechramblings.com/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">my tech ramblings</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/building-qa-app-with-openai-pinecone-and-streamlit/">Building a Q&amp;A app capable of answering questions related to your enterprise documents using Azure OpenAI&rsquo;s GPT-4, Pinecone and Streamlit.</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2023-05-10
+        </span>
+
+        
+          
+            
+
+
+
+          
+        
+      
+
+      
+      
+        <span class="post-read-time">— 15 min read</span>
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          #<a href="https://www.mytechramblings.com/tags/python/">python</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/openai/">openai</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/ai/">ai</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/azure/">azure</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/embeddings/">embeddings</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/llm/">llm</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <blockquote>
+<p><strong>Just show me the code!</strong><br>
+As always, if you don’t care about the post I have uploaded the source code on my <a href="https://github.com/karlospn/building-qa-app-with-openai-pinecone-and-streamlit">Github</a>.</p>
+</blockquote>
+<p>I won&rsquo;t tell you anything new if I say that there&rsquo;s currently a boom of AI-related topics. Companies are frantically searching for use cases on how to integrate GPT or other LLM models into their ecosystem. Right now, everyone seems to be interested in working with LLM models in one way or another.</p>
+<p>One of the questions that I have been receiving quite frequently lately is how to build an application that uses a language model such as GPT-4 and is capable of answering questions about internal company topics.</p>
+<p>GPT models have extensive knowledge, but it&rsquo;s obviously a generalized knowledge. If you want to ask very specific questions about internal workflows, it&rsquo;s impossible for them to know the answers as they haven&rsquo;t been trained for them.</p>
+<p>Setting up an application that uses GPT-4 (the latest version of GPT) and is able to answer internal questions about your company&rsquo;s operations may seem like a complicated task, but the truth is that it&rsquo;s stupidly simple once you understand the three or four most important concepts.</p>
+<p>And that&rsquo;s precisely what I want to show you in this post. It may not be the most complex application out there, but in less than 2 hours, we will build an app that uses GPT-4 and semantic search to answer internal questions about your company.</p>
+<p>But before we start coding, I think it&rsquo;s necessary to explain a couple of concepts to better understand what we&rsquo;re going to do here.</p>
+<h1 id="how-can-gpt-4-respond-to-a-question-about-topics-it-doesnt-know-about"><strong>How can GPT-4 respond to a question about topics it doesn&rsquo;t know about?</strong></h1>
+<p>We have two options for enabling our LLM model to understand and answer our private domain-specific questions:</p>
+<ul>
+<li><strong>Fine-tune</strong> the LLM on text data covering the topic mentioned.</li>
+<li>Using <strong>Retrieval Augmented Generation (RAG)</strong>, a technique that implements an information retrieval component to the generation process. Allowing us to retrieve relevant information and feed this information into the generation model as a secondary source of information.</li>
+</ul>
+<p>We will go with option 2.</p>
+<p>The RAG process might sound daunting at first, but it really is not. The process is quite simple once we try to explain it in a simple way, here’s a summary of how it works:</p>
+<ul>
+<li>Run a semantic search against your knowledge database to find content that looks like it could be relevant to the user’s question.</li>
+<li>Construct a prompt consisting of the data extracted from the knowledge database, followed by &ldquo;Given the above content, answer the following question&rdquo; and then the user’s question.</li>
+<li>Send the prompt through to GPT-4 and see what answer comes back.</li>
+</ul>
+<p>In the end, all we are doing is extracting data from a database that looks like it could be relevant to the user’s question, constructing a prompt that contains the data from the database and telling the LLM model that it must create the response using only the data present in the prompt.</p>
+<p>Here&rsquo;s an example of the prompt:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>Answer the following question based on the context below.
+</span></span><span style="display:flex;"><span>If you don&#39;t know the answer, just say that you don&#39;t know. 
+</span></span><span style="display:flex;"><span>Don&#39;t try to make up an answer. Do not answer beyond this context.
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>QUESTION: {User Question}                                            
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>CONTEXT:
+</span></span><span style="display:flex;"><span>{Data extracted from the knowledge database}
+</span></span></code></pre></div><h1 id="knowledge-database-and-embeddings"><strong>Knowledge database and embeddings</strong></h1>
+<p>With RAG the retrieval of relevant information requires an external &ldquo;Knowledge database&rdquo;, a place where we can store and use to efficiently retrieve information. <br>
+We can think of this database as the external long-term memory of our LLM.</p>
+<p>To retrieve information that is semantically related to our questions, we&rsquo;re going to use &ldquo;vector embeddings&rdquo;.</p>
+<h2 id="what-are-vector-embeddings"><strong>What are vector embeddings?</strong></h2>
+<p>Vector embeddings are a way to represent words and whole sentences in a numerical manner.</p>
+<p>We understand that computers comprehend numerical language, and as a result, we attempt to encode words in a sentence into numbers to enable the computer to read and process them.</p>
+<p>However, we require computers to accomplish more than just reading and processing. We need them to establish connections between each word in a sentence or document, capture its context, and recognize its semantic and syntactic features and similarities.</p>
+<p>To achieve this level of semantic and syntactic relationship, we must go beyond simply mapping a word to a set of numbers. We require a more extensive representation of these numbers that can reflect both the semantic and syntactic properties of the text.</p>
+<p>We need vectors embeddings.</p>
+<p>To create these vectors embeddings and store it in a knowledge database, we follow a simple three-step process:</p>
+<ol>
+<li>Retrieve a paragraph from the document that we want to store in the knowledge database.</li>
+<li>Use the <code>text-embedding-ada-002</code> model to convert it into a vector embeddings.</li>
+<li>Store the resulting vector embeddings into the knowledge database.</li>
+</ol>
+<p>We then repeat these three steps for each document in the set until all of them have been stored in the knowledge database.</p>
+<h2 id="knowledge-database"><strong>Knowledge database</strong></h2>
+<p>Vector databases are used to store and query vectors efficiently. They allow us to search for similar vectors based on their similarity in a high-dimensional space.</p>
+<p>We&rsquo;re going to use one of those vector database as our knowledge database, right now there are quite a few options available, but in this post, we will use <a href="https://www.pinecone.io/">Pinecone</a> as our vector database.</p>
+<p>Why choose Pinecone? Because it is a serverless vector database, which means that there is no infrastructure and maintainance required.</p>
+<h1 id="how-the-app-works"><strong>How the app works</strong></h1>
+<p>After breaking down what I believe are the most important concepts on the topic, let&rsquo;s start developing our app.</p>
+<p>To build it, we&rsquo;re going to make use of just 3 technologies:</p>
+<ul>
+<li>Azure OpenAI to interact with the LLM models.</li>
+<li>Pinecone to set up a knowledge database.</li>
+<li>Streamlit to build a simple user interface.</li>
+</ul>
+<p>The following diagram shows what we are going to build.</p>
+<p><img src="/img/qa-gpt-app-diagram.png" alt="app-diagram"></p>
+<p>To simplify the development of the application, we will divide the app functionality into 2 processes:</p>
+<ul>
+<li>An <strong>ingestion process</strong> that will be responsible for:
+<ul>
+<li>Reading our private documents (PDFs, words, wiki, JIRA, or whatever kind of document we want to ingest).</li>
+<li>Converting the docs into vector embeddings using Azure OpenAI <code>text-embedding-ada-002</code> model.</li>
+<li>Saving the vector embeddings into Pinecone.</li>
+</ul>
+</li>
+<li>An <strong>application that allows a user to ask questions about the ingested data</strong>. This application has to:
+<ul>
+<li>Transform the user&rsquo;s query into a vector embedding using Azure OpenAI <code>text-embedding-ada-002</code> model.</li>
+<li>Retrieve the relevant information to the given query from PineCone.</li>
+<li>Assemble a prompt.</li>
+<li>Send the prompt through to GPT-4 and get the answer that comes back.</li>
+</ul>
+</li>
+</ul>
+<h1 id="building-the-ingest-process"><strong>Building the ingest process</strong></h1>
+<p>Before start writing code, we have to create a Pinecone database, a Pinecone Index and deploy a <code>text-embedding-ada-002</code> model in our <code>Azure OpenAI</code> instance.</p>
+<h2 id="1-create-the-pinecone-index"><strong>1. Create the Pinecone index</strong></h2>
+<p>Let&rsquo;s start by creating the knowledge database.</p>
+<p>Pinecone offers a free plan that let&rsquo;s you use the fully managed service for small workloads without any cost, so that&rsquo;s a good option if you just want to tinker with it for a while and nothing more.</p>
+<p>Once you have sign-in, you have to create a new index using cosine as metric and 1536 dimensions.</p>
+<ul>
+<li>
+<p>Why 1536 dimensions specifically? Because the embedding model we will use to create the vectors, <code>text-embedding-ada-002</code>, outputs vectors with 1536 dimensions.</p>
+</li>
+<li>
+<p>The cosine metric will be used to calculate similarity between vectors.</p>
+</li>
+</ul>
+<p><img src="/img/qa-gpt-app-pinecone-index-creation.png" alt="pinecone-creation"></p>
+<p>After waiting a little bit the Pinecone Index we&rsquo;ll be ready for use.</p>
+<p><img src="/img/qa-gpt-app-pinecone-index.png" alt="pinecone-ready"></p>
+<h2 id="2-deploy-a-text-embedding-ada-002-model-on-azure-openai"><strong>2. Deploy a text-embedding-ada-002 model on Azure OpenAI</strong></h2>
+<p>The next step will be to deploy a <code>text-embedding-ada-002</code> model on <code>Azure OpenAI</code>. This model will be used to transform text into vector embeddings.</p>
+<p>Go to Azure OpenAI &gt; Navigate to &ldquo;Model Deployments&rdquo; and deploy a <code>text-embedding-ada-002</code> model.</p>
+<p><img src="/img/qa-gpt-app-openai-deployments.png" alt="model-deployment"></p>
+<h2 id="3-build-the-ingest-data-process-using-langchain"><strong>3. Build the ingest data process using LangChain</strong></h2>
+<blockquote>
+<p>If you want to take a closer look at the source code or want to try running it on your machine, you can visit my <a href="https://github.com/karlospn/building-qa-app-with-openai-pinecone-and-streamlit/blob/main/Ingest%20data%20into%20Pinecone.ipynb">Github</a> where you&rsquo;ll find a <code>Jupyter Notebook</code> that runs the ingest process.</p>
+</blockquote>
+<p>These are the steps involved in the ingest process:</p>
+<ul>
+<li>Read our private documents (PDFs, words, wiki, JIRA, or whatever kind of document we want to ingest).</li>
+<li>Break the documents down into smaller text chunks.</li>
+<li>Convert the chunks of text into vector embeddings using the Azure OpenAI <code>text-embedding-ada-002</code> model.</li>
+<li>Store the resulting vector embeddings in Pinecone.</li>
+</ul>
+<p>Let&rsquo;s break down step by step the data ingestion process into Pinecone.</p>
+<h3 id="31-read-the-document-files-and-split-them-into-chunks"><strong>3.1. Read the document files and split them into chunks</strong></h3>
+<p>The first step is to read whatever internal documents we want to ingest (for this example I&rsquo;m using the Microsoft Microservices book) and split them into multiple chunks of text.</p>
+<ul>
+<li>To read and parse the documents, I will be using the <a href="https://python.langchain.com/en/latest/index.html">LangChain</a> library.</li>
+</ul>
+<p>We split the documents into multiple chunks so that the semantic search is able to return only the paragraphs of information that are relevant to our query.<br>
+It would not make any sense to store entire documents without splitting them into multiple chunks, since any semantic search would then return the entire content of the book/document.</p>
+<p>For this example and to make it as simple as possible, I am simply splitting the document into chunks of 1000 characters, but if we wanted to do it better we could, for example, split it by paragraphs.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>loader <span style="color:#f92672">=</span> UnstructuredPDFLoader(<span style="color:#e6db74">&#34;./docs/NET-Microservices-Architecture-for-Containerized-NET-Applications.pdf&#34;</span>)
+</span></span><span style="display:flex;"><span>data <span style="color:#f92672">=</span> loader<span style="color:#f92672">.</span>load()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>text_splitter <span style="color:#f92672">=</span> RecursiveCharacterTextSplitter(chunk_size<span style="color:#f92672">=</span><span style="color:#ae81ff">1000</span>, chunk_overlap<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>chunks <span style="color:#f92672">=</span> text_splitter<span style="color:#f92672">.</span>split_documents(data)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print (<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;You have a total of </span><span style="color:#e6db74">{</span>len(chunks)<span style="color:#e6db74">}</span><span style="color:#e6db74"> chunks&#39;</span>)
+</span></span></code></pre></div><h3 id="32-iniatilize-openai-client-and-pinecone-client"><strong>3.2. Iniatilize OpenAI client and PineCone client</strong></h3>
+<p>The second step is to iniatilize the OpenAI client and the PineCone client</p>
+<p>There are a few parameters needed to initalize the OpenAI client:</p>
+<ul>
+<li><code>AZURE_OPENAI_APIKEY</code>: Azure OpenAI ApiKey.</li>
+<li><code>AZURE_OPENAI_BASE_URI</code>: Azure OpenAI URI.</li>
+<li><code>AZURE_OPENAI_EMBEDDINGS_MODEL_NAME</code>: The <code>text-embedding-ada-002</code> model deployment name.</li>
+</ul>
+<p>To use the <code>openai</code> python library alongside with Azure OpenAI, the parameter <code>openai_api_type</code> must be always set to <code>azure</code> and the parameter <code>chunk_size</code> must be always set to <code>1</code>.</p>
+<p>There is also a couple parameters required to initialize the Pinecone client:</p>
+<ul>
+<li><code>PINECONE_API_KEY</code>: Pinecone ApiKey.</li>
+<li><code>PINECONE_ENVIRONMENT</code>: Pinecone index environment.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>embeddings <span style="color:#f92672">=</span> OpenAIEmbeddings(
+</span></span><span style="display:flex;"><span>    openai_api_base<span style="color:#f92672">=</span>AZURE_OPENAI_API_BASE, 
+</span></span><span style="display:flex;"><span>    openai_api_key<span style="color:#f92672">=</span>AZURE_OPENAI_API_KEY, 
+</span></span><span style="display:flex;"><span>    model<span style="color:#f92672">=</span>AZURE_OPENAI_EMBEDDINGS_MODEL_NAME, 
+</span></span><span style="display:flex;"><span>    openai_api_type<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;azure&#39;</span>,
+</span></span><span style="display:flex;"><span>    chunk_size<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pinecone<span style="color:#f92672">.</span>init(
+</span></span><span style="display:flex;"><span>    api_key<span style="color:#f92672">=</span>PINECONE_API_KEY,
+</span></span><span style="display:flex;"><span>    environment<span style="color:#f92672">=</span>PINECONE_API_ENV  
+</span></span><span style="display:flex;"><span>)
+</span></span></code></pre></div><h3 id="33-convert-the-chunks-of-text-into-vector-embeddings-and-store-it-into-pinecone"><strong>3.3. Convert the chunks of text into vector embeddings and store it into Pinecone</strong></h3>
+<p>The last step is to convert all the chunks of text into vector embeddings and store them into Pinecone</p>
+<p>This last part may seem complicated, but actually it&rsquo;s quite simple. With just one line of code and using the Pinecone client, we can do it.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>docsearch <span style="color:#f92672">=</span> Pinecone<span style="color:#f92672">.</span>from_texts([t<span style="color:#f92672">.</span>page_content <span style="color:#66d9ef">for</span> t <span style="color:#f92672">in</span> chunks], embeddings, index_name<span style="color:#f92672">=</span>PINECONE_INDEX_NAME)
+</span></span></code></pre></div><p>As you can see, the entire process of converting a few internal documents into vectors and saving them in Pinecone is super simple, it&rsquo;s no more than 10 lines of code!</p>
+<p>Now that we have the data stored in our knowledge database, let&rsquo;s build an application that makes use of it.</p>
+<h1 id="building-the-query-app"><strong>Building the query app</strong></h1>
+<p>Before start writing the app, we have to deploy a <code>gpt-4</code> model in our <code>Azure OpenAI</code> instance.</p>
+<h2 id="1-deploy-a-gpt-4-model-on-azure-openai"><strong>1. Deploy a GPT-4 model on Azure OpenAI</strong></h2>
+<p>Let&rsquo;s start by deploying a <code>gpt-4</code> LLM model on <code>Azure OpenAI</code>.
+This LLM model will be used to generate the response to the user questions.</p>
+<p>Go to Azure OpenAI &gt; Navigate to &ldquo;Model Deployments&rdquo; and deploy a <code>gpt-4</code> or <code>gpt-4-32k</code> model.</p>
+<p><img src="/img/qa-gpt-app-openai-deployments.png" alt="model-deployment"></p>
+<h2 id="2-build-the-querying-app-using-streamlit"><strong>2. Build the querying app using Streamlit</strong></h2>
+<p>We are going to set up a simple form with a text input field where the users can type the question they want to ask and a submit button. <br>
+Once a user types a question in the text input and presses the submit button, the following steps will be executed:</p>
+<ul>
+<li>Transform the user&rsquo;s query into a vector embedding using Azure OpenAI <code>text-embedding-ada-002</code> model.</li>
+<li>Retrieve the relevant information to the user query from PineCone.</li>
+<li>Assemble a prompt.</li>
+<li>Send the prompt through to GPT-4 and get the answer that comes back.</li>
+</ul>
+<p>To build the UI we&rsquo;re using <a href="https://streamlit.io/">Streamlit</a>. I decided to use Streamlit because I can build a simple and functional form with just a few lines of Python.</p>
+<p>Let me show you the final result.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> streamlit <span style="color:#66d9ef">as</span> st
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> openai
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> pinecone
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> os
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Check if environment variables are present. If not, throw an error</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;PINECONE_API_KEY&#39;</span>) <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>    st<span style="color:#f92672">.</span>error(<span style="color:#e6db74">&#34;PINECONE_API_KEY not set. Please set this environment variable and restart the app.&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;PINECONE_ENVIRONMENT&#39;</span>) <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>    st<span style="color:#f92672">.</span>error(<span style="color:#e6db74">&#34;PINECONE_ENVIRONMENT not set. Please set this environment variable and restart the app.&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;PINECONE_INDEX&#39;</span>) <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>    st<span style="color:#f92672">.</span>error(<span style="color:#e6db74">&#34;PINECONE_INDEX not set. Please set this environment variable and restart the app.&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;AZURE_OPENAI_APIKEY&#39;</span>) <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>    st<span style="color:#f92672">.</span>error(<span style="color:#e6db74">&#34;AZURE_OPENAI_APIKEY not set. Please set this environment variable and restart the app.&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;AZURE_OPENAI_BASE_URI&#39;</span>) <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>    st<span style="color:#f92672">.</span>error(<span style="color:#e6db74">&#34;AZURE_OPENAI_BASE_URI not set. Please set this environment variable and restart the app.&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;AZURE_OPENAI_EMBEDDINGS_MODEL_NAME&#39;</span>) <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>    st<span style="color:#f92672">.</span>error(<span style="color:#e6db74">&#34;AZURE_OPENAI_EMBEDDINGS_MODEL_NAME not set. Please set this environment variable and restart the app.&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;AZURE_OPENAI_GPT4_MODEL_NAME&#39;</span>) <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>    st<span style="color:#f92672">.</span>error(<span style="color:#e6db74">&#34;AZURE_OPENAI_GPT4_MODEL_NAME not set. Please set this environment variable and restart the app.&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Add the UI title, text input and search button</span>
+</span></span><span style="display:flex;"><span>st<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#34;Q&amp;A App 🔎&#34;</span>)
+</span></span><span style="display:flex;"><span>query <span style="color:#f92672">=</span> st<span style="color:#f92672">.</span>text_input(<span style="color:#e6db74">&#34;What do you want to know?&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> st<span style="color:#f92672">.</span>button(<span style="color:#e6db74">&#34;Search&#34;</span>):
+</span></span><span style="display:flex;"><span>   
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Get Pinecone API environment variables</span>
+</span></span><span style="display:flex;"><span>    pinecone_api <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;PINECONE_API_KEY&#39;</span>)
+</span></span><span style="display:flex;"><span>    pinecone_env <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;PINECONE_ENVIRONMENT&#39;</span>)
+</span></span><span style="display:flex;"><span>    pinecone_index <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;PINECONE_INDEX&#39;</span>)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Get Azure OpenAI environment variables</span>
+</span></span><span style="display:flex;"><span>    openai<span style="color:#f92672">.</span>api_key <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;AZURE_OPENAI_APIKEY&#39;</span>)
+</span></span><span style="display:flex;"><span>    openai<span style="color:#f92672">.</span>api_base <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;AZURE_OPENAI_BASE_URI&#39;</span>)
+</span></span><span style="display:flex;"><span>    openai<span style="color:#f92672">.</span>api_type <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;azure&#39;</span>
+</span></span><span style="display:flex;"><span>    openai<span style="color:#f92672">.</span>api_version <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;2023-03-15-preview&#39;</span>
+</span></span><span style="display:flex;"><span>    embeddings_model_name <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;AZURE_OPENAI_EMBEDDINGS_MODEL_NAME&#39;</span>)
+</span></span><span style="display:flex;"><span>    gpt4_model_name <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;AZURE_OPENAI_GPT4_MODEL_NAME&#39;</span>)
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Initialize Pinecone client and set index</span>
+</span></span><span style="display:flex;"><span>    pinecone<span style="color:#f92672">.</span>init(api_key<span style="color:#f92672">=</span>pinecone_api, environment<span style="color:#f92672">=</span>pinecone_env)
+</span></span><span style="display:flex;"><span>    index <span style="color:#f92672">=</span> pinecone<span style="color:#f92672">.</span>Index(pinecone_index)
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Convert your query into a vector using Azure OpenAI</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>        query_vector <span style="color:#f92672">=</span> openai<span style="color:#f92672">.</span>Embedding<span style="color:#f92672">.</span>create(
+</span></span><span style="display:flex;"><span>            input<span style="color:#f92672">=</span>query,
+</span></span><span style="display:flex;"><span>            engine<span style="color:#f92672">=</span>embeddings_model_name,
+</span></span><span style="display:flex;"><span>        )[<span style="color:#e6db74">&#34;data&#34;</span>][<span style="color:#ae81ff">0</span>][<span style="color:#e6db74">&#34;embedding&#34;</span>]
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span> <span style="color:#66d9ef">as</span> e:
+</span></span><span style="display:flex;"><span>        st<span style="color:#f92672">.</span>error(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Error calling OpenAI Embedding API: </span><span style="color:#e6db74">{</span>e<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>        st<span style="color:#f92672">.</span>stop()
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Search for the 3 most similar vectors in Pinecone</span>
+</span></span><span style="display:flex;"><span>    search_response <span style="color:#f92672">=</span> index<span style="color:#f92672">.</span>query(
+</span></span><span style="display:flex;"><span>        top_k<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>,
+</span></span><span style="display:flex;"><span>        vector<span style="color:#f92672">=</span>query_vector,
+</span></span><span style="display:flex;"><span>        include_metadata<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Combine the 3 vectors into a single text variable that it will be added in the prompt</span>
+</span></span><span style="display:flex;"><span>    chunks <span style="color:#f92672">=</span> [item[<span style="color:#e6db74">&#34;metadata&#34;</span>][<span style="color:#e6db74">&#39;text&#39;</span>] <span style="color:#66d9ef">for</span> item <span style="color:#f92672">in</span> search_response[<span style="color:#e6db74">&#39;matches&#39;</span>]]
+</span></span><span style="display:flex;"><span>    joined_chunks <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">.</span>join(chunks)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Write which are the selected chunks in the UI for debugging purposes</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">with</span> st<span style="color:#f92672">.</span>expander(<span style="color:#e6db74">&#34;Chunks&#34;</span>):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> i, t <span style="color:#f92672">in</span> enumerate(chunks):
+</span></span><span style="display:flex;"><span>            t <span style="color:#f92672">=</span> t<span style="color:#f92672">.</span>replace(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74">&#34; &#34;</span>)
+</span></span><span style="display:flex;"><span>            st<span style="color:#f92672">.</span>write(<span style="color:#e6db74">&#34;Chunk &#34;</span>, i, <span style="color:#e6db74">&#34; - &#34;</span>, t)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">with</span> st<span style="color:#f92672">.</span>spinner(<span style="color:#e6db74">&#34;Summarizing...&#34;</span>):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># Build the prompt</span>
+</span></span><span style="display:flex;"><span>            prompt <span style="color:#f92672">=</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            Answer the following question based on the context below.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            If you don&#39;t know the answer, just say that you don&#39;t know. Don&#39;t try to make up an answer. Do not answer beyond this context.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            ---
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            QUESTION: </span><span style="color:#e6db74">{</span>query<span style="color:#e6db74">}</span><span style="color:#e6db74">                                            
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            ---
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            CONTEXT:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            </span><span style="color:#e6db74">{</span>joined_chunks<span style="color:#e6db74">}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># Run chat completion using GPT-4</span>
+</span></span><span style="display:flex;"><span>            response <span style="color:#f92672">=</span> openai<span style="color:#f92672">.</span>ChatCompletion<span style="color:#f92672">.</span>create(
+</span></span><span style="display:flex;"><span>                engine<span style="color:#f92672">=</span>gpt4_model_name,
+</span></span><span style="display:flex;"><span>                messages<span style="color:#f92672">=</span>[
+</span></span><span style="display:flex;"><span>                    { <span style="color:#e6db74">&#34;role&#34;</span>: <span style="color:#e6db74">&#34;system&#34;</span>, <span style="color:#e6db74">&#34;content&#34;</span>:  <span style="color:#e6db74">&#34;You are a Q&amp;A assistant.&#34;</span> },
+</span></span><span style="display:flex;"><span>                    { <span style="color:#e6db74">&#34;role&#34;</span>: <span style="color:#e6db74">&#34;user&#34;</span>, <span style="color:#e6db74">&#34;content&#34;</span>: prompt }
+</span></span><span style="display:flex;"><span>                ],
+</span></span><span style="display:flex;"><span>                temperature<span style="color:#f92672">=</span><span style="color:#ae81ff">0.7</span>,
+</span></span><span style="display:flex;"><span>                max_tokens<span style="color:#f92672">=</span><span style="color:#ae81ff">1000</span>
+</span></span><span style="display:flex;"><span>            )
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># Get the response from GPT-4</span>
+</span></span><span style="display:flex;"><span>            st<span style="color:#f92672">.</span>markdown(<span style="color:#e6db74">&#34;### Answer:&#34;</span>)
+</span></span><span style="display:flex;"><span>            st<span style="color:#f92672">.</span>write(response<span style="color:#f92672">.</span>choices[<span style="color:#ae81ff">0</span>][<span style="color:#e6db74">&#39;message&#39;</span>][<span style="color:#e6db74">&#39;content&#39;</span>])
+</span></span><span style="display:flex;"><span>   
+</span></span><span style="display:flex;"><span>   
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span> <span style="color:#66d9ef">as</span> e:
+</span></span><span style="display:flex;"><span>            st<span style="color:#f92672">.</span>error(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Error with OpenAI Chat Completion: </span><span style="color:#e6db74">{</span>e<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span></code></pre></div><p>If you have taken a look at the code block above, you may have seen that the entirety of the query app is no more than 100 lines of code and also it is quite simple to understand.</p>
+<p>But nonetheless, I&rsquo;ll try to explain the most relevant parts.</p>
+<h2 id="21-transform-the-users-query-into-a-vector-embedding"><strong>2.1. Transform the user&rsquo;s query into a vector embedding</strong></h2>
+<p>To transform the user question into a vector embedding, we&rsquo;ll be using the <code>text-embedding-ada-002</code> model from Azure OpenAI.</p>
+<p>To create the embedding we just have to invoke the <code>Embedding.create</code> method from the <code>openai</code> Python package. This method needs two parameters: the LLM model that will be used to generate the vector embedding and the text we want to transform.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># Convert your query into a vector using Azure OpenAI</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>    query_vector <span style="color:#f92672">=</span> openai<span style="color:#f92672">.</span>Embedding<span style="color:#f92672">.</span>create(
+</span></span><span style="display:flex;"><span>        input<span style="color:#f92672">=</span>query,
+</span></span><span style="display:flex;"><span>        engine<span style="color:#f92672">=</span>embeddings_model_name,
+</span></span><span style="display:flex;"><span>    )[<span style="color:#e6db74">&#34;data&#34;</span>][<span style="color:#ae81ff">0</span>][<span style="color:#e6db74">&#34;embedding&#34;</span>]
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span> <span style="color:#66d9ef">as</span> e:
+</span></span><span style="display:flex;"><span>    st<span style="color:#f92672">.</span>error(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Error calling OpenAI Embedding API: </span><span style="color:#e6db74">{</span>e<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>    st<span style="color:#f92672">.</span>stop()
+</span></span></code></pre></div><h2 id="22-retrieve-the-relevant-information-from-pinecone-and-assemble-the-prompt"><strong>2.2. Retrieve the relevant information from Pinecone and assemble the prompt</strong></h2>
+<p>The <code>index.query</code> method from the Pinecone client allow us to retrieve the relevant information from the knowledge database. <br>
+The <code>top_k</code> parameter is used to specify how many vectors we want to retrieve, for this example we&rsquo;re retrieving the top 3 vectors that are most similar to our question.</p>
+<ul>
+<li>Why did we retrieve 3 vectors from our knowledge database instead of just one?</li>
+</ul>
+<p>When we saved the document, we partitioned the data into multiple chunks, so it&rsquo;s possible that the complete answer to our question is not located in just one vector but in more than one. That&rsquo;s why we&rsquo;re retrieving 3 vectors.</p>
+<p>Once we have retrieved the vectors from Pinecone, we merge them into a single &lsquo;string&rsquo;. This &lsquo;string&rsquo; represents the context that we will add to the prompt and in which we will specify to GPT-4 that it can only respond using the information given in this context, and in no case can use any data from outside this context to generate the answer to our question.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>search_response <span style="color:#f92672">=</span> index<span style="color:#f92672">.</span>query(
+</span></span><span style="display:flex;"><span>    top_k<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>,
+</span></span><span style="display:flex;"><span>    vector<span style="color:#f92672">=</span>query_vector,
+</span></span><span style="display:flex;"><span>    include_metadata<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>chunks <span style="color:#f92672">=</span> [item[<span style="color:#e6db74">&#34;metadata&#34;</span>][<span style="color:#e6db74">&#39;text&#39;</span>] <span style="color:#66d9ef">for</span> item <span style="color:#f92672">in</span> search_response[<span style="color:#e6db74">&#39;matches&#39;</span>]]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Combine texts into a single chunk to insert in the prompt</span>
+</span></span><span style="display:flex;"><span>joined_chunks <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">.</span>join(chunks)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Build the prompt</span>
+</span></span><span style="display:flex;"><span>prompt <span style="color:#f92672">=</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Answer the following question based on the context below.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">If you don&#39;t know the answer, just say that you don&#39;t know. Don&#39;t try to make up an answer. Do not answer beyond this context.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">---
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">QUESTION: </span><span style="color:#e6db74">{</span>query<span style="color:#e6db74">}</span><span style="color:#e6db74">                                            
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">---
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">CONTEXT:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#e6db74">{</span>joined_chunks<span style="color:#e6db74">}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;&#34;&#34;</span>
+</span></span></code></pre></div><h2 id="22-send-the-prompt-to-gpt-4-and-get-the-answer-that-comes-back"><strong>2.2. Send the prompt to GPT-4 and get the answer that comes back</strong></h2>
+<p>The last step is sending the prompt to GPT-4 using the <code>ChatCompletion.create</code> method from the <code>openai</code> Python package and get the answer that comes back.</p>
+<p>The GPT-4 model accepts messages formatted as a conversation. The messages parameter must be an array of dictionaries with represents a conversation organized by role.</p>
+<p>The system role also known as the system message must be included at the beginning of the array. This message provides the initial instructions to the model.</p>
+<p>After the system role, you can include a series of messages between the user and the assistant, in this case we are adding the prompt that we have built in the previous section.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># Run chat completion using GPT-4</span>
+</span></span><span style="display:flex;"><span>response <span style="color:#f92672">=</span> openai<span style="color:#f92672">.</span>ChatCompletion<span style="color:#f92672">.</span>create(
+</span></span><span style="display:flex;"><span>    engine<span style="color:#f92672">=</span>gpt4_model_name,
+</span></span><span style="display:flex;"><span>    messages<span style="color:#f92672">=</span>[
+</span></span><span style="display:flex;"><span>        { <span style="color:#e6db74">&#34;role&#34;</span>: <span style="color:#e6db74">&#34;system&#34;</span>, <span style="color:#e6db74">&#34;content&#34;</span>:  <span style="color:#e6db74">&#34;You are a Q&amp;A assistant.&#34;</span> },
+</span></span><span style="display:flex;"><span>        { <span style="color:#e6db74">&#34;role&#34;</span>: <span style="color:#e6db74">&#34;user&#34;</span>, <span style="color:#e6db74">&#34;content&#34;</span>: prompt }
+</span></span><span style="display:flex;"><span>    ],
+</span></span><span style="display:flex;"><span>    temperature<span style="color:#f92672">=</span><span style="color:#ae81ff">0.7</span>,
+</span></span><span style="display:flex;"><span>    max_tokens<span style="color:#f92672">=</span><span style="color:#ae81ff">1000</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Get the response from GPT-4</span>
+</span></span><span style="display:flex;"><span>st<span style="color:#f92672">.</span>markdown(<span style="color:#e6db74">&#34;### Answer:&#34;</span>)
+</span></span><span style="display:flex;"><span>st<span style="color:#f92672">.</span>write(response<span style="color:#f92672">.</span>choices[<span style="color:#ae81ff">0</span>][<span style="color:#e6db74">&#39;message&#39;</span>][<span style="color:#e6db74">&#39;content&#39;</span>])
+</span></span></code></pre></div><p>And finally, all we have to do is to obtain the response returned by GPT-4 and display it on the screen.</p>
+<h1 id="6-testing-the-query-app"><strong>6. Testing the query app</strong></h1>
+<p>Let&rsquo;s test if the query app works correctly.</p>
+<blockquote>
+<p>Remember that the document we used to fill the knowledge base is the Microsoft .NET Microservices book, so all questions we ask should be about that specific topic.</p>
+</blockquote>
+<ul>
+<li>Question 1:</li>
+</ul>
+<p><img src="/img/qa-gpt-app-streamlit-result-1.png" alt="app-result-1"></p>
+<p>For every question we can also inspect which chunks of text are being retrieved from Pinecone and feed to GPT-4 to build the response.</p>
+<p><img src="/img/qa-gpt-app-streamlit-result-chunks.png" alt="app-result-chunk"></p>
+<p>Let&rsquo;s try to make a couple more questions.</p>
+<ul>
+<li>Question 2:</li>
+</ul>
+<p><img src="/img/qa-gpt-app-streamlit-result-2.png" alt="app-result-2"></p>
+<ul>
+<li>Question 3:</li>
+</ul>
+<p><img src="/img/qa-gpt-app-streamlit-result-3.png" alt="app-result-3"></p>
+<ul>
+<li>Question 4:</li>
+</ul>
+<p><img src="/img/qa-gpt-app-streamlit-result-4.png" alt="app-result-4"></p>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-metrics-and-dotnet-part-2/">
+                  <span class="button__text">Getting started with OpenTelemetry Metrics in .NET. Part 2: Instrumenting the BookStore API</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2023 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>Theme created by <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://www.mytechramblings.com/assets/main.js"></script>
+<script src="https://www.mytechramblings.com/assets/prism.js"></script>
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('carlospons', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Donate',
+    'floating-chat.donateButton.background-color': '#ff5f5f',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
+
+      
+    </div>
+
+    
+      
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-170300931-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+    
+  </body>
+</html>

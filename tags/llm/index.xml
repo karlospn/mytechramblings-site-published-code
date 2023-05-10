@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>ai on my tech ramblings</title>
+    <title>llm on my tech ramblings</title>
     
     
     
-    <link>https://www.mytechramblings.com/tags/ai/</link>
-    <description>Recent content in ai on my tech ramblings</description>
+    <link>https://www.mytechramblings.com/tags/llm/</link>
+    <description>Recent content in llm on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 10 May 2023 10:03:31 +0200</lastBuildDate>
     
-	<atom:link href="https://www.mytechramblings.com/tags/ai/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://www.mytechramblings.com/tags/llm/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -29,26 +29,6 @@
         
         
           The purpose of this post is to show you how to build a basic GPT-4 Q&amp;A app in just a couple of hours that is capable of answering questions about your company&#39;s internal documents. We will use Azure OpenAI, Pinecone and Streamlit to build it.
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>Building a serverless API that tweets about my blog posts using Azure OpenAI and LangChain</title>
-      <link>https://www.mytechramblings.com/posts/build-an-api-that-tweets-using-azure-openai-and-langchain/</link>
-      <pubDate>Tue, 04 Apr 2023 10:01:11 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/posts/build-an-api-that-tweets-using-azure-openai-and-langchain/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          This post is going to show you a simple way of building a serverless Python API that uses LangChain and Azure OpenAI to create tweets summarizing the content of my blog posts.
           
         
         </description>
