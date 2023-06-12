@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>Testing Chiseled Ubuntu container images with .NET :: my tech ramblings — A blog for writing about my techie ramblings</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="What are Chiseled Ubuntu images? Chiseled Ubuntu images are inspired by the &amp;ldquo;distroless&amp;rdquo; concept, meaning they contain only your application and its runtime dependencies, without any additional operating system-level packages or libraries. This makes them lightweight, secure, and efficient.
+Chiseled Ubuntu images will enhance the security of your containers thanks to:
+Ultra-small size, which reduces the potential attack surface. No package manager or shell installed. Uses a non-root user by default."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://www.mytechramblings.com/posts/testing-chiseled-ubuntu-containers-with-dotnet/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/assets/style.css">
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.mytechramblings.com/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://www.mytechramblings.com/img/favicon.png">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Testing Chiseled Ubuntu container images with .NET"/>
+<meta name="twitter:description" content="The objective of this post is to test Ubuntu Chiseled images in combination with .NET, evaluating whether it is truly worthwhile to migrate our .NET apps to utilize these base images or not."/>
+
+
+
+<meta property="og:title" content="Testing Chiseled Ubuntu container images with .NET" />
+<meta property="og:description" content="The objective of this post is to test Ubuntu Chiseled images in combination with .NET, evaluating whether it is truly worthwhile to migrate our .NET apps to utilize these base images or not." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.mytechramblings.com/posts/testing-chiseled-ubuntu-containers-with-dotnet/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-06-12T10:03:07+02:00" />
+<meta property="article:modified_time" content="2023-06-12T10:03:07+02:00" />
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://www.mytechramblings.com/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">my tech ramblings</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/testing-chiseled-ubuntu-containers-with-dotnet/">Testing Chiseled Ubuntu container images with .NET</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2023-06-12
+        </span>
+
+        
+          
+            
+
+
+
+          
+        
+      
+
+      
+      
+        <span class="post-read-time">— 12 min read</span>
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          #<a href="https://www.mytechramblings.com/tags/docker/">docker</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/containers/">containers</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/dotnet/">dotnet</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/ubuntu/">ubuntu</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/debian/">debian</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <h1 id="what-are-chiseled-ubuntu-images"><strong>What are Chiseled Ubuntu images?</strong></h1>
+<p>Chiseled Ubuntu images are inspired by the &ldquo;distroless&rdquo; concept, meaning they contain only your application and its runtime dependencies, without any additional operating system-level packages or libraries. This makes them lightweight, secure, and efficient.</p>
+<p>Chiseled Ubuntu images will enhance the security of your containers thanks to:</p>
+<ul>
+<li>Ultra-small size, which reduces the potential attack surface.</li>
+<li>No package manager or shell installed.</li>
+<li>Uses a non-root user by default.</li>
+</ul>
+<p>Faster starting times are one of the main performance benefits of Chiseled Ubuntu images. They can start up more quickly than traditional container images since they are significantly more lightweight and don&rsquo;t contain any unnecessary dependencies.</p>
+<p>Right now, Chiseled Ubuntu images are only available from Ubuntu version 22.04 (Jammy distro).</p>
+<p>This kind of images are built using Ubuntu 22.04 OS, but are heavily stripped down to include only what’s really necessary, the next image shows a comparison of a full Ubuntu image vs a Chiseled Ubuntu one.</p>
+<p><img src="/img/chiseled-ubuntu-vs-non-chiseled-ubuntu.png" alt="chiseled-ubuntu-vs-non-chiseled-ubuntu"></p>
+<h1 id="net-and-chiseled-ubuntu-images"><strong>.NET and Chiseled Ubuntu images</strong></h1>
+<p>A benefit of using Chiseled Ubuntu images for your containerised .NET apps is their reduced size, they are significantly smaller than traditional container images.</p>
+<p>In addition to not including any operating system-level packages or libraries that are not required at runtime, they do not include any package manager nor shell.</p>
+<p>Comparing the size of the Ubuntu-based .NET image using both types of images shows that the Chiseled Ubuntu image is approximately half the size.</p>
+<p><img src="/img/chiseled-vs-standard-comparison.png" alt="chiseled-vs-standard-comparison"></p>
+<p>Right now (06/06/2023), Chiseled Ubuntu images are available for .NET 6, .NET 7 and .NET 8, but are <strong>still in preview</strong>.</p>
+<p>The .NET 6 and .NET 7 images for AMD64 and ARM architectures can be found only in the nightly repositories while still in preview.</p>
+<p><strong>.NET 6 Ubuntu Chiseled images for Amd64 architecture</strong></p>
+<ul>
+<li><code>mcr.microsoft.com/dotnet/nightly/runtime:6.0-jammy-chiseled</code></li>
+<li><code>mcr.microsoft.com/dotnet/nightly/runtime-deps:6.0-jammy-chiseled</code></li>
+<li><code>mcr.microsoft.com/dotnet/nightly/aspnet:6.0-jammy-chiseled</code></li>
+</ul>
+<p><strong>.NET 7 Ubuntu Chiseled images for Amd64 architecture</strong></p>
+<ul>
+<li><code>mcr.microsoft.com/dotnet/nightly/runtime:7.0-jammy-chiseled</code></li>
+<li><code>mcr.microsoft.com/dotnet/nightly/runtime-deps:7.0-jammy-chiseled</code></li>
+<li><code>mcr.microsoft.com/dotnet/nightly/aspnet:7.0-jammy-chiseled</code></li>
+</ul>
+<p><strong>.NET 6 Ubuntu Chiseled images for Arm64 architecture</strong></p>
+<ul>
+<li><code>mcr.microsoft.com/dotnet/nightly/runtime:6.0-jammy-chiseled-arm64v8</code></li>
+<li><code>mcr.microsoft.com/dotnet/nightly/runtime-deps:6.0-jammy-chiseled-arm64v8</code></li>
+<li><code>mcr.microsoft.com/dotnet/nightly/aspnet:6.0-jammy-chiseled-arm64v8</code></li>
+</ul>
+<p><strong>.NET 7 Ubuntu Chiseled images for Arm64 architecture</strong></p>
+<ul>
+<li><code>mcr.microsoft.com/dotnet/nightly/runtime:7.0-jammy-chiseled-arm64v8</code></li>
+<li><code>mcr.microsoft.com/dotnet/nightly/runtime-deps:7.0-jammy-chiseled-arm64v8</code></li>
+<li><code>mcr.microsoft.com/dotnet/nightly/aspnet:7.0-jammy-chiseled-arm64v8</code></li>
+</ul>
+<p><strong>.NET 6 Ubuntu Chiseled images for Arm32 architecture</strong></p>
+<ul>
+<li><code>mcr.microsoft.com/dotnet/nightly/runtime:6.0-jammy-chiseled-arm32v7</code></li>
+<li><code>mcr.microsoft.com/dotnet/nightly/runtime-deps:6.0-jammy-chiseled-arm32v7</code></li>
+<li><code>mcr.microsoft.com/dotnet/nightly/aspnet:6.0-jammy-chiseled-arm32v7</code></li>
+</ul>
+<p><strong>.NET 7 Ubuntu Chiseled images for Arm32 architecture</strong></p>
+<ul>
+<li><code>mcr.microsoft.com/dotnet/nightly/runtime:7.0-jammy-chiseled-arm32v7</code></li>
+<li><code>mcr.microsoft.com/dotnet/nightly/runtime-deps:7.0-jammy-chiseled-arm32v7</code></li>
+<li><code>mcr.microsoft.com/dotnet/nightly/aspnet:7.0-jammy-chiseled-arm32v7</code></li>
+</ul>
+<p>The .NET 8 images are also still in preview (.NET 8 has not been released yet), but can be found in the official repositories.</p>
+<p><strong>.NET 8 Ubuntu Chiseled images for Amd64 architecture</strong></p>
+<ul>
+<li><code>mcr.microsoft.com/dotnet/runtime:8.0-preview-jammy-chiseled</code></li>
+<li><code>mcr.microsoft.com/dotnet/runtime-deps:8.0-preview-jammy-chiseled</code></li>
+<li><code>mcr.microsoft.com/dotnet/aspnet:8.0-preview-jammy-chiseled</code></li>
+</ul>
+<p><strong>.NET 8 Ubuntu Chiseled images for Arm64 architecture</strong></p>
+<ul>
+<li><code>mcr.microsoft.com/dotnet/runtime:8.0-preview-jammy-chiseled-arm64v8</code></li>
+<li><code>mcr.microsoft.com/dotnet/runtime-deps:8.0-preview-jammy-chiseled-arm64v8</code></li>
+<li><code>mcr.microsoft.com/dotnet/aspnet:8.0-preview-jammy-chiseled-arm64v8</code></li>
+</ul>
+<p><strong>.NET 8 Ubuntu Chiseled images for Arm32 architecture</strong></p>
+<ul>
+<li><code>mcr.microsoft.com/dotnet/runtime:8.0-preview-jammy-chiseled-arm32v7</code></li>
+<li><code>mcr.microsoft.com/dotnet/runtime-deps:8.0-preview-jammy-chiseled-arm32v7</code></li>
+<li><code>mcr.microsoft.com/dotnet/aspnet:8.0-preview-jammy-chiseled-arm32v7</code></li>
+</ul>
+<p>As you can see the Chiseled Ubuntu images are only available for the <code>runtime</code>, <code>runtime-deps</code> and <code>aspnet</code> image, there isn&rsquo;t a Chiseled image with the .NET SDK because there isn&rsquo;t a specific need for it. <br>
+Chiseled images are intended for running .NET applications, not for compiling them. For compiling the app, you can use any of the other available base images.</p>
+<p><img src="/img/chiseled-vs-standard-size-comparison.png" alt="chiseled-vs-standard-size-comparison"></p>
+<h1 id="rootless-net-containers"><strong>Rootless .NET containers</strong></h1>
+<p>Running containers with a non-root user is a good security practice. If you run your app as <code>root</code>, your app process can do anything in the container, like modify files, install packages or run arbitrary executables.<br>
+That’s a concern if your app is ever attacked. If you run your app as non-root, your app process cannot do much, greatly limiting what a bad actor could accomplish.</p>
+<p>The .NET Chiseled Ubuntu images don&rsquo;t include the <code>root</code> user or include root-elevating commands like <code>sudo</code> or <code>su</code>, which means that it is <strong>not possible to exercise capabilities and operations that requires root permissions</strong>.</p>
+<p>If your app needs access to privileged resources, you can add a root user within your Dockerfile, you are not prevented from that, but by default it is best to have a user with restricted permissions.</p>
+<p>One of the pain points of running the app with a rootless user is that it can&rsquo;t use port 80, because port 80 is a privileged port that requires root permissions.</p>
+<p>By default, <strong>.NET Chiseled Ubuntu images are using port 8080</strong>, so keep that in mind when running you app.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker run -p 5055:8080 aspnetapp
+</span></span></code></pre></div><p>The next code snippet shows how the non-user root user is setup in the Ubuntu Chiseled base image.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#ae81ff">RUN groupadd \</span>
+</span></span><span style="display:flex;"><span>        --<span style="color:#ae81ff">system \</span>
+</span></span><span style="display:flex;"><span>        --<span style="color:#ae81ff">gid=64198 \</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">app \</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">&amp;&amp;</span> <span style="color:#ae81ff">adduser \</span>
+</span></span><span style="display:flex;"><span>        --<span style="color:#ae81ff">uid 64198 \</span>
+</span></span><span style="display:flex;"><span>        --<span style="color:#ae81ff">gid 64198 \</span>
+</span></span><span style="display:flex;"><span>        --<span style="color:#ae81ff">shell /bin/false \</span>
+</span></span><span style="display:flex;"><span>        --<span style="color:#ae81ff">system \</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">app \</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">&amp;&amp;</span> <span style="color:#ae81ff">install -d -m 0755 -o 64198 -g 64198 &#34;/rootfs/home/app&#34; \</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">&amp;&amp;</span> <span style="color:#ae81ff">mkdir -p &#34;/rootfs/etc&#34; \</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">&amp;&amp;</span> <span style="color:#ae81ff">rootOrAppRegex=&#39;^\(root\|app\):&#39; \</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">&amp;&amp;</span> <span style="color:#ae81ff">cat /etc/passwd | grep $rootOrAppRegex &gt; &#34;/rootfs/etc/passwd&#34; \</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">&amp;&amp;</span> <span style="color:#ae81ff">cat /etc/group | grep $rootOrAppRegex &gt; &#34;/rootfs/etc/group&#34;</span>
+</span></span></code></pre></div><p>If you want take a deeper look, <a href="https://github.com/dotnet/dotnet-docker/blob/b119f8a4c19f10be2ae0b058a52d3a8f23685e90/src/runtime-deps/8.0/jammy-chiseled/amd64/Dockerfile">here</a> is the Microsoft Github repository where the Ubuntu Chiseled base image Dockerfile lives.</p>
+<blockquote>
+<p>The use of a non-root user is not unique to .NET Chiseled Ubuntu containers anymore.<br>
+Starting from .NET 8, all images, regardless of the distro, will transition to using a non-root user.</p>
+</blockquote>
+<h1 id="chiseled-ubuntu-containers-vs-debian-containers"><strong>Chiseled Ubuntu containers vs Debian containers</strong></h1>
+<p>The default operating system for working with containers in .NET has always been Debian. When we create a new Dockerfile for our app from Visual Studio, it always generates a Dockerfile that uses Debian as base image, regardless of whether the app is built with .NET Core 3.1, .NET 5, .NET 7, or .NET 8.</p>
+<p>Therefore, I believe that making a comparison between an app built with .NET 7 using Debian (Bullseye distro) as the base image and another one using Ubuntu Chiseled (Jammy distro) as the base image could be interesting.</p>
+<h2 id="image-size-benchmark"><strong>Image size benchmark</strong></h2>
+<h3 id="base-image-size-comparison"><strong>Base image size comparison</strong></h3>
+<p>First of all, let&rsquo;s compare the size of the base images without any .NET app on top, let&rsquo;s take a look at the base images that can be found on the Microsoft Container Registry.</p>
+<table>
+<thead>
+<tr>
+<th>Base Image</th>
+<th>Operating System</th>
+<th>Image size</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>runtime-deps:7.0-bullseye-slim</td>
+<td>Debian 11</td>
+<td>118MB</td>
+</tr>
+<tr>
+<td>runtime-deps:7.0-jammy-chiseled</td>
+<td>Chiseled Ubuntu 22.04</td>
+<td>13MB</td>
+</tr>
+<tr>
+<td>runtime:7.0-bullseye-slim</td>
+<td>Debian 11</td>
+<td>191MB</td>
+</tr>
+<tr>
+<td>runtime:7.0-jammy-chiseled</td>
+<td>Chiseled Ubuntu 22.04</td>
+<td>86.2MB</td>
+</tr>
+<tr>
+<td>aspnet:7.0-bullseye-slim</td>
+<td>Debian 11</td>
+<td>213MB</td>
+</tr>
+<tr>
+<td>aspnet:7.0-jammy-chiseled</td>
+<td>Chiseled Ubuntu 22.04</td>
+<td>108MB</td>
+</tr>
+</tbody>
+</table>
+<p>The difference in size for the base images are quite considerable. <br>
+When containerizing an app, I personally tend to favour the use of the <code>runtime-deps</code> image over the other two (<code>runtime</code> and <code>aspnet</code>) images, but as we can see in the above table, the space savings achieved by using a chiseled image is significant on all 3 base images.</p>
+<p>Now, let&rsquo;s make another comparison, but adding a .NET 7 app on top of the base image.</p>
+<h3 id="api-image-size-comparison"><strong>API image size comparison</strong></h3>
+<p>For this comparison we have created an image with a .NET 7 API using different base images.<br>
+The API is nothing fancy, it is the default &ldquo;WeatherForecast&rdquo; minimal Api.</p>
+<p>It makes no sense to use the <code>runtime</code> base image for an API, so we&rsquo;re going to do a comparison using only the <code>runtime-deps</code> and the <code>aspnet</code> base images.</p>
+<table>
+<thead>
+<tr>
+<th>Image</th>
+<th>Operating System</th>
+<th>Image size</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>.NET 7 API using <code>runtime-deps:7.0-bullseye-slim</code> as base image</td>
+<td>Debian 11</td>
+<td>219MB</td>
+</tr>
+<tr>
+<td>.NET 7 API using <code>runtime-deps:7.0-jammy-chiseled</code> as base image</td>
+<td>Chiseled Ubuntu 22.04</td>
+<td>115MB</td>
+</tr>
+<tr>
+<td>.NET 7 API using <code>aspnet:7.0-bullseye-slim</code> as base image</td>
+<td>Debian 11</td>
+<td>217MB</td>
+</tr>
+<tr>
+<td>.NET 7 API using <code>aspnet:7.0-jammy-chiseled</code> as base image</td>
+<td>Chiseled Ubuntu 22.04</td>
+<td>112MB</td>
+</tr>
+</tbody>
+</table>
+<p>Adding a .NET 7 app on top of the base images increases the size of the resulting images on roughly 100Mb, but the difference in size between using Debian or a Chiseled Ubuntu image remains quite considerable.</p>
+<p>For applications that are deployed at scale and much more so in distributed and edge computing environments, using a Chiseled Ubuntu image as base image over Debian can result in significant storage and deployment cost savings.</p>
+<h2 id="resource-usage-benchmark"><strong>Resource usage benchmark</strong></h2>
+<p>The app used for this benchmark is the default .NET 7 &ldquo;WeatherForecast&rdquo; minimal Api</p>
+<p>To generate load, we&rsquo;ll be using <a href="https://github.com/codesenberg/bombardier">Bombardier</a>.</p>
+<p>And we&rsquo;ll be running 2 scenarios.</p>
+<p><strong>Scenario 1</strong></p>
+<ul>
+<li>1200 total requests</li>
+<li>60 seconds duration</li>
+<li>20 requests/sec</li>
+<li>bombardier command: <code>bombardier --connections=20 --requests=1200 --duration=60s --rate=20 --fasthttp http://localhost:5051/weatherforecast</code></li>
+</ul>
+<p><strong>Scenario 2</strong></p>
+<ul>
+<li>3000 total requests</li>
+<li>60 seconds duration</li>
+<li>50 requests/sec</li>
+<li>bombardier command: <code>bombardier --connections=50 --requests=3000 --duration=60s --rate=50 --fasthttp http://localhost:5051/weatherforecast</code></li>
+</ul>
+<p>Each scenario will be executed 20 times with an app that uses the <code>runtime-deps:7.0-jammy-chiseled</code> as base image, and another 20 times with the same app but this time it will be using the <code>runtime-deps:7.0-bullseye-slim</code> as base image.</p>
+<p>Once we have all the execution times, we will calculate the average of the <strong>MAX CPU USAGE</strong> and <strong>MAX MEMORY USAGE</strong> for each base image.</p>
+<h3 id="scenario-1-results"><strong>Scenario 1 results</strong></h3>
+<table>
+<thead>
+<tr>
+<th>Image</th>
+<th>Operation System</th>
+<th>Max. CPU percentage</th>
+<th>Max. memory usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>.NET 7 API using <code>runtime-deps:7.0-bullseye-slim</code> as base image</td>
+<td>Debian 11</td>
+<td>0.04%</td>
+<td>30.14MB</td>
+</tr>
+<tr>
+<td>.NET 7 API using <code>runtime-deps:7.0-jammy-chiseled</code> as base image</td>
+<td>Chiseled Ubuntu 22.04</td>
+<td>0.03%</td>
+<td>27.56MB</td>
+</tr>
+</tbody>
+</table>
+<h3 id="scenario-2-results"><strong>Scenario 2 results</strong></h3>
+<table>
+<thead>
+<tr>
+<th>Image</th>
+<th>Operation System</th>
+<th>Max. CPU percentage</th>
+<th>Max. memory usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>.NET 7 API using <code>runtime-deps:7.0-bullseye-slim</code> as base image</td>
+<td>Debian 11</td>
+<td>0.06%</td>
+<td>32.21MB</td>
+</tr>
+<tr>
+<td>.NET 7 API using <code>runtime-deps:7.0-jammy-chiseled</code> as base image</td>
+<td>Chiseled Ubuntu 22.04</td>
+<td>0.06%</td>
+<td>34.48MB</td>
+</tr>
+</tbody>
+</table>
+<p>As we can see, CPU usage is practically identical whether we use one base image or the other. <br>
+However, there is a slight difference in memory usage, the version of the API that uses the Chiseled Ubuntu image as base image has consumed less memory in each and every test conducted.</p>
+<h1 id="security-issues"><strong>Security issues</strong></h1>
+<p>Chiseled Ubuntu images are designed with security in mind. Their reduced size greatly diminishes the attack surface of the images, making them less likely to be affected by vulnerabilities.</p>
+<p>Also keep in mind that they do not include a package manager or shell, which completely disarms certain classes of attacks, but that also means that you won&rsquo;t be able to login into a running container and start executing shell commands like you can do with regular images.</p>
+<p>Running scripts or commands on-demand on a running container is not considered a good security practice. However, if you are currently doing it, please be aware that by default, you won&rsquo;t be able to do so with this type of image.</p>
+<h2 id="vulnerability-scanning-benchmark"><strong>Vulnerability scanning benchmark</strong></h2>
+<p><strong>In this section we&rsquo;ll compare the number of security vulnerabilities between a .NET 7 API using Debian (Bullseye distro) as base image and the same .NET 7 API using Chiseled Ubuntu (Jammy distro) as base image.</strong></p>
+<p>Nowadays there are numerous container security scanners available (in one of my previous <a href="https://www.mytechramblings.com/posts/testing-container-vulnerabilities-scanners-using-azure-pipelines/">posts</a>, I discussed some of the most well-known options and how to integrate them with Azure Pipelines). For this comparison, we will be using:</p>
+<ul>
+<li><a href="https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-scanning.html">Clair via AWS ECR</a></li>
+<li><a href="https://github.com/aquasecurity/trivy">Trivy</a></li>
+</ul>
+<p>Why test it using two security scanners instead of a single one? More data is always useful.</p>
+<ul>
+<li><strong>Scan results using Clair via AWS ECR</strong></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Image</th>
+<th>Operating System</th>
+<th>Security issues summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>.NET 7 API using <code>runtime-deps:7.0-bullseye-slim</code> as base image</td>
+<td>Debian 11</td>
+<td>3 Medium, 5 Low, 33 Informational, 7 Undefined</td>
+</tr>
+<tr>
+<td>.NET 7 API using <code>runtime-deps:7.0-jammy-chiseled</code> as base image</td>
+<td>Chiseled Ubuntu 22.04</td>
+<td>None</td>
+</tr>
+<tr>
+<td>.NET 7 API using <code>aspnet:7.0-bullseye-slim</code> as base image</td>
+<td>Debian 11</td>
+<td>3 Medium, 5 Low, 33 Informational, 7 Undefined</td>
+</tr>
+<tr>
+<td>.NET 7 API using <code>aspnet:7.0-jammy-chiseled</code> as base image</td>
+<td>Chiseled Ubuntu 22.04</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Scan results using Trivy</strong></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Image</th>
+<th>Operating System</th>
+<th>Security issues summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>.NET 7 API using <code>runtime-deps:7.0-bullseye-slim</code> as base image</td>
+<td>Debian 11</td>
+<td>LOW: 61, MEDIUM: 4, HIGH: 17, CRITICAL: 1</td>
+</tr>
+<tr>
+<td>.NET 7 API using <code>runtime-deps:7.0-jammy-chiseled</code> as base image</td>
+<td>Chiseled Ubuntu 22.04</td>
+<td>LOW: 0, MEDIUM: 0, HIGH: 0, CRITICAL: 0</td>
+</tr>
+<tr>
+<td>.NET 7 API using <code>aspnet:7.0-bullseye-slim</code> as base image</td>
+<td>Debian 11</td>
+<td>LOW: 61, MEDIUM: 4, HIGH: 17, CRITICAL: 1</td>
+</tr>
+<tr>
+<td>.NET 7 API using <code>aspnet:7.0-jammy-chiseled</code> as base image</td>
+<td>Chiseled Ubuntu 22.04</td>
+<td>LOW: 0, MEDIUM: 0, HIGH: 0, CRITICAL: 0</td>
+</tr>
+</tbody>
+</table>
+<p>It is well-known that when we perform a security scan on an image using a Debian distro, a good handful of vulnerabilities appear. This is nothing new; it occurred in older versions of Debian and continues to occur in newer versions of Debian. Simply updating to a newer version of Debian doesn&rsquo;t guarantee the disappearance of security issues.</p>
+<p>From this comparison, we can see that the container that is using a Chiseled Ubuntu image as base image has 0 security issues, which is quite surprising.</p>
+<p>Until now, Alpine has been considered the most secure distro for .NET containers. However, it seems that Chiseled Ubuntu images can provide the same level of security while retaining the advantages of being an Ubuntu distro.</p>
+<h1 id="migrate-a-containerized-app-to-start-using-a-chiseled-ubuntu-image-as-its-base-image"><strong>Migrate a containerized app to start using a Chiseled Ubuntu image as its base image</strong></h1>
+<p>In this section, I will migrate a containerized API that is currently using Debian 11 as the base image, more specifically the <code>runtime-deps:7.0-bullseye-slim</code> image, to start using a Chiseled Ubuntu image as its base image.</p>
+<h2 id="application"><strong>Application</strong></h2>
+<p>The app can be found here:</p>
+<ul>
+<li><a href="https://github.com/karlospn/opentelemetry-metrics-demo">https://github.com/karlospn/opentelemetry-metrics-demo</a></li>
+</ul>
+<p>It is a bookStore API built using .NET 7. It allows us to do the following actions:</p>
+<ul>
+<li>Get, add, update and delete book categories.</li>
+<li>Get, add, update and delete books.</li>
+<li>Get, add, update and delete inventory.</li>
+<li>Get, add and delete orders.</li>
+</ul>
+<h2 id="migration-process"><strong>Migration process</strong></h2>
+<ol>
+<li>Change the base image on the Dockerfile to <code>mcr.microsoft.com/dotnet/nightly/runtime-deps:7.0-jammy-chiseled</code></li>
+</ol>
+<p>This application does not perform any operation that requires a user with <code>root</code> permissions. However, if for any reason we needed a root user, we can create it in the Dockerfile using the <code>RUN adduser</code> command.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ae81ff">FROM mcr.microsoft.com/dotnet/sdk:7.0-bullseye-slim AS build-env</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">WORKDIR /app</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Copy everything</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY . ./</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Restore packages</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet restore -s &#34;https://api.nuget.org/v3/index.json&#34; \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#ae81ff">runtime linux-x64	</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Build project</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet build &#34;./src/BookStore.WebApi/BookStore.WebApi.csproj&#34; \ </span>
+</span></span><span style="display:flex;"><span>    -<span style="color:#ae81ff">c Release \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#ae81ff">runtime linux-x64 \ </span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#ae81ff">self-contained true \	</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#66d9ef">no</span>-<span style="color:#ae81ff">restore</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Publish app</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet publish &#34;./src/BookStore.WebApi/BookStore.WebApi.csproj&#34; \</span>
+</span></span><span style="display:flex;"><span>	-<span style="color:#ae81ff">c Release \</span>
+</span></span><span style="display:flex;"><span>	-<span style="color:#ae81ff">o /app/publish \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#66d9ef">no</span>-<span style="color:#ae81ff">restore \ </span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#66d9ef">no</span>-<span style="color:#ae81ff">build \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#ae81ff">self-contained true \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#ae81ff">runtime linux-x64</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Build runtime image</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">FROM mcr.microsoft.com/dotnet/nightly/runtime-deps:7.0-jammy-chiseled</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Copy artifact</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">WORKDIR /app</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY --from=build-env /app/publish .</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Set Entrypoint</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">ENTRYPOINT [&#34;./BookStore.WebApi&#34;]</span>
+</span></span></code></pre></div><ol start="2">
+<li>The app now starts on port <code>8080</code> instead of port <code>80</code>, so change it in the <code>docker-compose</code> file.</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>  <span style="color:#f92672">app</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">build</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">context</span>: <span style="color:#ae81ff">./</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">dockerfile</span>: <span style="color:#ae81ff">./src/BookStore.WebApi/Dockerfile</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">depends_on</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">mssql</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">otel-collector</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">5001</span>:<span style="color:#ae81ff">8080</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">environment</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">ConnectionStrings__DbConnection</span>: <span style="color:#ae81ff">Server=mssql;Database=BookStore;User Id=SA;Password=P@ssw0rd?;Encrypt=False</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">Otlp__Endpoint</span>: <span style="color:#ae81ff">http://otel-collector:4317</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">metrics</span>
+</span></span></code></pre></div><p>And done!</p>
+<h1 id="conclusion"><strong>Conclusion</strong></h1>
+<p>In this post, we have seen what Chiseled Ubuntu images are, what characteristics they have, and how to use them with .NET.</p>
+<p>The most important point of this post was to assess the viability of Chiseled Ubuntu images and whether we can use them as the base image in our .NET applications. <br>
+For that purpose, we conducted a series of benchmarks and comparisons between a .NET 7 API using a Debian base image and the same .NET 7 API using a Chiseled Ubuntu base image.</p>
+<ul>
+<li>Why did we choose to compare it to Debian?</li>
+</ul>
+<p>Because Debian is the recommended distribution by Microsoft since .NET Core 2.1. In fact, if we try to add a Dockerfile to a .NET app using Visual Studio right now, the generated Dockerfile will contain a Debian-based base image.</p>
+<ul>
+<li>And what has been the result of this comparison?</li>
+</ul>
+<p>Well, the truth is that the results are quite surprising. Using a Chiseled Ubuntu image as base image of our .NET 7 app results in:</p>
+<ul>
+<li>Smaller image size.</li>
+<li>Better memory usage.</li>
+<li>Fewer security vulnerabilities.</li>
+</ul>
+<p>As of today (06/09/2023), Chiseled Ubuntu images are still in preview. However, once they become generally available (GA), there is no reason not to use them over other distributions.</p>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://www.mytechramblings.com/posts/building-qa-app-with-openai-pinecone-and-streamlit/">
+                  <span class="button__text">Building a Q&amp;A app capable of answering questions related to your enterprise documents using Azure OpenAI&#39;s GPT-4, Pinecone and Streamlit.</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2023 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>Theme created by <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://www.mytechramblings.com/assets/main.js"></script>
+<script src="https://www.mytechramblings.com/assets/prism.js"></script>
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('carlospons', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Donate',
+    'floating-chat.donateButton.background-color': '#ff5f5f',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
+
+      
+    </div>
+
+    
+      
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-170300931-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+    
+  </body>
+</html>

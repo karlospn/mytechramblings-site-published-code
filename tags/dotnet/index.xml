@@ -9,10 +9,30 @@
     <description>Recent content in dotnet on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Mon, 10 Apr 2023 16:25:55 +0200</lastBuildDate>
+    <lastBuildDate>Mon, 12 Jun 2023 10:03:07 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/dotnet/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Testing Chiseled Ubuntu container images with .NET</title>
+      <link>https://www.mytechramblings.com/posts/testing-chiseled-ubuntu-containers-with-dotnet/</link>
+      <pubDate>Mon, 12 Jun 2023 10:03:07 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/testing-chiseled-ubuntu-containers-with-dotnet/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          The objective of this post is to test Ubuntu Chiseled images in combination with .NET, evaluating whether it is truly worthwhile to migrate our .NET apps to utilize these base images or not.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>Getting started with OpenTelemetry Metrics in .NET. Part 2: Instrumenting the BookStore API</title>
