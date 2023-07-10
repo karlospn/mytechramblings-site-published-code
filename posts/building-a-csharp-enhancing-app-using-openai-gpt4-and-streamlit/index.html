@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>Building a C# enhancing app using Azure OpenAI GPT-4 and Streamlit :: my tech ramblings — A blog for writing about my techie ramblings</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Just show me the code!
+As always, if you don’t care about the post I have uploaded the source code on my Github.
+Today I had the necessity to document a series of C# files. In C#, you document your code adding XML on top of classes and their methods, this XML documentation proves beneficial for developers as well as for Visual Studio.
+Documenting code is not a task that excites me too much, so I&amp;rsquo;ve thought, what if we use OpenAI to generate the XML comments?"/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://www.mytechramblings.com/posts/building-a-csharp-enhancing-app-using-openai-gpt4-and-streamlit/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/assets/style.css">
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.mytechramblings.com/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://www.mytechramblings.com/img/favicon.png">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Building a C# enhancing app using Azure OpenAI GPT-4 and Streamlit"/>
+<meta name="twitter:description" content="This post demonstrates the simplicity of developing an app that can enhances a C# file using only GenAI&#39;s basic skills. By utilizing Azure OpenAI GPT-4 model, the app can effortlessly add or improve XML comments, provide code explanations, suggest enhancements, and generate unit tests for any given C# file."/>
+
+
+
+<meta property="og:title" content="Building a C# enhancing app using Azure OpenAI GPT-4 and Streamlit" />
+<meta property="og:description" content="This post demonstrates the simplicity of developing an app that can enhances a C# file using only GenAI&#39;s basic skills. By utilizing Azure OpenAI GPT-4 model, the app can effortlessly add or improve XML comments, provide code explanations, suggest enhancements, and generate unit tests for any given C# file." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.mytechramblings.com/posts/building-a-csharp-enhancing-app-using-openai-gpt4-and-streamlit/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-07-10T10:00:01+02:00" />
+<meta property="article:modified_time" content="2023-07-10T10:00:01+02:00" />
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://www.mytechramblings.com/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">my tech ramblings</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/building-a-csharp-enhancing-app-using-openai-gpt4-and-streamlit/">Building a C# enhancing app using Azure OpenAI GPT-4 and Streamlit</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2023-07-10
+        </span>
+
+        
+          
+            
+
+
+
+          
+        
+      
+
+      
+      
+        <span class="post-read-time">— 12 min read</span>
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          #<a href="https://www.mytechramblings.com/tags/dotnet/">dotnet</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/csharp/">csharp</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/python/">python</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/openai/">openai</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/ai/">ai</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/azure/">azure</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/llm/">llm</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <blockquote>
+<p><strong>Just show me the code!</strong><br>
+As always, if you don’t care about the post I have uploaded the source code on my <a href="https://github.com/karlospn/building-a-csharp-enhancing-app-with-openai-and-streamlit">Github</a>.</p>
+</blockquote>
+<p>Today I had the necessity to document a series of C# files. In C#, you document your code adding XML on top of classes and their methods, this XML documentation proves beneficial for developers as well as for Visual Studio.</p>
+<p>Documenting code is not a task that excites me too much, so I&rsquo;ve thought, what if we use OpenAI to generate the XML comments? But, I didn&rsquo;t want to copy and paste the content of every class into ChatGPT back and forth, so I&rsquo;ve been wondering how long it would take to build an app capable of doing it.</p>
+<p>I didn&rsquo;t want to build anything too complex, just drag a C# file into the app, click a &ldquo;Generate XML comments&rdquo; button, copy the output, and done.</p>
+<p>As I began coding the app, I thought to incorporate a few other functionalities that can be easily achieved using GPT-4. These included providing code improvement suggestions, explaining code functionality, and generating unit tests for the given C# file. And that&rsquo;s precisely what I ended up building.</p>
+<p>Nowadays, the Generative AI landscape is growing at a tremendous pace, with new announcements almost daily. For instance, OpenAI recently introduced functions, Microsoft now has multiple &ldquo;Copilots.&rdquo; Databases with vector capabilities are proliferating, as well as databases that offer semantic search capabilities. New versions of libraries like LangChain continue to be released on a daily basis, improved or new LLM models keep appearing regularly. And the list of new things seems to go on and on and on.</p>
+<p>It may appear overwhelming to keep up with all these advancements, but even with just the basic GenAI fundamentals, you can build some useful tools.</p>
+<p>This app serves as an example of it, I put it together in just a couple of hours and it is nothing more than a bunch of static prompts that are being sent to OpenAI and a few UI components for displaying the responses generated.</p>
+<h1 id="how-the-app-works"><strong>How the app works</strong></h1>
+<p>The operation of this app is really simple.</p>
+<ul>
+<li>There is an UI component that allow us to upload a C# file.</li>
+<li>After successfully uploading the file in the app, you will have access to four available options:
+<ul>
+<li>Add XML comments to the provided C# file.</li>
+<li>Explain the code.</li>
+<li>Offer suggestions for code improvements.</li>
+<li>Generate Unit Tests for the given C# file.</li>
+</ul>
+</li>
+</ul>
+<p>Each of these options follows the same set of steps:</p>
+<ul>
+<li>A specific prompt is defined based on the chosen option.</li>
+<li>The source code of the uploaded C# file is incorporated into the prompt.</li>
+<li>The resulting prompt is sent to <code>Azure OpenAI</code> GPT-4 for processing.</li>
+<li>The generated response from <code>Azure OpenAI</code> is displayed on the screen.</li>
+</ul>
+<p>Here&rsquo;s a screenshot of how the end result will look like:</p>
+<p><img src="/img/enhancing-csharp-app-homescreen.png" alt="app-homescreen"></p>
+<h1 id="building-the-app"><strong>Building the app</strong></h1>
+<p>Before proceeding, I would like to  emphasize an important point (or at least I think so):</p>
+<ul>
+<li><strong>OpenAI and LLM models are an incredibly valuable tool, but it&rsquo;s important not to blindly rely on its results.<br>
+Before using any output generated by this app in a real-world scenario, review it throughly.</strong></li>
+</ul>
+<h2 id="1-deploying-a-gpt-4-model-on-azure-openai"><strong>1. Deploying a GPT-4 model on Azure OpenAI</strong></h2>
+<p><em>In order for the app to work correctly, it is necessary to deploy either a <code>gpt-4</code> or a <code>gpt-4-32k</code> model in our <code>Azure OpenAI</code> instance beforehand.</em></p>
+<p>The GPT-4 model will be used to generate the responses to the user interactions.</p>
+<p>To deploy it:  Go to the <code>Azure Portal</code> &gt; Search for the <code>Azure OpenAI</code> service &gt; Navigate to <code>Model Deployments</code> &gt; Click <code>Manage Deployments</code> &gt; Click <code>Create new deployment</code> and deploy either a <code>gpt-4</code> or <code>gpt-4-32k</code> model.</p>
+<p>The <code>deployment name</code> can be whatever you want.</p>
+<p><img src="/img/enhancing-csharp-app-deploy-gpt4-model.png" alt="deploy-gpt4-model"></p>
+<h2 id="2-constructing-the-prompts"><strong>2. Constructing the prompts</strong></h2>
+<blockquote>
+<p><em>Keep in mind that this app was developed in a couple of hours. Consequently, the prompts used to guide GPT-4 can still be refined and improved to yield better results.</em></p>
+</blockquote>
+<p>The core (and most interesting) aspect of this app, lies in the prompts we utilize to guide GPT-4&rsquo;s behavior. Let&rsquo;s delve into these prompts and examine them closely.</p>
+<p>Within each prompt, you will notice the placeholder <code>{csharp_file_content}</code>. This is where the app will insert the content of the C# file uploaded by the user.</p>
+<h3 id="prompt-for-adding-xml-comments-to-a-c-class">Prompt for adding XML comments to a C# class</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>Given a csharp file content, you must add elaborate and high quality XML comments for any method, class, enum or interface. 
+</span></span><span style="display:flex;"><span>Don&#39;t add comments on anything else. Exclude anything else when trying to add comments, for example do not try to add XML comments on class properties or class constants.
+</span></span><span style="display:flex;"><span>If any method, class, enum or interface already contains an XML comment, then try to improve it.
+</span></span><span style="display:flex;"><span>You must respond only with the generated csharp code and nothing else.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>csharp file content:
+</span></span><span style="display:flex;"><span>{csharp_file_content}
+</span></span></code></pre></div><h3 id="explain-code-prompt">Explain code prompt</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>Explain in an easy and concise way what the given csharp code is doing. 
+</span></span><span style="display:flex;"><span>The response must be in markdown format and contain only a list of bullet points.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>csharp code:
+</span></span><span style="display:flex;"><span>{csharp_file_content}
+</span></span></code></pre></div><h3 id="suggest-code-improvement-prompt">Suggest code improvement prompt</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>Given a csharp file content, try to suggest no more than 2 or 3 quality code improvements.
+</span></span><span style="display:flex;"><span>Don&#39;t mention anything about code comments.
+</span></span><span style="display:flex;"><span>Do not show any source code. Just respond with a list of 2 or 3 suggestions.
+</span></span><span style="display:flex;"><span>If you don&#39;t have any suggestion or you don&#39;t have enough information, then respond saying only: no suggestions found.&#34;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>csharp code:
+</span></span><span style="display:flex;"><span>{csharp_file_content}
+</span></span></code></pre></div><h3 id="prompt-for-creating-unit-tests-of-a-given-c-class">Prompt for creating unit tests of a given C# class</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>Given a csharp file content, try to create some Unit Tests.
+</span></span><span style="display:flex;"><span>Only create Unit Tests if it those might be valuable for the application.
+</span></span><span style="display:flex;"><span>The tests should be using xUnit and Moq.
+</span></span><span style="display:flex;"><span>Follow a naming standard of Given_x_When_y_Then_z.
+</span></span><span style="display:flex;"><span>If you decide that creating the unit tests make sense, then respond only with the generated csharp code and nothing else.
+</span></span><span style="display:flex;"><span>If you decide that creating the unit tests doesn&#39;t make sense, then respond saying only: No unit tests available for this file.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>csharp file content:
+</span></span><span style="display:flex;"><span>{csharp_file_content}
+</span></span></code></pre></div><h2 id="3-sending-the-prompts-to-gpt-4-and-retrieving-the-response"><strong>3. Sending the prompts to GPT-4 and retrieving the response</strong></h2>
+<p>In the previous section, we constructed the prompts for GPT-4.</p>
+<p>Now, in this section, we will develop a few Python functions responsible for sending those prompts to <code>Azure OpenAI</code> and receiving the corresponding responses. To accomplish this, we will utilize the <code>ChatCompletion.create</code> method from the <code>openai</code> Python package.</p>
+<p>GPT-4 expects messages to be formatted as a conversation. The messages parameter should be an array of dictionaries that represent a conversation structured by roles.</p>
+<p>The system role also known as the system message must be included at the beginning of the array. This message provides the initial instructions to the model.</p>
+<p>After the system role, you can include a series of messages between the user and the assistant, in this case we are adding the prompt that we have built in the previous section.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> openai
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> os
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>xml_comments_prompt <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Given a csharp file content, you must add elaborate and high quality XML comments for any method, class, enum or interface. 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Don&#39;t add comments on anything else. Exclude anything else when trying to add comments, for example do not try to add XML comments on class properties or class constants.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">If any method, class, enum or interface already contains an XML comment, then try to improve it.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">You must respond only with the generated csharp code and nothing else.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">csharp file content:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#e6db74">{csharp_file_content}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>explain_prompt <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Explain in an easy and concise way what the given csharp code is doing. 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">The response must be in markdown format and contain only a list of bullet points.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">csharp code:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#e6db74">{csharp_file_content}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>suggestions_prompt <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Given a csharp file content, try to suggest no more than 2 or 3 quality code improvements.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Don&#39;t mention anything about code comments.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Do not show any source code. Just respond with a list of 2 or 3 suggestions.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">If you don&#39;t have any suggestion or you don&#39;t have enough information, then respond saying only: no suggestions found.&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">csharp code:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#e6db74">{csharp_file_content}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>unit_tests_prompt <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Given a csharp file content, try to create some Unit Tests.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Only create Unit Tests if it those might be valuable for the application.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">The tests should be using xUnit and Moq.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Follow a naming standard of Given_x_When_y_Then_z.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">If you decide that creating the unit tests make sense, then respond only with the generated csharp code and nothing else.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">If you decide that creating the unit tests doesn&#39;t make sense, then respond saying only: No unit tests available for this file.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">csharp file content:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#e6db74">{csharp_file_content}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">generate_xml_comments</span>(code):
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    prompt <span style="color:#f92672">=</span> xml_comments_prompt<span style="color:#f92672">.</span>format(csharp_file_content<span style="color:#f92672">=</span>code)
+</span></span><span style="display:flex;"><span>    message <span style="color:#f92672">=</span> _get_messages(prompt)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    response <span style="color:#f92672">=</span> openai<span style="color:#f92672">.</span>ChatCompletion<span style="color:#f92672">.</span>create(
+</span></span><span style="display:flex;"><span>        engine<span style="color:#f92672">=</span>_get_llm_model(),
+</span></span><span style="display:flex;"><span>        messages <span style="color:#f92672">=</span> message,
+</span></span><span style="display:flex;"><span>        temperature<span style="color:#f92672">=</span><span style="color:#ae81ff">0.5</span>,
+</span></span><span style="display:flex;"><span>        max_tokens<span style="color:#f92672">=</span><span style="color:#ae81ff">8000</span>,
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> response<span style="color:#f92672">.</span>choices[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>message<span style="color:#f92672">.</span>content<span style="color:#f92672">.</span>strip()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">explain_code</span>(code):
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    prompt <span style="color:#f92672">=</span> explain_prompt<span style="color:#f92672">.</span>format(csharp_file_content<span style="color:#f92672">=</span>code)
+</span></span><span style="display:flex;"><span>    message <span style="color:#f92672">=</span> _get_messages(prompt)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    response <span style="color:#f92672">=</span> openai<span style="color:#f92672">.</span>ChatCompletion<span style="color:#f92672">.</span>create(
+</span></span><span style="display:flex;"><span>        engine<span style="color:#f92672">=</span>_get_llm_model(),
+</span></span><span style="display:flex;"><span>        messages <span style="color:#f92672">=</span> message,
+</span></span><span style="display:flex;"><span>        temperature<span style="color:#f92672">=</span><span style="color:#ae81ff">0.5</span>,
+</span></span><span style="display:flex;"><span>        max_tokens<span style="color:#f92672">=</span><span style="color:#ae81ff">8000</span>,
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> response<span style="color:#f92672">.</span>choices[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>message<span style="color:#f92672">.</span>content<span style="color:#f92672">.</span>strip()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">suggest_code_improvements</span>(code):
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    prompt <span style="color:#f92672">=</span> suggestions_prompt<span style="color:#f92672">.</span>format(csharp_file_content<span style="color:#f92672">=</span>code)
+</span></span><span style="display:flex;"><span>    message <span style="color:#f92672">=</span> _get_messages(prompt)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    response <span style="color:#f92672">=</span> openai<span style="color:#f92672">.</span>ChatCompletion<span style="color:#f92672">.</span>create(
+</span></span><span style="display:flex;"><span>        engine<span style="color:#f92672">=</span>_get_llm_model(),
+</span></span><span style="display:flex;"><span>        messages <span style="color:#f92672">=</span> message,
+</span></span><span style="display:flex;"><span>        temperature<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>        max_tokens<span style="color:#f92672">=</span><span style="color:#ae81ff">8000</span>,
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> response<span style="color:#f92672">.</span>choices[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>message<span style="color:#f92672">.</span>content<span style="color:#f92672">.</span>strip()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">generate_unit_tests</span>(code):
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    prompt <span style="color:#f92672">=</span> unit_tests_prompt<span style="color:#f92672">.</span>format(csharp_file_content<span style="color:#f92672">=</span>code)
+</span></span><span style="display:flex;"><span>    message <span style="color:#f92672">=</span> _get_messages(prompt)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    response <span style="color:#f92672">=</span> openai<span style="color:#f92672">.</span>ChatCompletion<span style="color:#f92672">.</span>create(
+</span></span><span style="display:flex;"><span>        engine<span style="color:#f92672">=</span>_get_llm_model(),
+</span></span><span style="display:flex;"><span>        messages <span style="color:#f92672">=</span> message,
+</span></span><span style="display:flex;"><span>        temperature<span style="color:#f92672">=</span><span style="color:#ae81ff">0.3</span>,
+</span></span><span style="display:flex;"><span>        max_tokens<span style="color:#f92672">=</span><span style="color:#ae81ff">8000</span>,
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> response<span style="color:#f92672">.</span>choices[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>message<span style="color:#f92672">.</span>content<span style="color:#f92672">.</span>strip()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">_get_llm_model</span>():
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;AZURE_OPENAI_GPT4_MODEL_NAME&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">_get_messages</span>(prompt):
+</span></span><span style="display:flex;"><span>    message <span style="color:#f92672">=</span> [
+</span></span><span style="display:flex;"><span>        {<span style="color:#e6db74">&#34;role&#34;</span>: <span style="color:#e6db74">&#34;system&#34;</span>, <span style="color:#e6db74">&#34;content&#34;</span>:  <span style="color:#e6db74">&#34;You are an app assistant trying to improve the source code of a csharp file.&#34;</span> },
+</span></span><span style="display:flex;"><span>        {<span style="color:#e6db74">&#34;role&#34;</span>: <span style="color:#e6db74">&#34;user&#34;</span>, <span style="color:#e6db74">&#34;content&#34;</span>: prompt}
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> message
+</span></span></code></pre></div><h2 id="4-building-the-user-interface-using-streamlit"><strong>4. Building the User Interface using Streamlit</strong></h2>
+<p>The user interface we&rsquo;ll create will be very straightforward, consisting of the following components:</p>
+<ul>
+<li>An upload widget that allows users to drag and drop or select a C# file from their computer.</li>
+<li>A code block to display the content of the uploaded file.</li>
+<li>Four buttons: one for adding XML comments to the uploaded C# file, another for explaining the code, one for receiving suggestions on how to improve the code, and the last one for generating unit tests.</li>
+</ul>
+<p>To build the user interface I&rsquo;m using <a href="https://streamlit.io/">Streamlit</a>. I decided to use Streamlit because I can build a simple and functional UI with just a few lines of Python.</p>
+<p>The next image showcases how the user interface will look once it is fully built.</p>
+<p><img src="/img/enhancing-csharp-app-homescreen.png" alt="app-homescreen"></p>
+<p>Now, let&rsquo;s take a look at the source code and then I’ll try to explain the most relevant parts.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> streamlit <span style="color:#66d9ef">as</span> st
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> openai
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> os
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> codecs
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> dotenv <span style="color:#f92672">import</span> load_dotenv
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> llm <span style="color:#f92672">import</span> explain_code, suggest_code_improvements, generate_xml_comments, generate_unit_tests
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>load_dotenv()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;AZURE_OPENAI_APIKEY&#39;</span>) <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>    st<span style="color:#f92672">.</span>error(<span style="color:#e6db74">&#34;AZURE_OPENAI_APIKEY not set. Please set this environment variable and restart the app.&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;AZURE_OPENAI_BASE_URI&#39;</span>) <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>    st<span style="color:#f92672">.</span>error(<span style="color:#e6db74">&#34;AZURE_OPENAI_BASE_URI not set. Please set this environment variable and restart the app.&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;AZURE_OPENAI_GPT4_MODEL_NAME&#39;</span>) <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>    st<span style="color:#f92672">.</span>error(<span style="color:#e6db74">&#34;AZURE_OPENAI_GPT4_MODEL_NAME not set. Please set this environment variable and restart the app.&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>openai<span style="color:#f92672">.</span>api_type <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;azure&#34;</span>
+</span></span><span style="display:flex;"><span>openai<span style="color:#f92672">.</span>api_base <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;AZURE_OPENAI_BASE_URI&#39;</span>)
+</span></span><span style="display:flex;"><span>openai<span style="color:#f92672">.</span>api_version <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;2023-05-15&#34;</span>
+</span></span><span style="display:flex;"><span>openai<span style="color:#f92672">.</span>api_key <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;AZURE_OPENAI_APIKEY&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">clear_state</span>():
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> key <span style="color:#f92672">in</span> st<span style="color:#f92672">.</span>session_state<span style="color:#f92672">.</span>keys():
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">del</span> st<span style="color:#f92672">.</span>session_state[key]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">read_csharp_file</span>(file):
+</span></span><span style="display:flex;"><span>    content <span style="color:#f92672">=</span> file<span style="color:#f92672">.</span>read()
+</span></span><span style="display:flex;"><span>    decoded_content <span style="color:#f92672">=</span> codecs<span style="color:#f92672">.</span>decode(content, <span style="color:#e6db74">&#39;utf-8&#39;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> decoded_content
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>st<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#34;CSharp GPT-4 file enhancer&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uploaded_file <span style="color:#f92672">=</span> st<span style="color:#f92672">.</span>file_uploader(label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Add a csharp file&#34;</span>, type<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;cs&#34;</span>], accept_multiple_files<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>, on_change<span style="color:#f92672">=</span>clear_state)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> uploaded_file <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    csharp_code <span style="color:#f92672">=</span> read_csharp_file(uploaded_file)
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">with</span> st<span style="color:#f92672">.</span>expander(<span style="color:#e6db74">&#34;Source code&#34;</span>):
+</span></span><span style="display:flex;"><span>        st<span style="color:#f92672">.</span>code(csharp_code, language<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;csharp&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> st<span style="color:#f92672">.</span>button(<span style="color:#e6db74">&#34;Add XML comments&#34;</span>):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">with</span> st<span style="color:#f92672">.</span>spinner(<span style="color:#e6db74">&#34;Generating XML comments...&#34;</span>):
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> <span style="color:#e6db74">&#39;xml_comments_csharp_code&#39;</span> <span style="color:#f92672">in</span> st<span style="color:#f92672">.</span>session_state<span style="color:#f92672">.</span>keys():
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">with</span> st<span style="color:#f92672">.</span>expander(<span style="color:#e6db74">&#34;Source code with XML comments&#34;</span>):
+</span></span><span style="display:flex;"><span>                    st<span style="color:#f92672">.</span>code(st<span style="color:#f92672">.</span>session_state[<span style="color:#e6db74">&#39;xml_comments_csharp_code&#39;</span>], language<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;csharp&#39;</span>)   
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">with</span> st<span style="color:#f92672">.</span>expander(<span style="color:#e6db74">&#34;Source code with XML comments&#34;</span>):
+</span></span><span style="display:flex;"><span>                    xml_comments_csharp_code <span style="color:#f92672">=</span> generate_xml_comments(csharp_code)
+</span></span><span style="display:flex;"><span>                    xml_comments_csharp_code <span style="color:#f92672">=</span> xml_comments_csharp_code<span style="color:#f92672">.</span>strip(<span style="color:#e6db74">&#34;```&#34;</span>)<span style="color:#f92672">.</span>lstrip(<span style="color:#e6db74">&#34;csharp&#34;</span>)<span style="color:#f92672">.</span>strip()
+</span></span><span style="display:flex;"><span>                    st<span style="color:#f92672">.</span>code(xml_comments_csharp_code, language<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;csharp&#39;</span>)          
+</span></span><span style="display:flex;"><span>                    st<span style="color:#f92672">.</span>session_state[<span style="color:#e6db74">&#39;xml_comments_csharp_code&#39;</span>] <span style="color:#f92672">=</span> xml_comments_csharp_code
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> st<span style="color:#f92672">.</span>button(<span style="color:#e6db74">&#34;Explain code&#34;</span>):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">with</span> st<span style="color:#f92672">.</span>spinner(<span style="color:#e6db74">&#34;Explaining code...&#34;</span>):
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> <span style="color:#e6db74">&#39;csharp_code_explained&#39;</span> <span style="color:#f92672">in</span> st<span style="color:#f92672">.</span>session_state<span style="color:#f92672">.</span>keys():
+</span></span><span style="display:flex;"><span>                st<span style="color:#f92672">.</span>markdown(st<span style="color:#f92672">.</span>session_state[<span style="color:#e6db74">&#39;csharp_code_explained&#39;</span>])
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>                csharp_code_explained <span style="color:#f92672">=</span> explain_code(csharp_code)
+</span></span><span style="display:flex;"><span>                st<span style="color:#f92672">.</span>markdown(csharp_code_explained)
+</span></span><span style="display:flex;"><span>                st<span style="color:#f92672">.</span>session_state[<span style="color:#e6db74">&#39;csharp_code_explained&#39;</span>] <span style="color:#f92672">=</span> csharp_code_explained
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> st<span style="color:#f92672">.</span>button(<span style="color:#e6db74">&#34;Suggest code improvements&#34;</span>):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">with</span> st<span style="color:#f92672">.</span>spinner(<span style="color:#e6db74">&#34;Searching for improvements...&#34;</span>):
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> <span style="color:#e6db74">&#39;csharp_code_improvements&#39;</span> <span style="color:#f92672">in</span> st<span style="color:#f92672">.</span>session_state<span style="color:#f92672">.</span>keys():
+</span></span><span style="display:flex;"><span>                st<span style="color:#f92672">.</span>markdown(st<span style="color:#f92672">.</span>session_state[<span style="color:#e6db74">&#39;csharp_code_improvements&#39;</span>])
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>                csharp_code_improvements <span style="color:#f92672">=</span> suggest_code_improvements(csharp_code)
+</span></span><span style="display:flex;"><span>                st<span style="color:#f92672">.</span>markdown(csharp_code_improvements)
+</span></span><span style="display:flex;"><span>                st<span style="color:#f92672">.</span>session_state[<span style="color:#e6db74">&#39;csharp_code_improvements&#39;</span>] <span style="color:#f92672">=</span> csharp_code_improvements
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> st<span style="color:#f92672">.</span>button(<span style="color:#e6db74">&#34;Generate unit tests&#34;</span>):
+</span></span><span style="display:flex;"><span>         <span style="color:#66d9ef">with</span> st<span style="color:#f92672">.</span>spinner(<span style="color:#e6db74">&#34;Trying to generate Unit Tests...&#34;</span>):
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> <span style="color:#e6db74">&#39;unit_tests_csharp_code&#39;</span> <span style="color:#f92672">in</span> st<span style="color:#f92672">.</span>session_state<span style="color:#f92672">.</span>keys():
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">with</span> st<span style="color:#f92672">.</span>expander(<span style="color:#e6db74">&#34;Unit Tests source code&#34;</span>):
+</span></span><span style="display:flex;"><span>                    st<span style="color:#f92672">.</span>code(st<span style="color:#f92672">.</span>session_state[<span style="color:#e6db74">&#39;unit_tests_csharp_code&#39;</span>], language<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;csharp&#39;</span>)   
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">with</span> st<span style="color:#f92672">.</span>expander(<span style="color:#e6db74">&#34;Unit Tests source code&#34;</span>):
+</span></span><span style="display:flex;"><span>                    unit_tests_csharp_code <span style="color:#f92672">=</span> generate_unit_tests(csharp_code)
+</span></span><span style="display:flex;"><span>                    unit_tests_csharp_code <span style="color:#f92672">=</span> unit_tests_csharp_code<span style="color:#f92672">.</span>strip(<span style="color:#e6db74">&#34;```&#34;</span>)<span style="color:#f92672">.</span>lstrip(<span style="color:#e6db74">&#34;csharp&#34;</span>)<span style="color:#f92672">.</span>strip()
+</span></span><span style="display:flex;"><span>                    st<span style="color:#f92672">.</span>code(unit_tests_csharp_code, language<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;csharp&#39;</span>)          
+</span></span><span style="display:flex;"><span>                    st<span style="color:#f92672">.</span>session_state[<span style="color:#e6db74">&#39;unit_tests_csharp_code&#39;</span>] <span style="color:#f92672">=</span> unit_tests_csharp_code
+</span></span></code></pre></div><p>There isn&rsquo;t much to comment on here since the code is quite straightforward. Nevertheless, let&rsquo;s delve into the two or three things that are worth mentioning.</p>
+<ul>
+<li>The first step is configure the <code>openai</code> python package to work with our specific instance of <code>Azure OpenAI</code>.</li>
+</ul>
+<p>The <code>Azure OpenAI</code> API key and uri are being set utilizing environment variables.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;AZURE_OPENAI_APIKEY&#39;</span>) <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>    st<span style="color:#f92672">.</span>error(<span style="color:#e6db74">&#34;AZURE_OPENAI_APIKEY not set. Please set this environment variable and restart the app.&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;AZURE_OPENAI_BASE_URI&#39;</span>) <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>    st<span style="color:#f92672">.</span>error(<span style="color:#e6db74">&#34;AZURE_OPENAI_BASE_URI not set. Please set this environment variable and restart the app.&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;AZURE_OPENAI_GPT4_MODEL_NAME&#39;</span>) <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>    st<span style="color:#f92672">.</span>error(<span style="color:#e6db74">&#34;AZURE_OPENAI_GPT4_MODEL_NAME not set. Please set this environment variable and restart the app.&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>openai<span style="color:#f92672">.</span>api_type <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;azure&#34;</span>
+</span></span><span style="display:flex;"><span>openai<span style="color:#f92672">.</span>api_base <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;AZURE_OPENAI_BASE_URI&#39;</span>)
+</span></span><span style="display:flex;"><span>openai<span style="color:#f92672">.</span>api_version <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;2023-05-15&#34;</span>
+</span></span><span style="display:flex;"><span>openai<span style="color:#f92672">.</span>api_key <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;AZURE_OPENAI_APIKEY&#39;</span>)
+</span></span></code></pre></div><ul>
+<li>To simplify the file uploading process in our application, we utilize the <code>file_uploader</code> component from Streamlit. This component allows users to upload files with just one line of code.</li>
+</ul>
+<p>Each time a user uploads a new file, the <code>clear_state</code> function is triggered. Our application utilizes the Streamlit session&rsquo;s state to cache responses from <code>Azure OpenAI</code>, resulting in a reduced number of calls made to the API.</p>
+<p>Why caching the responses from <code>Azure OpenAI</code>? <br>
+The caching mechanism serves a purpose: let&rsquo;s say you upload a C# file and request GPT-4 to generate some unit tests. It wouldn&rsquo;t make sense to call GPT-4 again if you try to generate unit tests for the same file a second time, it would be an unnecessary token expenditure.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">clear_state</span>():
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> key <span style="color:#f92672">in</span> st<span style="color:#f92672">.</span>session_state<span style="color:#f92672">.</span>keys():
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">del</span> st<span style="color:#f92672">.</span>session_state[key]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">...</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uploaded_file <span style="color:#f92672">=</span> st<span style="color:#f92672">.</span>file_uploader(label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Add a csharp file&#34;</span>, type<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;cs&#34;</span>], accept_multiple_files<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>, on_change<span style="color:#f92672">=</span>clear_state)
+</span></span></code></pre></div><ul>
+<li>The final step is to utilize the <code>button</code> component from Streamlit to render buttons for each functionality.</li>
+</ul>
+<p>It&rsquo;s important to note that whenever a button is pressed, we call the corresponding function we built in the previous section. For example, when the <code>Add XML comments</code> button is pressed, the function <code>generate_xml_comments(csharp_code)</code> is invoked to generate XML comments for the provided C# file.</p>
+<p>Additionally, we leverage the Streamlit session&rsquo;s state to cache responses from <code>Azure OpenAI</code>. This caching mechanism serves the same purpose as I explained in the previous point, allowing us to reduce the number of unnecesary calls made to the API.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> st<span style="color:#f92672">.</span>button(<span style="color:#e6db74">&#34;Add XML comments&#34;</span>):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">with</span> st<span style="color:#f92672">.</span>spinner(<span style="color:#e6db74">&#34;Generating XML comments...&#34;</span>):
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> <span style="color:#e6db74">&#39;xml_comments_csharp_code&#39;</span> <span style="color:#f92672">in</span> st<span style="color:#f92672">.</span>session_state<span style="color:#f92672">.</span>keys():
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">with</span> st<span style="color:#f92672">.</span>expander(<span style="color:#e6db74">&#34;Source code with XML comments&#34;</span>):
+</span></span><span style="display:flex;"><span>                    st<span style="color:#f92672">.</span>code(st<span style="color:#f92672">.</span>session_state[<span style="color:#e6db74">&#39;xml_comments_csharp_code&#39;</span>], language<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;csharp&#39;</span>)   
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">with</span> st<span style="color:#f92672">.</span>expander(<span style="color:#e6db74">&#34;Source code with XML comments&#34;</span>):
+</span></span><span style="display:flex;"><span>                    xml_comments_csharp_code <span style="color:#f92672">=</span> generate_xml_comments(csharp_code)
+</span></span><span style="display:flex;"><span>                    xml_comments_csharp_code <span style="color:#f92672">=</span> xml_comments_csharp_code<span style="color:#f92672">.</span>strip(<span style="color:#e6db74">&#34;```&#34;</span>)<span style="color:#f92672">.</span>lstrip(<span style="color:#e6db74">&#34;csharp&#34;</span>)<span style="color:#f92672">.</span>strip()
+</span></span><span style="display:flex;"><span>                    st<span style="color:#f92672">.</span>code(xml_comments_csharp_code, language<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;csharp&#39;</span>)          
+</span></span><span style="display:flex;"><span>                    st<span style="color:#f92672">.</span>session_state[<span style="color:#e6db74">&#39;xml_comments_csharp_code&#39;</span>] <span style="color:#f92672">=</span> xml_comments_csharp_code
+</span></span><span style="display:flex;"><span><span style="color:#f92672">...</span>
+</span></span></code></pre></div><h1 id="testing-the-app"><strong>Testing the app</strong></h1>
+<p>Now, let’s test if the app works correctly.</p>
+<ul>
+<li>When you upload a C# file, the source code can be viewed in a code block.</li>
+</ul>
+<p><img src="/img/enhancing-csharp-app-upload-source-code.png" alt="app-upload"></p>
+<ul>
+<li>When you run the <em>&ldquo;Add XML comments&rdquo;</em> functionality, the result is displayed in another code block.</li>
+</ul>
+<p><img src="/img/enhancing-csharp-app-xml-comments-source-code.png" alt="app-xml-comments-result"></p>
+<ul>
+<li>Here&rsquo;s the explanation given by GPT-4 when you run the <em>&ldquo;Explain code&rdquo;</em> functionality.</li>
+</ul>
+<p><img src="/img/enhancing-csharp-app-explain-code.png" alt="app-explain-code"></p>
+<ul>
+<li>Here&rsquo;s an example of the suggestions given by GPT-4 when you run the <em>&ldquo;Suggest code improvements&rdquo;</em> functionality.</li>
+</ul>
+<p><img src="/img/enhancing-csharp-app-code-suggestions.png" alt="app-suggestions"></p>
+<ul>
+<li>When you run the <em>&ldquo;Generate unit tests&rdquo;</em> functionality, the result is displayed on another code block.</li>
+</ul>
+<p><img src="/img/enhancing-csharp-app-unit-test-generation.png" alt="app-unit-test"></p>
+<ul>
+<li>If you try to generate unit tests from a file which makes no sense (e.g. <code>Program.cs</code>), the response will be that no tests are available.</li>
+</ul>
+<p><img src="/img/enhancing-csharp-app-no-unit-test-generation.png" alt="app-no-unit-test"></p>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://www.mytechramblings.com/posts/testing-chiseled-ubuntu-containers-with-dotnet/">
+                  <span class="button__text">Testing Chiseled Ubuntu container images with .NET</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2023 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>Theme created by <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://www.mytechramblings.com/assets/main.js"></script>
+<script src="https://www.mytechramblings.com/assets/prism.js"></script>
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('carlospons', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Donate',
+    'floating-chat.donateButton.background-color': '#ff5f5f',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
+
+      
+    </div>
+
+    
+      
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-170300931-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+    
+  </body>
+</html>
