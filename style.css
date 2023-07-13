@@ -2,3 +2,10 @@ img{
     display:block;
     max-width:120%
 }
+
+.video-shortcode {
+    width: 100%;
+    height: auto;
+    padding: 1em 0;
+}
+  
