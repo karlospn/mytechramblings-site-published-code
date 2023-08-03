@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>Back to .NET basics: How to properly use HttpClient :: my tech ramblings — A blog for writing about my techie ramblings</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Just show me the code!
+As always, if you don’t care about the post I have uploaded the source code on my Github.
+If you are a .NET veteran, this post is probably not intended for you.
+I&amp;rsquo;m well aware that there are a ton of great articles (and probably better than this one) on the Internet, explaining exactly how you should properly use HttpClient with .NET. However, the truth is, even with so many resources available, I still come across many cases where its usage is incorrect."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://www.mytechramblings.com/posts/dotnet-httpclient-basic-usage-scenarios/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/assets/style.css">
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.mytechramblings.com/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://www.mytechramblings.com/img/favicon.png">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Back to .NET basics: How to properly use HttpClient"/>
+<meta name="twitter:description" content="In this post, we will explore a few common scenarios where HttpClient is employed. For each scenario, we will discuss the reasons behind its proper or improper usage, using the help of the netstat command."/>
+
+
+
+<meta property="og:title" content="Back to .NET basics: How to properly use HttpClient" />
+<meta property="og:description" content="In this post, we will explore a few common scenarios where HttpClient is employed. For each scenario, we will discuss the reasons behind its proper or improper usage, using the help of the netstat command." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.mytechramblings.com/posts/dotnet-httpclient-basic-usage-scenarios/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-08-03T10:21:52+02:00" />
+<meta property="article:modified_time" content="2023-08-03T10:21:52+02:00" />
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://www.mytechramblings.com/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">my tech ramblings</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/dotnet-httpclient-basic-usage-scenarios/">Back to .NET basics: How to properly use HttpClient</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2023-08-03
+        </span>
+
+        
+          
+            
+
+
+
+          
+        
+      
+
+      
+      
+        <span class="post-read-time">— 17 min read</span>
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          #<a href="https://www.mytechramblings.com/tags/dotnet/">dotnet</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/networking/">networking</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/http/">http</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/netstat/">netstat</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/basics/">basics</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <blockquote>
+<p><strong>Just show me the code!</strong><br>
+As always, if you don’t care about the post I have uploaded the source code on my <a href="https://github.com/karlospn/dotnet-httpclient-basic-usage-scenarios">Github</a>.</p>
+</blockquote>
+<p><strong>If you are a .NET veteran, this post is probably not intended for you</strong>.</p>
+<p>I&rsquo;m well aware that there are a ton of great articles (and probably better than this one) on the Internet, explaining exactly how you should properly use <code>HttpClient</code> with .NET. <br>
+However, the truth is, even with so many resources available, I still come across many cases where its usage is incorrect.</p>
+<p>Therefore, I have decided to write a brief post about the most common use scenarios of <code>HttpClient</code>.</p>
+<p>As I said, I have no intention of writing a theoretical post explaining the ins and outs of how <code>HttpClient</code> works. My goal here is to create <strong>a concise post that highlights various common scenarios where <code>HttpClient</code> is utilized and discuss the reasons behind its appropriate or inappropriate usage.</strong></p>
+<h1 id="netstat-command"><strong>netstat command</strong></h1>
+<p>The <code>netstat</code> command is a networking tool that allows us to investigate active network connections on a system, and in this post I will make extensive use of it to monitor <code>HttpClient</code> TCP connections.</p>
+<p><code>HttpClient</code> is used to make HTTP requests to web servers and APIs, and it relies on underlying network connections to perform these tasks. By leveraging the <code>netstat</code> command, we can gain insights into the active TCP connections created by <code>HttpClient</code>, helping us identify potential issues.</p>
+<p>To investigate the active TCP connections that <code>HttpClient</code> creates using <code>netstat</code>, you can open a command prompt or terminal and enter <code>netstat -ano</code> (the &lsquo;-a&rsquo; flag shows all connections, the &lsquo;-n&rsquo; flag displays IP addresses and port numbers, and the &lsquo;-o&rsquo; flag displays the associated process ID (PID) ).<br>
+The output will provide a list of all active connections, along with their status, local and remote IP addresses, and associated PID process.</p>
+<p><img src="/img/httpclient-scenarios-netstat-output.png" alt="httpclient-scenarios-netstat-output"></p>
+<p>Monitoring HttpClient connections using <code>netstat</code> can help you identify if your application is properly closing connections after use or if there are lingering connections that may lead to resource leaks. It can also reveal if there are connection failures, such as connections in a <code>TIME_WAIT</code> state, which might indicate issues with connection pooling or DNS resolution.</p>
+<p>The next list shows the <code>netstat</code> states and their meanings:</p>
+<ul>
+<li><code>ESTABLISHED</code>: This state indicates that a connection is active and data is being exchanged between the local and remote systems. It signifies a successful connection between the client and server.</li>
+<li><code>TIME_WAIT</code>: After the connection is closed, it enters the <code>TIME_WAIT</code> state. This state ensures that any delayed packets from the previous connection are handled properly. It typically lasts for a few minutes before the connection is fully closed.</li>
+<li><code>CLOSE_WAIT</code>: This state occurs when the local application has closed the connection, but the remote system has not acknowledged the closure yet. It usually implies that the local application is waiting for the remote system to release the connection.</li>
+<li><code>FIN_WAIT_1</code>, <code>FIN_WAIT_2</code>: These states occur during the process of closing a connection. <code>FIN_WAIT_1</code> means the local system has initiated the closure, while <code>FIN_WAIT_2</code> indicates the remote system has acknowledged the closure, and the local system is waiting for a final acknowledgment.</li>
+<li><code>LAST_ACK</code>: This state appears when the local system has initiated the closure, sent a FIN packet, and is waiting for the final acknowledgment from the remote system before the connection is fully closed.</li>
+<li><code>SYN_SENT</code>: In this state, the local system has sent a synchronization (SYN) packet to initiate a connection with the remote system but has not received a response yet.</li>
+<li><code>SYN_RECEIVED</code>: The <code>SYN_RECEIVED</code> state occurs on the server side when it receives a SYN packet from the client and sends back its <code>SYN-ACK</code> packet to acknowledge the connection request.</li>
+<li><code>LISTENING</code>: When a server application is in the <code>LISTENING</code> state, it is waiting and ready to accept incoming connection requests from clients.</li>
+<li><code>CLOSING</code>: This state occurs when the local system has initiated the closure of the connection, but the remote system is also trying to close the connection simultaneously.</li>
+</ul>
+<h1 id="scenario-1-create-a-new-httpclient-for-every-incoming-request"><strong>Scenario 1: Create a new HttpClient for every incoming request</strong></h1>
+<h2 id="source-code">Source code</h2>
+<ul>
+<li>A new <code>HttpClient</code> is instantiated every time a new request comes in.</li>
+<li>The <code>HttpClient</code> is not disposed after being used.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[ApiController]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ScenarioOneController</span> : ControllerBase
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [HttpGet()]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;ActionResult&gt; Get()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> client = <span style="color:#66d9ef">new</span> HttpClient
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            BaseAddress = <span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">&#34;https://jsonplaceholder.typicode.com/&#34;</span>),
+</span></span><span style="display:flex;"><span>            DefaultRequestHeaders = { { <span style="color:#e6db74">&#34;accept&#34;</span>, <span style="color:#e6db74">&#34;application/json&#34;</span> } },
+</span></span><span style="display:flex;"><span>            Timeout = TimeSpan.FromSeconds(<span style="color:#ae81ff">15</span>)
+</span></span><span style="display:flex;"><span>        };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> response = <span style="color:#66d9ef">await</span> client.GetAsync(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;posts/1/comments&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (response.IsSuccessStatusCode) 
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> Ok(<span style="color:#66d9ef">await</span> response.Content.ReadAsStringAsync());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> StatusCode(<span style="color:#ae81ff">500</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="netstat-output">netstat output</h2>
+<ul>
+<li>Every time a new request comes in, a new TCP connection is created.</li>
+</ul>
+<blockquote>
+<p><em>The next video shows how for every request made at the <code>ScenarioOneController</code> a new TCP connection is created</em></p>
+</blockquote>
+<video class="video-shortcode" preload="auto" controls>
+    <source src="/videos/httpclient-scenario1-established.mp4" type="video/mp4">
+</video>
+<ul>
+<li>TCP connections are not closed after being used, which means that they will linger for some time, awaiting incoming data that will never arrive.</li>
+<li>After 2 minutes (default idle timeout) of hanging around doing nothing, the TCP connections will be closed by the operating system and moved to a <code>TIME_WAIT</code> state.</li>
+</ul>
+<video class="video-shortcode" preload="auto" controls>
+    <source src="/videos/httpclient-scenario1-timewait.mp4" type="video/mp4">
+</video>
+<ul>
+<li>The <code>TIME_WAIT</code> state is a normal part of the TCP connection termination process, and it occurs after a connection is closed. <br>
+During this state, the socket remains in the system for a specific period to ensure that any delayed or out-of-order packets related to the closed connection do not interfere with new connections using the same port. <br>
+The duration of the <code>TIME_WAIT</code> state can vary depending on the operating system and TCP implementation.</li>
+<li>In most modern systems, the <code>TIME_WAIT</code> state typically lasts for 30 seconds to 2 minutes.</li>
+<li>After some time in the <code>TIME_WAIT</code> state, the TCP connection will be terminated, and the socket will be released.</li>
+</ul>
+<video class="video-shortcode" preload="auto" controls>
+    <source src="/videos/httpclient-scenario1-timewait2.mp4" type="video/mp4">
+</video>
+<h2 id="pros--cons-of-this-scenario">Pros &amp; cons of this scenario</h2>
+<h3 id="pros">Pros</h3>
+<ul>
+<li>None</li>
+</ul>
+<h3 id="cons">Cons</h3>
+<ul>
+<li>A new <code>HttpClient</code> is being created every time a new request comes in, which means that the application has an unnecessary overhead from establishing a new TCP connection for every single request.</li>
+<li>If the app is under heavy load this approach can lead to an accumulation of TCP connections on a <code>ESTABLISHED</code> state or in a <code>TIME_WAIT</code> state, which can cause a port exhaustion problem.</li>
+</ul>
+<h1 id="scenario-2-create-a-new-httpclient-for-every-incoming-request-and-dispose-of-it-after-use"><strong>Scenario 2: Create a new HttpClient for every incoming request and dispose of it after use</strong></h1>
+<h2 id="source-code-1">Source code</h2>
+<ul>
+<li>A new <code>HttpClient</code> is instantiated every time a new request comes in.</li>
+<li>The <code>HttpClient</code> is disposed right after being used.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[ApiController]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ScenarioTwoController</span> : ControllerBase
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [HttpGet()]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;ActionResult&gt; Get()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">using</span> var client = <span style="color:#66d9ef">new</span> HttpClient
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            BaseAddress = <span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">&#34;https://jsonplaceholder.typicode.com/&#34;</span>),
+</span></span><span style="display:flex;"><span>            DefaultRequestHeaders = { { <span style="color:#e6db74">&#34;accept&#34;</span>, <span style="color:#e6db74">&#34;application/json&#34;</span> } },
+</span></span><span style="display:flex;"><span>            Timeout = TimeSpan.FromSeconds(<span style="color:#ae81ff">15</span>)
+</span></span><span style="display:flex;"><span>        };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> response = <span style="color:#66d9ef">await</span> client.GetAsync(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;posts/1/comments&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (response.IsSuccessStatusCode)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> Ok(<span style="color:#66d9ef">await</span> response.Content.ReadAsStringAsync());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> StatusCode(<span style="color:#ae81ff">500</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="netstat-output-1">netstat output</h2>
+<ul>
+<li>Every time a new request comes in, a new TCP connection is created.</li>
+<li>Similar to scenario 1, TCP connections are not being reused for subsequent requests, but this time, at least the connections are being closed immediately after use.</li>
+<li>The fact that the <code>HttpClient</code> gets disposed right away (because of the <code>using</code> block) causes the TCP connections to move directly to a <code>TIME_WAIT</code> state.</li>
+</ul>
+<video class="video-shortcode" preload="auto" controls>
+    <source src="/videos/httpclient-scenario2.mp4" type="video/mp4">
+</video>
+<ul>
+<li>During the <code>TIME_WAIT</code> state, the socket remains in the system for a specific period to ensure that any delayed or out-of-order packets related to the closed connection do not interfere with new connections using the same port. The <code>TIME_WAIT</code> state lasts for 30 seconds to 2 minutes depending on the operating system.</li>
+</ul>
+<h2 id="pros--cons-of-this-scenario-1">Pros &amp; cons of this scenario</h2>
+<h3 id="pros-1">Pros</h3>
+<ul>
+<li>In this scenario, it is less likely for the application to experience port exhaustion issues.<br>
+In scenario 1, for each request, the TCP connection would remain in an <code>ESTABLISHED</code> state for a few minutes until the operating system forced it to close. <br>
+In contrast, in scenario 2, since we are disposing of the HTTP client after its use, the connection is promptly closed, eliminating the period of time during which the connection was lingering in an <code>ESTABLISHED</code> state.</li>
+</ul>
+<h3 id="cons-1">Cons</h3>
+<ul>
+<li>
+<p>A new <code>HttpClient</code> is being created every time a new request comes in, which means that the application has an unnecessary overhead from establishing a new TCP connection every single time.</p>
+</li>
+<li>
+<p>In this scenario, although we have managed to eliminate the fact that TCP connections remain in an  <code>ESTABLISHED</code> state for a couple of minutes, we are still creating a new TCP connection for each incoming request the controller receives. This situation could still potentially result in issues related to port exhaustion, particularly if the application experiences a high volume of traffic.</p>
+</li>
+</ul>
+<h1 id="scenario-3-create-a-static-httpclient-and-use-it-for-any-incoming-requests"><strong>Scenario 3: Create a static HttpClient and use it for any incoming requests</strong></h1>
+<h2 id="source-code-2">Source code</h2>
+<ul>
+<li>A <code>static</code> <code>HttpClient</code> instance is created once and reused for incoming requests.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[ApiController]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ScenarioThreeController</span> : ControllerBase
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> HttpClient Client = <span style="color:#66d9ef">new</span>()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        BaseAddress = <span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">&#34;https://jsonplaceholder.typicode.com/&#34;</span>),
+</span></span><span style="display:flex;"><span>        DefaultRequestHeaders = { { <span style="color:#e6db74">&#34;accept&#34;</span>, <span style="color:#e6db74">&#34;application/json&#34;</span> } },
+</span></span><span style="display:flex;"><span>        Timeout = TimeSpan.FromSeconds(<span style="color:#ae81ff">15</span>),
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [HttpGet()]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;ActionResult&gt; Get()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> response = <span style="color:#66d9ef">await</span> Client.GetAsync(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;posts/1/comments&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (response.IsSuccessStatusCode)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> Ok(<span style="color:#66d9ef">await</span> response.Content.ReadAsStringAsync());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> StatusCode(<span style="color:#ae81ff">500</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="netstat-output-2">netstat output</h2>
+<ul>
+<li>Now, the TCP connections are being reused.</li>
+</ul>
+<video class="video-shortcode" preload="auto" controls>
+    <source src="/videos/httpclient-scenario3.mp4" type="video/mp4">
+</video>
+<ul>
+<li>If the application remains idle for 2 minutes, then the TCP connection will get closed by the operating systen. The next request will force the creation of a new TCP connection.</li>
+<li>If a TCP connection is not being used to send a request, it&rsquo;s considered idle. By default in .NET, an idle TCP connection is closed after 2 minutes.</li>
+</ul>
+<video class="video-shortcode" preload="auto" controls>
+    <source src="/videos/httpclient-scenario3-idle.mp4" type="video/mp4">
+</video>
+<ul>
+<li><code>HttpClient</code> only resolves DNS entries when a TCP connection is created.<br>
+In the current scenario (where we employ a <code>static</code> or <code>singleton</code>, long-lived <code>HttpClient</code>), if the service we are invoking experiences a DNS modification, the established TCP connections will remain oblivious to this change.</li>
+</ul>
+<blockquote>
+<p><em>In the upcoming video, I modify the hosts file on my computer to redirect the DNS address for <code>jsonplaceholder.typicode.com</code> to <code>127.0.0.1</code>. <br>
+The application should throw an error because there is nothing listening on <code>127.0.0.1</code>capable of responding accordingly, but despite this change, the subsequent requests made to <code>jsonplaceholder.typicode.com</code> continue responding with a 200 OK status code, that&rsquo;s because the client remains unaware of the DNS change I made.</em></p>
+</blockquote>
+<video class="video-shortcode" preload="auto" controls>
+    <source src="/videos/httpclient-scenario3-change-dns.mp4" type="video/mp4">
+</video>
+<h2 id="pros--cons-of-this-scenario-2">Pros &amp; cons of this scenario</h2>
+<h3 id="pros-2">Pros</h3>
+<ul>
+<li>TCP connections are being reused, which further reduces the likelihood of experiencing a port exhaustion issue. <br>
+If the rate of requests is very high, the operating system limit of available ports might still be exhausted, but the best way to minimize this issue is exactly what we&rsquo;re doing in this scenario, reusing <code>HttpClient</code> instances for as many HTTP requests as possible.</li>
+</ul>
+<h3 id="cons-2">Cons</h3>
+<blockquote>
+<p>You&rsquo;ll see a lot of guidelines mentioning this DNS resolution issue when talking about <code>HttpClient</code>. The truth is, if your app is making calls to a service where you&rsquo;re aware that the DNS address won&rsquo;t change at all, using this approach is perfectly fine.</p>
+</blockquote>
+<ul>
+<li><code>HttpClient</code> only resolves DNS entries when a TCP connection is created. If DNS entries changes regularly, then the client won&rsquo;t notice those updates.</li>
+</ul>
+<h1 id="scenario-4-create-a-static-or-singleton-httpclient-with-pooledconnectionlifetime-and-use-it-for-any-incoming-requests"><strong>Scenario 4: Create a static or singleton HttpClient with PooledConnectionLifetime and use it for any incoming requests</strong></h1>
+<h2 id="source-code-3">Source code</h2>
+<ul>
+<li>A <code>static</code> <code>HttpClient</code> instance is created once and reused for incoming requests.</li>
+<li>The <code>HttpClient</code> is created using the <code>PooledConnectionLifetime</code> attribute. This attribute defines how long connections remain active when pooled. Once this lifetime expires, the connection will no longer be pooled or issued for future requests.</li>
+</ul>
+<blockquote>
+<p>In the next code snippet, the <code>PooledConnectionLifetime</code> is set to 10 seconds, which means that TCP connections will cease to be re-issued and be closed after a maximum of 10 seconds. This is highly inefficient and it is only done for demo purposes.</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[ApiController]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ScenarioFourController</span> : ControllerBase
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> HttpClient Client = <span style="color:#66d9ef">new</span>(<span style="color:#66d9ef">new</span> SocketsHttpHandler
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        PooledConnectionLifetime = TimeSpan.FromSeconds(<span style="color:#ae81ff">10</span>)
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        BaseAddress = <span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">&#34;https://jsonplaceholder.typicode.com/&#34;</span>),
+</span></span><span style="display:flex;"><span>        DefaultRequestHeaders = { { <span style="color:#e6db74">&#34;accept&#34;</span>, <span style="color:#e6db74">&#34;application/json&#34;</span> } },
+</span></span><span style="display:flex;"><span>        Timeout = TimeSpan.FromSeconds(<span style="color:#ae81ff">15</span>),
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [HttpGet()]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;ActionResult&gt; Get()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> response = <span style="color:#66d9ef">await</span> Client.GetAsync(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;posts/1/comments&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (response.IsSuccessStatusCode)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> Ok(<span style="color:#66d9ef">await</span> response.Content.ReadAsStringAsync());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> StatusCode(<span style="color:#ae81ff">500</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="netstat-output-3">netstat output</h2>
+<ul>
+<li>TCP connections are being reused.</li>
+<li>The <code>PooledConnectionLifetime</code> attribute is set to 10 seconds, which means that after 10 seconds the TCP connection will be closed and won&rsquo;t be reused anymore.  The next request will force the creation of a new TCP connection.</li>
+</ul>
+<video class="video-shortcode" preload="auto" controls>
+    <source src="/videos/httpclient-scenario4.mp4" type="video/mp4">
+</video>
+<ul>
+<li>Do you remember that in scenario 3, I mentioned an issue with DNS resolution?</li>
+</ul>
+<p>DNS resolution only occurs when a TCP connection is created, which means that if the DNS changes after the TCP connection has been created, then the TCP connection is unaware of it.</p>
+<p>The solution to avoid this issue is to create <strong>short-lived</strong> TCP connections that can be reused. Thus, when the time specified by the <code>PooledConnectionLifetime</code> property is reached, the TCP connection is closed, and a new one is created, forcing DNS resolution to occur again.</p>
+<p>You can observe this behavior in the upcoming video.</p>
+<p>In the video, I modify the <code>hosts</code> file on my computer to redirect the DNS address for <code>jsonplaceholder.typicode.com</code> to <code>127.0.0.1</code>.</p>
+<p>Since there is nothing listening on the <code>127.0.0.1</code> address capable of responding to those requests, after 10 seconds (<code>PooledConnectionLifetime</code> current value), the HTTP requests start failing with a 500 error. This occurs because the TCP connection has been closed, and a new one has been created, forcing DNS resolution to occur again.</p>
+<p>That&rsquo;s a huge difference from scenario 3, where the requests keep responding with a 200 OK because the DNS resolution never occurred.</p>
+<video class="video-shortcode" preload="auto" controls>
+    <source src="/videos/httpclient-scenario4-dns-change.mp4" type="video/mp4">
+</video>
+<h2 id="pros--cons-of-this-scenario-3">Pros &amp; cons of this scenario</h2>
+<h3 id="pros-3">Pros</h3>
+<ul>
+<li>TCP connections are being reused, which further reduces the likelihood of experiencing a port exhaustion issue.</li>
+<li>It solves the DNS change issue mentioned on scenario 3.</li>
+</ul>
+<h3 id="cons-3">Cons</h3>
+<ul>
+<li>There are no disadvantages in this scenario.</li>
+</ul>
+<h1 id="scenario-41-create-a-static-or-singleton-httpclient-with-pooledconnectionlifetime-and-pooledconnectionidletimeout-and-use-it-for-any-incoming-requests"><strong>Scenario 4.1: Create a static or singleton HttpClient with PooledConnectionLifetime and PooledConnectionIdleTimeout and use it for any incoming requests</strong></h1>
+<blockquote>
+<p>This is scenario 4.1, not scenario 5.<br>
+What&rsquo;s the point of having a scenario 4.1? This scenario is the same as scenario 4 but with a slight modification that I think it is worth mentioning.</p>
+</blockquote>
+<h2 id="source-code-4">Source code</h2>
+<ul>
+<li>A <code>static</code> <code>HttpClient</code> instance is created once and reused for incoming requests.</li>
+<li>The <code>HttpClient</code> is created using the <code>PooledConnectionLifetime</code> attribute. This attribute defines how long connections remain active when pooled. Once this lifetime expires, the connection will no longer be pooled or issued for future requests.</li>
+<li>The <code>PooledConnectionIdleTimeout</code> attribute defines how long idle connections remain within the pool while unused. Once this lifetime expires, the idle TCP connection will be closed and removed from the pool.</li>
+</ul>
+<blockquote>
+<p>In the next code snippet, the <code>PooledConnectionIdleTimeout</code> is set to 10 seconds, which means that idle TCP connections will be closed after a maximum of 10 seconds. This is highly inefficient and only done for demo purposes.</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[ApiController]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ScenarioFourController</span> : ControllerBase
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> HttpClient Client = <span style="color:#66d9ef">new</span>(<span style="color:#66d9ef">new</span> SocketsHttpHandler
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        PooledConnectionLifetime = TimeSpan.FromMinutes(<span style="color:#ae81ff">30</span>),
+</span></span><span style="display:flex;"><span>        PooledConnectionIdleTimeout = TimeSpan.FromSeconds(<span style="color:#ae81ff">10</span>)
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        BaseAddress = <span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">&#34;https://jsonplaceholder.typicode.com/&#34;</span>),
+</span></span><span style="display:flex;"><span>        DefaultRequestHeaders = { { <span style="color:#e6db74">&#34;accept&#34;</span>, <span style="color:#e6db74">&#34;application/json&#34;</span> } },
+</span></span><span style="display:flex;"><span>        Timeout = TimeSpan.FromSeconds(<span style="color:#ae81ff">15</span>),
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [HttpGet()]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;ActionResult&gt; Get()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> response = <span style="color:#66d9ef">await</span> Client.GetAsync(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;posts/1/comments&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (response.IsSuccessStatusCode)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> Ok(<span style="color:#66d9ef">await</span> response.Content.ReadAsStringAsync());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> StatusCode(<span style="color:#ae81ff">500</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Why is the <code>PooledConnectionIdleTimeout</code> attribute worth mentioning? Let&rsquo;s take a look at the code above.</p>
+<ul>
+<li><code>PooledConnectionLifetime</code> is set to 30 minutes, which means that TCP connections will be reused during 30 minutes.</li>
+<li><code>PooledConnectionIdleTimeout</code>is set to 10 seconds, which means that idle TCP connections will be closed after a maximum of 10 seconds, <strong>it doesn&rsquo;t matter if the <code>PooledConnectionLifetime</code> time has been reached or not.</strong></li>
+</ul>
+<p>What will happen in a real application?</p>
+<ul>
+<li>If the app keeps receiving a constant flow of requests, then the existing TCP connection will be reused. After <strong>30 minutes</strong>, the TCP connection will be closed, and a new TCP connection will be established for the next request.</li>
+<li>If for some reason the app doesn&rsquo;t receive any requests and the TCP connection gets considered as idle, then the TCP connection will be closed after <strong>10 seconds</strong>, it doesn&rsquo;t matter whether the <code>PooledConnectionLifetime</code> time has been reached or not.</li>
+</ul>
+<p>Let&rsquo;s take a look at this behaviour using the <code>netstat</code> command:
+<video class="video-shortcode" preload="auto" controls>
+    <source src="/videos/httpclient-scenario4-1.mp4" type="video/mp4">
+</video></p>
+<p>So, it&rsquo;s good to know about the <code>PooledConnectionIdleTimeout</code> attribute and how it works, as it can disrupt the lifespan of your TCP connections.</p>
+<h1 id="scenario-5-use-ihttpclientfactory"><strong>Scenario 5: Use IHttpClientFactory</strong></h1>
+<h2 id="source-code-5">Source code</h2>
+<ul>
+<li>An <code>IHttpClientFactory</code> named client is setup in the <code>Program.cs</code> <em>(this Scenario uses an <code>IHttpClientFactory</code> named client, you could use a typed client and the behaviour will be exactly the same)</em>.</li>
+<li>The <code>SetHandlerLifetime</code> extension method defines the length of time that a <code>HttpMessageHandler</code> instance can be reused before being discarded. It works almost identical as the <code>PooledConnectionLifetime</code> attribute from the previous scenario.</li>
+<li>We use the <code>CreateClient</code> method from the <code>IHttpClientFactory</code> to obtain a <code>httpClient</code> to call our API.</li>
+</ul>
+<blockquote>
+<p>The <code>SetHandlerLifetime</code> method is set to 15 seconds, which means that TCP connections will cease to be re-issued and be closed after a maximum of 15 seconds. This is highly inefficient and it is only done for demo purposes.</p>
+</blockquote>
+<p>On <code>Program.cs</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>builder.Services.AddHttpClient(<span style="color:#e6db74">&#34;typicode&#34;</span>, c =&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    c.BaseAddress = <span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">&#34;https://jsonplaceholder.typicode.com/&#34;</span>);
+</span></span><span style="display:flex;"><span>    c.Timeout = TimeSpan.FromSeconds(<span style="color:#ae81ff">15</span>);
+</span></span><span style="display:flex;"><span>    c.DefaultRequestHeaders.Add(
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;accept&#34;</span>, <span style="color:#e6db74">&#34;application/json&#34;</span>);
+</span></span><span style="display:flex;"><span>})
+</span></span><span style="display:flex;"><span>.SetHandlerLifetime(TimeSpan.FromSeconds(<span style="color:#ae81ff">15</span>));
+</span></span></code></pre></div><p>On <code>ScenarioFiveController.cs</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[ApiController]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ScenarioFiveController</span> : ControllerBase
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IHttpClientFactory _factory;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> ScenarioFiveController(IHttpClientFactory factory)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        _factory = factory;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [HttpGet()]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;ActionResult&gt; Get()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> client = _factory.CreateClient(<span style="color:#e6db74">&#34;typicode&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> response = <span style="color:#66d9ef">await</span> client.GetAsync(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;posts/1/comments&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (response.IsSuccessStatusCode)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> Ok(<span style="color:#66d9ef">await</span> response.Content.ReadAsStringAsync());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> StatusCode(<span style="color:#ae81ff">500</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="netstat-output-4">netstat output</h2>
+<ul>
+<li>TCP connections are being reused.</li>
+<li>The <code>SetHandlerLifetime</code> method is set to 15 seconds, which means that after 15 seconds the TCP connection will be marked for expiration. The next incoming request will spawn a new TCP connection.</li>
+<li>In this scenario, unlike Scenario 4 where the TCP connection was closed immediately after the time set by the <code>PooledConnectionLifetime</code> attribute had expired, the expiration of a handler will not promptly dispose of the TCP connection. The expired handler will be positioned in a distinct pool, which is periodically processed to dispose of handlers only when they become unreachable.</li>
+</ul>
+<video class="video-shortcode" preload="auto" controls>
+    <source src="/videos/httpclient-scenario5.mp4" type="video/mp4">
+</video>
+<h2 id="pros--cons">Pros &amp; cons</h2>
+<h3 id="pros-4">Pros</h3>
+<ul>
+<li>TCP connections are being reused, which further reduces the likelihood of experiencing a port exhaustion issue.</li>
+<li>It solves the DNS change issue mentioned on scenario 3.</li>
+<li>It simplifies the declaration and usage of <code>HttpClient</code> instances.</li>
+</ul>
+<h3 id="cons-4">Cons</h3>
+<ul>
+<li>The <code>IHttpClientFactory</code> keeps everything nice and simple as long as you only need to modify the common <code>HttpClient</code> parameters, it might be a bit harder if you need to tweak some of the less common parameters.  <br>
+The next code snippet is an example of how to set the <code>PooledConnectionIdleTimeout</code> attribute discussed on scenario 4.1, as you can see you&rsquo;ll need to use the <code>ConfigurePrimaryHttpMessageHandler</code> extension method and create a new <code>SocketsHttpHandler</code> instance, just to set the value of the <code>PooledConnectionIdleTimeout</code> attribute.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>builder.Services.AddHttpClient(<span style="color:#e6db74">&#34;typicode&#34;</span>, c =&gt;
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        c.BaseAddress = <span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">&#34;https://jsonplaceholder.typicode.com/&#34;</span>);
+</span></span><span style="display:flex;"><span>        c.Timeout = TimeSpan.FromSeconds(<span style="color:#ae81ff">15</span>);
+</span></span><span style="display:flex;"><span>        c.DefaultRequestHeaders.Add(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;accept&#34;</span>, <span style="color:#e6db74">&#34;application/json&#34;</span>);
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>    .ConfigurePrimaryHttpMessageHandler(() =&gt; <span style="color:#66d9ef">new</span> SocketsHttpHandler()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        PooledConnectionIdleTimeout = TimeSpan.FromMinutes(<span style="color:#ae81ff">5</span>)
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>    .SetHandlerLifetime(TimeSpan.FromMinutes(<span style="color:#ae81ff">20</span>));
+</span></span></code></pre></div><hr>
+<hr>
+<p>Up to this point, we have only explored scenarios that affected .NET 5/6/7, but what if we want to use an <code>HttpClient</code> in an application built with .NET Framework 4.8?</p>
+<ul>
+<li>The recommended way to use <code>HttpClient</code> in .NET Framework 4.8 is using <strong>IHttpClientFactory</strong>.**</li>
+</ul>
+<p><em>**You can use a static or singleton <code>HttpClient</code>, if you are certain that you will not encounter DNS changes in the service you are calling.</em></p>
+<ul>
+<li>Can we use a static or singleton <code>HttpClient</code> with the <code>PooledConnectionLifetime</code> attribute (like Scenario 4)?</li>
+</ul>
+<p>No, we cannot. it doesn&rsquo;t work with .NET Framework, the <code>SocketsHttpHandler</code> doesn&rsquo;t exist in .NET Framework.<br>
+<code>HttpClient</code> is built on top of the pre-existing <code>HttpWebRequest</code> implementation, you could use the <code>ServicePoint</code> API to control and manage HTTP connections, including setting a connection lifetime by configuring the <code>ConnectionLeaseTimeout</code> for an endpoint.</p>
+<h1 id="scenario-6-using-ihttpclientfactory-with-net-framework-and-autofac"><strong>Scenario 6: Using IHttpClientFactory with .NET Framework and Autofac</strong></h1>
+<h2 id="source-code-6">Source code</h2>
+<ul>
+<li>This scenario uses Autofac as IoC container.</li>
+<li>An <code>IHttpClientFactory</code> named client is setup in the <code>AutofacWebapiConfig.cs</code> class.</li>
+<li>A few additional steps are required to make <code>IHttpClientFactory</code> work with Autofac:
+<ul>
+<li>Add required packages:
+<ul>
+<li><code>Microsoft.Extensions.Http</code></li>
+</ul>
+</li>
+<li><code>IHttpClientFactory</code> must be registered properly in Autofac IoC container. To do that, we must follow the next steps:
+<ul>
+<li>Create a new <code>ServiceCollection</code> instance.</li>
+<li>Add the <code>IHttpClientFactory</code> named client.</li>
+<li>Build the <code>ServiceProvider</code> and resolve <code>IHttpClientFactory</code>.</li>
+<li><strong>The <code>IHttpClientFactory</code> must be registered as a <code>Singleton</code> on Autofac</strong>, or it won&rsquo;t work properly.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>On <code>Global.asax</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> Application_Start()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    AreaRegistration.RegisterAllAreas();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    AutofacWebapiConfig.Initialize(GlobalConfiguration.Configuration);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    GlobalConfiguration.Configure(WebApiConfig.Register);
+</span></span><span style="display:flex;"><span>    FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
+</span></span><span style="display:flex;"><span>    RouteConfig.RegisterRoutes(RouteTable.Routes);
+</span></span><span style="display:flex;"><span>    BundleConfig.RegisterBundles(BundleTable.Bundles);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><code>AutofacWebApiConfig</code> class implementation, looks like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AutofacWebapiConfig</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> IContainer Container;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Initialize(HttpConfiguration config)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Initialize(config, RegisterServices(<span style="color:#66d9ef">new</span> ContainerBuilder()));
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Initialize(HttpConfiguration config, IContainer container)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        config.DependencyResolver = <span style="color:#66d9ef">new</span> AutofacWebApiDependencyResolver(container);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> IContainer RegisterServices(ContainerBuilder builder)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        builder.Register(ctx =&gt;
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> services = <span style="color:#66d9ef">new</span> ServiceCollection();
+</span></span><span style="display:flex;"><span>            services.AddHttpClient(<span style="color:#e6db74">&#34;typicode&#34;</span>, c =&gt;
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                c.BaseAddress = <span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">&#34;https://jsonplaceholder.typicode.com/&#34;</span>);
+</span></span><span style="display:flex;"><span>                c.Timeout = TimeSpan.FromSeconds(<span style="color:#ae81ff">15</span>);
+</span></span><span style="display:flex;"><span>                c.DefaultRequestHeaders.Add(
+</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">&#34;accept&#34;</span>, <span style="color:#e6db74">&#34;application/json&#34;</span>);
+</span></span><span style="display:flex;"><span>            })
+</span></span><span style="display:flex;"><span>            .SetHandlerLifetime(TimeSpan.FromSeconds(<span style="color:#ae81ff">15</span>));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> provider = services.BuildServiceProvider();
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> provider.GetRequiredService&lt;IHttpClientFactory&gt;();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        }).SingleInstance();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Container = builder.Build();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> Container;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><code>ScenarioSixController.cs</code> looks like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ScenarioSixController</span> : ApiController
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IHttpClientFactory _factory;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> ScenarioSixController(IHttpClientFactory factory)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        _factory = factory;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;IHttpActionResult&gt; Get()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> client = _factory.CreateClient(<span style="color:#e6db74">&#34;typicode&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> response = <span style="color:#66d9ef">await</span> client.GetAsync(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;posts/1/comments&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (response.IsSuccessStatusCode)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> Ok(<span style="color:#66d9ef">await</span> response.Content.ReadAsStringAsync());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> InternalServerError();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="pros--cons-1">Pros &amp; cons</h2>
+<h3 id="pros-5">Pros</h3>
+<ul>
+<li>TCP connections are being reused, which further reduces the likelihood of experiencing a port exhaustion issue.</li>
+<li>It solves the DNS change issues mentioned on scenario 3.</li>
+</ul>
+<h3 id="cons-5">Cons</h3>
+<ul>
+<li>To avoid creating a new TCP connection every time a new request comes in, it is crucial to register the <code>IHttpClientFactory</code> as a Singleton in Autofac.</li>
+</ul>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://www.mytechramblings.com/posts/building-a-csharp-enhancing-app-using-openai-gpt4-and-streamlit/">
+                  <span class="button__text">Building a C# enhancing app using Azure OpenAI GPT-4 and Streamlit</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2023 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>Theme created by <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://www.mytechramblings.com/assets/main.js"></script>
+<script src="https://www.mytechramblings.com/assets/prism.js"></script>
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('carlospons', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Donate',
+    'floating-chat.donateButton.background-color': '#ff5f5f',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
+
+      
+    </div>
+
+    
+      
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-170300931-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+    
+  </body>
+</html>
