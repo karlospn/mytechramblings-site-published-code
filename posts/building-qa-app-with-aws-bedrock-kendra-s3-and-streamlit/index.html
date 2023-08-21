@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>Building a Q&amp;A app capable of answering questions related to your enterprise documents using AWS Bedrock, AWS Kendra, AWS S3 and Streamlit :: my tech ramblings — A blog for writing about my techie ramblings</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Just show me the code!
+As always, if you don’t care about the post I have uploaded the source code on my Github.
+A couple of months ago, I wrote a post about how to build a Q&amp;amp;A app capable of answering questions related to your private documents using OpenAI GPT-4. You can read it, in here.
+To build it, I used the following services:
+Azure OpenAI GPT-4 Pinecone In this post, I want to built exactly the same Q&amp;amp;A app, but using only AWS services (&#43; Streamlit for the UI)."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://www.mytechramblings.com/posts/building-qa-app-with-aws-bedrock-kendra-s3-and-streamlit/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/assets/style.css">
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.mytechramblings.com/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://www.mytechramblings.com/img/favicon.png">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Building a Q&amp;A app capable of answering questions related to your enterprise documents using AWS Bedrock, AWS Kendra, AWS S3 and Streamlit"/>
+<meta name="twitter:description" content="The purpose of this post is to demonstrate how easy is to build a basic Q&amp;A app capable of answering questions about your company&#39;s internal documents. This time, we will use only AWS services to build it (plus Streamlit for the user interface)."/>
+
+
+
+<meta property="og:title" content="Building a Q&amp;A app capable of answering questions related to your enterprise documents using AWS Bedrock, AWS Kendra, AWS S3 and Streamlit" />
+<meta property="og:description" content="The purpose of this post is to demonstrate how easy is to build a basic Q&amp;A app capable of answering questions about your company&#39;s internal documents. This time, we will use only AWS services to build it (plus Streamlit for the user interface)." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.mytechramblings.com/posts/building-qa-app-with-aws-bedrock-kendra-s3-and-streamlit/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-08-21T10:00:03+02:00" />
+<meta property="article:modified_time" content="2023-08-21T10:00:03+02:00" />
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://www.mytechramblings.com/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">my tech ramblings</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/building-qa-app-with-aws-bedrock-kendra-s3-and-streamlit/">Building a Q&amp;A app capable of answering questions related to your enterprise documents using AWS Bedrock, AWS Kendra, AWS S3 and Streamlit</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2023-08-21
+        </span>
+
+        
+          
+            
+
+
+
+          
+        
+      
+
+      
+      
+        <span class="post-read-time">— 16 min read</span>
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          #<a href="https://www.mytechramblings.com/tags/python/">python</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/openai/">openai</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/ai/">ai</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/aws/">aws</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/genai/">genai</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/llm/">llm</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <blockquote>
+<p><strong>Just show me the code!</strong><br>
+As always, if you don’t care about the post I have uploaded the source code on my <a href="https://github.com/karlospn/building-qa-app-with-aws-bedrock-kendra-s3-and-streamlit">Github</a>.</p>
+</blockquote>
+<p>A couple of months ago, I wrote a post about how to build a Q&amp;A app capable of answering questions related to your private documents using OpenAI GPT-4. You can read it, in <a href="https://www.mytechramblings.com/posts/building-qa-app-with-openai-pinecone-and-streamlit/">here</a>.</p>
+<p>To build it, I used the following services:</p>
+<ul>
+<li><code>Azure OpenAI GPT-4</code></li>
+<li><code>Pinecone</code></li>
+</ul>
+<p>In this post, I want to built <strong>exactly the same Q&amp;A app, but using only AWS services (+ Streamlit for the UI)</strong>.</p>
+<p>That way, we can see and compare how the process of creating this type of apps differs when we use managed AWS services vs Azure services.</p>
+<p>Before we start developing the app, let me revisit a couple of concepts that I believe are key when building such applications (apps that use a LLM to answer questions related to our private documents). <br>
+I&rsquo;ve already discussed these topics in the <em>&ldquo;Building a Q&amp;A app using Azure OpenAI GPT-4&rdquo;</em> post, but I think it&rsquo;s necessary to emphasize these concepts.</p>
+<h1 id="how-can-an-llm-respond-to-a-question-about-topics-it-doesnt-know-about"><strong>How can an LLM respond to a question about topics it doesn&rsquo;t know about?</strong></h1>
+<p>We have two options for enabling our LLM model to understand and answer our private domain-specific questions:</p>
+<ul>
+<li><strong>Fine-tune</strong> the LLM on text data covering the topic mentioned.</li>
+<li>Using <strong>Retrieval Augmented Generation (RAG)</strong>, a technique that implements an information retrieval component to the generation process. Allowing us to retrieve relevant information and feed this information into the generation model as a secondary source of information.</li>
+</ul>
+<p>We will go with option 2.</p>
+<p>The RAG process might sound daunting at first, but it really is not. The process is quite simple once we try to explain it in a simple way, here’s a summary of how it works:</p>
+<ul>
+<li>Run a semantic search against your knowledge database to find content that looks like it could be relevant to the user’s question.</li>
+<li>Construct a prompt consisting of the data extracted from the knowledge database, followed by &ldquo;Given the above content, answer the following question&rdquo; and then the user’s question.</li>
+<li>Send the prompt through to an LLM and see what answer comes back.</li>
+</ul>
+<p>In the end, all we are doing is extracting data from a database that looks like it could be relevant to the user’s question, constructing a prompt that contains the data from the database and telling the LLM model that it must create the response using only the data present in the prompt.</p>
+<p>Here&rsquo;s an example of the prompt:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>Answer the following question based on the context below.
+</span></span><span style="display:flex;"><span>If you don&#39;t know the answer, just say that you don&#39;t know. 
+</span></span><span style="display:flex;"><span>Don&#39;t try to make up an answer. Do not answer beyond this context.
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>QUESTION: {User Question}                                            
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>CONTEXT:
+</span></span><span style="display:flex;"><span>{Data extracted from the knowledge database}
+</span></span></code></pre></div><h1 id="what-are-knowledge-databases"><strong>What are knowledge databases?</strong></h1>
+<p>With RAG, the retrieval of relevant information requires an external &ldquo;knowledge database&rdquo;, a place where we can store and use to efficiently retrieve information. <br>
+We can think of this database as the external long-term memory of our LLM.</p>
+<p>To retrieve information that is semantically related to our questions, we&rsquo;re going to use a <strong>semantic search database</strong>.</p>
+<h2 id="semantic-search-database"><strong>Semantic search database</strong></h2>
+<p>A semantic search database is a type of database that uses semantic technology to understand the meanings and relationships of words and phrases in order to produce highly relevant search results.</p>
+<p>Semantic search is a search technique that uses natural language processing algorithms to understand the meaning and context of words and phrases in order to provide more accurate search results.</p>
+<p>This approach is based on the idea that search engines should not just match keywords in a query, but also try to understand the intent of the user’s search and the relationships between the words used.</p>
+<p>Overall, semantic search is designed to provide more precise and meaningful search results that better reflect the user’s intent, rather than just matching keywords. This makes it particularly useful for complex queries, such as those related to scientific research, medical information, or legal documents.</p>
+<h1 id="which-aws-services-are-we-going-to-use"><strong>Which AWS services are we going to use?</strong></h1>
+<p>For the Generative AI LLMs:</p>
+<ul>
+<li><a href="https://aws.amazon.com/bedrock">AWS Bedrock</a></li>
+</ul>
+<p>For the knowledge database:</p>
+<ul>
+<li><a href="https://aws.amazon.com/kendra">AWS Kendra</a></li>
+<li><a href="https://aws.amazon.com/s3">AWS S3</a></li>
+</ul>
+<p>The next image shows a diagram of how the AWS services are going to interact between them:</p>
+<p><img src="/img/rag-aws-architecture-diagram.png" alt="aws-services-diagram"></p>
+<h1 id="how-the-qa-app-works"><strong>How the Q&amp;A app works</strong></h1>
+<ul>
+<li>
+<p>The private documents are being stored in an s3 bucket.</p>
+</li>
+<li>
+<p>The Kendra Index is configured to use an s3 connector. The Index checks the s3 bucket every N minutes for new content. If new content is found in the bucket, it gets automatically parsed and stored into Kendra database.</p>
+</li>
+<li>
+<p>When a user runs a query through the <code>Streamlit</code> app, the app follows these steps:</p>
+<ul>
+<li>Retrieves the relevant information for the given query from Kendra.</li>
+<li>Assembles the prompt.</li>
+<li>Sends the prompt to one of the available Bedrock LLMs and prints the answer that comes back.</li>
+</ul>
+</li>
+</ul>
+<p><img src="/img/rag-aws-app-interaction-diagram.png" alt="rag-aws-app-interaction-diagram"></p>
+<p>One of the best things of using AWS Kendra (paired with AWS S3) as our knowledge database is that the &ldquo;Ingest Process&rdquo; <em>(see above diagram)</em> is completely automated, you don&rsquo;t have to do anything at all. <br>
+Every time we add, update, or delete a document from the S3 bucket, the content of that document is automatically parsed and stored in Kendra.</p>
+<h1 id="building-the-qa-app"><strong>Building the Q&amp;A app</strong></h1>
+<p>There are a few steps required before we can begin developing the app.</p>
+<h2 id="1-deploy-the-required-aws-services"><strong>1. Deploy the required AWS services</strong></h2>
+<p>To make the app work we need to deploy the following AWS services:</p>
+<ul>
+<li>An s3 bucket for housing our private docs.</li>
+<li>A Kendra index with an s3 connector.</li>
+<li>An IAM role with the required permissions to make everything work.</li>
+</ul>
+<p>You can deploy those resources as you like: using the AWS portal, AWS CDK, Terraform, Pulumi, &hellip;</p>
+<p>⚠️ If you want to take the easy route, I have uploaded a few Terraform files to my <a href="https://github.com/karlospn/building-qa-app-with-aws-bedrock-kendra-s3-and-streamlit/tree/main/infra">GitHub repository</a> that will create the required resources on your AWS account.</p>
+<h2 id="2-sign-up-for-to-the-aws-bedrock-preview"><strong>2. Sign up for to the AWS Bedrock preview</strong></h2>
+<p>As of today (08/21/2023), AWS Bedrock is still on preview. To access it, you&rsquo;ll need to sign up for the preview.</p>
+<p><img src="/img/rag-aws-bedrock-preview.png" alt="rag-aws-bedrock-preview"></p>
+<p>Once admitted to the preview, you will have access only to the Amazon Titan LLM. To utilize any of the third-party LLMs (Anthropic and AI21 Labs models), you must register for access separately.</p>
+<p>If you try to use any of this third-party LLMs before they have give you access, the Bedrock API will respond with an error message.</p>
+<p>From this point forward, I&rsquo;m going to assume that you have fully access to AWS Bedrock and all the available models.</p>
+<h2 id="3-get-the-boto3-preview-version"><strong>3. Get the boto3 preview version</strong></h2>
+<p>The Q&amp;A app will be a Python-based app, which means that you&rsquo;re going to need the <code>boto3</code> package. <br>
+<code>boto3</code> is the AWS SDK package for Python, which allows Python apps to make use of AWS services.</p>
+<p>Right now (08/21/2023), there is not a global available <code>boto3</code> package that allows us to work with the AWS Bedrock service. To work with it, you must download the <code>boto3</code> wheel preview version.</p>
+<blockquote>
+<p>What is a wheel? <br>
+Python wheels are a pre-built binary package format for Python modules and libraries.</p>
+</blockquote>
+<p>⚠️ If you don&rsquo;t want to waste your time searching for the preview <code>boto3</code> package, I have uploaded the <code>boto3</code> and <code>botocore</code> wheel files that you&rsquo;re going to need to interact with AWS Bedrock on my <a href="https://github.com/karlospn/building-qa-app-with-aws-bedrock-kendra-s3-and-streamlit/tree/main">GitHub Repository</a>.</p>
+<h2 id="4-build-the-qa-app-using-langchain"><strong>4. Build the Q&amp;A app using LangChain</strong></h2>
+<blockquote>
+<p>⚠️ If you&rsquo;re not a fan of <a href="https://www.langchain.com/">LangChain</a> an prefer to do everything by yourself without the aid of any third-party library, go to the next section (section 5). <br>
+In section 5, I will show you how to build the same Q&amp;A app we&rsquo;re going to build here, but using only the <code>AWS SDK for Python</code>.</p>
+</blockquote>
+<p>We are going to set up a very simple UI:</p>
+<ul>
+<li>A text input field where the users can type the question they want to ask.</li>
+<li>A numeric input where the users can set the LLM max tokens.</li>
+<li>A numeric input where the users can set the LLM temperature.</li>
+<li>A dropdown to select which AWS Bedrock LLM we want to use to generate the response.</li>
+<li>And a submit button.</li>
+</ul>
+<p>To build the user interface I’m using <a href="https://streamlit.io/">Streamlit</a>. I decided to use Streamlit because I can build a simple and functional UI with just a few lines of Python.</p>
+<p>The next image showcases how the user interface will look once it is fully built.</p>
+<p><img src="/img/rag-aws-output-0.png" alt="app-result-0"></p>
+<p>Once a user types a question in the text input, selects which AWS Bedrock LLM wants to use, and presses the submit button, the following steps will be executed:</p>
+<ul>
+<li>Run the user query on AWS Kendra and retrieve the relevant information.</li>
+<li>Assemble a prompt.</li>
+<li>Send the prompt to one of the AWS Bedrock LLMs and get the answer that comes back.</li>
+</ul>
+<p>In this first version of Q&amp;A app we will make heavy use of the <a href="https://www.langchain.com/">LangChain</a> library to build the RAG pattern and to interact with AWS Kendra and AWS Bedrock.</p>
+<p>LangChain works great when building a RAG pattern that involves AWS Kendra and AWS Bedrock. With LangChain, we can retrieve the relevant documents related to our query from Kendra with just a single line of code and build an entire RAG workflow using one of the already pre-built &ldquo;chains&rdquo; that LangChain offers.</p>
+<p>Now, let’s take a look at the source code and then I’ll try to explain the most relevant parts.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> langchain.retrievers <span style="color:#f92672">import</span> AmazonKendraRetriever
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> langchain.llms.bedrock <span style="color:#f92672">import</span> Bedrock
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> langchain.chains <span style="color:#f92672">import</span> RetrievalQA
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> dotenv <span style="color:#f92672">import</span> load_dotenv
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> streamlit <span style="color:#66d9ef">as</span> st
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> os
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> boto3
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>load_dotenv()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;KENDRA_INDEX&#39;</span>) <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>    st<span style="color:#f92672">.</span>error(<span style="color:#e6db74">&#34;KENDRA_INDEX not set. Please set this environment variable and restart the app.&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;AWS_BEDROCK_REGION&#39;</span>) <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>    st<span style="color:#f92672">.</span>error(<span style="color:#e6db74">&#34;AWS_BEDROCK_REGION not set. Please set this environment variable and restart the app.&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;AWS_KENDRA_REGION&#39;</span>) <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>    st<span style="color:#f92672">.</span>error(<span style="color:#e6db74">&#34;AWS_KENDRA_REGION not set. Please set this environment variable and restart the app.&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>kendra_index <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;KENDRA_INDEX&#39;</span>)
+</span></span><span style="display:flex;"><span>bedrock_region <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;AWS_BEDROCK_REGION&#39;</span>)
+</span></span><span style="display:flex;"><span>kendra_region <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;AWS_KENDRA_REGION&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_kendra_doc_retriever</span>():
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    kendra_client <span style="color:#f92672">=</span> boto3<span style="color:#f92672">.</span>client(<span style="color:#e6db74">&#34;kendra&#34;</span>, kendra_region)
+</span></span><span style="display:flex;"><span>    retriever <span style="color:#f92672">=</span> AmazonKendraRetriever(index_id<span style="color:#f92672">=</span>kendra_index, top_k<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>, client<span style="color:#f92672">=</span>kendra_client, attribute_filter<span style="color:#f92672">=</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;EqualsTo&#39;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#39;Key&#39;</span>: <span style="color:#e6db74">&#39;_language_code&#39;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#39;Value&#39;</span>: {<span style="color:#e6db74">&#39;StringValue&#39;</span>: <span style="color:#e6db74">&#39;en&#39;</span>}
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }) 
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> retriever
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>st<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#34;AWS Q&amp;A app 💎&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>query <span style="color:#f92672">=</span> st<span style="color:#f92672">.</span>text_input(<span style="color:#e6db74">&#34;What would you like to know?&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>max_tokens <span style="color:#f92672">=</span> st<span style="color:#f92672">.</span>number_input(<span style="color:#e6db74">&#39;Max Tokens&#39;</span>, value<span style="color:#f92672">=</span><span style="color:#ae81ff">1000</span>)
+</span></span><span style="display:flex;"><span>temperature<span style="color:#f92672">=</span> st<span style="color:#f92672">.</span>number_input(label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Temperature&#34;</span>,step<span style="color:#f92672">=</span><span style="color:#ae81ff">.1</span>,format<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">%.2f</span><span style="color:#e6db74">&#34;</span>, value<span style="color:#f92672">=</span><span style="color:#ae81ff">0.7</span>)
+</span></span><span style="display:flex;"><span>llm_model <span style="color:#f92672">=</span> st<span style="color:#f92672">.</span>selectbox(<span style="color:#e6db74">&#34;Select LLM model&#34;</span>, [<span style="color:#e6db74">&#34;Anthropic Claude V2&#34;</span>, <span style="color:#e6db74">&#34;Amazon Titan&#34;</span>, <span style="color:#e6db74">&#34;Ai21Labs J2 Grande Instruct&#34;</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> st<span style="color:#f92672">.</span>button(<span style="color:#e6db74">&#34;Search&#34;</span>):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">with</span> st<span style="color:#f92672">.</span>spinner(<span style="color:#e6db74">&#34;Building response...&#34;</span>):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> llm_model <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;Anthropic Claude V2&#39;</span>:
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>            retriever <span style="color:#f92672">=</span> get_kendra_doc_retriever()  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            bedrock_client <span style="color:#f92672">=</span> boto3<span style="color:#f92672">.</span>client(<span style="color:#e6db74">&#34;bedrock&#34;</span>, bedrock_region)
+</span></span><span style="display:flex;"><span>            llm <span style="color:#f92672">=</span> Bedrock(model_id<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;anthropic.claude-v2&#34;</span>, region_name<span style="color:#f92672">=</span>bedrock_region, 
+</span></span><span style="display:flex;"><span>                        client<span style="color:#f92672">=</span>bedrock_client, 
+</span></span><span style="display:flex;"><span>                        model_kwargs<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;max_tokens_to_sample&#34;</span>: max_tokens, <span style="color:#e6db74">&#34;temperature&#34;</span>: temperature})
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            qa <span style="color:#f92672">=</span> RetrievalQA<span style="color:#f92672">.</span>from_chain_type(llm<span style="color:#f92672">=</span>llm, chain_type<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;stuff&#34;</span>, retriever<span style="color:#f92672">=</span>retriever)
+</span></span><span style="display:flex;"><span>            response <span style="color:#f92672">=</span> qa(query)
+</span></span><span style="display:flex;"><span>            st<span style="color:#f92672">.</span>markdown(<span style="color:#e6db74">&#34;### Answer:&#34;</span>)
+</span></span><span style="display:flex;"><span>            st<span style="color:#f92672">.</span>write(response[<span style="color:#e6db74">&#39;result&#39;</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> llm_model <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;Amazon Titan&#39;</span>:
+</span></span><span style="display:flex;"><span>            retriever <span style="color:#f92672">=</span> get_kendra_doc_retriever()       
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>            bedrock_client <span style="color:#f92672">=</span> boto3<span style="color:#f92672">.</span>client(<span style="color:#e6db74">&#34;bedrock&#34;</span>, bedrock_region)
+</span></span><span style="display:flex;"><span>            llm <span style="color:#f92672">=</span> Bedrock(model_id<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;amazon.titan-tg1-large&#34;</span>, region_name<span style="color:#f92672">=</span>bedrock_region, 
+</span></span><span style="display:flex;"><span>                        client<span style="color:#f92672">=</span>bedrock_client, 
+</span></span><span style="display:flex;"><span>                        model_kwargs<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;maxTokenCount&#34;</span>: max_tokens, <span style="color:#e6db74">&#34;temperature&#34;</span>: temperature})
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            qa <span style="color:#f92672">=</span> RetrievalQA<span style="color:#f92672">.</span>from_chain_type(llm<span style="color:#f92672">=</span>llm, chain_type<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;stuff&#34;</span>, retriever<span style="color:#f92672">=</span>retriever)
+</span></span><span style="display:flex;"><span>            response <span style="color:#f92672">=</span> qa(query)
+</span></span><span style="display:flex;"><span>            st<span style="color:#f92672">.</span>markdown(<span style="color:#e6db74">&#34;### Answer:&#34;</span>)
+</span></span><span style="display:flex;"><span>            st<span style="color:#f92672">.</span>write(response[<span style="color:#e6db74">&#39;result&#39;</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> llm_model <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;Ai21Labs J2 Grande Instruct&#39;</span>:
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>            retriever <span style="color:#f92672">=</span> get_kendra_doc_retriever()           
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>            bedrock_client <span style="color:#f92672">=</span> boto3<span style="color:#f92672">.</span>client(<span style="color:#e6db74">&#34;bedrock&#34;</span>, bedrock_region)
+</span></span><span style="display:flex;"><span>            llm <span style="color:#f92672">=</span> Bedrock(model_id<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;ai21.j2-grande-instruct&#34;</span>, region_name<span style="color:#f92672">=</span>bedrock_region, 
+</span></span><span style="display:flex;"><span>                        client<span style="color:#f92672">=</span>bedrock_client, 
+</span></span><span style="display:flex;"><span>                        model_kwargs<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;maxTokens&#34;</span>: max_tokens, <span style="color:#e6db74">&#34;temperature&#34;</span>: temperature})
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            qa <span style="color:#f92672">=</span> RetrievalQA<span style="color:#f92672">.</span>from_chain_type(llm<span style="color:#f92672">=</span>llm, chain_type<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;stuff&#34;</span>, retriever<span style="color:#f92672">=</span>retriever)
+</span></span><span style="display:flex;"><span>            response <span style="color:#f92672">=</span> qa(query)
+</span></span><span style="display:flex;"><span>            st<span style="color:#f92672">.</span>markdown(<span style="color:#e6db74">&#34;### Answer:&#34;</span>)
+</span></span><span style="display:flex;"><span>            st<span style="color:#f92672">.</span>write(response[<span style="color:#e6db74">&#39;result&#39;</span>])
+</span></span></code></pre></div><p>There isn&rsquo;t much to comment on here since the code is quite straightforward. Nonetheless, let&rsquo;s take a closer look and provide a step-by-step explanation of what each line of code is accomplishing.</p>
+<h3 id="41-get-user-parameters-from-the-user-interface"><strong>4.1. Get user parameters from the User Interface</strong></h3>
+<p>The first step is to simply retrieve the user parameters from the UI:</p>
+<ul>
+<li>User query.</li>
+<li>LLM max tokens limit.</li>
+<li>LLM temperature.</li>
+<li>Which AWS Bedrock LLM does the user want to use.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>query <span style="color:#f92672">=</span> st<span style="color:#f92672">.</span>text_input(<span style="color:#e6db74">&#34;What would you like to know?&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>max_tokens <span style="color:#f92672">=</span> st<span style="color:#f92672">.</span>number_input(<span style="color:#e6db74">&#39;Max Tokens&#39;</span>, value<span style="color:#f92672">=</span><span style="color:#ae81ff">1000</span>)
+</span></span><span style="display:flex;"><span>temperature<span style="color:#f92672">=</span> st<span style="color:#f92672">.</span>number_input(label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Temperature&#34;</span>,step<span style="color:#f92672">=</span><span style="color:#ae81ff">.1</span>,format<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">%.2f</span><span style="color:#e6db74">&#34;</span>, value<span style="color:#f92672">=</span><span style="color:#ae81ff">0.7</span>)
+</span></span><span style="display:flex;"><span>llm_model <span style="color:#f92672">=</span> st<span style="color:#f92672">.</span>selectbox(<span style="color:#e6db74">&#34;Select LLM model&#34;</span>, [<span style="color:#e6db74">&#34;Anthropic Claude V2&#34;</span>, <span style="color:#e6db74">&#34;Amazon Titan&#34;</span>, <span style="color:#e6db74">&#34;Ai21Labs J2 Grande Instruct&#34;</span>])
+</span></span></code></pre></div><h3 id="42-define-how-were-going-to-retrieve-the-relevant-information-from-kendra"><strong>4.2. Define how we&rsquo;re going to retrieve the relevant information from Kendra</strong></h3>
+<p>To retrieve the relevant docs from our knowledge database (AWS Kendra), we&rsquo;re going to use the LangChain<code>AmazonKendraRetriever</code> class.</p>
+<p>The <code>AmazonKendraRetriever</code> class uses Amazon Kendra’s Retrieve API to make queries to the Amazon Kendra index and obtain the docs that are most relevant to the user query.</p>
+<p>The <code>AmazonKendraRetriever</code> class will be plugged into a LangChain chain to build the RAG pattern. <br>
+An important thing to understand here is that we&rsquo;re not retrieving the docs from Kendra right now; we&rsquo;re only declaring a way to retrieve them. It will be the LangChain chain who uses the <code>AmazonKendraRetriever</code> class to obtain the relevant documents. (More on section 4.4).</p>
+<p>The LangChain <code>AmazonKendraRetrieves</code> class creates a Kendra <code>boto3</code> client by default, but if you want to customize the configuration, it is better to explicitly create the client beforehand, and pass it to the Langchain class.</p>
+<p>The <code>top_k</code> parameter is used to specify how many documents we want to retrieve from Kendra, for this example we’re retrieving the top 3 docs that are most similar to our question.</p>
+<blockquote>
+<p>Why did we retrieve 3 docs from our knowledge database instead of just one?</p>
+<p>When we saved the documents, data is stored into multiple chunks, so it’s possible that the complete answer to our question is not located in just one vector but in more than one. That’s why we’re retrieving the 3 most relevant documents to the given question.</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_kendra_doc_retriever</span>():   
+</span></span><span style="display:flex;"><span>    kendra_client <span style="color:#f92672">=</span> boto3<span style="color:#f92672">.</span>client(<span style="color:#e6db74">&#34;kendra&#34;</span>, kendra_region)
+</span></span><span style="display:flex;"><span>    retriever <span style="color:#f92672">=</span> AmazonKendraRetriever(index_id<span style="color:#f92672">=</span>kendra_index, top_k<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>, client<span style="color:#f92672">=</span>kendra_client, attribute_filter<span style="color:#f92672">=</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;EqualsTo&#39;</span>: {
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#39;Key&#39;</span>: <span style="color:#e6db74">&#39;_language_code&#39;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#39;Value&#39;</span>: {<span style="color:#e6db74">&#39;StringValue&#39;</span>: <span style="color:#e6db74">&#39;en&#39;</span>}
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }) 
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> retriever
+</span></span></code></pre></div><h3 id="43-initialize-the-langchain-bedrock-client"><strong>4.3. Initialize the LangChain Bedrock client</strong></h3>
+<p>To interact with AWS Bedrock LLMs, we&rsquo;re going to use the LangChain <code>Bedrock</code> class.</p>
+<p>The LangChain <code>Bedrock</code> class allow us to setup the Bedrock LLM we want to use. In this specific code snippet, we&rsquo;re setting up the <code>Amazon Titan Large</code> LLM.</p>
+<p>This <code>Bedrock</code> class will be plugged into a LangChain chain to build the RAG pattern. (More on section 4.4).</p>
+<p>The LangChain <code>Bedrock</code> class creates a Bedrock <code>boto3</code> client by default, but if you want to customize the configuration, it is better to explicitly create the Bedrock client beforehand, and pass it to the Langchain.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>bedrock_client <span style="color:#f92672">=</span> boto3<span style="color:#f92672">.</span>client(<span style="color:#e6db74">&#34;bedrock&#34;</span>, bedrock_region)
+</span></span><span style="display:flex;"><span>llm <span style="color:#f92672">=</span> Bedrock(model_id<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;amazon.titan-tg1-large&#34;</span>, region_name<span style="color:#f92672">=</span>bedrock_region, 
+</span></span><span style="display:flex;"><span>            client<span style="color:#f92672">=</span>bedrock_client, 
+</span></span><span style="display:flex;"><span>            model_kwargs<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;maxTokenCount&#34;</span>: max_tokens, <span style="color:#e6db74">&#34;temperature&#34;</span>: temperature})
+</span></span></code></pre></div><h3 id="44-create-a-langchain-retrievalqa-chain"><strong>4.4. Create a LangChain RetrievalQA chain</strong></h3>
+<ul>
+<li>In section 4.2, we declared a way to retrieve the documents from our knowledge database using the  <code>AmazonKendraRetriever</code> implementation.</li>
+<li>In section 4.3, we declared a way to interact with a Bedrock LLM using the <code>Bedrock</code> class.</li>
+</ul>
+<p>Now, what we need to do to build a RAG workflow? Just a LangChain &ldquo;chain&rdquo;.</p>
+<p>The <code>RetrievalQA</code> chain is the key component for building the RAG pattern. This LangChain chain handles everything for you under the hood:</p>
+<ul>
+<li>Uses the <code>AmazonKendraRetriever</code> implementation to retrieve the most relevant docs from Kendra</li>
+<li>Creates the prompt and attaches the data obtained from Kendra.</li>
+<li>Sends the prompt to an AWS Bedrock LLM and gets the answer that comes back.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>qa <span style="color:#f92672">=</span> RetrievalQA<span style="color:#f92672">.</span>from_chain_type(llm<span style="color:#f92672">=</span>llm, chain_type<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;stuff&#34;</span>, retriever<span style="color:#f92672">=</span>retriever)
+</span></span><span style="display:flex;"><span>response <span style="color:#f92672">=</span> qa(query)
+</span></span><span style="display:flex;"><span>st<span style="color:#f92672">.</span>markdown(<span style="color:#e6db74">&#34;### Answer:&#34;</span>)
+</span></span><span style="display:flex;"><span>st<span style="color:#f92672">.</span>write(response[<span style="color:#e6db74">&#39;result&#39;</span>])
+</span></span></code></pre></div><p>And that&rsquo;s it! You have a functional RAG workflow that uses AWS Kendra and AWS Bedrock and it is no more than 10 - 15 lines of code, and all thanks to LangChain.</p>
+<h2 id="5-build-the-qa-app-using-boto3-and-without-using-langchain"><strong>5. Build the Q&amp;A app using boto3 (and without using LangChain)</strong></h2>
+<blockquote>
+<p><strong>In this section we&rsquo;re going to build the same Q&amp;A app from the previous section (section 4), but this time without making use of the <code>LangChain</code> library.</strong></p>
+</blockquote>
+<p>The <code>Streamlit</code> app we have built in the previous section makes heavy use of the <code>LangChain</code> library to implement the RAG pattern.</p>
+<p>But what if you prefer not to use any third-party libraries and set up the RAG pattern using only the AWS SDK for Python library?</p>
+<p>It is true that <code>LangChain</code> handles part of the heavy work for you under the covers, but implementing the RAG pattern using only the <code>boto3</code> library is not difficult at all.</p>
+<p>Let&rsquo;s get to it. First, let&rsquo;s take a look at the end result and then I’ll explain the most relevant parts again.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> dotenv <span style="color:#f92672">import</span> load_dotenv
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> streamlit <span style="color:#66d9ef">as</span> st
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> os
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> boto3
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> json
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>load_dotenv()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;KENDRA_INDEX&#39;</span>) <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>    st<span style="color:#f92672">.</span>error(<span style="color:#e6db74">&#34;KENDRA_INDEX not set. Please set this environment variable and restart the app.&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;AWS_BEDROCK_REGION&#39;</span>) <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>    st<span style="color:#f92672">.</span>error(<span style="color:#e6db74">&#34;AWS_BEDROCK_REGION not set. Please set this environment variable and restart the app.&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;AWS_KENDRA_REGION&#39;</span>) <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>    st<span style="color:#f92672">.</span>error(<span style="color:#e6db74">&#34;AWS_KENDRA_REGION not set. Please set this environment variable and restart the app.&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>kendra_index <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;KENDRA_INDEX&#39;</span>)
+</span></span><span style="display:flex;"><span>bedrock_region <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;AWS_BEDROCK_REGION&#39;</span>)
+</span></span><span style="display:flex;"><span>kendra_region <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#39;AWS_KENDRA_REGION&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">retrieve_kendra_docs</span>():  
+</span></span><span style="display:flex;"><span>    kendra_client <span style="color:#f92672">=</span> boto3<span style="color:#f92672">.</span>client(<span style="color:#e6db74">&#34;kendra&#34;</span>, kendra_region)
+</span></span><span style="display:flex;"><span>    result <span style="color:#f92672">=</span> kendra_client<span style="color:#f92672">.</span>retrieve(QueryText <span style="color:#f92672">=</span> query,IndexId <span style="color:#f92672">=</span> 
+</span></span><span style="display:flex;"><span>                                    kendra_index,  
+</span></span><span style="display:flex;"><span>                                    PageSize <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>,
+</span></span><span style="display:flex;"><span>                                    PageNumber <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    chunks <span style="color:#f92672">=</span> [retrieve_result[<span style="color:#e6db74">&#34;Content&#34;</span>] <span style="color:#66d9ef">for</span> retrieve_result <span style="color:#f92672">in</span> result[<span style="color:#e6db74">&#34;ResultItems&#34;</span>]]
+</span></span><span style="display:flex;"><span>    joined_chunks <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">.</span>join(chunks)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> joined_chunks
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">build_prompt</span>(query, docs):
+</span></span><span style="display:flex;"><span>    prompt <span style="color:#f92672">=</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    Answer the following question based on the context below.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    If you don&#39;t know the answer, just say that you don&#39;t know. Don&#39;t try to make up an answer. Do not answer beyond this context.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    ---
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    QUESTION: </span><span style="color:#e6db74">{</span>query<span style="color:#e6db74">}</span><span style="color:#e6db74">                                            
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    ---
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    CONTEXT:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    </span><span style="color:#e6db74">{</span>docs<span style="color:#e6db74">}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> prompt
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>st<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#34;AWS Q&amp;A app 💎&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>query <span style="color:#f92672">=</span> st<span style="color:#f92672">.</span>text_input(<span style="color:#e6db74">&#34;What would you like to know?&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>max_tokens <span style="color:#f92672">=</span> st<span style="color:#f92672">.</span>number_input(<span style="color:#e6db74">&#39;Max Tokens&#39;</span>, value<span style="color:#f92672">=</span><span style="color:#ae81ff">1000</span>)
+</span></span><span style="display:flex;"><span>temperature<span style="color:#f92672">=</span> st<span style="color:#f92672">.</span>number_input(label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Temperature&#34;</span>,step<span style="color:#f92672">=</span><span style="color:#ae81ff">.1</span>,format<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">%.2f</span><span style="color:#e6db74">&#34;</span>, value<span style="color:#f92672">=</span><span style="color:#ae81ff">0.7</span>)
+</span></span><span style="display:flex;"><span>llm_model <span style="color:#f92672">=</span> st<span style="color:#f92672">.</span>selectbox(<span style="color:#e6db74">&#34;Select LLM model&#34;</span>, [<span style="color:#e6db74">&#34;Anthropic Claude V2&#34;</span>, <span style="color:#e6db74">&#34;Amazon Titan&#34;</span>, <span style="color:#e6db74">&#34;Ai21Labs J2 Grande Instruct&#34;</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> st<span style="color:#f92672">.</span>button(<span style="color:#e6db74">&#34;Search&#34;</span>):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">with</span> st<span style="color:#f92672">.</span>spinner(<span style="color:#e6db74">&#34;Building response...&#34;</span>):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> llm_model <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;Anthropic Claude V2&#39;</span>:
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>            docs <span style="color:#f92672">=</span> retrieve_kendra_docs()
+</span></span><span style="display:flex;"><span>            prompt <span style="color:#f92672">=</span> build_prompt(query, docs)  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            body <span style="color:#f92672">=</span> json<span style="color:#f92672">.</span>dumps({
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;prompt&#34;</span>: prompt, 
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;max_tokens_to_sample&#34;</span>: max_tokens, 
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;temperature&#34;</span>: temperature
+</span></span><span style="display:flex;"><span>            })
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            bedrock_client <span style="color:#f92672">=</span> boto3<span style="color:#f92672">.</span>client(<span style="color:#e6db74">&#34;bedrock&#34;</span>, bedrock_region)
+</span></span><span style="display:flex;"><span>            response <span style="color:#f92672">=</span> bedrock_client<span style="color:#f92672">.</span>invoke_model(
+</span></span><span style="display:flex;"><span>                body<span style="color:#f92672">=</span>body, 
+</span></span><span style="display:flex;"><span>                modelId<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;anthropic.claude-v2&#39;</span>
+</span></span><span style="display:flex;"><span>            )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            response <span style="color:#f92672">=</span> json<span style="color:#f92672">.</span>loads(response<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;body&#34;</span>)<span style="color:#f92672">.</span>read())
+</span></span><span style="display:flex;"><span>            st<span style="color:#f92672">.</span>markdown(<span style="color:#e6db74">&#34;### Answer:&#34;</span>)
+</span></span><span style="display:flex;"><span>            st<span style="color:#f92672">.</span>write(response<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;completion&#34;</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> llm_model <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;Amazon Titan&#39;</span>:
+</span></span><span style="display:flex;"><span>            docs <span style="color:#f92672">=</span> retrieve_kendra_docs()
+</span></span><span style="display:flex;"><span>            prompt <span style="color:#f92672">=</span> build_prompt(query, docs) 
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>            bedrock_client <span style="color:#f92672">=</span> boto3<span style="color:#f92672">.</span>client(<span style="color:#e6db74">&#34;bedrock&#34;</span>, bedrock_region)
+</span></span><span style="display:flex;"><span>            body <span style="color:#f92672">=</span> json<span style="color:#f92672">.</span>dumps({
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;inputText&#34;</span>: prompt, 
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;textGenerationConfig&#34;</span>:{
+</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">&#34;maxTokenCount&#34;</span>:max_tokens,
+</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">&#34;temperature&#34;</span>:temperature,
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }) 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            response <span style="color:#f92672">=</span> bedrock_client<span style="color:#f92672">.</span>invoke_model(
+</span></span><span style="display:flex;"><span>                body<span style="color:#f92672">=</span>body, 
+</span></span><span style="display:flex;"><span>                modelId<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;amazon.titan-tg1-large&#39;</span>
+</span></span><span style="display:flex;"><span>            )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            result <span style="color:#f92672">=</span> json<span style="color:#f92672">.</span>loads(response<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#39;body&#39;</span>)<span style="color:#f92672">.</span>read())
+</span></span><span style="display:flex;"><span>            st<span style="color:#f92672">.</span>markdown(<span style="color:#e6db74">&#34;### Answer:&#34;</span>)
+</span></span><span style="display:flex;"><span>            st<span style="color:#f92672">.</span>write(result<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#39;results&#39;</span>)[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#39;outputText&#39;</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> llm_model <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;Ai21Labs J2 Grande Instruct&#39;</span>:
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>            docs <span style="color:#f92672">=</span> retrieve_kendra_docs()
+</span></span><span style="display:flex;"><span>            prompt <span style="color:#f92672">=</span> build_prompt(query, docs) 
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>            bedrock_client <span style="color:#f92672">=</span> boto3<span style="color:#f92672">.</span>client(<span style="color:#e6db74">&#34;bedrock&#34;</span>, bedrock_region)
+</span></span><span style="display:flex;"><span>            body <span style="color:#f92672">=</span> json<span style="color:#f92672">.</span>dumps({
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;prompt&#34;</span>: prompt, 
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;maxTokens&#34;</span>: max_tokens, 
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;temperature&#34;</span>: temperature
+</span></span><span style="display:flex;"><span>            })
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            response <span style="color:#f92672">=</span> bedrock_client<span style="color:#f92672">.</span>invoke_model(
+</span></span><span style="display:flex;"><span>                body<span style="color:#f92672">=</span>body, 
+</span></span><span style="display:flex;"><span>                modelId<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;ai21.j2-grande-instruct&#39;</span>
+</span></span><span style="display:flex;"><span>            )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            result <span style="color:#f92672">=</span> json<span style="color:#f92672">.</span>loads(response<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;body&#34;</span>)<span style="color:#f92672">.</span>read())
+</span></span><span style="display:flex;"><span>            st<span style="color:#f92672">.</span>markdown(<span style="color:#e6db74">&#34;### Answer:&#34;</span>)
+</span></span><span style="display:flex;"><span>            st<span style="color:#f92672">.</span>write(result<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;completions&#34;</span>)[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;data&#34;</span>)<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;text&#34;</span>))
+</span></span></code></pre></div><h3 id="51-get-user-parameters-from-the-user-interface"><strong>5.1. Get user parameters from the User Interface</strong></h3>
+<p>The first step is to simply retrieve the user parameters from the UI:</p>
+<ul>
+<li>User query.</li>
+<li>LLM max tokens limit.</li>
+<li>LLM temperature.</li>
+<li>Which AWS Bedrock LLM does the user want to use.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>query <span style="color:#f92672">=</span> st<span style="color:#f92672">.</span>text_input(<span style="color:#e6db74">&#34;What would you like to know?&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>max_tokens <span style="color:#f92672">=</span> st<span style="color:#f92672">.</span>number_input(<span style="color:#e6db74">&#39;Max Tokens&#39;</span>, value<span style="color:#f92672">=</span><span style="color:#ae81ff">1000</span>)
+</span></span><span style="display:flex;"><span>temperature<span style="color:#f92672">=</span> st<span style="color:#f92672">.</span>number_input(label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Temperature&#34;</span>,step<span style="color:#f92672">=</span><span style="color:#ae81ff">.1</span>,format<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">%.2f</span><span style="color:#e6db74">&#34;</span>, value<span style="color:#f92672">=</span><span style="color:#ae81ff">0.7</span>)
+</span></span><span style="display:flex;"><span>llm_model <span style="color:#f92672">=</span> st<span style="color:#f92672">.</span>selectbox(<span style="color:#e6db74">&#34;Select LLM model&#34;</span>, [<span style="color:#e6db74">&#34;Anthropic Claude V2&#34;</span>, <span style="color:#e6db74">&#34;Amazon Titan&#34;</span>, <span style="color:#e6db74">&#34;Ai21Labs J2 Grande Instruct&#34;</span>])
+</span></span></code></pre></div><h3 id="52-retrieve-the-relevant-information-from-kendra"><strong>5.2. Retrieve the relevant information from Kendra</strong></h3>
+<p>The <code>retrieve</code> method from the <code>boto3</code> Kendra client allow us to retrieve the relevant docs from our knowledge database.</p>
+<p>The <code>PageSize</code> parameter is used to specify how many documents we want to retrieve, for this example we’re retrieving the top 3 docs that are most similar to our question.</p>
+<blockquote>
+<p>Why did we retrieve 3 docs from our knowledge database instead of just one?</p>
+<p>When we saved the documents, data is stored into multiple chunks, so it’s possible that the complete answer to our question is not located in just one vector but in more than one. That’s why we’re retrieving the 3 most relevant documents to the given question.</p>
+</blockquote>
+<p>Once we have retrieved the documents from Kendra, we merge them into a single <em>&ldquo;string&rdquo;</em>. <br>
+This <em>&ldquo;string&rdquo;</em> represents the context that will be added to the prompt, specifying to the Bedrock LLM that it can only respond using the information provided in this context. It cannot use any data from outside this context to generate the answer to our question.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">retrieve_kendra_docs</span>():  
+</span></span><span style="display:flex;"><span>    kendra_client <span style="color:#f92672">=</span> boto3<span style="color:#f92672">.</span>client(<span style="color:#e6db74">&#34;kendra&#34;</span>, kendra_region)
+</span></span><span style="display:flex;"><span>    result <span style="color:#f92672">=</span> kendra_client<span style="color:#f92672">.</span>retrieve(QueryText <span style="color:#f92672">=</span> query,
+</span></span><span style="display:flex;"><span>                                    IndexId <span style="color:#f92672">=</span> kendra_index,  
+</span></span><span style="display:flex;"><span>                                    PageSize <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>,
+</span></span><span style="display:flex;"><span>                                    PageNumber <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    chunks <span style="color:#f92672">=</span> [retrieve_result[<span style="color:#e6db74">&#34;Content&#34;</span>] <span style="color:#66d9ef">for</span> retrieve_result <span style="color:#f92672">in</span> result[<span style="color:#e6db74">&#34;ResultItems&#34;</span>]]
+</span></span><span style="display:flex;"><span>    joined_chunks <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">.</span>join(chunks)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> joined_chunks
+</span></span></code></pre></div><h3 id="53-assemble-the-prompt"><strong>5.3. Assemble the prompt</strong></h3>
+<p>Now, we construct the prompt that we will be sending to a Bedrock LLM.</p>
+<p>Within the prompt, you will notice the placeholders <code>{query}</code> and <code>{docs}</code>.</p>
+<ul>
+<li>The <code>{query}</code> placeholder is where the app will add the user query.</li>
+<li>The <code>{docs}</code> placeholder is where the app will add the context retrieved from Kendra.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">build_prompt</span>(query, docs):
+</span></span><span style="display:flex;"><span>    prompt <span style="color:#f92672">=</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    Answer the following question based on the context below.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    If you don&#39;t know the answer, just say that you don&#39;t know. Don&#39;t try to make up an answer. Do not answer beyond this context.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    ---
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    QUESTION: </span><span style="color:#e6db74">{</span>query<span style="color:#e6db74">}</span><span style="color:#e6db74">                                            
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    ---
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    CONTEXT:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    </span><span style="color:#e6db74">{</span>docs<span style="color:#e6db74">}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> prompt
+</span></span></code></pre></div><h3 id="54-send-the-prompt-to-a-bedrock-llm-and-get-the-answer-that-comes-back"><strong>5.4. Send the prompt to a Bedrock LLM and get the answer that comes back</strong></h3>
+<p>The last step is sending the prompt to one of the Bedrock LLMs using the <code>invoke_model</code> method from the <code>boto3</code> Bedrock client, and get the answer that comes back.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>bedrock_client <span style="color:#f92672">=</span> boto3<span style="color:#f92672">.</span>client(<span style="color:#e6db74">&#34;bedrock&#34;</span>, bedrock_region)
+</span></span><span style="display:flex;"><span>body <span style="color:#f92672">=</span> json<span style="color:#f92672">.</span>dumps({
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;inputText&#34;</span>: prompt, 
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;textGenerationConfig&#34;</span>:{
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;maxTokenCount&#34;</span>:max_tokens,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;temperature&#34;</span>:temperature,
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}) 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>response <span style="color:#f92672">=</span> bedrock_client<span style="color:#f92672">.</span>invoke_model(
+</span></span><span style="display:flex;"><span>    body<span style="color:#f92672">=</span>body, 
+</span></span><span style="display:flex;"><span>    modelId<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;amazon.titan-tg1-large&#39;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>result <span style="color:#f92672">=</span> json<span style="color:#f92672">.</span>loads(response<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#39;body&#39;</span>)<span style="color:#f92672">.</span>read())
+</span></span><span style="display:flex;"><span>st<span style="color:#f92672">.</span>markdown(<span style="color:#e6db74">&#34;### Answer:&#34;</span>)
+</span></span><span style="display:flex;"><span>st<span style="color:#f92672">.</span>write(result<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#39;results&#39;</span>)[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#39;outputText&#39;</span>))
+</span></span></code></pre></div><p>And that&rsquo;s it! You have successfully built a RAG workflow using AWS Bedrock, AWS Kendra, and the AWS SDK for Python.</p>
+<h1 id="testing-the-qa-app"><strong>Testing the Q&amp;A app</strong></h1>
+<p>Let&rsquo;s test if the Q&amp;A app works correctly.</p>
+<blockquote>
+<p>Remember that the document we used to fill the knowledge base is the Microsoft .NET Microservices book, so all questions we ask should be about that specific topic.</p>
+</blockquote>
+<ul>
+<li>Question 1:</li>
+</ul>
+<p><img src="/img/rag-aws-output-1.png" alt="app-result-1"></p>
+<ul>
+<li>Question 2:</li>
+</ul>
+<p><img src="/img/rag-aws-output-2.png" alt="app-result-2"></p>
+<ul>
+<li>Question 3:</li>
+</ul>
+<p><img src="/img/rag-aws-output-3.png" alt="app-result-3"></p>
+<ul>
+<li>Question 4:</li>
+</ul>
+<p><img src="/img/rag-aws-output-4.png" alt="app-result-4"></p>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://www.mytechramblings.com/posts/dotnet-httpclient-basic-usage-scenarios/">
+                  <span class="button__text">Back to .NET basics: How to properly use HttpClient</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2023 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>Theme created by <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://www.mytechramblings.com/assets/main.js"></script>
+<script src="https://www.mytechramblings.com/assets/prism.js"></script>
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('carlospons', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Donate',
+    'floating-chat.donateButton.background-color': '#ff5f5f',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
+
+      
+    </div>
+
+    
+      
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-170300931-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+    
+  </body>
+</html>

@@ -9,10 +9,30 @@
     <description>Recent content in openai on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Mon, 10 Jul 2023 10:00:01 +0200</lastBuildDate>
+    <lastBuildDate>Mon, 21 Aug 2023 10:00:03 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/openai/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Building a Q&amp;A app capable of answering questions related to your enterprise documents using AWS Bedrock, AWS Kendra, AWS S3 and Streamlit</title>
+      <link>https://www.mytechramblings.com/posts/building-qa-app-with-aws-bedrock-kendra-s3-and-streamlit/</link>
+      <pubDate>Mon, 21 Aug 2023 10:00:03 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/building-qa-app-with-aws-bedrock-kendra-s3-and-streamlit/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          The purpose of this post is to demonstrate how easy is to build a basic Q&amp;A app capable of answering questions about your company&#39;s internal documents. This time, we will use only AWS services to build it (plus Streamlit for the user interface).
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>Building a C# enhancing app using Azure OpenAI GPT-4 and Streamlit</title>

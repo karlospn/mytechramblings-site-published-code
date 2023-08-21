@@ -9,10 +9,130 @@
     <description>Recent content in Tags on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 03 Aug 2023 10:21:52 +0200</lastBuildDate>
+    <lastBuildDate>Mon, 21 Aug 2023 10:00:03 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>ai</title>
+      <link>https://www.mytechramblings.com/tags/ai/</link>
+      <pubDate>Mon, 21 Aug 2023 10:00:03 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/ai/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>aws</title>
+      <link>https://www.mytechramblings.com/tags/aws/</link>
+      <pubDate>Mon, 21 Aug 2023 10:00:03 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/aws/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>genai</title>
+      <link>https://www.mytechramblings.com/tags/genai/</link>
+      <pubDate>Mon, 21 Aug 2023 10:00:03 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/genai/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>llm</title>
+      <link>https://www.mytechramblings.com/tags/llm/</link>
+      <pubDate>Mon, 21 Aug 2023 10:00:03 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/llm/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>openai</title>
+      <link>https://www.mytechramblings.com/tags/openai/</link>
+      <pubDate>Mon, 21 Aug 2023 10:00:03 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/openai/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>python</title>
+      <link>https://www.mytechramblings.com/tags/python/</link>
+      <pubDate>Mon, 21 Aug 2023 10:00:03 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/python/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>basics</title>
@@ -115,26 +235,6 @@
     </item>
     
     <item>
-      <title>ai</title>
-      <link>https://www.mytechramblings.com/tags/ai/</link>
-      <pubDate>Mon, 10 Jul 2023 10:00:01 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/ai/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
       <title>azure</title>
       <link>https://www.mytechramblings.com/tags/azure/</link>
       <pubDate>Mon, 10 Jul 2023 10:00:01 +0200</pubDate>
@@ -160,66 +260,6 @@
       <pubDate>Mon, 10 Jul 2023 10:00:01 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/csharp/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>llm</title>
-      <link>https://www.mytechramblings.com/tags/llm/</link>
-      <pubDate>Mon, 10 Jul 2023 10:00:01 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/llm/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>openai</title>
-      <link>https://www.mytechramblings.com/tags/openai/</link>
-      <pubDate>Mon, 10 Jul 2023 10:00:01 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/openai/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>python</title>
-      <link>https://www.mytechramblings.com/tags/python/</link>
-      <pubDate>Mon, 10 Jul 2023 10:00:01 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/python/</guid>
       <description>
         
           
@@ -500,26 +540,6 @@
       <pubDate>Tue, 28 Feb 2023 10:55:55 +0100</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/sonarqube/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>aws</title>
-      <link>https://www.mytechramblings.com/tags/aws/</link>
-      <pubDate>Wed, 08 Feb 2023 10:01:46 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/aws/</guid>
       <description>
         
           
