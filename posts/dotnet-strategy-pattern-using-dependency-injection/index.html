@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>Back to .NET basics: How to easily build a Strategy pattern using dependency injection :: my tech ramblings — A blog for writing about my techie ramblings</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Just show me the code!
+As always, if you don’t care about the post I have uploaded the source code on my Github.
+If you are a .NET veteran, this post is probably not intended for you.
+The Strategy pattern is probably one of the most well-known software design patterns nowadays. It is a behavioral pattern that defines a set of behaviors or algorithms, encapsulates each one of them, and makes them interchangeable."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://www.mytechramblings.com/posts/dotnet-strategy-pattern-using-dependency-injection/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/assets/style.css">
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.mytechramblings.com/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://www.mytechramblings.com/img/favicon.png">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Back to .NET basics: How to easily build a Strategy pattern using dependency injection"/>
+<meta name="twitter:description" content="In this very brief post, we will see how easy is to build a Strategy pattern in .NET when using dependency injection."/>
+
+
+
+<meta property="og:title" content="Back to .NET basics: How to easily build a Strategy pattern using dependency injection" />
+<meta property="og:description" content="In this very brief post, we will see how easy is to build a Strategy pattern in .NET when using dependency injection." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.mytechramblings.com/posts/dotnet-strategy-pattern-using-dependency-injection/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-09-18T10:01:54+02:00" />
+<meta property="article:modified_time" content="2023-09-18T10:01:54+02:00" />
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://www.mytechramblings.com/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">my tech ramblings</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/dotnet-strategy-pattern-using-dependency-injection/">Back to .NET basics: How to easily build a Strategy pattern using dependency injection</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2023-09-18
+        </span>
+
+        
+          
+            
+
+
+
+          
+        
+      
+
+      
+      
+        <span class="post-read-time">— 4 min read</span>
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          #<a href="https://www.mytechramblings.com/tags/patterns/">patterns</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/dotnet/">dotnet</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/basics/">basics</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <blockquote>
+<p><strong>Just show me the code!</strong><br>
+As always, if you don’t care about the post I have uploaded the source code on my <a href="https://github.com/karlospn/dotnet-strategy-pattern-using-dependency-injection">Github</a>.</p>
+</blockquote>
+<p><strong>If you are a .NET veteran, this post is probably not intended for you</strong>.</p>
+<p>The Strategy pattern is probably one of the most well-known software design patterns nowadays. It is a behavioral pattern that defines a set of behaviors or algorithms, encapsulates each one of them, and makes them interchangeable.</p>
+<p>This pattern allows the app to choose an algorithm from a family of algorithms at runtime, without altering the code that uses the algorithm.</p>
+<p>Here&rsquo;s a diagram <em>(which you&rsquo;ll find in dozens of other places)</em> showing the components involved when trying to build this pattern:</p>
+<p><img src="/img/strategy-pattern-diagram.png" alt="strategy-patter-diagram"></p>
+<p>The key components participating in this pattern are:</p>
+<ul>
+<li>
+<p><strong>Strategy</strong>: This is the interface that defines the methods that all Concrete Strategies must implement.</p>
+</li>
+<li>
+<p><strong>Concrete Strategies</strong>: These are the implementations of the strategy interface. Each Concrete Strategy provides a specific implementation of the algorithm.</p>
+</li>
+<li>
+<p><strong>Context</strong>: This is the class that holds a reference to the Concrete Strategies and executes one or another based on the application inputs.</p>
+</li>
+</ul>
+<p>What some people may not realize is that the .NET dependency injection system does most of the heavy lifting for you when you&rsquo;re trying to implement a Strategy pattern. <strong>Let me show it to you.</strong></p>
+<h1 id="defining-the-strategy-interface"><strong>Defining the Strategy interface</strong></h1>
+<p>The first step is to create an interface that all the Concrete Strategies must implement.</p>
+<p>Let&rsquo;s keep it really basic here, with an <code>Execute</code> method to execute the algorithm and a property called <code>Name</code> that will store the name of the strategy.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IStrategy</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">string</span> Name { <span style="color:#66d9ef">get</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">string</span> Execute(<span style="color:#66d9ef">string</span> message);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="implementing-the-concrete-strategies"><strong>Implementing the Concrete Strategies</strong></h1>
+<p>Now, let&rsquo;s implement the Concrete Strategies.</p>
+<p>We&rsquo;re going to do something simple: given a string, we&rsquo;ll have three strategies. One will convert the entire string to uppercase, another to lowercase, and the last one will reverse it.</p>
+<p>Obviously every strategy needs to implement the <code>IStrategy</code> interface.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ToUpperStrategy</span> : IStrategy
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name =&gt; nameof(ToUpperStrategy);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Execute(<span style="color:#66d9ef">string</span> message)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> message.ToUpper();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ToLowerStrategy</span> : IStrategy
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name =&gt; nameof(ToLowerStrategy);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Execute(<span style="color:#66d9ef">string</span> message)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> message.ToLower();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ReverseStrategy</span> : IStrategy
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name =&gt; nameof(ReverseStrategy);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Execute(<span style="color:#66d9ef">string</span> message)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> charArray = message.ToCharArray();
+</span></span><span style="display:flex;"><span>        Array.Reverse(charArray);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">string</span>(charArray);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="registering-the-concrete-strategies-into-the-di-container"><strong>Registering the Concrete Strategies into the DI container</strong></h1>
+<p>We have multiple classes implementing the same interface, so the registration into the DI is exactly as it sounds.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>builder.Services.AddTransient&lt;IStrategy, ToUpperStrategy&gt;();
+</span></span><span style="display:flex;"><span>builder.Services.AddTransient&lt;IStrategy, ToLowerStrategy&gt;();
+</span></span><span style="display:flex;"><span>builder.Services.AddTransient&lt;IStrategy, ReverseStrategy&gt;();
+</span></span></code></pre></div><p>The drawback of registering every Concrete Strategy as shown in the code above is that every time we want to add a new Concrete Strategy to our Strategy pattern, we must remember to register it.</p>
+<p>A better option to register the Concrete Strategies is to use a little bit of Reflection. This way, we can create as many behaviors as we want, and they will always be automatically registered in the DI container.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> strategies = AppDomain.CurrentDomain.GetAssemblies()
+</span></span><span style="display:flex;"><span>                .SelectMany(assembly =&gt; assembly.GetTypes())
+</span></span><span style="display:flex;"><span>                .Where(type =&gt; <span style="color:#66d9ef">typeof</span>(IStrategy).IsAssignableFrom(type) &amp;&amp; !type.IsInterface &amp;&amp; !type.IsAbstract);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> strategy <span style="color:#66d9ef">in</span> strategies)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    builder.Services.AddTransient(
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">typeof</span>(IStrategy), 
+</span></span><span style="display:flex;"><span>        strategy);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="building-the-context-class"><strong>Building the Context class</strong></h1>
+<p>The multiple <code>IStrategy</code> implementations that we have registered into the DI container are resolved into a collection of <code>IEnumerable&lt;IStrategy&gt;</code>. <br>
+With that in mind, the context class becomes very straightforward to implement. It only needs to filter which Concrete Strategy wants to use from the <code>IEnumerable&lt;IStrategy&gt;</code> and run it.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StrategyContext</span> : IStrategyContext
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IEnumerable&lt;IStrategy&gt; _strategies;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> StrategyContext(IEnumerable&lt;IStrategy&gt; strategies)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        _strategies = strategies;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> ExecuteStrategy(
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">string</span> strategyName, 
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">string</span> message)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> instance = _strategies.FirstOrDefault(x =&gt;
+</span></span><span style="display:flex;"><span>            x.Name.Equals(strategyName, StringComparison.InvariantCultureIgnoreCase));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> instance <span style="color:#66d9ef">is</span> not <span style="color:#66d9ef">null</span> ?
+</span></span><span style="display:flex;"><span>            instance.Execute(message) :
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">string</span>.Empty;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="testing-it-out"><strong>Testing it out</strong></h1>
+<p>To test the Strategy Pattern, I have built an <code>APIController</code> that receives the name of the strategy to execute and the message that needs to be converted. It then calls the <code>ExecuteStrategy</code> method from the <code>StrategyContext</code> class.</p>
+<blockquote>
+<p>This is just one way to test it in a straightforward manner. Obviously, in a real-world scenario, there will be some business logic involved that determines which behavior of the Strategy pattern needs to be executed.</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[ApiController]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StrategiesController</span> : ControllerBase
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IStrategyContext _strategyContext;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> StrategiesController(IStrategyContext strategyContext)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        _strategyContext = strategyContext;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [HttpGet()]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> ActionResult Get(<span style="color:#66d9ef">string</span> strategyName, <span style="color:#66d9ef">string</span> message)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> result = _strategyContext.ExecuteStrategy(strategyName, message);
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">string</span>.IsNullOrEmpty(result))
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> BadRequest();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> Ok(result);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>If we try to call the Api like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>curl -X <span style="color:#e6db74">&#39;GET&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  <span style="color:#e6db74">&#39;https://localhost:7285/Strategies?strategyName=ToUpperStrategy&amp;message=hello&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  -H <span style="color:#e6db74">&#39;accept: */*&#39;</span>
+</span></span></code></pre></div><p>It responds:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>HELLO
+</span></span></code></pre></div>
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://www.mytechramblings.com/posts/building-qa-app-with-aws-bedrock-kendra-s3-and-streamlit/">
+                  <span class="button__text">Building a Q&amp;A app capable of answering questions related to your enterprise documents using AWS Bedrock, AWS Kendra, AWS S3 and Streamlit</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2023 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>Theme created by <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://www.mytechramblings.com/assets/main.js"></script>
+<script src="https://www.mytechramblings.com/assets/prism.js"></script>
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('carlospons', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Donate',
+    'floating-chat.donateButton.background-color': '#ff5f5f',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
+
+      
+    </div>
+
+    
+      
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-170300931-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+    
+  </body>
+</html>

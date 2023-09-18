@@ -9,10 +9,70 @@
     <description>Recent content in Tags on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Mon, 21 Aug 2023 10:00:03 +0200</lastBuildDate>
+    <lastBuildDate>Mon, 18 Sep 2023 10:01:54 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>basics</title>
+      <link>https://www.mytechramblings.com/tags/basics/</link>
+      <pubDate>Mon, 18 Sep 2023 10:01:54 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/basics/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>dotnet</title>
+      <link>https://www.mytechramblings.com/tags/dotnet/</link>
+      <pubDate>Mon, 18 Sep 2023 10:01:54 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/dotnet/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>patterns</title>
+      <link>https://www.mytechramblings.com/tags/patterns/</link>
+      <pubDate>Mon, 18 Sep 2023 10:01:54 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/patterns/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>ai</title>
@@ -120,46 +180,6 @@
       <pubDate>Mon, 21 Aug 2023 10:00:03 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/python/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>basics</title>
-      <link>https://www.mytechramblings.com/tags/basics/</link>
-      <pubDate>Thu, 03 Aug 2023 10:21:52 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/basics/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>dotnet</title>
-      <link>https://www.mytechramblings.com/tags/dotnet/</link>
-      <pubDate>Thu, 03 Aug 2023 10:21:52 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/dotnet/</guid>
       <description>
         
           
