@@ -788,22 +788,22 @@ Here I have the symbol <code>Authorization</code> of type <code>bool</code> with
 <li>If the user sets this symbol to <code>true</code>, the template engine needs to keep the references to the <code>Microsoft.Web.Identity</code> library.</li>
 </ul>
 <p>If you take a look at the  <code>Startup.cs</code>, you&rsquo;ll see that all the <code>Microsoft.Web.Identity</code> references are being wrapped in a conditional operator.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">#if Authorization</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">#if</span> Authorization
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Microsoft.AspNetCore.Authentication.JwtBearer;
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Microsoft.Identity.Web;
-</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span>endif
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#endif</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>...
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#if Authorization            </span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#if</span> Authorization            
 </span></span><span style="display:flex;"><span>            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 </span></span><span style="display:flex;"><span>                .AddMicrosoftIdentityWebApi(Configuration, <span style="color:#e6db74">&#34;AzureAd&#34;</span>);
-</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span>endif
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#endif</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#if Authorization</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#if</span> Authorization
 </span></span><span style="display:flex;"><span>            app.UseAuthentication();
 </span></span><span style="display:flex;"><span>            app.UseAuthorization();
-</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span>endif
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#endif</span>
 </span></span></code></pre></div><p>The <code>Microsoft.Web.Identity</code> references are only being kept if the symbol <code>Authorization</code> is set to <code>true</code>.</p>
 <p>But that&rsquo;s not enough, we need to remove the <code>Microsoft.Web.Identity</code> references from the <code>appsettings.json</code> file too.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span>{
@@ -824,9 +824,9 @@ Here I have the symbol <code>Authorization</code> of type <code>bool</code> with
 </span></span><span style="display:flex;"><span>  <span style="color:#75715e">//#endif
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
 </span></span></code></pre></div><p>And also from the api controller:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">#if Authorization</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">#if</span> Authorization
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Authorize]</span>
-</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span>endif
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#endif</span>
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [ApiVersion(&#34;1.0&#34;)]</span>
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [ApiController]</span>
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [ProducesResponseType(typeof(ErrorResult),  StatusCodes.Status400BadRequest)]</span>
@@ -1098,17 +1098,17 @@ The <code>Docker</code> symbol value is used as the condition to exclude both fi
 </span></span><span style="display:flex;"><span>  },
 </span></span></code></pre></div><p>The <code>Tests</code> symbol value is used as the condition to exclude both test folders.<br>
 Also the <code>Tests</code> symbol is used to remove the test project references from the <code>.sln</code> file via a conditional operator.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">#if (Tests)</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">#if</span> (Tests)
 </span></span><span style="display:flex;"><span>Project(<span style="color:#e6db74">&#34;{2150E333-8FDC-42A3-9474-1A3956D46DE8}&#34;</span>) = <span style="color:#e6db74">&#34;Test&#34;</span>, <span style="color:#e6db74">&#34;Test&#34;</span>, <span style="color:#e6db74">&#34;{0323DDF8-0F80-4DF1-8F12-C37353534337}&#34;</span>
 </span></span><span style="display:flex;"><span>EndProject
-</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span>endif
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#endif</span>
 </span></span><span style="display:flex;"><span>...
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#if (Tests)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#if</span> (Tests)
 </span></span><span style="display:flex;"><span>Project(<span style="color:#e6db74">&#34;{9A19103F-16F7-4668-BE54-9A1E7A4F7556}&#34;</span>) = <span style="color:#e6db74">&#34;ApplicationName.WebApi.IntegrationTest&#34;</span>, <span style="color:#e6db74">&#34;test\ApplicationName.WebApi.IntegrationTest\ApplicationName.WebApi.IntegrationTest.csproj&#34;</span>, <span style="color:#e6db74">&#34;{205B0B75-C24F-40E4-BA69-46AE61CF9C20}&#34;</span>
 </span></span><span style="display:flex;"><span>EndProject
 </span></span><span style="display:flex;"><span>Project(<span style="color:#e6db74">&#34;{9A19103F-16F7-4668-BE54-9A1E7A4F7556}&#34;</span>) = <span style="color:#e6db74">&#34;ApplicationName.Library.Impl.UnitTest&#34;</span>, <span style="color:#e6db74">&#34;test\ApplicationName.Library.Impl.UnitTest\ApplicationName.Library.Impl.UnitTest.csproj&#34;</span>, <span style="color:#e6db74">&#34;{C22AA50D-81CC-4A9B-9926-7AB8445246A9}&#34;</span>
 </span></span><span style="display:flex;"><span>EndProject
-</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span>endif
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#endif</span>
 </span></span></code></pre></div><h2 id="22-create-the-dotnetclihostjson-file">2.2. <strong>Create the dotnetcli.host.json file</strong></h2>
 <p>If your template needs some command line parameters you can customize them by adding a <code>dotnetcli.host.json</code> file inside the <code>.template.config</code> folder.</p>
 <p>In the <code>dotnetcli.host.json</code> file you can specify the short and long names for each of the command line parameters.</p>

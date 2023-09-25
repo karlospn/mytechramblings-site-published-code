@@ -2,25 +2,40 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://www.mytechramblings.com/tags/csharp/</loc>
+    <lastmod>2023-09-25T12:41:51+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/dotnet/</loc>
+    <lastmod>2023-09-25T12:41:51+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-and-dotnet-core/</loc>
+    <lastmod>2023-09-25T12:41:51+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/jaeger/</loc>
+    <lastmod>2023-09-25T12:41:51+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/</loc>
+    <lastmod>2023-09-25T12:41:51+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/opentelemetry/</loc>
+    <lastmod>2023-09-25T12:41:51+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/</loc>
+    <lastmod>2023-09-25T12:41:51+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/</loc>
+    <lastmod>2023-09-25T12:41:51+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/tracing/</loc>
+    <lastmod>2023-09-25T12:41:51+02:00</lastmod>
+  </url><url>
     <loc>https://www.mytechramblings.com/posts/dotnet-strategy-pattern-using-dependency-injection/</loc>
     <lastmod>2023-09-18T10:01:54+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/basics/</loc>
     <lastmod>2023-09-18T10:01:54+02:00</lastmod>
   </url><url>
-    <loc>https://www.mytechramblings.com/tags/dotnet/</loc>
-    <lastmod>2023-09-18T10:01:54+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/</loc>
-    <lastmod>2023-09-18T10:01:54+02:00</lastmod>
-  </url><url>
     <loc>https://www.mytechramblings.com/tags/patterns/</loc>
-    <lastmod>2023-09-18T10:01:54+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/posts/</loc>
-    <lastmod>2023-09-18T10:01:54+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/</loc>
     <lastmod>2023-09-18T10:01:54+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/ai/</loc>
@@ -62,9 +77,6 @@
     <loc>https://www.mytechramblings.com/posts/building-a-csharp-enhancing-app-using-openai-gpt4-and-streamlit/</loc>
     <lastmod>2023-07-10T10:00:01+02:00</lastmod>
   </url><url>
-    <loc>https://www.mytechramblings.com/tags/csharp/</loc>
-    <lastmod>2023-07-10T10:00:01+02:00</lastmod>
-  </url><url>
     <loc>https://www.mytechramblings.com/tags/containers/</loc>
     <lastmod>2023-06-12T10:03:07+02:00</lastmod>
   </url><url>
@@ -93,9 +105,6 @@
     <lastmod>2023-04-10T16:25:55+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/metrics/</loc>
-    <lastmod>2023-04-10T16:25:55+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/opentelemetry/</loc>
     <lastmod>2023-04-10T16:25:55+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/prometheus/</loc>
@@ -277,15 +286,6 @@
   </url><url>
     <loc>https://www.mytechramblings.com/posts/create-dotnet-templates-for-visual-studio-part-1/</loc>
     <lastmod>2021-06-14T00:07:29+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-and-dotnet-core/</loc>
-    <lastmod>2022-01-06T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/jaeger/</loc>
-    <lastmod>2022-01-06T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/tracing/</loc>
-    <lastmod>2022-01-06T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/posts/automate-azure-devops-setup-using-terraform/</loc>
     <lastmod>2021-03-18T10:00:02+01:00</lastmod>

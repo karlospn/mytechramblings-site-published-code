@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-	<meta name="generator" content="Hugo 0.118.2">
+	<meta name="generator" content="Hugo 0.119.0">
     
       <title>my tech ramblings — A blog for writing about my techie ramblings</title>
     
@@ -114,6 +114,53 @@
   
 
   <div class="posts">
+    
+    <div class="post on-list">
+      <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/testing-private-dns-resolution-over-a-p2s-vpn-using-azure-dns-private-resolver/">Testing Azure Private Endpoints DNS resolution over an Azure P2S VPN connection</a></h1>
+      <div class="post-meta">
+        
+          <span class="post-date">
+            2022-06-14
+          </span>
+
+          
+            
+
+
+
+          
+        
+        
+        
+          <span class="post-read-time">— 10 min read</span>
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+            #<a href="https://www.mytechramblings.com/tags/azure/">azure</a>&nbsp;
+          
+            #<a href="https://www.mytechramblings.com/tags/cloud/">cloud</a>&nbsp;
+          
+            #<a href="https://www.mytechramblings.com/tags/terraform/">terraform</a>&nbsp;
+          
+            #<a href="https://www.mytechramblings.com/tags/dns/">dns</a>&nbsp;
+          
+        </span>
+      
+
+      
+
+      <div class="post-content">
+        
+          The purpose of this post is to try out the new Azure DNS Private Resolver resource. To test it, we&rsquo;re going to try to solve one of the current issues that Azure VPN has right now: when connected over an Azure P2S VPN the private DNS zone resolution does not work. This becomes quite problematic when you&rsquo;re using private endpoints to secure some private resources, because there is no easy way to resolve the private endpoint DNS when connected to a P2S VPN.
+        
+      </div>
+      
+        <div><a class="read-more button" href="/posts/testing-private-dns-resolution-over-a-p2s-vpn-using-azure-dns-private-resolver/">Read more →</a></div>
+      
+    </div>
     
     <div class="post on-list">
       <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/linting-a-dotnet-app-dockerfile-using-hadolint-dockerfile-lint-and-azure-pipelines/">Linting a .NET 6 app Dockerfile using Hadolint, dockerfile_lint and Azure Pipelines</a></h1>
@@ -314,51 +361,6 @@
       </div>
       
         <div><a class="read-more button" href="/posts/profiling-a-net-app-with-dotnet-cli-diagnostic-tools/">Read more →</a></div>
-      
-    </div>
-    
-    <div class="post on-list">
-      <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/getting-started-with-aws-distro-for-otel-and-dotnet-part-2/">Getting started with AWS Distro for OpenTelemetry and distributed tracing using .NET. Part 2: Building the demo</a></h1>
-      <div class="post-meta">
-        
-          <span class="post-date">
-            2022-02-01
-          </span>
-
-          
-            
-
-
-
-          
-        
-        
-        
-          <span class="post-read-time">— 20 min read</span>
-        
-      </div>
-
-      
-        <span class="post-tags">
-          
-            #<a href="https://www.mytechramblings.com/tags/aws/">AWS</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/dotnet/">dotnet</a>&nbsp;
-          
-            #<a href="https://www.mytechramblings.com/tags/opentelemetry/">OpenTelemetry</a>&nbsp;
-          
-        </span>
-      
-
-      
-
-      <div class="post-content">
-        
-          This is a 2 part-series post. In part 2 I’ll show you how to build and configure properly a few distributed .NET apps that will send traces to the AWS OTEL Collector, and also how to analyze those traces in AWS X-Ray.
-        
-      </div>
-      
-        <div><a class="read-more button" href="/posts/getting-started-with-aws-distro-for-otel-and-dotnet-part-2/">Read more →</a></div>
       
     </div>
     

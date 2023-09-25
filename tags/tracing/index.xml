@@ -9,15 +9,15 @@
     <description>Recent content in tracing on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 08 Apr 2021 10:11:51 +0200</lastBuildDate>
+    <lastBuildDate>Mon, 25 Sep 2023 12:41:51 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/tracing/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Getting started with OpenTelemetry and distributed tracing in .NET Core</title>
+      <title>Getting started with OpenTelemetry and distributed tracing in .NET</title>
       <link>https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-and-dotnet-core/</link>
-      <pubDate>Thu, 08 Apr 2021 10:11:51 +0200</pubDate>
+      <pubDate>Mon, 25 Sep 2023 12:41:51 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-and-dotnet-core/</guid>
       <description>
@@ -28,7 +28,7 @@
         
         
         
-          OpenTelemetry is a set of APIs, SDKs, tooling and integrations that are designed for the creation and management of telemetry data such as traces, metrics, and logs. On today&#39;s post I&#39;m going to show you how you can start using OTEL and distributed tracing with .NET Core.
+          OpenTelemetry is a set of APIs, SDKs, tooling and integrations that are designed for the creation and management of telemetry data such as traces, metrics, and logs. On today&#39;s post I&#39;m going to show you how you can start using OTEL and distributed tracing with .NET.
           
         
         </description>

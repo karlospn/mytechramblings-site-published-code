@@ -9,10 +9,30 @@
     <description>Recent content in csharp on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Mon, 10 Jul 2023 10:00:01 +0200</lastBuildDate>
+    <lastBuildDate>Mon, 25 Sep 2023 12:41:51 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/csharp/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Getting started with OpenTelemetry and distributed tracing in .NET</title>
+      <link>https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-and-dotnet-core/</link>
+      <pubDate>Mon, 25 Sep 2023 12:41:51 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-and-dotnet-core/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          OpenTelemetry is a set of APIs, SDKs, tooling and integrations that are designed for the creation and management of telemetry data such as traces, metrics, and logs. On today&#39;s post I&#39;m going to show you how you can start using OTEL and distributed tracing with .NET.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>Building a C# enhancing app using Azure OpenAI GPT-4 and Streamlit</title>
@@ -209,26 +229,6 @@
         
         
           This is a 2 part-series post. In part 1 I&#39;ll be talking about a few key concepts that you should know when creating a .NET template.
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>Getting started with OpenTelemetry and distributed tracing in .NET Core</title>
-      <link>https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-and-dotnet-core/</link>
-      <pubDate>Thu, 08 Apr 2021 10:11:51 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-and-dotnet-core/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          OpenTelemetry is a set of APIs, SDKs, tooling and integrations that are designed for the creation and management of telemetry data such as traces, metrics, and logs. On today&#39;s post I&#39;m going to show you how you can start using OTEL and distributed tracing with .NET Core.
           
         
         </description>
