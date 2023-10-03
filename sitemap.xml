@@ -2,6 +2,36 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://www.mytechramblings.com/tags/ai/</loc>
+    <lastmod>2023-10-03T10:00:03+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/aws/</loc>
+    <lastmod>2023-10-03T10:00:03+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/building-qa-app-with-aws-bedrock-kendra-s3-and-streamlit/</loc>
+    <lastmod>2023-10-03T10:00:03+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/genai/</loc>
+    <lastmod>2023-10-03T10:00:03+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/llm/</loc>
+    <lastmod>2023-10-03T10:00:03+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/</loc>
+    <lastmod>2023-10-03T10:00:03+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/openai/</loc>
+    <lastmod>2023-10-03T10:00:03+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/</loc>
+    <lastmod>2023-10-03T10:00:03+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/python/</loc>
+    <lastmod>2023-10-03T10:00:03+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/</loc>
+    <lastmod>2023-10-03T10:00:03+02:00</lastmod>
+  </url><url>
     <loc>https://www.mytechramblings.com/tags/csharp/</loc>
     <lastmod>2023-09-25T12:41:51+02:00</lastmod>
   </url><url>
@@ -14,16 +44,7 @@
     <loc>https://www.mytechramblings.com/tags/jaeger/</loc>
     <lastmod>2023-09-25T12:41:51+02:00</lastmod>
   </url><url>
-    <loc>https://www.mytechramblings.com/</loc>
-    <lastmod>2023-09-25T12:41:51+02:00</lastmod>
-  </url><url>
     <loc>https://www.mytechramblings.com/tags/opentelemetry/</loc>
-    <lastmod>2023-09-25T12:41:51+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/posts/</loc>
-    <lastmod>2023-09-25T12:41:51+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/</loc>
     <lastmod>2023-09-25T12:41:51+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/tracing/</loc>
@@ -37,27 +58,6 @@
   </url><url>
     <loc>https://www.mytechramblings.com/tags/patterns/</loc>
     <lastmod>2023-09-18T10:01:54+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/ai/</loc>
-    <lastmod>2023-08-21T10:00:03+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/aws/</loc>
-    <lastmod>2023-08-21T10:00:03+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/posts/building-qa-app-with-aws-bedrock-kendra-s3-and-streamlit/</loc>
-    <lastmod>2023-08-21T10:00:03+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/genai/</loc>
-    <lastmod>2023-08-21T10:00:03+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/llm/</loc>
-    <lastmod>2023-08-21T10:00:03+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/openai/</loc>
-    <lastmod>2023-08-21T10:00:03+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/python/</loc>
-    <lastmod>2023-08-21T10:00:03+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/posts/dotnet-httpclient-basic-usage-scenarios/</loc>
     <lastmod>2023-08-03T10:21:52+02:00</lastmod>

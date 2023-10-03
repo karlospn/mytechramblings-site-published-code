@@ -9,10 +9,30 @@
     <description>Recent content on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Mon, 25 Sep 2023 12:41:51 +0200</lastBuildDate>
+    <lastBuildDate>Tue, 03 Oct 2023 10:00:03 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Building a Q&amp;A app capable of answering questions related to your enterprise documents using AWS Bedrock, AWS Kendra, AWS S3 and Streamlit</title>
+      <link>https://www.mytechramblings.com/posts/building-qa-app-with-aws-bedrock-kendra-s3-and-streamlit/</link>
+      <pubDate>Tue, 03 Oct 2023 10:00:03 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/building-qa-app-with-aws-bedrock-kendra-s3-and-streamlit/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          The purpose of this post is to demonstrate how easy is to build a basic Q&amp;A app capable of answering questions about your company&#39;s internal documents. This time, we will use only AWS services to build it (plus Streamlit for the user interface).
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>Getting started with OpenTelemetry and distributed tracing in .NET</title>
@@ -49,26 +69,6 @@
         
         
           In this very brief post, we will see how easy is to build a Strategy pattern in .NET when using dependency injection.
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>Building a Q&amp;A app capable of answering questions related to your enterprise documents using AWS Bedrock, AWS Kendra, AWS S3 and Streamlit</title>
-      <link>https://www.mytechramblings.com/posts/building-qa-app-with-aws-bedrock-kendra-s3-and-streamlit/</link>
-      <pubDate>Mon, 21 Aug 2023 10:00:03 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/posts/building-qa-app-with-aws-bedrock-kendra-s3-and-streamlit/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          The purpose of this post is to demonstrate how easy is to build a basic Q&amp;A app capable of answering questions about your company&#39;s internal documents. This time, we will use only AWS services to build it (plus Streamlit for the user interface).
           
         
         </description>
