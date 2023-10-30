@@ -9,10 +9,30 @@
     <description>Recent content on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 03 Oct 2023 10:00:03 +0200</lastBuildDate>
+    <lastBuildDate>Mon, 30 Oct 2023 10:00:43 +0100</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Analyze Polly Telemetry using Prometheus, Grafana and OpenTelemetry Metrics</title>
+      <link>https://www.mytechramblings.com/posts/analyze-polly-telemetry-using-otel-metrics/</link>
+      <pubDate>Mon, 30 Oct 2023 10:00:43 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/analyze-polly-telemetry-using-otel-metrics/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          Starting with version 8, Polly provides Telemetry for all built-in strategies. This post will show you how you can send this Telemetry to Prometheus and Grafana for a more in-depth analysis using OpenTelemetry Metrics.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>Building a Q&amp;A app capable of answering questions related to your enterprise documents using AWS Bedrock, AWS Kendra, AWS S3 and Streamlit</title>

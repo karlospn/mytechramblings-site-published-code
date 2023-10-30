@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>Analyze Polly Telemetry using Prometheus, Grafana and OpenTelemetry Metrics :: my tech ramblings — A blog for writing about my techie ramblings</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Just show me the code!
+As always, if you don’t care about the post I have uploaded the source code on my Github.
+This post does not aim to be an introductory post on how the Polly library works, how to configure its various strategies, etc. There are already multiple posts on the Internet that explain these topics very well.
+I also won&amp;rsquo;t be delving into the specific details of how OpenTelemetry Metrics works."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://www.mytechramblings.com/posts/analyze-polly-telemetry-using-otel-metrics/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/assets/style.css">
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.mytechramblings.com/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://www.mytechramblings.com/img/favicon.png">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Analyze Polly Telemetry using Prometheus, Grafana and OpenTelemetry Metrics"/>
+<meta name="twitter:description" content="Starting with version 8, Polly provides Telemetry for all built-in strategies. This post will show you how you can send this Telemetry to Prometheus and Grafana for a more in-depth analysis using OpenTelemetry Metrics."/>
+
+
+
+<meta property="og:title" content="Analyze Polly Telemetry using Prometheus, Grafana and OpenTelemetry Metrics" />
+<meta property="og:description" content="Starting with version 8, Polly provides Telemetry for all built-in strategies. This post will show you how you can send this Telemetry to Prometheus and Grafana for a more in-depth analysis using OpenTelemetry Metrics." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.mytechramblings.com/posts/analyze-polly-telemetry-using-otel-metrics/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-10-30T10:00:43+01:00" />
+<meta property="article:modified_time" content="2023-10-30T10:00:43+01:00" />
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://www.mytechramblings.com/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">my tech ramblings</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/analyze-polly-telemetry-using-otel-metrics/">Analyze Polly Telemetry using Prometheus, Grafana and OpenTelemetry Metrics</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2023-10-30
+        </span>
+
+        
+          
+            
+
+
+
+          
+        
+      
+
+      
+      
+        <span class="post-read-time">— 14 min read</span>
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          #<a href="https://www.mytechramblings.com/tags/dotnet/">dotnet</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/opentelemetry/">opentelemetry</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/metrics/">metrics</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <blockquote>
+<p><strong>Just show me the code!</strong><br>
+As always, if you don’t care about the post I have uploaded the source code on my <a href="https://github.com/karlospn/analyze-polly-telemetry-using-otel-metrics">Github</a>.</p>
+</blockquote>
+<p>This post does not aim to be an introductory post on how the Polly library works, how to configure its various strategies, etc. There are already multiple posts on the Internet that explain these topics very well.</p>
+<p>I also won&rsquo;t be delving into the specific details of how OpenTelemetry Metrics works. <br>
+If you want to learn more about OpenTelemetry Metrics and how to use it with .NET, you can read my introductory post that I wrote a few months ago.</p>
+<blockquote>
+<p>Here&rsquo;s a link to my <em><a href="https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-metrics-and-dotnet-part-1/">&ldquo;Getting started with OpenTelemetry Metrics in .NET&rdquo;</a></em> blog post.</p>
+</blockquote>
+<p>The goal of this post is to show you <strong>how we can use OpenTelemetry Metrics to send the Telemetry generated by Polly to Prometheus for subsequent analysis by setting up a series of dashboards in Grafana</strong>.</p>
+<p>It&rsquo;s important to mention that Polly provides Telemetry for all built-in resilience strategies starting with version 8. It&rsquo;s crucial to emphasize that <strong>this post does not work with versions of Polly earlier than version 8</strong>.</p>
+<p>So, without further ado, let&rsquo;s get started.</p>
+<h1 id="what-is-polly"><strong>What is Polly?</strong></h1>
+<p>Polly is a .NET library that aids in building resilient and fault-tolerant applications.</p>
+<p>It is primarily used for improving the stability and resilience of a .NET application by handling transient faults, system failures, and network outages. The library helps developers implement various resilience patterns, such as retries, circuit breakers, and timeouts, to improve the reliability of your applications.</p>
+<ul>
+<li>Would you like to learn more about it? Visit its official <a href="https://github.com/App-vNext/Polly">Github repository</a></li>
+</ul>
+<h1 id="enable-telemetry-on-polly"><strong>Enable Telemetry on Polly</strong></h1>
+<p>By default, Polly Telemetry is disabled. To enable it you need to install the <code>Polly.Extensions</code> NuGet package and use the <code>ConfigureTelemetry</code> extension method when building any resilience strategy.</p>
+<ul>
+<li>The following code snippet demonstrates a basic example where we enable telemetry while constructing a Timeout Polly strategy.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> builder = <span style="color:#66d9ef">new</span> ResiliencePipelineBuilder()
+</span></span><span style="display:flex;"><span>    .AddTimeout(TimeSpan.FromSeconds(<span style="color:#ae81ff">1</span>))
+</span></span><span style="display:flex;"><span>    .ConfigureTelemetry(<span style="color:#66d9ef">new</span> NullLoggerFactory())
+</span></span><span style="display:flex;"><span>    .Build();
+</span></span></code></pre></div><p>The <code>ConfigureTelemetry</code> extension method can be setup in a couple different ways:</p>
+<ul>
+<li>To accept an <code>ILoggerFactory</code> instance, which will allow us to log any Telemetry event.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> TBuilder ConfigureTelemetry&lt;TBuilder&gt;(<span style="color:#66d9ef">this</span> TBuilder builder, ILoggerFactory loggerFactory)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">where</span> TBuilder : ResiliencePipelineBuilderBase
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Guard.NotNull(builder);
+</span></span><span style="display:flex;"><span>        Guard.NotNull(loggerFactory);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> builder.ConfigureTelemetry(<span style="color:#66d9ef">new</span> TelemetryOptions { LoggerFactory = loggerFactory });
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><ul>
+<li>To accept a <code>TelemetryOptions</code> instance:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> TBuilder ConfigureTelemetry&lt;TBuilder&gt;(<span style="color:#66d9ef">this</span> TBuilder builder, TelemetryOptions options)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">where</span> TBuilder : ResiliencePipelineBuilderBase
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Guard.NotNull(builder);
+</span></span><span style="display:flex;"><span>    Guard.NotNull(options);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    ValidationHelper.ValidateObject(<span style="color:#66d9ef">new</span>(options, <span style="color:#e6db74">$&#34;The &#39;{nameof(TelemetryOptions)}&#39; are invalid.&#34;</span>));
+</span></span><span style="display:flex;"><span>    builder.TelemetryListener = <span style="color:#66d9ef">new</span> TelemetryListenerImpl(options);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> builder;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The <code>TelemetryOptions</code> object allows us to do more than just log Polly Telemetry events; it also enables us to configure Telemetry listeners and add custom tags to any event generated by a Polly strategy.</p>
+<ul>
+<li>Here&rsquo;s how the <code>TelemetryOptions</code> object looks like:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TelemetryOptions</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// Gets the collection of telemetry listeners.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;value&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// The default value is an empty collection.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/value&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> ICollection&lt;TelemetryListener&gt; TelemetryListeners { <span style="color:#66d9ef">get</span>; } = <span style="color:#66d9ef">new</span> List&lt;TelemetryListener&gt;();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// Gets or sets the logger factory.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;value&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// The default value is &lt;see cref=&#34;NullLoggerFactory.Instance&#34;/&gt;.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/value&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Required]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> ILoggerFactory LoggerFactory { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = NullLoggerFactory.Instance;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// Gets the collection of telemetry enrichers.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;value&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// The default value is an empty collection.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/value&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> ICollection&lt;MeteringEnricher&gt; MeteringEnrichers { <span style="color:#66d9ef">get</span>; } = <span style="color:#66d9ef">new</span> List&lt;MeteringEnricher&gt;();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// Gets or sets the result formatter.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;value&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// The default value is a formatter that returns a status code for HTTP based responses and the result as-is for all other result types.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// This property is required.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/value&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Required]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> Func&lt;ResilienceContext, <span style="color:#66d9ef">object?</span>, <span style="color:#66d9ef">object?</span>&gt; ResultFormatter { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = (_, result) =&gt; result <span style="color:#66d9ef">switch</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        HttpResponseMessage response =&gt; (<span style="color:#66d9ef">int</span>)response.StatusCode,
+</span></span><span style="display:flex;"><span>        _ =&gt; result,
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="polly-metrics-and-instruments"><strong>Polly Metrics and Instruments</strong></h1>
+<p>In this section, I will explore the Instruments and Metrics that are built into Polly.</p>
+<p>The Polly built-in Telemetry implementation can be found in the <em><a href="https://github.com/App-vNext/Polly/blob/main/src/Polly.Extensions/Telemetry/TelemetryListenerImpl.cs">Polly.Telemetry.TelemetryListenerImpl</a></em> class.</p>
+<p>Within this class, we find the <code>Meter</code> and the <code>Instruments</code> responsible for reporting <code>Measuments</code>. Those are fundamental concepts in OpenTelemetry Metrics.</p>
+<p>Let&rsquo;s do a very quick recap of what each of these terms means:</p>
+<ul>
+<li>A <code>Meter</code> is responsible for creating <code>Instruments</code> and it must provide a series of functions to create new <code>Instruments</code>.</li>
+<li>A <code>Meter</code> can be associated with one or more <code>Instruments</code>, each of which is used to create a series of <code>Measurements</code>.</li>
+<li><code>Measurements</code> are what we create or observe in our applications.</li>
+</ul>
+<p>If we take a look at the <code>TelemetryListenerImpl</code> class, we can see that all the metrics emitted by the Polly library can be found within this single  <code>Meter</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span> <span style="color:#66d9ef">internal</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> Meter Meter = <span style="color:#66d9ef">new</span>(TelemetryUtil.PollyDiagnosticSource, <span style="color:#e6db74">&#34;1.0&#34;</span>);
+</span></span></code></pre></div><blockquote>
+<p>The <code>TelemetryUtil.PollyDiagnosticSource</code> is nothing more than a string:<br>
+<code>internal const string PollyDiagnosticSource = &quot;Polly&quot;;</code></p>
+</blockquote>
+<p>The above <code>Meter</code> has 3 built-in <code>Instruments</code> capable of emitting <code>Measurements</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>Counter = Meter.CreateCounter&lt;<span style="color:#66d9ef">int</span>&gt;(
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;resilience.polly.strategy.events&#34;</span>,
+</span></span><span style="display:flex;"><span>        description: <span style="color:#e6db74">&#34;Tracks the number of resilience events that occurred in resilience strategies.&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>AttemptDuration = Meter.CreateHistogram&lt;<span style="color:#66d9ef">double</span>&gt;(
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;resilience.polly.strategy.attempt.duration&#34;</span>,
+</span></span><span style="display:flex;"><span>    unit: <span style="color:#e6db74">&#34;ms&#34;</span>,
+</span></span><span style="display:flex;"><span>    description: <span style="color:#e6db74">&#34;Tracks the duration of execution attempts.&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ExecutionDuration = Meter.CreateHistogram&lt;<span style="color:#66d9ef">double</span>&gt;(
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;resilience.polly.pipeline.duration&#34;</span>,
+</span></span><span style="display:flex;"><span>    unit: <span style="color:#e6db74">&#34;ms&#34;</span>,
+</span></span><span style="display:flex;"><span>    description: <span style="color:#e6db74">&#34;The execution duration of resilience pipelines.&#34;</span>);
+</span></span></code></pre></div><p>These are the <code>Instruments</code> responsible for generating the Polly metrics that we will send to Prometheus and Grafana for more a comprehensive analysis of our application.</p>
+<h1 id="demo-application"><strong>Demo Application</strong></h1>
+<p>In the previous section, we have seen how to enable the built-in Telemetry in Polly and also which metrics will be emitted by it. Now it&rsquo;s time to build an app that generates some of those metrics.</p>
+<p>The following diagram shows what we&rsquo;re going to build from this point forward.</p>
+<p><img src="/img/polly-metrics-components-diagram.png" alt="polly-metrics-components-diagram"></p>
+<ul>
+<li>A .NET WebAPI that makes calls to the <a href="https://jsonplaceholder.typicode.com/">https://jsonplaceholder.typicode.com/</a> API, utilizing various Polly strategies to enhance resiliency during these HTTP requests.</li>
+<li>The WebApi uses the OpenTelemetry OTLP exporter package (<code>OpenTelemetry.Exporter.OpenTelemetryProtocol</code>) to send the Polly Telemetry to an OpenTelemetry Collector.</li>
+<li>A Prometheus server that retrieves the Polly metric data from the OTEL Collector.</li>
+<li>A Grafana server, where we can create dashboard panels to visualize the Polly metrics received from the WebAPI.</li>
+</ul>
+<h1 id="building-the-net-webapi"><strong>Building the .NET WebApi</strong></h1>
+<p>The application is a simple .NET 7 WebApi that makes calls to the <code>jsonplaceholder.typicode.com</code> API and returns the result.</p>
+<p>The application features 2 endpoints: <code>/Comments</code> and <code>/Users</code>.</p>
+<h2 id="1-building-the-comments-endpoint"><strong>1. Building the /comments endpoint</strong></h2>
+<p>This endpoint makes a call to the <code>https://jsonplaceholder.typicode.com/posts/{commentId}/comments</code> endpoint and returns the result.</p>
+<p>To invoke the TypiCode API, the app will use an <code>HttpClient</code> with a Polly Retry/Timeout strategy attached to it.</p>
+<p>The first step is to create the Polly Strategy, which will exhibit the following behavior:</p>
+<ul>
+<li>It will handle any exceptions or 500 status codes returned by the TypiCode API.</li>
+<li>In the event of an HTTP call failure, it will retry the call up to 5 times with a 5-second delay between each retry.</li>
+<li>If the HTTP call doesn&rsquo;t receive a response within 5 seconds, it will be canceled.</li>
+</ul>
+<p>The next code snippet shows the Polly Strategy implementation. Notice how, when building the Polly Strategy, we are using the <code>ConfigureTelemetry()</code> extension method. This is because we want metrics to be generated every time this Strategy is executed. <br>
+If we don&rsquo;t use the <code>ConfigureTelemetry()</code> extension method when creating the Pipeline, then there won&rsquo;t any metric for us to work with.<br>
+Additionally, we are outputting the Telemetry data to the Console using the <code>LoggerFactory.Create(bld =&gt; bld.AddConsole()</code> delegate method.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> ResiliencePipeline&lt;HttpResponseMessage&gt; CreateRetryStrategy()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> retry = <span style="color:#66d9ef">new</span> ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Name = <span style="color:#e6db74">&#34;TypiCodeCommentsRetryPipeline&#34;</span>
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> pipeline = retry.AddRetry(<span style="color:#66d9ef">new</span> RetryStrategyOptions&lt;HttpResponseMessage&gt;
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        ShouldHandle = <span style="color:#66d9ef">new</span> PredicateBuilder&lt;HttpResponseMessage&gt;()
+</span></span><span style="display:flex;"><span>            .Handle&lt;Exception&gt;()
+</span></span><span style="display:flex;"><span>            .HandleResult(r =&gt; r.StatusCode == HttpStatusCode.InternalServerError),
+</span></span><span style="display:flex;"><span>        Name = <span style="color:#e6db74">&#34;RetryStrategy&#34;</span>,
+</span></span><span style="display:flex;"><span>        MaxRetryAttempts = <span style="color:#ae81ff">5</span>,
+</span></span><span style="display:flex;"><span>        Delay = TimeSpan.FromSeconds(<span style="color:#ae81ff">5</span>),
+</span></span><span style="display:flex;"><span>        OnRetry = arg =&gt;
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">&#34;OnRetry, Attempt: {0}&#34;</span>, arg.AttemptNumber);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">default</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>    .AddTimeout(TimeSpan.FromSeconds(<span style="color:#ae81ff">5</span>))
+</span></span><span style="display:flex;"><span>    .ConfigureTelemetry(LoggerFactory.Create(bld =&gt; bld.AddConsole()))
+</span></span><span style="display:flex;"><span>    .Build();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> pipeline;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Now, let&rsquo;s create the HttpClient and attach the Polly Strategy.</p>
+<p>To create the HttpClient, I will use the <code>AddHttpClient</code> extension method from the <code>Microsoft.Extensions.DependencyInjection</code> package. This method adds the <code>IHttpClientFactory</code> and related services to the DI container and configures a named HttpClient for me.</p>
+<p>To attach the Polly Strategy we have created earlier, we will use the <code>AddPolicyHandler()</code> extension method. This  method adds a <code>PolicyHttpMessageHandler</code> which will surround request execution with the provided policy.</p>
+<p>There is a caveat here: you need to use the <code>AsAsyncPolicy()</code> method from the <code>Polly</code> package. This method converts a <code>ResiliencePipeline</code> into an <code>IAsyncPolicy</code>. It&rsquo;s necessary because the <code>AddPolicyHandler()</code> method only accepts an <code>IAsyncPolicy</code> parameter.</p>
+<p>The next code snippet shows the implementation.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>builder.Services.AddHttpClient(<span style="color:#e6db74">&#34;typicode-comments&#34;</span>, c =&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    c.BaseAddress = <span style="color:#66d9ef">new</span> Uri(builder.Configuration.GetValue&lt;<span style="color:#66d9ef">string</span>&gt;(<span style="color:#e6db74">&#34;TypiCodeBaseUri&#34;</span>) ??
+</span></span><span style="display:flex;"><span>                            <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> InvalidOperationException());
+</span></span><span style="display:flex;"><span>    c.DefaultRequestHeaders.Add(<span style="color:#e6db74">&#34;accept&#34;</span>, <span style="color:#e6db74">&#34;application/json&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}).AddPolicyHandler(PollyResiliencePipelines.CreateRetryStrategy().AsAsyncPolicy());
+</span></span></code></pre></div><p>And the last step is to create the <code>/comments</code> endpoint itself.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[ApiController]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CommentsController</span> : ControllerBase
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IHttpClientFactory _httpClientFactory;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> CommentsController(IHttpClientFactory httpClientFactory)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        _httpClientFactory = httpClientFactory;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [HttpGet()]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;IActionResult&gt; Get(<span style="color:#66d9ef">int</span> commentId, CancellationToken ct)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> client = _httpClientFactory.CreateClient(<span style="color:#e6db74">&#34;typicode-comments&#34;</span>);
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> response = <span style="color:#66d9ef">await</span> client.GetAsync(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">$&#34;posts/{commentId}/comments&#34;</span>, ct);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (response.IsSuccessStatusCode)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> Ok(<span style="color:#66d9ef">await</span> response.Content.ReadAsStringAsync());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> StatusCode(<span style="color:#ae81ff">500</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="2-building-the-users-endpoint"><strong>2. Building the /users endpoint</strong></h2>
+<p>This endpoint makes a call to the <code>https://jsonplaceholder.typicode.com/users/{userId}</code> endpoint and returns the result.</p>
+<p>To invoke the TypiCode API, the app will use an <code>HttpClient</code> with a Polly Circuit Breaker Strategy attached to it.</p>
+<p>The first step is to create the Polly Circuit Breaker Strategy, which will exhibit the following behavior:</p>
+<ul>
+<li>It will handle exceptions of type HttpRequestException or 500 status codes returned by the TypiCode API.</li>
+<li>If there are more than 5 HTTP calls within 30 seconds, and 30% of them result in a failure, the circuit will open for 15 seconds.</li>
+</ul>
+<p>The following code snippet shows the implementation of the Polly Circuit Breaker Strategy. Notice how, when building the Polly Strategy, we are using the <code>ConfigureTelemetry()</code> extension method. This is because we want metrics to be generated every time this Strategy is executed.</p>
+<p>Additionally, we are adding a custom tag to our metrics. To achieve this, you need to create a class that inherits from the <code>MeteringEnricher</code> class and then add your custom enricher to the <code>TelemetryOptions.MeteringEnrichers</code> list.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> ResiliencePipeline&lt;HttpResponseMessage&gt; CreateCircuitBreakerStrategy()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> circuitBreaker = <span style="color:#66d9ef">new</span> ResiliencePipelineBuilder&lt;HttpResponseMessage&gt;
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Name = <span style="color:#e6db74">&#34;TypiCodeUsersCircuitBreakerPipeline&#34;</span>
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> pipeline = circuitBreaker.AddCircuitBreaker(<span style="color:#66d9ef">new</span> CircuitBreakerStrategyOptions&lt;HttpResponseMessage&gt; 
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        ShouldHandle = <span style="color:#66d9ef">new</span> PredicateBuilder&lt;HttpResponseMessage&gt;()
+</span></span><span style="display:flex;"><span>            .Handle&lt;HttpRequestException&gt;()
+</span></span><span style="display:flex;"><span>            .HandleResult(r =&gt; r.StatusCode == HttpStatusCode.InternalServerError),
+</span></span><span style="display:flex;"><span>        Name = <span style="color:#e6db74">&#34;CircuitBreakerStrategy&#34;</span>,
+</span></span><span style="display:flex;"><span>        BreakDuration = TimeSpan.FromSeconds(<span style="color:#ae81ff">15</span>),
+</span></span><span style="display:flex;"><span>        FailureRatio = .<span style="color:#ae81ff">3</span>,
+</span></span><span style="display:flex;"><span>        MinimumThroughput = <span style="color:#ae81ff">5</span>,
+</span></span><span style="display:flex;"><span>        SamplingDuration = TimeSpan.FromSeconds(<span style="color:#ae81ff">30</span>),
+</span></span><span style="display:flex;"><span>        OnOpened = arg =&gt;
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">&#34;Circuit Breaker Opened, Duration: {0}&#34;</span>, arg.BreakDuration);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">default</span>;
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        OnClosed = _ =&gt;
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">&#34;Circuit Breaker Closed&#34;</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">default</span>;
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        OnHalfOpened = _ =&gt;
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Console.Write(<span style="color:#e6db74">&#34;Circuit Breaker Half Opened&#34;</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">default</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>    .ConfigureTelemetry(<span style="color:#66d9ef">new</span> TelemetryOptions
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        MeteringEnrichers = { <span style="color:#66d9ef">new</span> CircuitBreakerMetersEnricher() }
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>    .Build();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> pipeline;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The following code snippet illustrates the implementation of this custom enricher. This enricher adds the duration of the open circuit into the <code>OnCircuitOpened</code> events.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">internal</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CircuitBreakerMetersEnricher</span> : MeteringEnricher
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">void</span> Enrich&lt;TResult, TArgs&gt;(<span style="color:#66d9ef">in</span> EnrichmentContext&lt;TResult, TArgs&gt; context)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (context.TelemetryEvent.Arguments <span style="color:#66d9ef">is</span> OnCircuitOpenedArguments&lt;TResult&gt; onCircuitOpenedArgs)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            context.Tags.Add(<span style="color:#66d9ef">new</span>(<span style="color:#e6db74">&#34;circuitbreaker.open.duration&#34;</span>, onCircuitOpenedArgs.BreakDuration));
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Now, let&rsquo;s create the HttpClient and attach the Polly Circuit Breaker Strategy. The source code is exactly the same as the one mentioned above, so there&rsquo;s no need to repeat it.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>builder.Services.AddHttpClient(<span style="color:#e6db74">&#34;typicode-comments&#34;</span>, c =&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    c.BaseAddress = <span style="color:#66d9ef">new</span> Uri(builder.Configuration.GetValue&lt;<span style="color:#66d9ef">string</span>&gt;(<span style="color:#e6db74">&#34;TypiCodeBaseUri&#34;</span>) ??
+</span></span><span style="display:flex;"><span>                            <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> InvalidOperationException());
+</span></span><span style="display:flex;"><span>    c.DefaultRequestHeaders.Add(<span style="color:#e6db74">&#34;accept&#34;</span>, <span style="color:#e6db74">&#34;application/json&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}).AddPolicyHandler(PollyResiliencePipelines.CreateRetryStrategy().AsAsyncPolicy());
+</span></span></code></pre></div><p>And the final step is to create the <code>/users</code> endpoint itself.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[ApiController]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UsersController</span> : ControllerBase
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IHttpClientFactory _httpClientFactory;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> UsersController(IHttpClientFactory httpClientFactory)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        _httpClientFactory = httpClientFactory;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [HttpGet()]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;IActionResult&gt; Get(<span style="color:#66d9ef">int</span> userId, CancellationToken ct)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> client = _httpClientFactory.CreateClient(<span style="color:#e6db74">&#34;typicode-users&#34;</span>);
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> response = <span style="color:#66d9ef">await</span> client.GetAsync(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">$&#34;users/{userId}&#34;</span>, ct);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (response.IsSuccessStatusCode)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> Ok(<span style="color:#66d9ef">await</span> response.Content.ReadAsStringAsync());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> StatusCode(<span style="color:#ae81ff">500</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="3-configuring-the-net-opentelemetry-metrics-provider"><strong>3. Configuring the .NET OpenTelemetry Metrics provider</strong></h2>
+<p>In the last 2 sections, we have created 2 Polly strategies, enabled Telemetry for each of them, and incorporated them into their respective HTTP clients. However, all this effort is pointless unless we send the Polly Telemetry someplace where we can analyze it.</p>
+<p>In this section, we will configure OpenTelemetry Metrics to send Polly&rsquo;s metrics to an OpenTelemetry Collector.</p>
+<p>The following code snippet shows how to set up OpenTelemetry Metrics to export Polly Telemetry.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>builder.Services.AddOpenTelemetry().WithMetrics(opts =&gt; opts
+</span></span><span style="display:flex;"><span>    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(<span style="color:#e6db74">&#34;PollyTelemetryDemo.WebApi&#34;</span>))
+</span></span><span style="display:flex;"><span>    .AddMeter(<span style="color:#e6db74">&#34;Polly&#34;</span>)
+</span></span><span style="display:flex;"><span>    .AddOtlpExporter(options =&gt;
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        options.Endpoint = <span style="color:#66d9ef">new</span> Uri(builder.Configuration.GetValue&lt;<span style="color:#66d9ef">string</span>&gt;(<span style="color:#e6db74">&#34;OtlpEndpointUri&#34;</span>) 
+</span></span><span style="display:flex;"><span>                                    ?? <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> InvalidOperationException());
+</span></span><span style="display:flex;"><span>    }));
+</span></span></code></pre></div><p>As you can see, the configuration is quite standard. The only point worth commenting on is the use of the <code>AddMeter(&quot;Polly&quot;)</code> extension method.</p>
+<p>Do you remember that at the beginning of the post, we mentioned that all Polly metrics are emitted by <code>Instruments</code> within  a  <code>Meter</code> named &ldquo;Polly&rdquo;? The <code>AddMeter(&quot;Polly&quot;)</code> extension method configures OpenTelemetry to transmit all the metrics collected by this particular &ldquo;Polly&rdquo; <code>Meter</code>.</p>
+<p>If we omit the <code>AddMeter(&quot;Polly&quot;)</code> line during the configuration of the OpenTelemetry Metrics provider, the metrics generated by Polly will not be sent to the OpenTelemetry Collector.</p>
+<h1 id="opentelemetry-collector"><strong>OpenTelemetry Collector</strong></h1>
+<p>The OpenTelemetry Collector consists of three components:</p>
+<ul>
+<li><code>Receivers</code>: Can be push or pull based, is how data gets into the Collector.</li>
+<li><code>Processors</code>: Run on data between being received and being exported.</li>
+<li><code>Exporters</code>: Can be push or pull based, is how you send data to one or more backends/destinations.</li>
+</ul>
+<p>In this case, the OpenTelemetry Collector receives the Polly metrics from the .NET API via gRPC and exports them into Prometheus.</p>
+<p>The following code snippet demonstrates how the OpenTelemetry Collector is configured.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">receivers</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">otlp</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">protocols</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">grpc</span>:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">exporters</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">prometheus</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">endpoint</span>: <span style="color:#e6db74">&#34;0.0.0.0:8889&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">processors</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">batch</span>:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">extensions</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">health_check</span>:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">service</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">extensions</span>: [<span style="color:#ae81ff">health_check]</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">pipelines</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">metrics</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">receivers</span>: [<span style="color:#ae81ff">otlp]</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">processors</span>: [<span style="color:#ae81ff">batch]</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">exporters</span>: [<span style="color:#ae81ff">prometheus]</span>
+</span></span></code></pre></div><h1 id="prometheus"><strong>Prometheus</strong></h1>
+<p>Prometheus is setup to scrape the OpenTelemetry Collector metrics endpoints every 5 seconds.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">global</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">scrape_interval</span>: <span style="color:#ae81ff">15s</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">scrape_configs</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">job_name</span>: <span style="color:#e6db74">&#39;otel-collector&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">scrape_interval</span>: <span style="color:#ae81ff">5s</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">static_configs</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">targets</span>: [<span style="color:#e6db74">&#39;otel-collector:8889&#39;</span>]
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">targets</span>: [<span style="color:#e6db74">&#39;otel-collector:8888&#39;</span>]
+</span></span></code></pre></div><p>Once we have configured Prometheus, if we access the .NET API and execute it a few times to generate a certain number of metrics, we will be able to see in Prometheus how the Polly metrics start to appear.</p>
+<p><img src="/img/polly-metrics-prometheus-metrics-list.png" alt="polly-metrics-prometheus-metrics-list"></p>
+<p>When we configured the Circuit Breaker strategy, do you remember that we added an <code>MeteringEnricher</code> to it?</p>
+<p>When the circuit becomes open, this enricher adds a tag that specifies its duration. If we run the .NET API until we force the circuit to open, we can observe in Prometheus how the duration tag is effectively incorporated into the generated metrics.</p>
+<p><img src="/img/polly-metrics-prometheus-metrics-custom-tags.png" alt="polly-metrics-prometheus-metrics-custom-tags"></p>
+<h1 id="grafana"><strong>Grafana</strong></h1>
+<p>Once we have Polly&rsquo;s Telemetry in Prometheus, we can start building a dashboard to put these metrics to work.</p>
+<p>What can we do with Polly&rsquo;s Telemetry in Grafana? Let me show you a few examples.</p>
+<blockquote>
+<p>The following Grafana panels are only a few examples of what we can build using the metrics emitted by Polly, we could do more things with them.</p>
+</blockquote>
+<ul>
+<li><em>How many calls to the &ldquo;<a href="https://jsonplaceholder.typicode.com/posts/%7BcommentId%7D/comments%22">https://jsonplaceholder.typicode.com/posts/{commentId}/comments&quot;</a> endpoint were retried within the last hour?</em></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>sum(resilience_polly_strategy_events{pipeline_name=&#34;TypiCodeCommentsRetryPipeline&#34;, event_name=&#34;OnRetry&#34;})
+</span></span></code></pre></div><p><img src="/img/polly-metrics-grafana-panel-1.png" alt="polly-metrics-grafana-panel-1"></p>
+<ul>
+<li><em>How many calls to the &ldquo;<a href="https://jsonplaceholder.typicode.com/posts/%7BcommentId%7D/comments%22">https://jsonplaceholder.typicode.com/posts/{commentId}/comments&quot;</a> endpoint were successful? And how many were retried?</em></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>sum by(event_name) (resilience_polly_strategy_events{pipeline_name=&#34;TypiCodeCommentsRetryPipeline&#34;})
+</span></span></code></pre></div><p><img src="/img/polly-metrics-grafana-panel-2.png" alt="polly-metrics-grafana-panel-2"></p>
+<ul>
+<li><em>What types of exceptions were raised during the calls to &ldquo;<a href="https://jsonplaceholder.typicode.com/posts/%7BcommentId%7D/comments%22">https://jsonplaceholder.typicode.com/posts/{commentId}/comments&quot;</a> in each retry?</em></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>sum by(exception_type) (resilience_polly_strategy_events{pipeline_name=&#34;TypiCodeCommentsRetryPipeline&#34;, event_name=&#34;OnRetry&#34;})
+</span></span></code></pre></div><p><img src="/img/polly-metrics-grafana-panel-3.png" alt="polly-metrics-grafana-panel-3"></p>
+<ul>
+<li><em>What is the average duration of each retry made to &ldquo;<a href="https://jsonplaceholder.typicode.com/posts/%7BcommentId%7D/comments%22">https://jsonplaceholder.typicode.com/posts/{commentId}/comments&quot;</a>?</em></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>sum by(attempt_number) (rate(resilience_polly_strategy_attempt_duration_sum{pipeline_name=&#34;TypiCodeCommentsRetryPipeline&#34;}[30m])) / 
+</span></span><span style="display:flex;"><span>sum by(attempt_number) (rate(resilience_polly_strategy_attempt_duration_count{pipeline_name=&#34;TypiCodeCommentsRetryPipeline&#34;}[30m]))
+</span></span></code></pre></div><p><img src="/img/polly-metrics-grafana-panel-4.png" alt="polly-metrics-grafana-panel-4"></p>
+<ul>
+<li><em>How many calls were made to the &ldquo;<a href="https://jsonplaceholder.typicode.com/users/%7BuserId%7D%22">https://jsonplaceholder.typicode.com/users/{userId}&quot;</a> endpoint when the circuit was open, half open, and closed, respectively?</em></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>sum by(event_name) (resilience_polly_strategy_events{pipeline_name=&#34;TypiCodeUsersCircuitBreakerPipeline&#34;})
+</span></span></code></pre></div><p><img src="/img/polly-metrics-grafana-panel-5.png" alt="polly-metrics-grafana-panel-5"></p>
+<ul>
+<li><em>What is the average response time for each call made to the &ldquo;<a href="https://jsonplaceholder.typicode.com/users/%7BuserId%7D%22">https://jsonplaceholder.typicode.com/users/{userId}&quot;</a> endpoint when the circuit is open, and how does it compare to the response time when an error is thrown and the circuit remains closed?</em></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>resilience_polly_pipeline_duration_sum{pipeline_name=&#34;TypiCodeUsersCircuitBreakerPipeline&#34;} / resilience_polly_pipeline_duration_count{pipeline_name=&#34;TypiCodeUsersCircuitBreakerPipeline&#34;}
+</span></span></code></pre></div><p><img src="/img/polly-metrics-grafana-panel-6.png" alt="polly-metrics-grafana-panel-6"></p>
+<h1 id="how-to-test-the-demo-application"><strong>How to test the Demo Application</strong></h1>
+<blockquote>
+<p><strong>If you wish to try out the app on your own, please read this entire section, as there is a caveat to be aware of before you begin testing it.</strong></p>
+</blockquote>
+<p>To access the app&rsquo;s source code, you can visit my <a href="https://github.com/karlospn/analyze-polly-telemetry-using-otel-metrics">GitHub repository</a>.</p>
+<p>If you want to run the app yourself, I have provided a <code>docker-compose</code> file that will launch the app along with its external dependencies. <br>
+These external components, including Prometheus, Grafana, and OpenTelemetry Collector, are preconfigured, so you won&rsquo;t need to perform any additional setup. Simply execute <code>docker-compose up</code>, and you&rsquo;ll be ready to go!</p>
+<p>But, there is a <strong>catch</strong> to test this app, that you need to be aware of.</p>
+<p>Take a look at the <code>docker-compose</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">version</span>: <span style="color:#e6db74">&#39;3.8&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">polly</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">polly-network</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">services</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">prometheus</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">build</span>: 
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">context</span>: <span style="color:#ae81ff">./scripts/prometheus</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">9090</span>:<span style="color:#ae81ff">9090</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">polly</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">grafana</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">build</span>: 
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">context</span>: <span style="color:#ae81ff">./scripts/grafana</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">depends_on</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">prometheus</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">3000</span>:<span style="color:#ae81ff">3000</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">polly</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">otel-collector</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">otel/opentelemetry-collector:0.73.0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">command</span>: [<span style="color:#e6db74">&#34;--config=/etc/otel-collector-config.yaml&#34;</span>]
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">volumes</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">./scripts/otel-collector/otel-collector-config.yaml:/etc/otel-collector-config.yaml</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;8888:8888&#34;</span> 
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;8889:8889&#34;</span> 
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;13133:13133&#34;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;4317:4317&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">polly</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">app</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">build</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">context</span>: <span style="color:#ae81ff">./src/PollyTelemetryDemo.WebApi</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">depends_on</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">otel-collector</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">5001</span>:<span style="color:#ae81ff">8080</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">environment</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">TypiCodeBaseUri</span>: <span style="color:#ae81ff">https://jsonplceholder.typicode.com/</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">OtlpEndpointUri</span>: <span style="color:#ae81ff">http://otel-collector:4317</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">polly</span>
+</span></span></code></pre></div><p>As you can see, the app requires a couple of environment variables to function correctly:</p>
+<ul>
+<li><code>TypiCodeBaseUri</code>: The URI address of the TypiCode API.</li>
+<li><code>OtlpEndpointUri</code>: The URI address of the OpenTelemetry Collector</li>
+</ul>
+<p>If you examine the value of <code>TypiCodeBaseUri</code>, you&rsquo;ll notice a typo in the address. The correct address should be <code>jsonplaceholder.typicode.com</code>, but there is a missing &lsquo;a&rsquo; in it.</p>
+<p><strong>This error is intentional</strong>, we want to ensure that calls to TypiCode API fail so that the Polly strategies are executed. This way, we can generate an entire set of Polly metrics.<br>
+You can fix the typo and run the <code>docker-compose</code> if you wish, but you won&rsquo;t see half of the Polly metrics, because some of the Polly strategies, like retries or circuit breaker, are only triggered when something goes wrong.</p>
+<p>The next image illustrates how the dashboard appears when everything is functioning correctly:</p>
+<p><img src="/img/polly-metrics-dashboard-ok.png" alt="polly-metrics-dashboard-ok"></p>
+<p>In contrast, this image displays the dashboard&rsquo;s appearance when HTTP calls to the TypiCode API fail, and the Polly strategies come into play:</p>
+<p><img src="/img/polly-metrics-dashboard-bad.png" alt="polly-metrics-dashboard-bad"></p>
+<p>As you can see, when the HTTP call to TypiCode fails, more metrics are generated, resulting in a more compelling dashboard. This explains the typo in the <code>docker-compose</code> file.</p>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://www.mytechramblings.com/posts/building-qa-app-with-aws-bedrock-kendra-s3-and-streamlit/">
+                  <span class="button__text">Building a Q&amp;A app capable of answering questions related to your enterprise documents using AWS Bedrock, AWS Kendra, AWS S3 and Streamlit</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2023 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>Theme created by <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://www.mytechramblings.com/assets/main.js"></script>
+<script src="https://www.mytechramblings.com/assets/prism.js"></script>
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('carlospons', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Donate',
+    'floating-chat.donateButton.background-color': '#ff5f5f',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
+
+      
+    </div>
+
+    
+      
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-170300931-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+    
+  </body>
+</html>

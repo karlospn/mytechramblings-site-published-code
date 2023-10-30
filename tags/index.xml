@@ -9,10 +9,70 @@
     <description>Recent content in Tags on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 03 Oct 2023 10:00:03 +0200</lastBuildDate>
+    <lastBuildDate>Mon, 30 Oct 2023 10:00:43 +0100</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>dotnet</title>
+      <link>https://www.mytechramblings.com/tags/dotnet/</link>
+      <pubDate>Mon, 30 Oct 2023 10:00:43 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/dotnet/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>metrics</title>
+      <link>https://www.mytechramblings.com/tags/metrics/</link>
+      <pubDate>Mon, 30 Oct 2023 10:00:43 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/metrics/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>opentelemetry</title>
+      <link>https://www.mytechramblings.com/tags/opentelemetry/</link>
+      <pubDate>Mon, 30 Oct 2023 10:00:43 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/opentelemetry/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>ai</title>
@@ -155,51 +215,11 @@
     </item>
     
     <item>
-      <title>dotnet</title>
-      <link>https://www.mytechramblings.com/tags/dotnet/</link>
-      <pubDate>Mon, 25 Sep 2023 12:41:51 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/dotnet/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
       <title>jaeger</title>
       <link>https://www.mytechramblings.com/tags/jaeger/</link>
       <pubDate>Mon, 25 Sep 2023 12:41:51 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/jaeger/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>OpenTelemetry</title>
-      <link>https://www.mytechramblings.com/tags/opentelemetry/</link>
-      <pubDate>Mon, 25 Sep 2023 12:41:51 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/opentelemetry/</guid>
       <description>
         
           
@@ -460,26 +480,6 @@
       <pubDate>Mon, 10 Apr 2023 16:25:55 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/grafana/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>metrics</title>
-      <link>https://www.mytechramblings.com/tags/metrics/</link>
-      <pubDate>Mon, 10 Apr 2023 16:25:55 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/metrics/</guid>
       <description>
         
           

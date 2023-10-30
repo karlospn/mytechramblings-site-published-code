@@ -1,18 +1,38 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>OpenTelemetry on my tech ramblings</title>
+    <title>opentelemetry on my tech ramblings</title>
     
     
     
     <link>https://www.mytechramblings.com/tags/opentelemetry/</link>
-    <description>Recent content in OpenTelemetry on my tech ramblings</description>
+    <description>Recent content in opentelemetry on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Mon, 25 Sep 2023 12:41:51 +0200</lastBuildDate>
+    <lastBuildDate>Mon, 30 Oct 2023 10:00:43 +0100</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/opentelemetry/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Analyze Polly Telemetry using Prometheus, Grafana and OpenTelemetry Metrics</title>
+      <link>https://www.mytechramblings.com/posts/analyze-polly-telemetry-using-otel-metrics/</link>
+      <pubDate>Mon, 30 Oct 2023 10:00:43 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/analyze-polly-telemetry-using-otel-metrics/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          Starting with version 8, Polly provides Telemetry for all built-in strategies. This post will show you how you can send this Telemetry to Prometheus and Grafana for a more in-depth analysis using OpenTelemetry Metrics.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>Getting started with OpenTelemetry and distributed tracing in .NET</title>
