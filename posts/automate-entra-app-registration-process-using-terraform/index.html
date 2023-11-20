@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>Trying to automate Microsoft Entra ID App Registration process using Terraform :: my tech ramblings — A blog for writing about my techie ramblings</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Just show me the code!
+As always, if you don’t care about the post I have uploaded the source code on my Github.
+If you&amp;rsquo;re looking to secure your applications, Microsoft Entra ID (aka. Azure Active Directory) is a great option. However, registering apps manually can pose several challenges. As your organization expands and the number of applications grows, managing them manually can become time-consuming and increase the risk of inconsistencies between them."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://www.mytechramblings.com/posts/automate-entra-app-registration-process-using-terraform/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/assets/style.css">
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.mytechramblings.com/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://www.mytechramblings.com/img/favicon.png">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Trying to automate Microsoft Entra ID App Registration process using Terraform"/>
+<meta name="twitter:description" content="The purpose of this post is to test the App Registration process using the latest version of the Terraform provider for Microsoft Entra ID. To achieve this, we&#39;re going to register multiple apps on Microsoft Entra ID and make them interact with each other using a couple of different OAuth2 authorization flows."/>
+
+
+
+<meta property="og:title" content="Trying to automate Microsoft Entra ID App Registration process using Terraform" />
+<meta property="og:description" content="The purpose of this post is to test the App Registration process using the latest version of the Terraform provider for Microsoft Entra ID. To achieve this, we&#39;re going to register multiple apps on Microsoft Entra ID and make them interact with each other using a couple of different OAuth2 authorization flows." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.mytechramblings.com/posts/automate-entra-app-registration-process-using-terraform/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-11-20T10:00:48+01:00" />
+<meta property="article:modified_time" content="2023-11-20T10:00:48+01:00" />
+
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://www.mytechramblings.com/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">my tech ramblings</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/automate-entra-app-registration-process-using-terraform/">Trying to automate Microsoft Entra ID App Registration process using Terraform</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2023-11-20
+        </span>
+
+        
+          
+            
+
+
+
+          
+        
+      
+
+      
+      
+        <span class="post-read-time">— 12 min read</span>
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          #<a href="https://www.mytechramblings.com/tags/azure/">azure</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/terraform/">terraform</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/auth/">auth</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/entra/">entra</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/iac/">iac</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <blockquote>
+<p><strong>Just show me the code!</strong><br>
+As always, if you don’t care about the post I have uploaded the source code on my <a href="https://github.com/karlospn/testing-entra-app-registration-process-using-terraform">Github</a>.</p>
+</blockquote>
+<p>If you&rsquo;re looking to secure your applications, Microsoft Entra ID (aka. Azure Active Directory) is a great option. <br>
+However, registering apps manually can pose several challenges. As your organization expands and the number of applications grows, managing them manually can become time-consuming and increase the risk of inconsistencies between them.</p>
+<p>A more efficient alternative is to use Infrastructure as Code (IaC) tools, such as Terraform. Terraform allows you to manage your Entra apps in a more predictable way. Moreover, you can seamlessly integrate Terraform with a CI/CD process, further automating the registration process.</p>
+<p>Terraform already has an official Entra provider written by Microsoft itself.</p>
+<ul>
+<li><a href="https://registry.terraform.io/providers/hashicorp/azuread/latest">https://registry.terraform.io/providers/hashicorp/azuread/latest</a></li>
+</ul>
+<p>In this post, I want to explore its capabilities, and I&rsquo;ll attempt to construct a fairly common authorization scenario. To achieve this, I&rsquo;m going to register multiple apps on Microsoft Entra ID and have them interact with each other using a couple of different OAuth2 authorization flows.</p>
+<blockquote>
+<p><em>This post has been written using the version <strong>2.45.0</strong> of the Terraform provider for Microsoft Entra ID.  <br>
+Keep in mind that when you read this post, there might be a more recent version available, and certain resources may have undergone changes or experienced some kind of breaking change.</em></p>
+</blockquote>
+<h1 id="scenario-details"><strong>Scenario Details</strong></h1>
+<p>The scenario we&rsquo;re going to build in this post is the following one:</p>
+<ul>
+<li>
+<p><strong>Payments API</strong></p>
+<ul>
+<li>It exposes 2 scopes:
+<ul>
+<li>A <code>payment.write</code> scope. It requires an admin consent to be used.</li>
+<li>A <code>payment.read</code> scope.</li>
+</ul>
+</li>
+<li>It has 2 app roles:
+<ul>
+<li>A <code>Reader</code> role. It can be assigned to both users and applications.</li>
+<li>An <code>Admin</code> role. It can be assigned to both users and applications.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Bookings API</strong></p>
+<ul>
+<li>Consumes the Payments API through a <strong>Client Credentials</strong> flow.
+<ul>
+<li>Acquires an access token from the Entra <code>/token</code> endpoint and uses it to gain access to the Payments API.</li>
+</ul>
+</li>
+<li>It has the Payments API <code>Reader</code> Role assigned.</li>
+</ul>
+</li>
+<li>
+<p><strong>FrontEnd SPA</strong></p>
+<ul>
+<li>A Single Page Application that utilizes the <strong>Authorization Code flow with PKCE</strong> to acquire an access token and make calls to the Payments API.</li>
+<li>The FrontEnd SPA app is granted permission only to request the <code>payment.read</code> scope from the Payments API.</li>
+</ul>
+</li>
+<li>
+<p><strong>User Permissions</strong></p>
+<ul>
+<li>Two users are registered on my Microsoft Entra ID tenant:
+<ul>
+<li>John and Jane.</li>
+</ul>
+</li>
+<li>Jane holds a <code>Reader</code> role in the Payments API app.</li>
+<li>John possesses an <code>Admin</code> role in the Payments API app.</li>
+</ul>
+</li>
+</ul>
+<h1 id="oauth2-authorization-diagrams"><strong>OAuth2 Authorization diagrams</strong></h1>
+<p>The following diagrams shows the authorization flows we&rsquo;re going to implement in this post.</p>
+<ul>
+<li><strong>The Bookings API uses a Client Credentials Flow to acquire an access token from Microsoft Entra ID, utilizing it to invoke various methods within the Payments API.</strong></li>
+</ul>
+<p><img src="/img/testing-entra-with-terraform-client-credentials.png" alt="testing-entra-with-terraform-client-credentials"></p>
+<ul>
+<li><strong>The FrontEnd SPA uses an Authorization Code flow with PKCE to acquire a token from Microsoft Entra ID, utilizing it to invoke various methods within the Payments API.</strong></li>
+</ul>
+<p><img src="/img/testing-entra-with-terraform-auth-code-flow.png" alt="testing-entra-with-terraform-auth-code-flow"></p>
+<h1 id="1-configure-the-microsoft-entra-id-terraform-provider"><strong>1. Configure the Microsoft Entra ID Terraform provider</strong></h1>
+<blockquote>
+<p><strong><em>As of today (11/18/2023), the Terraform provider for Microsoft Entra ID still has its former name: <code>azuread</code>.</em></strong></p>
+</blockquote>
+<p>The first step is to configure the Terraform Provider for Microsoft Entra ID.</p>
+<p>There are multiple ways to setup the <code>azuread</code> Terraform provider. It supports a number of different methods for authenticating to Entra:</p>
+<ul>
+<li>Using the Azure CLI.</li>
+<li>Using a Managed Identity.</li>
+<li>Using a Service Principal and a Client Certificate.</li>
+<li>Using a Service Principal and a Client Secret.</li>
+<li>Using a Service Principal and OpenID Connect.</li>
+</ul>
+<p>In this post, I&rsquo;ll be using the <strong>Service Principal + Client Secret</strong> method. This approach is well-suited for a potential CI/CD implementation in the future, and it&rsquo;s quite easy to set up.</p>
+<p>Essentially, we&rsquo;re registering a &ldquo;master app&rdquo; on Entra. This &ldquo;master app&rdquo; is nothing more than an application with permissions to create other apps.</p>
+<p>To create this &ldquo;master app&rdquo;, we&rsquo;ll manually register an app in Entra with the following permissions for <code>Microsoft.Graph</code>:</p>
+<ul>
+<li><code>Application.ReadWrite.All</code></li>
+<li><code>AppRoleAssignment.ReadWrite.All</code></li>
+<li><code>User.Read.All</code></li>
+</ul>
+<p><img src="/img/testing-entra-with-terraform-master-app-permissions.png" alt="testing-entra-with-terraform-master-app-permissions"></p>
+<p>Additionally, you need to create a new client secret for this app.</p>
+<p><img src="/img/testing-entra-with-terraform-master-app-secret.png" alt="testing-entra-with-terraform-master-app-secret"></p>
+<p>Once we have completed these steps, we are ready to configure the Terraform Provider using the &ldquo;master app&rdquo; client_id, client_secret, and our Microsoft Entra Tenant ID.</p>
+<p>There are a a couple of ways to configure the Provider:</p>
+<ul>
+<li>Using environment variables (the recommended way).</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ export ARM_CLIENT_ID<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;00000000-0000-0000-0000-000000000000&#34;</span>
+</span></span><span style="display:flex;"><span>$ export ARM_CLIENT_SECRET<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;MyCl1eNtSeCr3t&#34;</span>
+</span></span><span style="display:flex;"><span>$ export ARM_TENANT_ID<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;10000000-2000-3000-4000-500000000000&#34;</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ae81ff">terraform {</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">required_providers {</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">azuread = {</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ae81ff">source  = &#34;hashicorp/azuread&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ae81ff">version = &#34;~&gt; 2.45.0&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">provider &#34;azuread&#34; {}</span>
+</span></span></code></pre></div><ul>
+<li>Configuring the provider directly using variables.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ae81ff">terraform {</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">required_providers {</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">azuread = {</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ae81ff">source  = &#34;hashicorp/azuread&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ae81ff">version = &#34;~&gt; 2.45.0&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">provider &#34;azuread&#34; {</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">client_id     = var.master_application_client_id</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">client_secret = var.master_application_client_secret</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">tenant_id     = var.tenant_id</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>At this point running either <code>terraform plan</code> or <code>terraform apply</code> should allow Terraform to authenticate to your Entra Tenant using the provided Client ID and Client Secret.</p>
+<h1 id="2-create-the-payments-api-application"><strong>2. Create the Payments API application</strong></h1>
+<p>Next step is to create the Payments API using Terraform. This API has the following configuration:</p>
+<ul>
+<li>It exposes 2 scopes : <code>payment.write</code> and <code>payment.read</code>.
+<ul>
+<li>The <code>payment.write</code> scope requires an admin consent to be used, while the <code>payment.read</code> scope does not.</li>
+</ul>
+</li>
+<li>It has 2 application roles: <code>Reader</code> and <code>Admin</code>.
+<ul>
+<li>Both app roles can be assigned to Entra users and applications.</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ae81ff">resource &#34;random_uuid&#34; &#34;payments_write_scope_id&#34; {}</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">resource &#34;random_uuid&#34; &#34;payments_read_scope_id&#34; {}</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">resource &#34;random_uuid&#34; &#34;payments_admin_app_role_id&#34; {}</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">resource &#34;random_uuid&#34; &#34;payments_reader_app_role_id&#34; {}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">resource &#34;azuread_application&#34; &#34;payments_api_application&#34; {</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">display_name     = &#34;payments-api&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">identifier_uris  = [&#34;api://payments&#34;]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">owners           = [data.azuread_client_config.current.object_id]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">api {</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">requested_access_token_version = 2</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">oauth2_permission_scope {</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">admin_consent_description  = &#34;Allow the application to access the commit payment methods&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">admin_consent_display_name = &#34;payment.write&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">enabled                    = true</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">id                         = random_uuid.payments_write_scope_id.result</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">type                       = &#34;Admin&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">user_consent_description  = &#34;Allow the application to access the commit payment methods&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">user_consent_display_name  = &#34;payment.write&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">value                      = &#34;payment.write&#34;</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">oauth2_permission_scope {</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">admin_consent_description  = &#34;Allow the application to access the read payment methods&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">admin_consent_display_name = &#34;payment.read&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">enabled                    = true</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">id                         = random_uuid.payments_read_scope_id.result</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">type                       = &#34;User&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">user_consent_description   = &#34;Allow the application to access the read payment methods&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">user_consent_display_name  = &#34;payment.read&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">value                      = &#34;payment.read&#34;</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">app_role {</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">allowed_member_types = [&#34;User&#34;, &#34;Application&#34;]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">description          = &#34;Can read and make payments&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">display_name         = &#34;Admin&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">enabled              = true</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">id                   = random_uuid.payments_admin_app_role_id.result</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">value                = &#34;Admin&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">app_role {</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">allowed_member_types = [&#34;User&#34;, &#34;Application&#34;]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">description          = &#34;Can only read payments&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">display_name         = &#34;Reader&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">enabled              = true</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">id                   = random_uuid.payments_reader_app_role_id.result</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">value                = &#34;Reader&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">resource &#34;azuread_service_principal&#34; &#34;payments_sp&#34; {</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">client_id                    = azuread_application.payments_api_application.client_id</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">app_role_assignment_required = false</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">owners                       = [data.azuread_client_config.current.object_id]</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">tags                         = [&#34;payments&#34;, &#34;api&#34;]</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>To be honest, if you take a look at what we were trying to build and at the code above, it is pretty self-explanatory what we&rsquo;re doing.</p>
+<p>The only thing worth mentioning here is the fact that, apart from creating an Entra app, we&rsquo;re also creating a Service Principal for the Payments API app. If you want to know why, then go read the next section because we&rsquo;ll put it to work.</p>
+<h1 id="3-add-user-permissions-on-the-payments-api"><strong>3. Add user permissions on the Payments API</strong></h1>
+<p>Now that we&rsquo;ve created the Payments API application on Entra, it&rsquo;s time to assign permissions to some of my Entra users. Specifically:</p>
+<ul>
+<li>Two users are registered on my Entra:
+<ul>
+<li>John.</li>
+<li>Jane.</li>
+</ul>
+</li>
+<li>Jane holds a <code>Reader</code> role in the Payments API app.</li>
+<li>John possesses an <code>Admin</code> role in the Payments API app.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ae81ff">data &#34;azuread_user&#34; &#34;jane_user&#34; {</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">user_principal_name = &#34;jane@carlosponsnoutlook.onmicrosoft.com&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">data &#34;azuread_user&#34; &#34;john_user&#34; {</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">user_principal_name = &#34;john@carlosponsnoutlook.onmicrosoft.com&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">resource &#34;azuread_app_role_assignment&#34; &#34;jane_payments_api_role_assignment&#34; {</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">app_role_id         = azuread_application.payments_api_application.app_role_ids[&#34;Reader&#34;]</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">principal_object_id = data.azuread_user.jane_user.object_id</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">resource_object_id  = azuread_service_principal.payments_sp.object_id</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">resource &#34;azuread_app_role_assignment&#34; &#34;john_payments_api_role_assignment&#34; {</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">app_role_id         = azuread_application.payments_api_application.app_role_ids[&#34;Admin&#34;]</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">principal_object_id = data.azuread_user.john_user.object_id</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">resource_object_id  = azuread_service_principal.payments_sp.object_id</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Not much to say here. I&rsquo;m simply utilizing the <code>azuread_user</code> resource to retrieve the users within my Entra Tenant and the <code>azuread_app_role_assignment</code> resource to assign them one of the Payments API app roles.</p>
+<h1 id="4-create-the-bookings-api-application"><strong>4. Create the Bookings API application</strong></h1>
+<p>The Bookings API has the following configuration:</p>
+<ul>
+<li>Consumes the Payments API through a <strong>Client Credentials</strong> flow.</li>
+<li>Acquires an access token from the Entra <code>/token</code> endpoint and uses it to make calls to the Payments API.</li>
+<li>It has the Payments API <code>Reader</code> Role assigned.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ae81ff">resource &#34;azuread_application&#34; &#34;bookings_api_application&#34; {</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">display_name     = &#34;bookings-api&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">identifier_uris  = [&#34;api://bookings&#34;]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">owners           = [data.azuread_client_config.current.object_id]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">api {</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">requested_access_token_version = 2</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">required_resource_access {</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">resource_app_id = azuread_application.payments_api_application.client_id</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">resource_access {</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">id   = azuread_application.payments_api_application.app_role_ids[&#34;Reader&#34;]</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">type = &#34;Role&#34;</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">resource &#34;azuread_application_password&#34; &#34;bookings_api_pwd&#34; {</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">application_id        = azuread_application.bookings_api_application.id</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">display_name          = &#34;Terraform Managed Password&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">end_date              = &#34;2099-01-01T01:02:03Z&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">resource &#34;azuread_service_principal&#34; &#34;bookings_sp&#34; {</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">client_id                    = azuread_application.bookings_api_application.client_id</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">app_role_assignment_required = false</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">owners                       = [data.azuread_client_config.current.object_id]</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">tags                         = [&#34;bookings&#34;, &#34;api&#34;]</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>In addition to creating the app, we&rsquo;re using the <code>azuread_application_password</code> resource to create a client secret to test the Client Credentials flow.</p>
+<p>Keep in mind, that Entra apps are authorized to call APIs when they are granted permissions by user/admins as part of the consent process. Therefore, it is necessary to manually grant admin consent for the Bookings API to call the Payments API.</p>
+<p><img src="/img/testing-entra-with-terraform-admin-grant-consent.png" alt="testing-entra-with-terraform-admin-grant-consent"></p>
+<p>There is no native functionality in the <code>azuread</code> Terraform Provider to grant admin consent to an API permission.</p>
+<p>A workaround can be built using the Terraform <code>null_resource</code> resource and the AZ CLI. We can use both to invoke the <code>az ad app permission admin-consent</code> command. However, to successfully run this command, the Service Principal needs to have a <code>Global Administrator</code> role assigned.</p>
+<p>This role is one of the most powerful ones, it is capable of managing all aspects of Microsoft Entra. I am not very comfortable assigning such a powerful role to a Service Principal, I prefer that an Entra Admin manually grants admin consent.</p>
+<p>Anyways, after granting consent to the Bookings API to call the Payments API, let’s test and see if the Client Credentials flow works properly. <br>
+With the following command, I&rsquo;m going to request an access token using the Bookings API client ID and client secret.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>curl -k -X POST \
+</span></span><span style="display:flex;"><span>  https://login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/oauth2/v2.0/token \
+</span></span><span style="display:flex;"><span>  -H &#39;Cache-Control: no-cache&#39; \
+</span></span><span style="display:flex;"><span>  -H &#39;Content-Type: application/x-www-form-urlencoded&#39; \
+</span></span><span style="display:flex;"><span>  -d &#39;grant_type=client_credentials&amp;client_id=e896bbda-6a3b-4309-a140-41c816049f09&amp;client_secret=uPd8Q~D.Ntc1D2MbzTuJJwdIwxuFKVARezmURduC&amp;scope=api://payments/.default&#39;
+</span></span></code></pre></div><blockquote>
+<p><strong>What’s of the .default scope?</strong><br>
+The .default scope is a built-in scope for every Entra application and it refers to the static list of permissions configured on the application registration.  <br>
+You must specify the .default scope in a Client Credentials flow, you cannot ask for a concrete one.</p>
+</blockquote>
+<p>And it returns an access token with the following attributes:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;aud&#34;</span>: <span style="color:#e6db74">&#34;2034f5fd-8e85-48f0-8282-983ee03319b5&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;iss&#34;</span>: <span style="color:#e6db74">&#34;https://login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/v2.0&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;iat&#34;</span>: <span style="color:#ae81ff">1699874572</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;nbf&#34;</span>: <span style="color:#ae81ff">1699874572</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;exp&#34;</span>: <span style="color:#ae81ff">1699878472</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;aio&#34;</span>: <span style="color:#e6db74">&#34;E2VgYLjBYnn7vPbZdxopTy/kGH5xqHmfEixWUtEp6W7OHiVbmQoA&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;azp&#34;</span>: <span style="color:#e6db74">&#34;e896bbda-6a3b-4309-a140-41c816049f09&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;azpacr&#34;</span>: <span style="color:#e6db74">&#34;1&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;oid&#34;</span>: <span style="color:#e6db74">&#34;013f9e69-d867-42bd-9ea1-6b3dda3dd2df&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;rh&#34;</span>: <span style="color:#e6db74">&#34;0.AR8A4nEGijA6ME2cua1wm5x0Sv31NCCFjvBIgoKYPuAzGbUfAAA.&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;roles&#34;</span>: [
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;Reader&#34;</span>
+</span></span><span style="display:flex;"><span>  ],
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;sub&#34;</span>: <span style="color:#e6db74">&#34;013f9e69-d867-42bd-9ea1-6b3dda3dd2df&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;tid&#34;</span>: <span style="color:#e6db74">&#34;8a0671e2-3a30-4d30-9cb9-ad709b9c744a&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;uti&#34;</span>: <span style="color:#e6db74">&#34;ZQMAaXC8q028-QpMeA5UAA&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;ver&#34;</span>: <span style="color:#e6db74">&#34;2.0&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>If we examine the received access token, we can verify that it includes the following attributes:</p>
+<ul>
+<li>The <code>iss</code> (issuer) should match your Entra ID tenant, formatted as: <a href="https://login.microsoftonline.com/%7Btenant-id%7D/v2.0%22">https://login.microsoftonline.com/{tenant-id}/v2.0&quot;</a></li>
+<li>The <code>aud</code> (audience) should match the client ID of the Payments API.</li>
+<li>It must possess a <code>Reader</code> role.</li>
+</ul>
+<p>Now with this access token we should be able to successfully call the Payments API.</p>
+<h1 id="5-create--the-frontend-spa-application"><strong>5. Create  the FrontEnd SPA application</strong></h1>
+<p>The FrontEnd SPA has the following configuration:</p>
+<ul>
+<li>It&rsquo;s a public Single Page Application.</li>
+<li>Utilizes an <strong>Authorization Code flow with PKCE</strong> to obtain an access token and uses it to make calls to the Payments API.</li>
+<li>The FrontEnd SPA app has permission only to ask for the <code>payment.read</code> scope.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ae81ff">resource &#34;azuread_application&#34; &#34;frontend_spa_application&#34; {   </span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">display_name     = &#34;frontend-spa&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">owners           = [data.azuread_client_config.current.object_id]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">single_page_application {</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">redirect_uris = [&#34;https://oidcdebugger.com/debug&#34;]</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">required_resource_access {</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">resource_app_id = azuread_application.payments_api_application.client_id</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">resource_access {</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">id   = azuread_application.payments_api_application.oauth2_permission_scope_ids[&#34;payment.read&#34;]</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">type = &#34;Scope&#34;</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">resource &#34;azuread_service_principal&#34; &#34;frontend_spa_sp&#34; {</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">client_id                    = azuread_application.frontend_spa_application.client_id</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">app_role_assignment_required = false</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">owners                       = [data.azuread_client_config.current.object_id]</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">tags                         = [&#34;frontend&#34;, &#34;spa&#34;]</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">resource &#34;azuread_application_pre_authorized&#34; &#34;frontend_spa_preauthorized&#34; {</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">application_id       = azuread_application.payments_api_application.id</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">authorized_client_id = azuread_application.frontend_spa_application.client_id</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">permission_ids = [</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">random_uuid.payments_read_scope_id.result</span>
+</span></span><span style="display:flex;"><span>  ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>As you can see, the above code is self-explanatory, but there are a couple of things worth mentioning:</p>
+<ul>
+<li>The <code>redirect_uris</code> value is set to <code>https://oidcdebugger.com/debug</code>, that&rsquo;s because this site will allow me to easily test an Authorization Code Flow with PKCE. It is obvious that in a real application, you need to set it up with a proper URI.</li>
+<li>We&rsquo;re also using the <code>azuread_application_pre_authorized</code> resource. This resource allows us to pre-authorize the usage of the <code>payment.read</code> scope from the Payments API by the FrontEnd SPA so that it won&rsquo;t require a user consent the first time a user logs in.</li>
+</ul>
+<p>If you don&rsquo;t pre-authorize the FrontEnd SPA to use the <code>payment.read</code> scope from the Payments API, then when the user logs in, it will be asked for its consent. The next screenshot shows what the user will see the first time they log in to the FrontEnd SPA.</p>
+<p><img src="/img/testing-entra-with-terraform-user-grant-permissions.png" alt="testing-entra-with-terraform-user-grant-permissions"></p>
+<p>This time it is not necessary to manually grant admin consent for the FrontEnd SPA to call the Payments API, because the <code>payment.read</code> scope doesn&rsquo;t require an admin consent.</p>
+<p><img src="/img/testing-entra-with-terraform-user-grant-consent.png" alt="testing-entra-with-terraform-user-grant-consent"></p>
+<p>To easily test an Authorization Code flow with PKCE we&rsquo;re going to use this website:</p>
+<ul>
+<li><a href="https://oidcdebugger.com/">https://oidcdebugger.com/</a></li>
+</ul>
+<p>Simply fill out the form with the appropriate fields and select code flow with PKCE.</p>
+<p><img src="/img/testing-entra-with-terraform-oidcdebugger.png" alt="testing-entra-with-terraform-oidcdebugger"></p>
+<p>Once you click submit, it will redirect you to Entra, where you&rsquo;ll need to log in. In our case, for example, if we log in as Jane, we will obtain the following access token.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;aud&#34;</span>: <span style="color:#e6db74">&#34;c90ce23f-68ad-4e29-a134-13e40676b5ea&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;iss&#34;</span>: <span style="color:#e6db74">&#34;https://login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/v2.0&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;iat&#34;</span>: <span style="color:#ae81ff">1700053398</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;nbf&#34;</span>: <span style="color:#ae81ff">1700053398</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;exp&#34;</span>: <span style="color:#ae81ff">1700058919</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;aio&#34;</span>: <span style="color:#e6db74">&#34;AUQAu/8VAAAAM9n6UAtue+BBe0M/eeOhHxJJIJK6nvxZuuxtTDKYKMLIad0Oa8v2m7hSUlHeBE2WOpjHACzbvkEnb7V+OJpzcw==&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;azp&#34;</span>: <span style="color:#e6db74">&#34;e13242fb-4b3a-4337-a92f-d9f435dcc43b&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;azpacr&#34;</span>: <span style="color:#e6db74">&#34;0&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;jane&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;oid&#34;</span>: <span style="color:#e6db74">&#34;0a92ffc5-9551-47a0-baf0-7f3352eac015&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;preferred_username&#34;</span>: <span style="color:#e6db74">&#34;jane@carlosponsnoutlook.onmicrosoft.com&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;rh&#34;</span>: <span style="color:#e6db74">&#34;0.AR8A4nEGijA6ME2cua1wm5x0Sj_iDMmtaClOoTQT5AZ2teofAAc.&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;roles&#34;</span>: [
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;Reader&#34;</span>
+</span></span><span style="display:flex;"><span>  ],
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;scp&#34;</span>: <span style="color:#e6db74">&#34;payment.read&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;sub&#34;</span>: <span style="color:#e6db74">&#34;9-U8mZ7iqRPd31tYsO0d4sGj4sYwd4-RjVfP361kvTg&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;tid&#34;</span>: <span style="color:#e6db74">&#34;8a0671e2-3a30-4d30-9cb9-ad709b9c744a&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;uti&#34;</span>: <span style="color:#e6db74">&#34;bYwFTTO1xkqWHz79FUyVAA&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;ver&#34;</span>: <span style="color:#e6db74">&#34;2.0&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>If we inspect the received access token from Entra, you can verify that the token includes the following attributes:</p>
+<ul>
+<li>The <code>iss</code> (issuer) should match your Entra ID tenant, formatted as: <a href="https://login.microsoftonline.com/%7Btenant-id%7D/v2.0%22">https://login.microsoftonline.com/{tenant-id}/v2.0&quot;</a></li>
+<li>The <code>aud</code> (audience) should match the client ID of the Payments API.</li>
+<li>It must have a &ldquo;Reader&rdquo; role, as Jane is assigned the &ldquo;Reader&rdquo; role in the Payments API. If you log in as John, you will possess an &ldquo;Admin&rdquo; role instead of a &ldquo;Reader&rdquo; role.</li>
+</ul>
+<p>Here&rsquo;s an access token acquired by John. As you can see, it possesses the &ldquo;Admin&rdquo; role.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;aud&#34;</span>: <span style="color:#e6db74">&#34;c90ce23f-68ad-4e29-a134-13e40676b5ea&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;iss&#34;</span>: <span style="color:#e6db74">&#34;https://login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/v2.0&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;iat&#34;</span>: <span style="color:#ae81ff">1700052943</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;nbf&#34;</span>: <span style="color:#ae81ff">1700052943</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;exp&#34;</span>: <span style="color:#ae81ff">1700058281</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;aio&#34;</span>: <span style="color:#e6db74">&#34;AUQAu/8VAAAAtkQjFl+KJ7+RU1dnPX+9dpbUUOBl/m/o28BJ+2HRlKHt0RJL9ISFTJkcgI23anYCYFLQ2Ppii6I+F4C3ISaKeA==&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;azp&#34;</span>: <span style="color:#e6db74">&#34;e13242fb-4b3a-4337-a92f-d9f435dcc43b&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;azpacr&#34;</span>: <span style="color:#e6db74">&#34;0&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;john&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;oid&#34;</span>: <span style="color:#e6db74">&#34;5dcd9121-762e-4e07-a53b-42f70a807b4c&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;preferred_username&#34;</span>: <span style="color:#e6db74">&#34;john@carlosponsnoutlook.onmicrosoft.com&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;rh&#34;</span>: <span style="color:#e6db74">&#34;0.AR8A4nEGijA6ME2cua1wm5x0Sj_iDMmtaClOoTQT5AZ2teofALY.&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;roles&#34;</span>: [
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;Admin&#34;</span>
+</span></span><span style="display:flex;"><span>  ],
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;scp&#34;</span>: <span style="color:#e6db74">&#34;payment.read&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;sub&#34;</span>: <span style="color:#e6db74">&#34;IuPfLR7qcegr18ZiggU9j1Wq77ph3rpDdmiww5GT_iw&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;tid&#34;</span>: <span style="color:#e6db74">&#34;8a0671e2-3a30-4d30-9cb9-ad709b9c744a&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;uti&#34;</span>: <span style="color:#e6db74">&#34;YJ615gnt8kiZhi9ew4RoAA&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;ver&#34;</span>: <span style="color:#e6db74">&#34;2.0&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="closing-thoughts"><strong>Closing thoughts</strong></h1>
+<p>As you have seen in this post, we have successfully implemented both authorization scenarios using Microsoft Entra ID and Terraform. We haven&rsquo;t built anything overly complex; in fact, both scenarios were quite simple. However, many times, we don&rsquo;t need to create elaborate authorization setups; using the basics properly is often more than enough.</p>
+<p>For those of you who have been following my blog for some time, you may know that I conducted a similar test around three years ago when the Terraform provider for AAD was in version 1.1.1. The results were quite disappointing because setting up a simple scenario like the one we have seen in this post was practically impossible at that time. Therefore, I can conclude by saying that this provider has evolved positively.</p>
+<p>Today, if I had to use Microsoft Entra ID as my IDP, I would undoubtedly use this Terraform Provider and deploy changes through a CI/CD flow.</p>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://www.mytechramblings.com/posts/analyze-polly-telemetry-using-otel-metrics/">
+                  <span class="button__text">Analyze Polly Telemetry using Prometheus, Grafana and OpenTelemetry Metrics</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2023 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>Theme created by <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://www.mytechramblings.com/assets/main.js"></script>
+<script src="https://www.mytechramblings.com/assets/prism.js"></script>
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('carlospons', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Donate',
+    'floating-chat.donateButton.background-color': '#ff5f5f',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
+
+      
+    </div>
+
+    
+      
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-170300931-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+    
+  </body>
+</html>

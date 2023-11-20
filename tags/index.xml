@@ -9,10 +9,110 @@
     <description>Recent content in Tags on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Mon, 30 Oct 2023 10:00:43 +0100</lastBuildDate>
+    <lastBuildDate>Mon, 20 Nov 2023 10:00:48 +0100</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>auth</title>
+      <link>https://www.mytechramblings.com/tags/auth/</link>
+      <pubDate>Mon, 20 Nov 2023 10:00:48 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/auth/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>azure</title>
+      <link>https://www.mytechramblings.com/tags/azure/</link>
+      <pubDate>Mon, 20 Nov 2023 10:00:48 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/azure/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>entra</title>
+      <link>https://www.mytechramblings.com/tags/entra/</link>
+      <pubDate>Mon, 20 Nov 2023 10:00:48 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/entra/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>iac</title>
+      <link>https://www.mytechramblings.com/tags/iac/</link>
+      <pubDate>Mon, 20 Nov 2023 10:00:48 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/iac/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>terraform</title>
+      <link>https://www.mytechramblings.com/tags/terraform/</link>
+      <pubDate>Mon, 20 Nov 2023 10:00:48 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/terraform/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>dotnet</title>
@@ -340,26 +440,6 @@
       <pubDate>Thu, 03 Aug 2023 10:21:52 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/networking/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>azure</title>
-      <link>https://www.mytechramblings.com/tags/azure/</link>
-      <pubDate>Mon, 10 Jul 2023 10:00:01 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/azure/</guid>
       <description>
         
           
@@ -715,51 +795,11 @@
     </item>
     
     <item>
-      <title>terraform</title>
-      <link>https://www.mytechramblings.com/tags/terraform/</link>
-      <pubDate>Wed, 21 Dec 2022 13:03:19 +0100</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/terraform/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
       <title>cloud</title>
       <link>https://www.mytechramblings.com/tags/cloud/</link>
       <pubDate>Thu, 10 Nov 2022 10:30:40 +0100</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/cloud/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>iac</title>
-      <link>https://www.mytechramblings.com/tags/iac/</link>
-      <pubDate>Thu, 10 Nov 2022 10:30:40 +0100</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/iac/</guid>
       <description>
         
           

@@ -2,6 +2,33 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://www.mytechramblings.com/tags/auth/</loc>
+    <lastmod>2023-11-20T10:00:48+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/azure/</loc>
+    <lastmod>2023-11-20T10:00:48+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/entra/</loc>
+    <lastmod>2023-11-20T10:00:48+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/iac/</loc>
+    <lastmod>2023-11-20T10:00:48+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/</loc>
+    <lastmod>2023-11-20T10:00:48+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/</loc>
+    <lastmod>2023-11-20T10:00:48+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/</loc>
+    <lastmod>2023-11-20T10:00:48+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/terraform/</loc>
+    <lastmod>2023-11-20T10:00:48+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/automate-entra-app-registration-process-using-terraform/</loc>
+    <lastmod>2023-11-20T10:00:48+01:00</lastmod>
+  </url><url>
     <loc>https://www.mytechramblings.com/posts/analyze-polly-telemetry-using-otel-metrics/</loc>
     <lastmod>2023-10-30T10:00:43+01:00</lastmod>
   </url><url>
@@ -11,16 +38,7 @@
     <loc>https://www.mytechramblings.com/tags/metrics/</loc>
     <lastmod>2023-10-30T10:00:43+01:00</lastmod>
   </url><url>
-    <loc>https://www.mytechramblings.com/</loc>
-    <lastmod>2023-10-30T10:00:43+01:00</lastmod>
-  </url><url>
     <loc>https://www.mytechramblings.com/tags/opentelemetry/</loc>
-    <lastmod>2023-10-30T10:00:43+01:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/posts/</loc>
-    <lastmod>2023-10-30T10:00:43+01:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/</loc>
     <lastmod>2023-10-30T10:00:43+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/ai/</loc>
@@ -76,9 +94,6 @@
   </url><url>
     <loc>https://www.mytechramblings.com/tags/networking/</loc>
     <lastmod>2023-08-03T10:21:52+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/azure/</loc>
-    <lastmod>2023-07-10T10:00:01+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/posts/building-a-csharp-enhancing-app-using-openai-gpt4-and-streamlit/</loc>
     <lastmod>2023-07-10T10:00:01+02:00</lastmod>
@@ -161,9 +176,6 @@
     <loc>https://www.mytechramblings.com/posts/automatically-purge-acr-images-using-acr-tasks/</loc>
     <lastmod>2022-12-21T13:03:19+01:00</lastmod>
   </url><url>
-    <loc>https://www.mytechramblings.com/tags/terraform/</loc>
-    <lastmod>2022-12-21T13:03:19+01:00</lastmod>
-  </url><url>
     <loc>https://www.mytechramblings.com/posts/trying-out-the-built-in-container-support-for-the-dotnet-7-sdk/</loc>
     <lastmod>2022-11-30T10:01:13+01:00</lastmod>
   </url><url>
@@ -171,9 +183,6 @@
     <lastmod>2022-11-10T10:30:40+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/posts/deploy-az-resources-when-not-available-on-azurerm/</loc>
-    <lastmod>2022-11-10T10:30:40+01:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/iac/</loc>
     <lastmod>2022-11-10T10:30:40+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/eventbridge/</loc>

@@ -9,10 +9,30 @@
     <description>Recent content in azure on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Mon, 10 Jul 2023 10:00:01 +0200</lastBuildDate>
+    <lastBuildDate>Mon, 20 Nov 2023 10:00:48 +0100</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/azure/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Trying to automate Microsoft Entra ID App Registration process using Terraform</title>
+      <link>https://www.mytechramblings.com/posts/automate-entra-app-registration-process-using-terraform/</link>
+      <pubDate>Mon, 20 Nov 2023 10:00:48 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/automate-entra-app-registration-process-using-terraform/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          The purpose of this post is to test the App Registration process using the latest version of the Terraform provider for Microsoft Entra ID. To achieve this, we&#39;re going to register multiple apps on Microsoft Entra ID and make them interact with each other using a couple of different OAuth2 authorization flows.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>Building a C# enhancing app using Azure OpenAI GPT-4 and Streamlit</title>
