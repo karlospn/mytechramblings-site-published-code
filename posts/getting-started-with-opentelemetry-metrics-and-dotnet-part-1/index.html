@@ -2,12 +2,12 @@
 <html lang="en">
   <head>
     
-      <title>Getting started with OpenTelemetry Metrics in .NET. Part 1: Key concepts :: my tech ramblings — A blog for writing about my techie ramblings</title>
+      <title>Getting started with OpenTelemetry Metrics in .NET 8. Part 1: Key concepts :: my tech ramblings — A blog for writing about my techie ramblings</title>
     
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<meta name="description" content="This is a 2 part-series post.
-Part 1: Key concepts that you should know when using OpenTelemetry Metrics with .NET. Part 2: A practical example about how to add OpenTelemetry Metrics on a real life .NET app and how to visualize those metrics using Prometheus and Grafana. If you want to read it, click here OpenTelemetry is a set of APIs, SDKs, tooling and integrations that are designed for the creation and management of telemetry data such as traces, metrics, and logs."/>
+<meta name="description" content="This is a two-part series post.
+Part 1: Key concepts that you should know when using OpenTelemetry Metrics with .NET. Part 2: A practical example of how to add OpenTelemetry Metrics to a real life .NET 8 app and how to visualize those metrics using Prometheus and Grafana. If you want to read it, click here OpenTelemetry is a set of APIs, SDKs, tooling and integrations that are designed for the creation and management of telemetry data such as traces, metrics, and logs."/>
 <meta name="keywords" content=""/>
 <meta name="robots" content="noodp"/>
 <link rel="canonical" href="https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-metrics-and-dotnet-part-1/" />
@@ -27,17 +27,17 @@ Part 1: Key concepts that you should know when using OpenTelemetry Metrics with 
 
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Getting started with OpenTelemetry Metrics in .NET. Part 1: Key concepts"/>
-<meta name="twitter:description" content="In this two-part series I’m going to show you how to use OpenTelemetry to generate custom metrics and how to visualize those metrics using Prometheus and Grafana. In part 1 I’ll be talking about some key concepts that you should know when using OpenTelemetry Metrics with dotnet."/>
+<meta name="twitter:title" content="Getting started with OpenTelemetry Metrics in .NET 8. Part 1: Key concepts"/>
+<meta name="twitter:description" content="In this two-part series, I’m going to show you how to use OpenTelemetry to generate custom metrics and how to visualize those metrics using Prometheus and Grafana. In part 1, I’ll be discussing some key concepts that you should know when using OpenTelemetry Metrics with dotnet."/>
 
 
 
-<meta property="og:title" content="Getting started with OpenTelemetry Metrics in .NET. Part 1: Key concepts" />
-<meta property="og:description" content="In this two-part series I’m going to show you how to use OpenTelemetry to generate custom metrics and how to visualize those metrics using Prometheus and Grafana. In part 1 I’ll be talking about some key concepts that you should know when using OpenTelemetry Metrics with dotnet." />
+<meta property="og:title" content="Getting started with OpenTelemetry Metrics in .NET 8. Part 1: Key concepts" />
+<meta property="og:description" content="In this two-part series, I’m going to show you how to use OpenTelemetry to generate custom metrics and how to visualize those metrics using Prometheus and Grafana. In part 1, I’ll be discussing some key concepts that you should know when using OpenTelemetry Metrics with dotnet." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-metrics-and-dotnet-part-1/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2023-04-10T16:20:55+02:00" />
-<meta property="article:modified_time" content="2023-04-10T16:20:55+02:00" />
+<meta property="article:published_time" content="2023-11-29T10:00:55+01:00" />
+<meta property="article:modified_time" content="2023-11-29T10:00:55+01:00" />
 
 
 
@@ -110,11 +110,11 @@ Part 1: Key concepts that you should know when using OpenTelemetry Metrics with 
   
 
   <div class="post">
-    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-metrics-and-dotnet-part-1/">Getting started with OpenTelemetry Metrics in .NET. Part 1: Key concepts</a></h1>
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-metrics-and-dotnet-part-1/">Getting started with OpenTelemetry Metrics in .NET 8. Part 1: Key concepts</a></h1>
     <div class="post-meta">
       
         <span class="post-date">
-          2023-04-10
+          2023-11-29
         </span>
 
         
@@ -129,7 +129,7 @@ Part 1: Key concepts that you should know when using OpenTelemetry Metrics with 
 
       
       
-        <span class="post-read-time">— 10 min read</span>
+        <span class="post-read-time">— 12 min read</span>
       
     </div>
 
@@ -156,15 +156,15 @@ Part 1: Key concepts that you should know when using OpenTelemetry Metrics with 
     <div class="post-content">
       
       <blockquote>
-<p>This is a 2 part-series post.</p>
+<p>This is a two-part series post.</p>
 <ul>
 <li><strong>Part 1</strong>: Key concepts that you should know when using OpenTelemetry Metrics with .NET.</li>
-<li><strong>Part 2</strong>: A practical example about how to add OpenTelemetry Metrics on a real life .NET app and how to visualize those metrics using Prometheus and Grafana. If you want to read it, click <a href="https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-metrics-and-dotnet-part-2/">here</a></li>
+<li><strong>Part 2</strong>: A practical example of how to add OpenTelemetry Metrics to a real life .NET 8 app and how to visualize those metrics using Prometheus and Grafana. If you want to read it, click <a href="https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-metrics-and-dotnet-part-2/">here</a></li>
 </ul>
 </blockquote>
 <p>OpenTelemetry is a set of APIs, SDKs, tooling and integrations that are designed for the creation and management of telemetry data such as <strong>traces</strong>, <strong>metrics</strong>, and <strong>logs</strong>.</p>
-<p>In one of my <a href="https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-and-dotnet-core/">previous posts</a> I talked about how to get started with OpenTelemetry and distributed tracing, today I want to <strong>focus on metrics</strong>.</p>
-<p>At the end of this 2 part-series post we will have a .NET 7 app that emits a series of metrics, those metrics will be send to the OpenTelemetry Collector, a Prometheus Server will receive the metrics from the OTEL Collector and we will have a Grafana dashboard to visualize them.</p>
+<p>In one of my <a href="https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-and-dotnet-core/">previous posts</a> I talked about how to get started with OpenTelemetry and distributed tracing, now I want to <strong>focus on metrics</strong>.</p>
+<p>At the end of this two-part series post, we will have a .NET 8 app that emits a series of metrics. These metrics will be sent to an OpenTelemetry Collector, and a Prometheus Server will receive the metrics from the OTEL Collector. Finally, we will have a Grafana dashboard to visualize them.</p>
 <p><img src="/img/otel-metrics-app-diagram.png" alt="otel-metrics-app-diagram"></p>
 <p>But before jumping to the practical part there are a few key concepts about using OpenTelemetry Metrics with .NET that are worth talking about.</p>
 <h1 id="metrics-api"><strong>Metrics API</strong></h1>
@@ -213,6 +213,36 @@ The <code>MeterProvider</code> will hold all the configuration for metrics like 
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="imeterfactory-interface"><strong>IMeterFactory interface</strong></h1>
+<p>Before .NET 8, to create a new <code>Meter</code> object, you needed to instantiate an object of the <code>Meter</code> class and pass the meter name, like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> meter = <span style="color:#66d9ef">new</span> Meter(<span style="color:#e6db74">&#34;BookStore&#34;</span>);
+</span></span></code></pre></div><p>Starting from .NET 8, the <code>IMeterFactory</code> interface is the recommended way to create a new <code>Meter</code>. It can be used with the DI container and it is registered on it by default, no extra registration is required.</p>
+<p>The interface only exposes a single <code>Create()</code> method.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IMeterFactory</span> : IDisposable
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// Creates a new &lt;see cref=&#34;Meter&#34;/&gt; instance.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;options&#34;&gt;The &lt;see cref=&#34;MeterOptions&#34;/&gt; to use when creating the meter.&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;returns&gt;A new &lt;see cref=&#34;Meter&#34;/&gt; instance.&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;remarks&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// The &lt;see cref=&#34;Meter&#34;/&gt; instance returned by this method should be cached by the factory and returned for subsequent requests for a meter with the same parameters (name, version, and tags).</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/remarks&gt;</span>
+</span></span><span style="display:flex;"><span>    Meter Create(MeterOptions options);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>And if we take a peek at the implementation, you&rsquo;ll see it&rsquo;s a very straightforward one.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">internal</span> <span style="color:#66d9ef">sealed</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">DummyMeterFactory</span> : IMeterFactory
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> Meter Create(MeterOptions options) =&gt; <span style="color:#66d9ef">new</span> Meter(options);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Dispose() { }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The next code snippet, shows an example of how to use it. Simply inject the <code>IMeterFactory</code> interface and use it to create the <code>Meter</code>. Afterward use that <code>Meter</code> to create the desired <code>Instruments</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>  <span style="color:#66d9ef">public</span> BookStoreMetrics(IMeterFactory meterFactory, IConfiguration configuration)
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">var</span> meter = meterFactory.Create(<span style="color:#e6db74">&#34;BookStore&#34;</span>);
+</span></span><span style="display:flex;"><span>      BooksAddedCounter = meter.CreateCounter&lt;<span style="color:#66d9ef">int</span>&gt;(<span style="color:#e6db74">&#34;books-added&#34;</span>, <span style="color:#e6db74">&#34;Book&#34;</span>);
+</span></span><span style="display:flex;"><span>  }
 </span></span></code></pre></div><h1 id="types-of-instruments"><strong>Types of Instruments</strong></h1>
 <p>The OpenTelemetry specification provides <strong>6 types of instruments</strong> that we can capture measurements with.</p>
 <p>These 6 types of instruments can be grouped into two categories: synchronous and asynchronous.</p>
@@ -289,7 +319,9 @@ When the instrument is observed, the callback is executed and will pass back one
 </ul>
 <h1 id="types-of-instruments-available-on-net"><strong>Types of Instruments available on .NET</strong></h1>
 <p>In the above section we have seen the different types of instruments available in the OpenTelemetry specification,  <strong>.NET has support for all of them</strong>.</p>
+<blockquote>
 <p>Keep in mind that the <code>UpDownCounter</code> and the <code>Asynchronous UpDownCounter</code> instruments are only available starting from .NET 7.</p>
+</blockquote>
 <h1 id="choosing-the-correct-instrument"><strong>Choosing the correct instrument</strong></h1>
 <p>Choosing the correct instrument to report measurements is critical to achieving better efficiency, easing consumption for the user, and maintaining clarity in the semantics of the metric stream.</p>
 <p><strong>I want to count something</strong></p>
@@ -307,6 +339,14 @@ When the instrument is observed, the callback is executed and will pass back one
 <li>If it makes sense to add up the values across different sets of attributes and the value is monotonically increasing, use an <code>Asynchronous Counter</code>.</li>
 <li>If it makes sense to add up the values across different sets of attributes and the value is NOT monotonically increasing, use an <code>Asynchronous UpDownCounter</code>.</li>
 </ul>
+<h1 id="net-built-in-metrics"><strong>.NET built-in metrics</strong></h1>
+<p>Starting from .NET 8, the .NET framework itself has some built-in metrics.</p>
+<p>These metrics are generated by the <code>System.Diagnostics.Metrics</code> API. You can see a full list in the following link:</p>
+<ul>
+<li><a href="https://learn.microsoft.com/en-us/dotnet/core/diagnostics/built-in-metrics-aspnetcore">https://learn.microsoft.com/en-us/dotnet/core/diagnostics/built-in-metrics-aspnetcore</a></li>
+</ul>
+<p>For now, it&rsquo;s enough for you to know that the .NET framework itself is instrumented to generate a series of metrics, and we can listen to them and send them wherever we consider appropriate for their analysis.</p>
+<p>In the second part of the post, we will explore in detail the various options we have for emitting and exporting these metrics.</p>
 <h1 id="exporters"><strong>Exporters</strong></h1>
 <p>Let’s be honest emiting metrics is kind of pointless if you don’t have a backend capable of aggregating the metrics and displaying them in a friendly manner.</p>
 <p>There are 2 ways to exporting data on OpenTelemetry:</p>
@@ -322,7 +362,7 @@ When the instrument is observed, the callback is executed and will pass back one
 <p>To send metrics to the OpenTelemetry Collector in .NET, you&rsquo;ll need to install the <code>OpenTelemetry.Exporter.OpenTelemetryProtocol</code> NuGet package on your application and configure the <code>MeterProvider</code> using the <code>AddOtlpExporter</code> extension method, like this:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>builder.Services.AddOpenTelemetry().WithMetrics(opts =&gt; opts
 </span></span><span style="display:flex;"><span>    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(<span style="color:#e6db74">&#34;BookStore.WebApi&#34;</span>))
-</span></span><span style="display:flex;"><span>    .AddMeter(meters.MetricName)
+</span></span><span style="display:flex;"><span>    .AddMeter(builder.Configuration.GetValue&lt;<span style="color:#66d9ef">string</span>&gt;(<span style="color:#e6db74">&#34;BookStoreMeterName&#34;</span>))
 </span></span><span style="display:flex;"><span>    .AddOtlpExporter(opts =&gt;
 </span></span><span style="display:flex;"><span>    {
 </span></span><span style="display:flex;"><span>        opts.Endpoint = <span style="color:#66d9ef">new</span> Uri(builder.Configuration[<span style="color:#e6db74">&#34;Otlp:Endpoint&#34;</span>]);
@@ -333,7 +373,7 @@ When the instrument is observed, the callback is executed and will pass back one
 <p>Here&rsquo;s an example of how to send the metrics data directly to Prometheus using the <code>OpenTelemetry.Exporter.Prometheus.AspNetCore</code> NuGet package:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>builder.Services.AddOpenTelemetry().WithMetrics(opts =&gt; opts
 </span></span><span style="display:flex;"><span>    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(<span style="color:#e6db74">&#34;BookStore.WebApi&#34;</span>))
-</span></span><span style="display:flex;"><span>    .AddMeter(meters.MetricName)
+</span></span><span style="display:flex;"><span>    .AddMeter(builder.Configuration.GetValue&lt;<span style="color:#66d9ef">string</span>&gt;(<span style="color:#e6db74">&#34;BookStoreMeterName&#34;</span>))
 </span></span><span style="display:flex;"><span>    .AddPrometheusExporter());
 </span></span></code></pre></div><h2 id="when-to-use-the-opentelemetry-collector"><strong>When to use the OpenTelemetry Collector</strong></h2>
 <p>Under what circumstances does one use a collector to send data, as opposed to having each service send it directly to the backend?</p>
@@ -352,17 +392,10 @@ If you send the data directly to a backend, you probably will end up with multip
           </div>
           <div class="pagination__buttons">
             
-              <span class="button previous">
-                <a href="https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-metrics-and-dotnet-part-2/">
-                  <span class="button__icon">←</span>
-                  <span class="button__text">Getting started with OpenTelemetry Metrics in .NET. Part 2: Instrumenting the BookStore API</span>
-                </a>
-              </span>
-            
             
               <span class="button next">
-                <a href="https://www.mytechramblings.com/posts/build-an-api-that-tweets-using-azure-openai-and-langchain/">
-                  <span class="button__text">Building a serverless API that tweets about my blog posts using Azure OpenAI and LangChain</span>
+                <a href="https://www.mytechramblings.com/posts/automate-entra-app-registration-process-using-terraform/">
+                  <span class="button__text">Trying to automate Microsoft Entra ID App Registration process using Terraform</span>
                   <span class="button__icon">→</span>
                 </a>
               </span>
