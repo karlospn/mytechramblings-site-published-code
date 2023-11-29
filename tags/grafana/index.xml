@@ -9,10 +9,30 @@
     <description>Recent content in grafana on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 29 Nov 2023 10:00:55 +0100</lastBuildDate>
+    <lastBuildDate>Wed, 29 Nov 2023 10:10:55 +0100</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/grafana/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Getting started with OpenTelemetry Metrics in .NET 8. Part 2: Instrumenting the BookStore API</title>
+      <link>https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-metrics-and-dotnet-part-2/</link>
+      <pubDate>Wed, 29 Nov 2023 10:10:55 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-metrics-and-dotnet-part-2/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          In this two-part series, I’m going to show you how to use OpenTelemetry to generate custom metrics and how to visualize those metrics using Prometheus and Grafana. In part 2, I’ll demonstrate how to add OpenTelemetry Metrics to a real life .NET 8 app and how to visualize those metrics using Prometheus and Grafana.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>Getting started with OpenTelemetry Metrics in .NET 8. Part 1: Key concepts</title>
@@ -29,26 +49,6 @@
         
         
           In this two-part series, I’m going to show you how to use OpenTelemetry to generate custom metrics and how to visualize those metrics using Prometheus and Grafana. In part 1, I’ll be discussing some key concepts that you should know when using OpenTelemetry Metrics with dotnet.
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>Getting started with OpenTelemetry Metrics in .NET. Part 2: Instrumenting the BookStore API</title>
-      <link>https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-metrics-and-dotnet-part-2/</link>
-      <pubDate>Mon, 10 Apr 2023 16:25:55 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-metrics-and-dotnet-part-2/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          In this two-part series I’m going to show you how to use OpenTelemetry to generate custom metrics and how to visualize those metrics using Prometheus and Grafana. In part 2 I’ll be showing you how to add OpenTelemetry Metrics on a real life .NET 7 app and how to visualize those metrics using Prometheus and Grafana.
           
         
         </description>
