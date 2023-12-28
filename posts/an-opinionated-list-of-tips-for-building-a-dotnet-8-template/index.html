@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>An opinionated list of tips for building .NET 8 app templates :: my tech ramblings — A blog for writing about my techie ramblings</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="When you install the .NET SDK, it comes equipped with a variety of templates that are readily available for your use. However, these templates are essentially bare, serving as a foundational starting point for your projects.
+This implies that several elements need to be incorporated to make them truly production-ready. This is where having a set of prebuilt .NET templates with everything already pre-configured and all the necessary building blocks set up comes into play."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://www.mytechramblings.com/posts/an-opinionated-list-of-tips-for-building-a-dotnet-8-template/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/assets/style.css">
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.mytechramblings.com/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://www.mytechramblings.com/img/favicon.png">
+
+
+<meta name="twitter:card" content="summary"/><meta name="twitter:title" content="An opinionated list of tips for building .NET 8 app templates"/>
+<meta name="twitter:description" content="I have been developing .NET templates for quite some time, and as a result, I thought it might be helpful to compile a list of tips to consider when creating a .NET template for your own or your company&#39;s apps."/>
+
+
+
+<meta property="og:title" content="An opinionated list of tips for building .NET 8 app templates" />
+<meta property="og:description" content="I have been developing .NET templates for quite some time, and as a result, I thought it might be helpful to compile a list of tips to consider when creating a .NET template for your own or your company&#39;s apps." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.mytechramblings.com/posts/an-opinionated-list-of-tips-for-building-a-dotnet-8-template/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-12-28T12:03:32+01:00" />
+<meta property="article:modified_time" content="2023-12-28T12:03:32+01:00" />
+
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://www.mytechramblings.com/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">my tech ramblings</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/an-opinionated-list-of-tips-for-building-a-dotnet-8-template/">An opinionated list of tips for building .NET 8 app templates</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2023-12-28
+        </span>
+
+        
+          
+            
+
+
+
+          
+        
+      
+
+      
+      
+        <span class="post-read-time">— 19 min read</span>
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          #<a href="https://www.mytechramblings.com/tags/dotnet/">dotnet</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/csharp/">csharp</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/templates/">templates</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <p>When you install the .NET SDK, it comes equipped with a variety of templates that are readily available for your use. However, these templates are essentially bare, serving as a foundational starting point for your projects.</p>
+<p>This implies that several elements need to be incorporated to make them truly production-ready. This is where having a set of prebuilt .NET templates with everything already pre-configured and all the necessary building blocks set up comes into play.</p>
+<p>The recently announced <a href="https://learn.microsoft.com/en-us/dotnet/aspire/get-started/aspire-overview">.NET Aspire</a> tries to fill this gap. It is an opinionated, cloud ready stack for building applications, offering a template that comes preconfigured with set of tools such as HealthChecks and OpenTelemetry. You can take a look at the Aspire templates in <a href="https://github.com/dotnet/aspire/tree/main/src/Aspire.ProjectTemplates">here</a></p>
+<p>In the realm of enterprise development, I usually tend to find that there are a set of opinionated rules defined when you have to build an application. <br>
+These rules might dictate the use of specific application architectures (e.g. Clean Architecture or Vertical Slice) or mandate the utilization of certain custom NuGet packages for functionalities like logging or configuration. <br>
+This is where .NET Aspire has limitations, as, despite its well-implemented nature, it remains a generic template. Consequently, regardless of how robust .NET Aspire may be, it doesn&rsquo;t cater to the specific, tailored needs of individual enterprises, this is where creating and using your own templates that enforce your organization&rsquo;s rules becomes a valuable approach when starting the development of a new application.</p>
+<p>I have been building .NET templates for quite some time and for multiple companies. As a result, I thought it might be helpful to compile a list of tips to consider when creating a .NET app template.</p>
+<p>Keep in mind that this is an <strong>opinionated list</strong>, reflecting my own ideas. You may or may not agree with some of the points. Undoubtedly, what I consider important might not hold the same significance for you, and vice versa.</p>
+<p>Furthermore, I&rsquo;m sure I&rsquo;ll overlook a few points that I consider crucial, but at the time of creating this list, they may have slipped my mind.</p>
+<p>So, without further ado, let&rsquo;s get started.</p>
+<h1 id="dont-try-to-build-a-single-template-that-does-everything"><strong>Don&rsquo;t try to build a single template that does everything</strong></h1>
+<p>The first tip is very simple. Don&rsquo;t try to create a single template that does everything, like encompassing multiples architectures (e.g. Clean Architecture and N-layer Architecture) or multiple kind of apps (e.g. APIs and Worker Services).</p>
+<p>Instead of that, it is much better to have several templates where each one fulfills a concrete objective. That way it is much more easy to maintain an update them.</p>
+<p>When it comes to distributing the templates, it doesn&rsquo;t matter if you have 1 or 10; the distribution process will be exactly the same. More info, in the next tip.</p>
+<h1 id="pack-all-your-net-templates-into-a-single-nuget-package"><strong>Pack all your .NET templates into a single NuGet package</strong></h1>
+<p>The best way to distribute your custom .NET templates is via NuGet package. You can package as many templates as you want in a single package, but each template needs to have a <code>.template.config</code> folder at its root level.</p>
+<p>Inside the <code>.template.config</code> folder you need to place at least a file named <code>template.json</code>. This file provides information about what the template engine should do with your template.</p>
+<p>Within the NuGet package all the templates must be stored in the <code>/content</code> folder.</p>
+<p>Here’s how the folder structure inside your .NET template package should look like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>---content
+</span></span><span style="display:flex;"><span>    +---TemplateA
+</span></span><span style="display:flex;"><span>    |   +---.template.config
+</span></span><span style="display:flex;"><span>    |   +---src
+</span></span><span style="display:flex;"><span>    |   <span style="color:#ae81ff">\-</span>--test
+</span></span><span style="display:flex;"><span>    +---TemplateB
+</span></span><span style="display:flex;"><span>    |   +---.template.config
+</span></span><span style="display:flex;"><span>    |   +---src
+</span></span><span style="display:flex;"><span>    |   <span style="color:#ae81ff">\-</span>--test
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">\-</span>--TemplateC
+</span></span><span style="display:flex;"><span>        +---.template.config
+</span></span><span style="display:flex;"><span>        +---src
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">\-</span>--test
+</span></span></code></pre></div><p>Also, when you install or uninstall a template package, all templates contained in the package will be added or removed, respectively.</p>
+<p>Once you have created your template package, you can upload it to your company&rsquo;s feed (e.g., Azure Artifacts, GitHub Packages, Artifactory), allowing everyone to start using it right away.</p>
+<h1 id="add-the-template-package-version-as-a-classification-tag"><strong>Add the template package version as a classification tag</strong></h1>
+<p>When creating your template package, include the package version as a classification tag in every <code>.template.config</code> file. This becomes especially useful when you can&rsquo;t recall the specific version of the package template installed on your machine.</p>
+<p>This step can be automated in a dozen different ways, making it a straightforward process.</p>
+<p>The <code>.template.config</code> file should end up looking like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;$schema&#34;</span>: <span style="color:#e6db74">&#34;http://json.schemastore.org/template&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;author&#34;</span>: <span style="color:#e6db74">&#34;mytechramblings.com&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;classifications&#34;</span>: [
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;Cloud&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;Web&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;WebAPI&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;v1.3.0&#34;</span>
+</span></span><span style="display:flex;"><span>    ],
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;My TechRamblings NET 8 WebApi&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;description&#34;</span>: <span style="color:#e6db74">&#34;A WebApi solution.&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#960050;background-color:#1e0010">...</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Now, by simply listing the available templates using the <code>dotnet new list</code> command, you can easily identify which versions of the templates you have installed on your computer.</p>
+<p><img src="/img/dotnet-templates-tips-nuget-version.png" alt="dotnet-templates-tips-nuget-version"></p>
+<h1 id="centralize-the-nuget-package-versions-using-a-directorypackagesprops-files"><strong>Centralize the NuGet package versions using a Directory.Packages.props files</strong></h1>
+<p>This tip applies if you&rsquo;re building a template that is comprised of multiple projects (e.g., a Clean Architecture template).</p>
+<p>Managing dependencies for multi-project templates in the long run, as new package versions become available, can be challenging. It often leads to spending a significant amount of time dealing with projects using different versions of the same package within a single application.</p>
+<p>Using this feature in your .NET template, especially if you&rsquo;re building a multi-project template, is a good idea. Also, it is really easy to implement.</p>
+<p>Create a <code>Directory.Packages.props</code> file in the root of your template, similar to the following example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;Project&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;ItemGroup</span> <span style="color:#a6e22e">Label=</span><span style="color:#e6db74">&#34;Microsoft Nugets&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageVersion</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;Microsoft.AspNetCore.Authentication.JwtBearer&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;8.0.0&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageVersion</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;Microsoft.Extensions.DependencyInjection.Abstractions&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;8.0.0&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageVersion</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;Microsoft.Extensions.Options.ConfigurationExtensions&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;8.0.0&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageVersion</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;Microsoft.Identity.Web&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;2.16.0&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageVersion</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;Asp.Versioning.Mvc &#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;8.0.0&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageVersion</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;Asp.Versioning.Mvc.ApiExplorer&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;8.0.0&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageVersion</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;Microsoft.Extensions.Logging.Abstractions&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;8.0.0&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageVersion</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;System.Text.Json&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;8.0.0&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageVersion</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;System.ComponentModel.Annotations&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;5.0.0&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/ItemGroup&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;ItemGroup</span> <span style="color:#a6e22e">Label=</span><span style="color:#e6db74">&#34;Third party Nugets&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageVersion</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;AutoMapper&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;12.0.1&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageVersion</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;Swashbuckle.AspNetCore&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;6.5.0&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageVersion</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;Swashbuckle.AspNetCore.Annotations&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;6.5.0&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageVersion</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;Serilog.Sinks.Console&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;5.0.1&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageVersion</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;Hellang.Middleware.ProblemDetails&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;6.5.1&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/ItemGroup&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;ItemGroup</span> <span style="color:#a6e22e">Label=</span><span style="color:#e6db74">&#34;Test Nugets&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageVersion</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;Microsoft.NET.Test.Sdk&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;17.8.0&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageVersion</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;Microsoft.AspNetCore.Mvc.Testing&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;8.0.0&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageVersion</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;NSubstitute&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;5.1.0&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageVersion</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;xunit&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;2.6.3&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageVersion</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;xunit.runner.visualstudio&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;2.5.5&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;IncludeAssets&gt;</span>runtime; build; native; contentfiles; analyzers; buildtransitive<span style="color:#f92672">&lt;/IncludeAssets&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;PrivateAssets&gt;</span>all<span style="color:#f92672">&lt;/PrivateAssets&gt;</span>
+</span></span><span style="display:flex;"><span>     <span style="color:#f92672">&lt;/PackageVersion &gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageVersion</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;coverlet.collector&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;6.0.0&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;IncludeAssets&gt;</span>runtime; build; native; contentfiles; analyzers; buildtransitive<span style="color:#f92672">&lt;/IncludeAssets&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;PrivateAssets&gt;</span>all<span style="color:#f92672">&lt;/PrivateAssets&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/PackageVersion &gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/ItemGroup&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/Project&gt;</span>
+</span></span></code></pre></div><p>In each project, set the property <code>ManagePackageVersionsCentrally</code> to <code>true</code> and then define which packages from the <code>Directory.Packages.props</code> file you want to use. Here&rsquo;s an example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;Project</span> <span style="color:#a6e22e">Sdk=</span><span style="color:#e6db74">&#34;Microsoft.NET.Sdk.Web&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;PropertyGroup&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;TargetFramework&gt;</span>net8.0<span style="color:#f92672">&lt;/TargetFramework&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;Nullable&gt;</span>enable<span style="color:#f92672">&lt;/Nullable&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;ImplicitUsings&gt;</span>enable<span style="color:#f92672">&lt;/ImplicitUsings&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;InvariantGlobalization&gt;</span>true<span style="color:#f92672">&lt;/InvariantGlobalization&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;ManagePackageVersionsCentrally&gt;</span>true<span style="color:#f92672">&lt;/ManagePackageVersionsCentrally&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/PropertyGroup&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">&lt;ItemGroup&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;Asp.Versioning.Mvc.ApiExplorer&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;Asp.Versioning.Mvc &#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;Microsoft.AspNetCore.Authentication.JwtBearer&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;Microsoft.Identity.Web&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;Swashbuckle.AspNetCore&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;Swashbuckle.AspNetCore.Annotations&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;Serilog.Sinks.Console&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;Hellang.Middleware.ProblemDetails&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">&lt;/ItemGroup&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/Project&gt;</span>
+</span></span></code></pre></div><h1 id="use-a-directorybuildprops-to-manage-the-common-properties-required-in-all-your-projects"><strong>Use a Directory.build.props to manage the common properties required in all your projects</strong></h1>
+<p>This tip, like the last one, applies if you&rsquo;re building a template that is comprised of multiple projects.</p>
+<p>If you take a look at the various projects constituting your .NET template, you will see a set of properties repeated in each of them. For instance, the <code>LangVersion</code>, the <code>Nullable</code>, or the <code>ImplicitUsings</code> property.</p>
+<p>It is much better to create a <code>Directory.build.props</code> file at the root level of your template to manage the common  settings required in all your projects.</p>
+<p>The next code snippet, shows the <code>Directory.build.props</code> file I am currently using for my templates:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;Project&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;PropertyGroup&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;TargetFramework&gt;</span>net8.0<span style="color:#f92672">&lt;/TargetFramework&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;LangVersion&gt;</span>latest<span style="color:#f92672">&lt;/LangVersion&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;Nullable&gt;</span>enable<span style="color:#f92672">&lt;/Nullable&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;ImplicitUsings&gt;</span>enable<span style="color:#f92672">&lt;/ImplicitUsings&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;TreatWarningsAsErrors&gt;</span>True<span style="color:#f92672">&lt;/TreatWarningsAsErrors&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;IsPackable&gt;</span>false<span style="color:#f92672">&lt;/IsPackable&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;ManagePackageVersionsCentrally&gt;</span>true<span style="color:#f92672">&lt;/ManagePackageVersionsCentrally&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;NuGetAuditMode&gt;</span>all<span style="color:#f92672">&lt;/NuGetAuditMode&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;NuGetAuditLevel&gt;</span>high<span style="color:#f92672">&lt;/NuGetAuditLevel&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/PropertyGroup&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/Project&gt;</span>
+</span></span></code></pre></div><h1 id="add-visual-studio-support"><strong>Add Visual Studio support</strong></h1>
+<blockquote>
+<p>To use it, you require at least Visual Studio version 16.10 or higher.</p>
+</blockquote>
+<p>Adding support for Visual Studio to your .NET templates is a very useful feature for developers utilizing this IDE, and it is remarkably simple to implement.</p>
+<p>Create a file named <code>ide.host.json</code> and place it inside the <code>.template.config</code> folder.</p>
+<p>This file specifies which command-line parameters need to appear within a project dialog in Visual Studio when attempting to create a new project.</p>
+<p><img src="/img/dotnet-templates-tips-visual-studio.png" alt="dotnet-templates-tips-visual-studio"></p>
+<p>If you want to know more about setting up the <code>ide.host.json</code> file, I recommend reading one of my posts. Although it&rsquo;s a bit old, the process of creating .NET templates hasn&rsquo;t changed significantly during this time.</p>
+<ul>
+<li><a href="https://www.mytechramblings.com/posts/create-dotnet-templates-for-visual-studio-part-1/">https://www.mytechramblings.com/posts/create-dotnet-templates-for-visual-studio-part-1/</a></li>
+</ul>
+<h1 id="every-project-that-constitutes-your-template-should-start-with-the-exact-same-prefix-name"><strong>Every project that constitutes your template should start with the exact same prefix name</strong></h1>
+<p>When creating a .NET template with multiple projects, each one of them should begin with the exact same prefix name.</p>
+<p>Why? Let&rsquo;s consider building a Clean Architecture API .NET template; the folder structure will look something like this (more or less):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>MyTechRamblings.slm
+</span></span><span style="display:flex;"><span>---src
+</span></span><span style="display:flex;"><span>    +---MyTechRamblings.WebAPI
+</span></span><span style="display:flex;"><span>    |   +---MyTechRamblings.WebApi.csproj
+</span></span><span style="display:flex;"><span>    |   +---Program.cs
+</span></span><span style="display:flex;"><span>    |   <span style="color:#ae81ff">\-</span>--appsettings.json
+</span></span><span style="display:flex;"><span>    +---MyTechRamblings.Application
+</span></span><span style="display:flex;"><span>    |   +---MyTechRamblings.Application.csproj
+</span></span><span style="display:flex;"><span>    +---MyTechRamblings.Core
+</span></span><span style="display:flex;"><span>    |   +---MyTechRamblings.Core.csproj
+</span></span><span style="display:flex;"><span>    |   +--Interfaces
+</span></span><span style="display:flex;"><span>    |   +--Services
+</span></span><span style="display:flex;"><span>    |   <span style="color:#ae81ff">\-</span>-Aggregates    
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">\-</span>--MyTechRamblings.Infrastructure
+</span></span><span style="display:flex;"><span>        +---MyTechRamblings.Infrastructure.csproj
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">\-</span>--Data
+</span></span><span style="display:flex;"><span>            +--Queries
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">\-</span>-AppDbContext.cs
+</span></span></code></pre></div><p>As you can see, the solution (sln), every folder name, and every .csproj file that I have created begins with the &ldquo;MyTechRamblings&rdquo; prefix.<br>
+This consistency is because I will be utilizing the <code>sourceName</code> property from the <code>template.json</code> file to rename the prefix based on whatever value the user provides when creating a new app using the template.</p>
+<p>The <code>sourceName</code> property value is replaced with the value provided by the <code>-n</code>, <code>--name</code> parameter when running a template. <br>
+The template engine will look for any occurrence of the name present in the config file and replace it in file names and file contents. If no name is specified by the host, the current directory is used.</p>
+<p>Now, imagine that I have finished building my Clean Architecture .NET template and created the template package. The <code>template.json</code> file for this specific template includes the following properties:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#960050;background-color:#1e0010">...</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;shortName&#34;</span>: <span style="color:#e6db74">&#34;mtr-api&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;sourceName&#34;</span>: <span style="color:#e6db74">&#34;MyTechRamblings&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#960050;background-color:#1e0010">...</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>When creating a new app using the template, I will use the command: <code>dotnet new mtr-api --name Foo</code>. The <code>--name</code> value will replace the &ldquo;MyTechRamblings&rdquo; string throughout the template, resulting in the following application:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Foo.slm
+</span></span><span style="display:flex;"><span>---src
+</span></span><span style="display:flex;"><span>    +---Foo.WebAPI
+</span></span><span style="display:flex;"><span>    |   +---Foo.WebApi.csproj
+</span></span><span style="display:flex;"><span>    |   +---Program.cs
+</span></span><span style="display:flex;"><span>    |   <span style="color:#ae81ff">\-</span>--appsettings.json
+</span></span><span style="display:flex;"><span>    +---Foo.Application
+</span></span><span style="display:flex;"><span>    |   +---Foo.Application.csproj
+</span></span><span style="display:flex;"><span>    +---Foo.Core
+</span></span><span style="display:flex;"><span>    |   +---Foo.Core.csproj
+</span></span><span style="display:flex;"><span>    |   +--Interfaces
+</span></span><span style="display:flex;"><span>    |   +--Services
+</span></span><span style="display:flex;"><span>    |   <span style="color:#ae81ff">\-</span>-Aggregates    
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">\-</span>--Foo.Infrastructure
+</span></span><span style="display:flex;"><span>        +---Foo.Infrastructure.csproj
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">\-</span>--Data
+</span></span><span style="display:flex;"><span>            +--Queries
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">\-</span>-AppDbContext.cs
+</span></span></code></pre></div><p>As you can see, the new application will be completely (and correctly) renamed based on the user input.</p>
+<h1 id="make-use-of-built-in-conditional-pragmas-to-enable-or-disable-certain-features-of-the-application"><strong>Make use of built-in conditional pragmas to enable or disable certain features of the application</strong></h1>
+<p>Not every application needs to have the same features, and you can control this variability using the built-in conditional pragmas.</p>
+<p>Authorization is one of them. Depending on the type of API you&rsquo;re building, you might need to set authorization or not. To achieve this, you can make use of the dotnet engine&rsquo;s conditional pragmas.</p>
+<p>Let&rsquo;s see an example. In the <code>template.json</code> file, I declare the symbol <code>Authorization</code> of type <code>bool</code> with the default value of true.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;Authorization&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;parameter&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;datatype&#34;</span>: <span style="color:#e6db74">&#34;bool&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;defaultValue&#34;</span>: <span style="color:#e6db74">&#34;true&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;description&#34;</span>: <span style="color:#e6db74">&#34;Enables the use of authorization with Microsoft.Identity.Web.&#34;</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span></code></pre></div><p>Which means:</p>
+<ul>
+<li>If the user sets the value to <code>false</code>, the template engine needs to remove any auth reference from the solution.</li>
+<li>If the user sets this symbol to <code>true</code>, the template engine needs to keep the auth references.</li>
+</ul>
+<p>In the <code>Program.cs</code> file every authorization logic is wrapped by the <code>Authorization</code> conditional.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">#if</span> Authorization
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Microsoft.AspNetCore.Authentication.JwtBearer;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Microsoft.Identity.Web;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#endif</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> WebApplication
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Program</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> builder = WebApplication.CreateBuilder(args);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            builder.Services.AddControllers();
+</span></span><span style="display:flex;"><span>            builder.Services.AddEndpointsApiExplorer();
+</span></span><span style="display:flex;"><span>            builder.Services.AddSwaggerGen();
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#if</span> Authorization            
+</span></span><span style="display:flex;"><span>            builder.services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+</span></span><span style="display:flex;"><span>                .AddMicrosoftIdentityWebApi(builder.Configuration, <span style="color:#e6db74">&#34;AzureAd&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#endif</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> app = builder.Build();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (app.Environment.IsDevelopment())
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                app.UseSwagger();
+</span></span><span style="display:flex;"><span>                app.UseSwaggerUI();
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            app.UseHttpsRedirection();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#if</span> Authorization
+</span></span><span style="display:flex;"><span>            app.UseAuthentication();
+</span></span><span style="display:flex;"><span>            app.UseAuthorization();
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#endif</span>
+</span></span><span style="display:flex;"><span>            app.MapControllers();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            app.Run();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Same thing in the <code>appsettings.json</code> file.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//#if (Authorization)  
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#f92672">&#34;AzureAd&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;Instance&#34;</span>: <span style="color:#e6db74">&#34;https://login.microsoftonline.com/&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;TenantId&#34;</span>: <span style="color:#e6db74">&#34;AAD-TENANT-ID&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;Domain&#34;</span>: <span style="color:#e6db74">&#34;AAD-DOMAIN&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;ClientId&#34;</span>: <span style="color:#e6db74">&#34;AAD-CLIENT-ID&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;ClientSecret&#34;</span>: <span style="color:#e6db74">&#34;AAD-SECRET-VALUE&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;TokenValidationParameters&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;ValidateIssuer&#34;</span>: <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;ValidIssuer&#34;</span>: <span style="color:#e6db74">&#34;https://login.microsoftonline.com/AAD-TENANT-ID/v2.0&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;ValidateAudience&#34;</span>: <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;ValidAudiences&#34;</span>: [ <span style="color:#e6db74">&#34;AAD-CLIENT-ID&#34;</span> ]
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//#endif
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><p>And also in the API Controller</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">#if</span> Authorization
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Authorize]</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#endif</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [ApiVersion(&#34;1.0&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [ApiController]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Route(&#34;v{version:apiVersion}/[controller]</span><span style="color:#e6db74">&#34;)]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#a6e22e">    [Produces(&#34;application/json&#34;)]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyServiceController</span> : ControllerBase
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        ...
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><p>This is just a simple example of what you can achieve with conditional operators, but they are capable of more things, like excluding files based on a symbol or using a symbol value to compute another one.</p>
+<p>If you want to read more about it, the following link is the official documentation:</p>
+<ul>
+<li><a href="https://github.com/dotnet/templating/wiki/Conditional-processing-and-comment-syntax">https://github.com/dotnet/templating/wiki/Conditional-processing-and-comment-syntax</a></li>
+</ul>
+<h1 id="try-to-build-a-generic-enough-dockerfile-and-also-avoid-container-support-for-net-sdk"><strong>Try to build a generic enough Dockerfile, and also avoid Container support for .NET SDK</strong></h1>
+<p>If you&rsquo;re working mainly with containers, it&rsquo;s beneficial to include a Dockerfile in your template. Aim to make this Dockerfile generic enough to work with most applications created using the template. The goal is to provide a ready-to-use Dockerfile that requires no modification in most of the cases.</p>
+<p>Also, if your company uses some custom elements in their images, such as platform images, ensure to configure them in the Dockerfile.</p>
+<p>The following code snippet showcases a Dockerfile from my .NET 6 API template. There are a few interesting things to comment in here:</p>
+<ul>
+<li>Instead of relying on official images, this Dockerfile employs custom platform images.</li>
+</ul>
+<blockquote>
+<p><strong>What’s a platform image?</strong> <br>
+When talking about containers security on the enterprise one of the best practices is to use your own platform images, those platform images are the base for your company applications.<br>
+The point of having a platform image instead of directly using a base image is to ensure that the resulting containers are hardened according to any corporate policies before being deployed to production.</p>
+</blockquote>
+<ul>
+<li>
+<p>To enable the restoration of my private custom NuGet packages, an Azure DevOps Personal Access Token (PAT) must be provided as an argument to the Dockerfile.</p>
+</li>
+<li>
+<p>Every project used in the Dockerfile begins with the prefix name &ldquo;MyTechRamblings&rdquo; (see one of my previous tips).</p>
+</li>
+<li>
+<p>The Dockerfile copies the entire solution and then executes the <code>dotnet restore</code>, <code>dotnet build</code>, <code>dotnet test</code> and <code>dotnet publish</code> commands.</p>
+</li>
+</ul>
+<p>In a .NET Dockerfile, it is generally recommended to use Docker&rsquo;s layer caching mechanism to optimize the build process. The idea is to minimize the number of layers that need to be rebuilt when changes are made to your application. <br>
+Copying only the .csproj file and restoring packages separately is a common practice because it allows Docker to cache the restored NuGet packages as a separate layer.</p>
+<p>If you take a look at the Dockerfile below, I deviate from this approach. I choose to copy everything, as it yields a more generic Dockerfile capable of working with almost every API I create using my .NET template.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>FROM mtr.azurecr.io/net6.sdk.<span style="color:#66d9ef">base</span>:<span style="color:#ae81ff">6.0</span>-bullseye-slim AS build-env
+</span></span><span style="display:flex;"><span>WORKDIR /app
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span> Get PAT <span style="color:#66d9ef">from</span> args
+</span></span><span style="display:flex;"><span>ARG AZDO_PAT
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span> Setup cred-provider
+</span></span><span style="display:flex;"><span>ENV VSS_NUGET_EXTERNAL_FEED_ENDPOINTS {<span style="color:#960050;background-color:#1e0010">\</span><span style="color:#e6db74">&#34;endpointCredentials\&#34;: [{\&#34;endpoint\&#34;:\&#34;https://mytechramblings.pkgs.visualstudio.com/_packaging/my-feed/nuget/v3/index.json\&#34;, \&#34;username\&#34;:\&#34;build\&#34;, \&#34;password\&#34;:\&#34;$AZDO_PAT\&#34;}]}
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span> Copy everything and restore packages
+</span></span><span style="display:flex;"><span>COPY . ./
+</span></span><span style="display:flex;"><span>RUN dotnet restore -s <span style="color:#e6db74">&#34;https://mytechramblings.pkgs.visualstudio.com/_packaging/my-feed/nuget/v3/index.json&#34;</span> \
+</span></span><span style="display:flex;"><span>    -s <span style="color:#e6db74">&#34;https://api.nuget.org/v3/index.json&#34;</span> \
+</span></span><span style="display:flex;"><span>	--runtime linux-x64	
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span> Build project
+</span></span><span style="display:flex;"><span>RUN dotnet build <span style="color:#e6db74">&#34;./src/MyTechRamblings.WebApi/MyTechRamblings.WebApi.csproj&#34;</span> <span style="color:#960050;background-color:#1e0010">\</span> 
+</span></span><span style="display:flex;"><span>    -c Release \
+</span></span><span style="display:flex;"><span>	--runtime linux-x64 <span style="color:#960050;background-color:#1e0010">\</span> 
+</span></span><span style="display:flex;"><span>	--self-contained <span style="color:#66d9ef">true</span> <span style="color:#960050;background-color:#1e0010">\</span>	
+</span></span><span style="display:flex;"><span>	--no-restore
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span> Test UnitTest project
+</span></span><span style="display:flex;"><span>RUN dotnet test <span style="color:#e6db74">&#34;./test/MyTechRamblings.UnitTests/MyTechRamblings.UnitTests.csproj&#34;</span> \
+</span></span><span style="display:flex;"><span>	--no-restore
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span> Publish app
+</span></span><span style="display:flex;"><span>RUN dotnet publish <span style="color:#e6db74">&#34;./src/MyTechRamblings.WebApi/MyTechRamblings.WebApi.csproj&#34;</span> \
+</span></span><span style="display:flex;"><span>	-c Release \
+</span></span><span style="display:flex;"><span>	-o /app/publish \
+</span></span><span style="display:flex;"><span>	--no-restore <span style="color:#960050;background-color:#1e0010">\</span> 
+</span></span><span style="display:flex;"><span>	--no-build \
+</span></span><span style="display:flex;"><span>	--self-contained <span style="color:#66d9ef">true</span> \
+</span></span><span style="display:flex;"><span>	--runtime linux-x64
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span> Build runtime image
+</span></span><span style="display:flex;"><span>FROM mtr.azurecr.io/net6.runtime.deps:<span style="color:#ae81ff">6.0</span>-bullseye-slim
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span> Expose port
+</span></span><span style="display:flex;"><span>EXPOSE <span style="color:#ae81ff">8080</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span> Copy artifact
+</span></span><span style="display:flex;"><span>WORKDIR /app
+</span></span><span style="display:flex;"><span>COPY --<span style="color:#66d9ef">from</span>=build-env /app/publish .
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span> Set entrypoint
+</span></span><span style="display:flex;"><span>ENTRYPOINT [<span style="color:#e6db74">&#34;./MyTechRamblings.WebApi&#34;</span>]
+</span></span></code></pre></div><p>To create a .NET image, you have the option to use Container Support for .NET SDK instead of a Dockerfile. However, I tend to avoid it, mainly because it&rsquo;s a niche method of creating images that is not widely known. <br>
+In contrast, the Dockerfile syntax has become an industry standard known by everyone. Nowadays, almost anyone can read and modify a Dockerfile if needed, regardless of whether they are .NET developers, Python developers, or SysAdmins.</p>
+<h1 id="dont-disable-the-package-dependencies-security-scan"><strong>Don&rsquo;t disable the package dependencies security scan</strong></h1>
+<p>Since .NET 8, there has been no native method that allows us to analyze security vulnerabilities in the packages used by our applications.</p>
+<p>You could use a external tool or utilize the <code>dotnet list package --vulnerable</code> command to generate a list of packages with known vulnerabilities. However, this required a proactive approach,  involving either manually running the command, integrating it into your CI/CD pipeline, or executing it through a Git webhook.</p>
+<p>With .NET 8, package dependency auditing is integrated by default when <code>dotnet restore</code> is executed. By default, a security audit is performed only for top-level dependencies. You can customize the security auditing according to your company&rsquo;s needs using the <code>NuGetAudit</code>, <code>NuGetAuditMode</code> and <code>NuGetAuditLevel</code> MSBuild properties.</p>
+<p><img src="/img/dotnet-templates-tips-nuget-audit.png" alt="dotnet-templates-tips-nuget-audit"></p>
+<p>This is a really nice feature available starting from NuGet 6.8, the .NET 8 SDK, and Visual Studio 2022 17.8.</p>
+<p>You can disable it by setting the <code>NuGetAudit</code> property to <code>false</code>, but there is no compelling reason to turn off this feature in your templates.</p>
+<p>Personally, I recommend configuring the <code>NuGetAuditMode</code> in a more restrictive manner, ensuring that it audits not only the direct packages but also their transitive dependencies. However, if you find this level of scrutiny to be excessive for your requirements, it is advisable to, at the very least, maintain the default configuration.</p>
+<h1 id="add-a-preconfigured-nugetconfig-and-utilize-the-packagesourcemapping-section"><strong>Add a preconfigured nuget.config and utilize the packageSourceMapping section</strong></h1>
+<p>You should always include a <code>nuget.config</code> file in your templates. But even more so if you use a private feed. Creating a new application using a template and getting a dozen package errors, and having to investigate the source of each package, is a hassle.</p>
+<p>Another topic you should include in the <code>nuget.config</code>, especially if you work with a private NuGet feed, is the <code>packageSourceMapping</code> section. This section allows us to define the source from which to obtain each of our packages, enhancing security against potential package identity spoofing.</p>
+<p>The following code snippet shows an example of a <code>nuget.config</code> where packages with names that start with <code>MTR.*</code> and <code>MyTechRamblings.*</code> are being fetched from my private feed, and the rest from nuget.org.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#75715e">&lt;?xml version=&#34;1.0&#34; encoding=&#34;utf-8&#34;?&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;configuration&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;packageSources&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;clear</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;add</span> <span style="color:#a6e22e">key=</span><span style="color:#e6db74">&#34;nuget.org&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;https://api.nuget.org/v3/index.json&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;add</span> <span style="color:#a6e22e">key=</span><span style="color:#e6db74">&#34;mtr-nuget&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;https://mytechramblings.pkgs.visualstudio.com/_packaging/my-feed/nuget/v3/index.json&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/packageSources&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;packageSourceMapping&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;packageSource</span> <span style="color:#a6e22e">key=</span><span style="color:#e6db74">&#34;nuget.org&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;package</span> <span style="color:#a6e22e">pattern=</span><span style="color:#e6db74">&#34;*&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/packageSource&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;packageSource</span> <span style="color:#a6e22e">key=</span><span style="color:#e6db74">&#34;mtr-nuget&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;package</span> <span style="color:#a6e22e">pattern=</span><span style="color:#e6db74">&#34;MTR.*&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;package</span> <span style="color:#a6e22e">pattern=</span><span style="color:#e6db74">&#34;MyTechRamblings.*&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/packageSource&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/packageSourceMapping&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/configuration&gt;</span>
+</span></span></code></pre></div><h1 id="add-your-own-editorconfig-file"><strong>Add your own .editorconfig file</strong></h1>
+<p>You should include an <code>.editorconfig</code> file in all your .NET templates. It will enable you to maintain a consistent coding style across all your applications. (The same principle applies if you have built any custom Roslyn Analyzer.).</p>
+<p>Nothing more to say here.</p>
+<h1 id="prefer-controller-based-apis-over-minimal-apis"><strong>Prefer controller-based APIs over minimal APIs</strong></h1>
+<p>This might be a little bit controversial, but when building a .NET API template you don&rsquo;t know the complexity of the resulting application, and controller-based APIs are by default easier to scale than minimal APIs.</p>
+<p>The clear structure and organization of controller-based APIs make it straightforward to add new features and entities without disrupting the existing code. On the other hand, minimal APIs can become increasingly complex and challenging to manage as you add more and more endpoints.</p>
+<p>Certainly, there are ways to enhance the structure and organization of minimal API source code, but is it really worth the effort? I don&rsquo;t think so. If I have to develop a .NET API template that will be used for a wide range of applications, I would unequivocally choose to use a controller-based API.</p>
+<h1 id="always-set-api-versioning"><strong>Always set API Versioning</strong></h1>
+<p>You should always enable API versioning in your API templates right from the start, don&rsquo;t assume that your application will always have a single version.</p>
+<p>Enabling API versioning is a straightforward process. You simply need to install the <code>Asp.Versioning.Mvc</code> and<code>Asp.Versioning.Mvc.ApiExplorer</code> NuGet packages and configure versioning according to your requirements.</p>
+<p>The following code snippet demonstrates how I configure versioning in my templates, but you should customize it based on your specific needs.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> IServiceCollection AddCustomApiVersioning(<span style="color:#66d9ef">this</span> IServiceCollection services)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    services
+</span></span><span style="display:flex;"><span>        .AddApiVersioning(opt =&gt;
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            opt.ReportApiVersions = <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>            opt.AssumeDefaultVersionWhenUnspecified = <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>            opt.DefaultApiVersion = <span style="color:#66d9ef">new</span> ApiVersion(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>            opt.ApiVersionReader = <span style="color:#66d9ef">new</span> UrlSegmentApiVersionReader();
+</span></span><span style="display:flex;"><span>        })
+</span></span><span style="display:flex;"><span>        .AddApiExplorer(options =&gt;
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            options.GroupNameFormat = <span style="color:#e6db74">&#34;&#39;v&#39;VVVV&#34;</span>;
+</span></span><span style="display:flex;"><span>            options.SubstituteApiVersionInUrl = <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> services;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="use-the-default-net-dependency-injection-container"><strong>Use the default .NET Dependency Injection Container</strong></h1>
+<p>Is there really any reason why I should use another DI container (e.g. Autofac) that its not the default one? To be honest, I haven&rsquo;t found one.</p>
+<p>Regarding the default DI container, one thing I like to set in my templates is the <code>ValidateScopes</code> and <code>ValidateOnBuild</code> properties to <code>true</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>builder.Host.UseDefaultServiceProvider((opt) =&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    opt.ValidateScopes = <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>    opt.ValidateOnBuild = <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>});
+</span></span></code></pre></div><ul>
+<li>
+<p>Set the <code>ValidateOnBuild</code> to <code>true</code> to conduct a check ensuring that scoped services are not resolved from the root provider.</p>
+</li>
+<li>
+<p>Set the <code>ValidateOnBuild</code> to <code>true</code> to perform a check that verifies that all services can be created during the<code>BuildServiceProvider</code> call.</p>
+</li>
+</ul>
+<p>This helps enhance the reliability and integrity of your dependency injection configuration.</p>
+<h1 id="add-an-opinionated-deployment-pipeline"><strong>Add an opinionated deployment pipeline</strong></h1>
+<p>If possible, incorporate a deployment pipeline into your templates. This will be an opinionated pipeline, as the structures vary significantly based on where you&rsquo;re deploying the app. Also, if you&rsquo;re using one VCS or another, the pipeline format and syntax will be entirely different.</p>
+<p>However, the goal is to provide a ready-to-use pipeline that, in most cases, requires no modifications and can efficiently deploy your application to whatever place your company deploys their apps.</p>
+<p>The following code snippet illustrates an example of a pipeline included in some of my templates. Certain values, such as &ldquo;azureSubscription&rdquo;, &ldquo;appServiceName&rdquo; or &ldquo;registryName,&rdquo; are parameters that need to be provided when creating the app using the <code>dotnet new</code> command.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">trigger</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#ae81ff">master</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">pool</span>: 
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">vmImage</span>: <span style="color:#e6db74">&#39;ubuntu-latest&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">variables</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">buildConfiguration</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">value</span>: <span style="color:#e6db74">&#39;Release&#39;</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">azureSubscription</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">value</span>: <span style="color:#e6db74">&#39;AZURE-SUBSCRIPTION-ENDPOINT-NAME&#39;</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">appServiceName</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">value</span>: <span style="color:#e6db74">&#39;APP-SERVICE-NAME&#39;</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">registryName</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">value</span>: <span style="color:#e6db74">&#39;ACR-REGISTRY-NAME&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">steps</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AzureCLI@2</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">AZ ACR Login</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">azureSubscription</span>: <span style="color:#ae81ff">$(azureSubscription)</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">scriptType</span>: <span style="color:#e6db74">&#39;bash&#39;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">scriptLocation</span>: <span style="color:#e6db74">&#39;inlineScript&#39;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">inlineScript</span>: <span style="color:#e6db74">&#39;az acr login --name $(registryName)&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AzureCLI@2</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">AZ ACR Build</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">azureSubscription</span>: <span style="color:#ae81ff">$(azureSubscription)</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">scriptType</span>: <span style="color:#e6db74">&#39;bash&#39;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">scriptLocation</span>: <span style="color:#e6db74">&#39;inlineScript&#39;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">inlineScript</span>: <span style="color:#e6db74">&#39;az acr build -t ApplicationName:$(Build.BuildId) -t ApplicationName:latest -r $(registryName) -f Dockerfile .&#39;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">useGlobalConfig</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">workingDirectory</span>: <span style="color:#e6db74">&#39;$(Build.SourcesDirectory)&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AzureWebAppContainer@1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">displayName</span>: <span style="color:#ae81ff">Deploy to App Service</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">azureSubscription</span>: <span style="color:#e6db74">&#39;$(azureSubscription)&#39;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">appName</span>: <span style="color:#e6db74">&#39;$(appServiceName)&#39;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">containers</span>: <span style="color:#e6db74">&#39;$(registryName).azurecr.io/ApplicationName:latest&#39;</span>
+</span></span></code></pre></div><h1 id="do-not-use-moq-in-your-unit-tests-consider-using-nsubstitute-or-another-alternative"><strong>Do not use Moq in your Unit Tests, consider using NSubstitute or another alternative</strong></h1>
+<p>Moq is probably the most well-known mocking library for .NET. If you&rsquo;re not aware, a few months ago, it had some concerning security issues. The most troubling aspect is that these security issues were intentionally introduced into Moq by its creator.</p>
+<p>If you want to read more about it, here is a more detailed explanation:</p>
+<ul>
+<li><a href="https://snyk.io/blog/moq-package-exfiltrates-user-emails/">https://snyk.io/blog/moq-package-exfiltrates-user-emails/</a></li>
+</ul>
+<p>The changes were rolled back after a short period, but why would I use this library after its own creator deliberately opened a security loophole? There are other libraries that perform the same function, allowing me to avoid potential scares in the future.</p>
+<p>A good alternative is <a href="https://nsubstitute.github.io/">NSubstitute</a>, and you should consider using it or another option, but my recommendation is to stay away from Moq.</p>
+<h1 id="add-a-readme-file-with-the-essential-sections"><strong>Add a README file with the essential sections</strong></h1>
+<p>You should absolutely add a <code>README.md</code> into every .NET template. This readme should contains the basic skeleton and sections that the application developer needs to fill out.</p>
+<p>This README should feature a clear set of well-defined sections that the developer can populate with pertinent information.</p>
+<p>Incorporating a <code>README.md</code> into the template will ensure a consistent format across all your README files, enhancing the overall user experience. Having a standardized format is not only convenient but also contributes to a more cohesive documentation structure.</p>
+<p>The next code snippet is an example that could serve as a starting point.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-markdown" data-lang="markdown"><span style="display:flex;"><span># Welcome to the MyTechRamblings.WebApi documentation
+</span></span><span style="display:flex;"><span>Provide a concise yet informative description outlining the primary functionality and purpose of the MyTechRamblings.WebApi application. This introductory section serves as a quick reference point for developers and users seeking to understand the core aspects of the template.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span># Getting Started
+</span></span><span style="display:flex;"><span>To get started with MyTechRamblings.WebApi, follow these steps:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">-</span> Clone the repository.
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">-</span> Navigate to the project directory.
+</span></span><span style="display:flex;"><span>[Include any necessary setup or configuration steps.]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span># Documentation
+</span></span><span style="display:flex;"><span>Delve into the specifics with the general documentation for MyTechRamblings.WebApi. This section becomes the go-to resource for understanding the application architecture, components, and overall design philosophy.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Building Blocks diagram
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>Include a visual representation of the application&#39;s architecture. This diagram acts as a high-level overview, showcasing the key components and their interactions. Utilize tools like draw.io or other diagramming software to create an illustrative and accessible diagram.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Dependencies
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>Outline the external dependencies crucial for the proper functioning of MyTechRamblings.WebApi. This could include databases, web services, caching mechanisms, and queues. 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## More info.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>Offer additional resources and links to related documentation. This could include links to API documentation, user guides, or detailed data models.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## Release Notes
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>Keep track of the version history in this section, detailing each release&#39;s improvements and changes. Highlight notable fixes and commits, providing a clear picture of the template&#39;s evolution.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">-</span> **Version X.Y.Z**
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">-</span> **Notable Fixes and Commits**
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">-</span> [ABC-123456] Fix error
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">-</span> [ABC-123456] Deprecated 
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">-</span> **Known Issues**
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">-</span> [CRT-123456] Invalid data
+</span></span></code></pre></div>
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-metrics-and-dotnet-part-2/">
+                  <span class="button__text">Getting started with OpenTelemetry Metrics in .NET 8. Part 2: Instrumenting the BookStore API</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2023 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>Theme created by <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://www.mytechramblings.com/assets/main.js"></script>
+<script src="https://www.mytechramblings.com/assets/prism.js"></script>
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('carlospons', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Donate',
+    'floating-chat.donateButton.background-color': '#ff5f5f',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
+
+      
+    </div>
+
+    
+      
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-170300931-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+    
+  </body>
+</html>

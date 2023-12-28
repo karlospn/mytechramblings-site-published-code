@@ -9,7 +9,7 @@
     <description>Recent content in Tags on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 29 Nov 2023 10:10:55 +0100</lastBuildDate>
+    <lastBuildDate>Thu, 28 Dec 2023 12:03:32 +0100</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/index.xml" rel="self" type="application/rss+xml" />
     
@@ -17,7 +17,7 @@
     <item>
       <title>csharp</title>
       <link>https://www.mytechramblings.com/tags/csharp/</link>
-      <pubDate>Wed, 29 Nov 2023 10:10:55 +0100</pubDate>
+      <pubDate>Thu, 28 Dec 2023 12:03:32 +0100</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/csharp/</guid>
       <description>
@@ -37,9 +37,29 @@
     <item>
       <title>dotnet</title>
       <link>https://www.mytechramblings.com/tags/dotnet/</link>
-      <pubDate>Wed, 29 Nov 2023 10:10:55 +0100</pubDate>
+      <pubDate>Thu, 28 Dec 2023 12:03:32 +0100</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/dotnet/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>templates</title>
+      <link>https://www.mytechramblings.com/tags/templates/</link>
+      <pubDate>Thu, 28 Dec 2023 12:03:32 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/templates/</guid>
       <description>
         
           
@@ -1140,26 +1160,6 @@
       <pubDate>Thu, 17 Jun 2021 10:01:29 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/studio/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>templates</title>
-      <link>https://www.mytechramblings.com/tags/templates/</link>
-      <pubDate>Thu, 17 Jun 2021 10:01:29 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/templates/</guid>
       <description>
         
           

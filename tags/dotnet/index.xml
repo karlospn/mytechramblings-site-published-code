@@ -9,10 +9,30 @@
     <description>Recent content in dotnet on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 29 Nov 2023 10:10:55 +0100</lastBuildDate>
+    <lastBuildDate>Thu, 28 Dec 2023 12:03:32 +0100</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/dotnet/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>An opinionated list of tips for building .NET 8 app templates</title>
+      <link>https://www.mytechramblings.com/posts/an-opinionated-list-of-tips-for-building-a-dotnet-8-template/</link>
+      <pubDate>Thu, 28 Dec 2023 12:03:32 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/an-opinionated-list-of-tips-for-building-a-dotnet-8-template/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          I have been developing .NET templates for quite some time, and as a result, I thought it might be helpful to compile a list of tips to consider when creating a .NET template for your own or your company&#39;s apps.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>Getting started with OpenTelemetry Metrics in .NET 8. Part 2: Instrumenting the BookStore API</title>
