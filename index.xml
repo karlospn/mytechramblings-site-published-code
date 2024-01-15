@@ -9,10 +9,30 @@
     <description>Recent content on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 28 Dec 2023 12:03:32 +0100</lastBuildDate>
+    <lastBuildDate>Mon, 15 Jan 2024 11:50:00 +0100</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>How to push a container image to Azure Container Registry (ACR) using Terraform</title>
+      <link>https://www.mytechramblings.com/posts/how-to-push-a-container-image-into-acr-using-terraform/</link>
+      <pubDate>Mon, 15 Jan 2024 11:50:00 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/how-to-push-a-container-image-into-acr-using-terraform/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          In this brief post, I want to show 3 options you can use to push an application into an Azure Container Registry (ACR) using Terraform.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>An opinionated list of tips for building .NET 8 app templates</title>

@@ -2,6 +2,27 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://www.mytechramblings.com/tags/azure/</loc>
+    <lastmod>2024-01-15T11:50:00+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/how-to-push-a-container-image-into-acr-using-terraform/</loc>
+    <lastmod>2024-01-15T11:50:00+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/iac/</loc>
+    <lastmod>2024-01-15T11:50:00+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/</loc>
+    <lastmod>2024-01-15T11:50:00+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/</loc>
+    <lastmod>2024-01-15T11:50:00+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/</loc>
+    <lastmod>2024-01-15T11:50:00+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/terraform/</loc>
+    <lastmod>2024-01-15T11:50:00+01:00</lastmod>
+  </url><url>
     <loc>https://www.mytechramblings.com/posts/an-opinionated-list-of-tips-for-building-a-dotnet-8-template/</loc>
     <lastmod>2023-12-28T12:03:32+01:00</lastmod>
   </url><url>
@@ -9,15 +30,6 @@
     <lastmod>2023-12-28T12:03:32+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/dotnet/</loc>
-    <lastmod>2023-12-28T12:03:32+01:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/</loc>
-    <lastmod>2023-12-28T12:03:32+01:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/posts/</loc>
-    <lastmod>2023-12-28T12:03:32+01:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/</loc>
     <lastmod>2023-12-28T12:03:32+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/templates/</loc>
@@ -44,16 +56,7 @@
     <loc>https://www.mytechramblings.com/tags/auth/</loc>
     <lastmod>2023-11-20T10:00:48+01:00</lastmod>
   </url><url>
-    <loc>https://www.mytechramblings.com/tags/azure/</loc>
-    <lastmod>2023-11-20T10:00:48+01:00</lastmod>
-  </url><url>
     <loc>https://www.mytechramblings.com/tags/entra/</loc>
-    <lastmod>2023-11-20T10:00:48+01:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/iac/</loc>
-    <lastmod>2023-11-20T10:00:48+01:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/terraform/</loc>
     <lastmod>2023-11-20T10:00:48+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/posts/automate-entra-app-registration-process-using-terraform/</loc>
