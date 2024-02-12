@@ -3,24 +3,27 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://www.mytechramblings.com/tags/azure/</loc>
-    <lastmod>2024-01-15T11:50:00+01:00</lastmod>
+    <lastmod>2024-02-12T10:20:06+01:00</lastmod>
   </url><url>
-    <loc>https://www.mytechramblings.com/posts/how-to-push-a-container-image-into-acr-using-terraform/</loc>
-    <lastmod>2024-01-15T11:50:00+01:00</lastmod>
+    <loc>https://www.mytechramblings.com/posts/how-to-update-an-azure-api-mgmt-api-that-uses-a-remote-openapi-using-terraform/</loc>
+    <lastmod>2024-02-12T10:20:06+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/iac/</loc>
-    <lastmod>2024-01-15T11:50:00+01:00</lastmod>
+    <lastmod>2024-02-12T10:20:06+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/</loc>
-    <lastmod>2024-01-15T11:50:00+01:00</lastmod>
+    <lastmod>2024-02-12T10:20:06+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/posts/</loc>
-    <lastmod>2024-01-15T11:50:00+01:00</lastmod>
+    <lastmod>2024-02-12T10:20:06+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/</loc>
-    <lastmod>2024-01-15T11:50:00+01:00</lastmod>
+    <lastmod>2024-02-12T10:20:06+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/terraform/</loc>
+    <lastmod>2024-02-12T10:20:06+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/how-to-push-a-container-image-into-acr-using-terraform/</loc>
     <lastmod>2024-01-15T11:50:00+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/posts/an-opinionated-list-of-tips-for-building-a-dotnet-8-template/</loc>
