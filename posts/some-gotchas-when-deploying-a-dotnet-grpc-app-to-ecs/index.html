@@ -451,14 +451,14 @@ With AWS ECS we are doing a TLS termination in the Load Balancer, so the communi
 <li>One Target Group that routes the gRPC requests.</li>
 </ul>
 <p>Both Target Groups will be routing requests to the same ECS service.</p>
-<p><img src="/img/alb-route-grpc-http-requests.png" alt="alb-route-grpc-http-requests"></p>
+<p><img alt="alb-route-grpc-http-requests" src="/img/alb-route-grpc-http-requests.png"></p>
 <p>The clients will send both HTTP/1.1 and HTTP/2 requests to the same listener of the ALB and using path routing it will route the traffic to the Http or the gRPC target groups.</p>
 <p>Here&rsquo;s an example about how the ALB Listener rules will look like:</p>
 <ul>
 <li>If the path is /api/* route the requests to the Http Target Group.</li>
 <li>If the path is /greet.* route the requests to the gRPC Target Group. In the next section I&rsquo;ll talk a little bit about how the routing works when using a gRPC Target Group.</li>
 </ul>
-<p><img src="/img/http-grpc-alb-rules.png" alt="http-grpc-alb-rules.png"></p>
+<p><img alt="http-grpc-alb-rules.png" src="/img/http-grpc-alb-rules.png"></p>
 <h1 id="3whats-the-package-attribute-on-the-proto-file-for-how-the-alb-path-routing-works-with-grpc-apps">3.What&rsquo;s the package attribute on the proto file for? How the ALB path routing works with gRPC apps.</h1>
 <p>When you create a new dotnet gRPC service you need to be aware of the <code>package</code> atribute.<br>
 The namespace is inferred from the proto <code>package</code> attribute. For example, a proto with a package named <code>reply</code> would result in an auto-generated file with the namespace of <code>Reply</code>. If you take a look at the auto-generated files from the <code>/obj</code> folder you can clearly see it.</p>

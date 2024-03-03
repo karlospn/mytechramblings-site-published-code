@@ -164,7 +164,7 @@ Part 1: Key concepts that you should know when using OpenTelemetry Metrics with 
 <p>OpenTelemetry is a set of APIs, SDKs, tooling and integrations that are designed for the creation and management of telemetry data such as <strong>traces</strong>, <strong>metrics</strong>, and <strong>logs</strong>.</p>
 <p>In one of my <a href="https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-and-dotnet-core/">previous posts</a> I talked about how to get started with OpenTelemetry and distributed tracing, now I want to <strong>focus on metrics</strong>.</p>
 <p>At the end of this two-part series post, we will have a .NET 8 app that emits a series of metrics. These metrics will be sent to an OpenTelemetry Collector, and a Prometheus Server will receive the metrics from the OTEL Collector. Finally, we will have a Grafana dashboard to visualize them.</p>
-<p><img src="/img/otel-metrics-app-diagram.png" alt="otel-metrics-app-diagram"></p>
+<p><img alt="otel-metrics-app-diagram" src="/img/otel-metrics-app-diagram.png"></p>
 <p>But before jumping to the practical part there are a few key concepts about using OpenTelemetry Metrics with .NET that are worth talking about.</p>
 <h1 id="metrics-api"><strong>Metrics API</strong></h1>
 <p>The Metrics API allows users to capture measurements at runtime. The Metrics API is designed to process raw measurements, generally with the intent to produce continuous summaries of those measurements.</p>
@@ -357,7 +357,7 @@ When the instrument is observed, the callback is executed and will pass back one
 <p>The OpenTelemetry Collector is a standalone process designed to receive, process and export telemetry data.</p>
 <p>It removes the need to run, operate and maintain multiple agents/collectors in order to support open-source telemetry data formats (e.g. Jaeger, Prometheus, Zipkin, etc.) sending to multiple open-source or commercial back-ends.</p>
 <p>It eases the integration with your apps because you only need to export your data to a single endpoint, the collector endpoint, using the OTLP protocol.</p>
-<p><img src="/img/otel-metrics-exporter-otel-collector.png" alt="otel-metrics-exporter-otel-collector"></p>
+<p><img alt="otel-metrics-exporter-otel-collector" src="/img/otel-metrics-exporter-otel-collector.png"></p>
 <p>To send metrics to the OpenTelemetry Collector in .NET, you&rsquo;ll need to install the <code>OpenTelemetry.Exporter.OpenTelemetryProtocol</code> NuGet package on your application and configure the <code>MeterProvider</code> using the <code>AddOtlpExporter</code> extension method, like this:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>builder.Services.AddOpenTelemetry().WithMetrics(opts =&gt; opts
 </span></span><span style="display:flex;"><span>    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(<span style="color:#e6db74">&#34;BookStore.WebApi&#34;</span>))
@@ -368,7 +368,7 @@ When the instrument is observed, the callback is executed and will pass back one
 </span></span><span style="display:flex;"><span>    }));
 </span></span></code></pre></div><h2 id="exporting-the-data-directly-into-a-backend"><strong>Exporting the data directly into a backend</strong></h2>
 <p>You can export the metrics directly to a backend using the <code>OpenTelemetry.Exporter.*</code> NuGet packages</p>
-<p><img src="/img/otel-metrics-exporter-backend.png" alt="otel-metrics-exporter-backend"></p>
+<p><img alt="otel-metrics-exporter-backend" src="/img/otel-metrics-exporter-backend.png"></p>
 <p>Here&rsquo;s an example of how to send the metrics data directly to Prometheus using the <code>OpenTelemetry.Exporter.Prometheus.AspNetCore</code> NuGet package:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>builder.Services.AddOpenTelemetry().WithMetrics(opts =&gt; opts
 </span></span><span style="display:flex;"><span>    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(<span style="color:#e6db74">&#34;BookStore.WebApi&#34;</span>))

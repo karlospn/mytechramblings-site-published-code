@@ -214,7 +214,7 @@ We can think of this database as the external long-term memory of our LLM.</p>
 <li><a href="https://aws.amazon.com/s3">AWS S3</a></li>
 </ul>
 <p>The next image shows a diagram of how the AWS services are going to interact between them:</p>
-<p><img src="/img/rag-aws-architecture-diagram.png" alt="aws-services-diagram"></p>
+<p><img alt="aws-services-diagram" src="/img/rag-aws-architecture-diagram.png"></p>
 <h1 id="how-the-qa-app-works"><strong>How the Q&amp;A app works</strong></h1>
 <ul>
 <li>
@@ -232,7 +232,7 @@ We can think of this database as the external long-term memory of our LLM.</p>
 </ul>
 </li>
 </ul>
-<p><img src="/img/rag-aws-app-interaction-diagram.png" alt="rag-aws-app-interaction-diagram"></p>
+<p><img alt="rag-aws-app-interaction-diagram" src="/img/rag-aws-app-interaction-diagram.png"></p>
 <p>One of the best things of using AWS Kendra (paired with AWS S3) as our knowledge database is that the &ldquo;Ingest Process&rdquo; <em>(see above diagram)</em> is completely automated, you don&rsquo;t have to do anything at all. <br>
 Every time we add, update, or delete a document from the S3 bucket, the content of that document is automatically parsed and stored in Kendra.</p>
 <h1 id="building-the-qa-app"><strong>Building the Q&amp;A app</strong></h1>
@@ -248,9 +248,9 @@ Every time we add, update, or delete a document from the S3 bucket, the content 
 <p>⚠️ If you want to take the easy route, I have uploaded a few Terraform files to my <a href="https://github.com/karlospn/building-qa-app-with-aws-bedrock-kendra-s3-and-streamlit/tree/main/infra">GitHub repository</a> that will create the required resources on your AWS account.</p>
 <h2 id="2-request-access-to-aws-bedrock-third-party-llms"><strong>2. Request access to AWS Bedrock third-party LLMs</strong></h2>
 <p>By default, in Bedrock you will have access only to the Amazon Titan LLM. To utilize any of the third-party LLMs (Anthropic, Ai21 Labs, Cohere), you must register for access separately.</p>
-<p><img src="/img/rag-aws-bedrock-third-party-llm-access.png" alt="rag-aws-bedrock-third-party-llm-access"></p>
+<p><img alt="rag-aws-bedrock-third-party-llm-access" src="/img/rag-aws-bedrock-third-party-llm-access.png"></p>
 <p>In the &ldquo;Model Access&rdquo; section, you have an overview of which LLMs you have access to and which ones you do not.</p>
-<p><img src="/img/rag-aws-third-party-model-access.png" alt="rag-aws-third-party-model-access"></p>
+<p><img alt="rag-aws-third-party-model-access" src="/img/rag-aws-third-party-model-access.png"></p>
 <p>To fully use this application, you must <strong>have access to every AWS Bedrock third-paty LLMs</strong>.</p>
 <h2 id="3-build-the-qa-app-using-langchain"><strong>3. Build the Q&amp;A app using LangChain</strong></h2>
 <blockquote>
@@ -267,7 +267,7 @@ In section 5, I will show you how to build the same Q&amp;A app we&rsquo;re goin
 </ul>
 <p>To build the user interface I’m using <a href="https://streamlit.io/">Streamlit</a>. I decided to use Streamlit because I can build a simple and functional UI with just a few lines of Python.</p>
 <p>The next image showcases how the user interface will look once it is fully built.</p>
-<p><img src="/img/rag-aws-output-0.png" alt="app-result-0"></p>
+<p><img alt="app-result-0" src="/img/rag-aws-output-0.png"></p>
 <p>Once a user types a question in the text input, selects which AWS Bedrock LLM wants to use, and presses the submit button, the following steps will be executed:</p>
 <ul>
 <li>Run the user query on AWS Kendra and retrieve the relevant information.</li>
@@ -626,19 +626,19 @@ This <em>&ldquo;string&rdquo;</em> represents the context that will be added to 
 <ul>
 <li>Question 1:</li>
 </ul>
-<p><img src="/img/rag-aws-output-1.png" alt="app-result-1"></p>
+<p><img alt="app-result-1" src="/img/rag-aws-output-1.png"></p>
 <ul>
 <li>Question 2:</li>
 </ul>
-<p><img src="/img/rag-aws-output-2.png" alt="app-result-2"></p>
+<p><img alt="app-result-2" src="/img/rag-aws-output-2.png"></p>
 <ul>
 <li>Question 3:</li>
 </ul>
-<p><img src="/img/rag-aws-output-3.png" alt="app-result-3"></p>
+<p><img alt="app-result-3" src="/img/rag-aws-output-3.png"></p>
 <ul>
 <li>Question 4:</li>
 </ul>
-<p><img src="/img/rag-aws-output-4.png" alt="app-result-4"></p>
+<p><img alt="app-result-4" src="/img/rag-aws-output-4.png"></p>
 
     </div>
     

@@ -194,10 +194,10 @@ In such cases, context extraction and propagation is the responsibility of the l
 <p>The OpenTelemetry Collector is a standalone process designed to receive, process and export telemetry data.</p>
 <p>It removes the need to run, operate and maintain multiple agents/collectors in order to support open-source telemetry data formats (e.g. Jaeger, Prometheus, Zipkin, etc.) sending to multiple open-source or commercial back-ends.</p>
 <p>It eases the integration with your apps because you only need to export your data to a single endpoint, the collector endpoint, using the OTLP protocol.</p>
-<p><img src="/img/otel-metrics-exporter-otel-collector.png" alt="otel-metrics-exporter-otel-collector"></p>
+<p><img alt="otel-metrics-exporter-otel-collector" src="/img/otel-metrics-exporter-otel-collector.png"></p>
 <h2 id="exporting-the-data-directly-into-a-backend"><strong>Exporting the data directly into a backend</strong></h2>
 <p>You can export traces, metrics and logs directly to a backend using the <code>OpenTelemetry.Exporter.*</code> NuGet packages.</p>
-<p><img src="/img/otel-metrics-exporter-backend.png" alt="otel-metrics-exporter-backend"></p>
+<p><img alt="otel-metrics-exporter-backend" src="/img/otel-metrics-exporter-backend.png"></p>
 <blockquote>
 <p>In this post, we&rsquo;re going to export traces directly to Jaeger using the <code>OpenTelemetry.Exporter.OpenTelemetryProtocol</code> NuGet package.</p>
 </blockquote>
@@ -216,7 +216,7 @@ And to be honest, I would essentially be paraphrasing the official documentation
 <p>I have previously built four apps. These apps do not perform any business logic operations because that&rsquo;s not the objective here. <br>
 The crucial aspect is that all the apps communicate with each other and also interact with other external services such as Redis, MSSQL, or RabbitMQ.</p>
 <p>Here&rsquo;s the diagram:</p>
-<p><img src="/img/otel-components-diagram.png" alt="otel-diagram"></p>
+<p><img alt="otel-diagram" src="/img/otel-components-diagram.png"></p>
 <ul>
 <li>
 <p><strong>App1.WebApi</strong> is a <strong>NET 7 Web API</strong> with 2 endpoints.</p>
@@ -544,9 +544,9 @@ The code is pretty much the same as the one we have created for the Rabbit produ
 </span></span></code></pre></div><h1 id="jaeger">Jaeger</h1>
 <p>After adding the OpenTelemetry library to these four apps, we will generate some traffic and then access Jaeger to begin analyzing the traces that the apps are sending.</p>
 <p>If we examine an entire trace, here is how it looks:</p>
-<p><img src="/img/otel-jaeger.png" alt="otel-jaeger"></p>
+<p><img alt="otel-jaeger" src="/img/otel-jaeger.png"></p>
 <p>Let me break it up a little bit for you. That&rsquo;s a zoomed image of the spans we have created in our trace</p>
-<p><img src="/img/otel-jaeger-span.png" alt="otel-jaeger-span"></p>
+<p><img alt="otel-jaeger-span" src="/img/otel-jaeger-span.png"></p>
 <ul>
 <li>
 <p>The first span (publish-message) corresponds to the App1 api endpoint, that span is created automatically when the api controller is executed thanks to the <code>AddAspNetCoreInstrumentation()</code> extension method.</p>
@@ -577,19 +577,19 @@ The code is pretty much the same as the one we have created for the Rabbit produ
 </li>
 </ul>
 <p>If we want more info on any span we can drill-down and inspect the metadata. For example if we inspect the &ldquo;HTTP POST&rdquo; span we can see more info about it.</p>
-<p><img src="/img/otel-jaeger-http-instrumentation.png" alt="otel-jaeger-http-instrumentation"></p>
+<p><img alt="otel-jaeger-http-instrumentation" src="/img/otel-jaeger-http-instrumentation.png"></p>
 <p>Also, do you remember that in the App1 we added some extra Tags on the Activity?</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>activity?.SetTag(<span style="color:#e6db74">&#34;messaging.system&#34;</span>, <span style="color:#e6db74">&#34;rabbitmq&#34;</span>);
 </span></span><span style="display:flex;"><span>activity?.SetTag(<span style="color:#e6db74">&#34;messaging.destination_kind&#34;</span>, <span style="color:#e6db74">&#34;queue&#34;</span>);
 </span></span><span style="display:flex;"><span>activity?.SetTag(<span style="color:#e6db74">&#34;messaging.rabbitmq.queue&#34;</span>, <span style="color:#e6db74">&#34;sample&#34;</span>);
 </span></span></code></pre></div><p>Here is the result:</p>
-<p><img src="/img/otel-jaeger-rabbit-tags.png" alt="otel-jaeger-rabbit-tags"></p>
+<p><img alt="otel-jaeger-rabbit-tags" src="/img/otel-jaeger-rabbit-tags.png"></p>
 <p>Jaeger is capable of building a dependency-graph after looking at the traces.</p>
-<p><img src="/img/otel-jaeger-dag.png" alt="otel-jaeger-dag"></p>
+<p><img alt="otel-jaeger-dag" src="/img/otel-jaeger-dag.png"></p>
 <p>Also is capable of giving performance statistics.</p>
-<p><img src="/img/otel-jaeger-statistics.png" alt="otel-jaeger-statistics"></p>
+<p><img alt="otel-jaeger-statistics" src="/img/otel-jaeger-statistics.png"></p>
 <p>And compare traces.</p>
-<p><img src="/img/otel-jaeger-compare-traces.png" alt="otel-jaeger-compare-traces"></p>
+<p><img alt="otel-jaeger-compare-traces" src="/img/otel-jaeger-compare-traces.png"></p>
 <h1 id="how-to-test-the-example-apps">How to test the example apps</h1>
 <p>If you want to take a look at the 4 apps, I have uploaded everything on my <a href="https://github.com/karlospn/opentelemetry-tracing-demo">GitHub repository</a></p>
 <p>If you want to try for yourselves to execute this example, I have uploaded also a <strong>docker-compose</strong> file with everything you need, so you can run a compose up and you&rsquo;re good to go.</p>

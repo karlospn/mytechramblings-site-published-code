@@ -205,7 +205,7 @@ Fargate is a great example where the <code>dotnet-monitor</code> tool becomes re
 <p>But first of all, we need to deploy the app into AWS ECS Fargate with <code>dotnet-monitor</code> as a sidecar container.</p>
 <h1 id="deploy-into-aws-ecs-fargate"><strong>Deploy into AWS ECS Fargate</strong></h1>
 <p>This is the entire stack that we&rsquo;re going to deploy on AWS:</p>
-<p><img src="/img/fargate-dotnet-monitor-cdk-app.png" alt="fargate-dotnet-monitor-cdk-app"></p>
+<p><img alt="fargate-dotnet-monitor-cdk-app" src="/img/fargate-dotnet-monitor-cdk-app.png"></p>
 <ul>
 <li>A VPC with 2 public Subnets.</li>
 <li>A public Application Load Balancer that listens on port 80.
@@ -365,7 +365,7 @@ The format to invoke it is the following one:</p>
 <li><code>Metrics</code>: Tracks event counters from the System.Runtime, Microsoft.AspNetCore.Hosting, and Grpc.AspNetCore.Server event sources.</li>
 </ul>
 <p>If we invoke the <code>/trace</code> endpoint, we will receive a <code>.nettrace</code> file back. If we open it with Visual Studio, it will look like this:</p>
-<p><img src="/img/dotnetmonitor-nettrace-output.png" alt="dotnetmonitor-nettrace-output.png"></p>
+<p><img alt="dotnetmonitor-nettrace-output.png" src="/img/dotnetmonitor-nettrace-output.png"></p>
 <p>As you can see the contents of the <code>.nettrace</code> file are exactly the same as the output of the <code>dotnet-counters</code> tool. The main difference is that with <code>dotnet-counters</code> we can watch the application performance counters in real-time, meanwhile with <code>dotnet-monitor</code> we need to sample the counters during a period of time before being able to analyze them.</p>
 <p>Right now there is no traffic in our application, so nothing worth mentioning is happening. Let&rsquo;s start by applying some load.<br>
 To generate some load on the app I&rsquo;ll be using <a href="https://github.com/codesenberg/bombardier">Bombardier</a>.<br>
@@ -375,8 +375,8 @@ Bombardier is a modern HTTP(S) benchmarking tool, written in Golang and really s
 <p>And at the same time I&rsquo;m going to capture a trace using the <code>dotnet-monitor /trace</code> endpoint.<br>
 <code>GET http://alb-mon-ecs-prf-dotnet-demo-744303317.eu-west-1.elb.amazonaws.com:52323/trace?pid=1&amp;durationSeconds=120</code></p>
 <p>The following screenshots shows the values of the performance counters during the load test:</p>
-<p><img src="/img/dotnetmonitor-counters-1.png" alt="dotnetmonitor-counters-1"></p>
-<p><img src="/img/dotnetmonitor-counters-2.png" alt="dotnetmonitor-counters-2"></p>
+<p><img alt="dotnetmonitor-counters-1" src="/img/dotnetmonitor-counters-1.png"></p>
+<p><img alt="dotnetmonitor-counters-2" src="/img/dotnetmonitor-counters-2.png"></p>
 <p>The counters that seemed OK were:</p>
 <ul>
 <li>The CPU usage was low.</li>
@@ -412,21 +412,21 @@ The format to invoke it is the following one:</p>
 <code>GET http://alb-mon-ecs-prf-dotnet-demo-744303317.eu-west-1.elb.amazonaws.com:52323/dump?pid=1&amp;type=Full</code></p>
 <p>After invoking the endpoint we will receive a dump file ( beware the file might be several Gigabytes in size, if you don&rsquo;t want to receive such a huge file via HTTP you can configure <code>dotnet-monitor</code> to use an <a href="https://github.com/dotnet/dotnet-monitor/blob/main/documentation/egress.md"><code>egressProvider</code></a>).</p>
 <p>Now we can open it with Visual Studio. To start a debugging session, select &ldquo;Debug with Managed Only&rdquo;.</p>
-<p><img src="/img/vs-dump-debug.png" alt="vs-dump-debug"></p>
+<p><img alt="vs-dump-debug" src="/img/vs-dump-debug.png"></p>
 <p>Keep in mind that a dump it&rsquo;s a snapshot of your application in a concrete point in time, so you can&rsquo;t debug the application, but what we can do is select &ldquo;Debug &gt; Windows &gt; Threads&rdquo; to get a  list of what were the threads doing at the time we captured the dump.</p>
 <p>And as you can see on the next screenshot, it looks suspicious the amount of threads that are on the &ldquo;Sleep&rdquo; state.</p>
-<p><img src="/img/vs-dump-threads-view.png" alt="vs-dump-threads-view"></p>
+<p><img alt="vs-dump-threads-view" src="/img/vs-dump-threads-view.png"></p>
 <p>Another thing we can do is select &ldquo;Debug &gt; Windows &gt; Parallel Stacks&rdquo; and it gives us a more graphical view of what&rsquo;s happening with the active threads.</p>
-<p><img src="/img/vs-dump-parallel-stacks.png" alt="vs-dump-parallel-stacks"></p>
+<p><img alt="vs-dump-parallel-stacks" src="/img/vs-dump-parallel-stacks.png"></p>
 <p>In this case we can see that there are 74 threads grouped on 2 stacks, if we take a deeper look at those stacks we recognize that &ldquo;BlockingThreadsService.Run&rdquo; is a function of our app, if we double click on it, Visual Studio will take us there.</p>
 <blockquote>
 <p><em>To navigate from the Parallel Stacks window to the source code we need to enable the microsoft symbols server and also have access to the application symbols.</em></p>
 </blockquote>
 <p>After double-clicking on the &ldquo;BlockingThreadsService.Run&rdquo; on the Parallel Stacks windows, Visual Studio will show us which command was this thread executing when the dump was created.</p>
-<p><img src="/img/vs-dump-task-waitall.png" alt="vs-dump-task-waitall"></p>
+<p><img alt="vs-dump-task-waitall" src="/img/vs-dump-task-waitall.png"></p>
 <p>And it seems that the thread was stopped in the &ldquo;Task.WaitAll&rdquo; command.</p>
 <p>If we keep diggingg a little bit further and take a look at this thread call stack, we will see that Task1 is blocked on the lock statement</p>
-<p><img src="/img/vs-dump-task-lock.png" alt="vs-dump-task-lock"></p>
+<p><img alt="vs-dump-task-lock" src="/img/vs-dump-task-lock.png"></p>
 <p>It&rsquo;s pretty clear that there is some bad code on the &ldquo;BlockingThreadsService.Run&rdquo; function that is blocking threads, so now we can try to fix it. <br>
 I&rsquo;m not going to fix it in this post, we have found the performance issue and now we can move on.</p>
 <h1 id="net-cli-diagnostic-tools-vs-dotnet-monitor">.NET CLI Diagnostic tools vs dotnet-monitor</h1>

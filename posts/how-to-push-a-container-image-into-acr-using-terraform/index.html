@@ -298,7 +298,7 @@ The following code snippet illustrates exactly this.</p>
 </ul>
 <p>The <code>null_resource</code> is typically more complex to use and is often considered a last resort in Terraform workflows.</p>
 <p>In this case, the benefit of using it alongside the <code>az acr build command</code> is that it allows us to execute it on a machine that doesn&rsquo;t have Docker installed. This is because the <code>az acr build</code> command simply queues a build job within the ACR, eliminating the need to have Docker installed on your local machine.</p>
-<p><img src="/img/terraform-push-app-az-acr-build-command.png" alt="terraform-push-app-az-acr-build-command"></p>
+<p><img alt="terraform-push-app-az-acr-build-command" src="/img/terraform-push-app-az-acr-build-command.png"></p>
 <p>Another advantage of using this scenario is that you don&rsquo;t need to enable the admin user and password on the ACR, addressing a common security concern.</p>
 <p>To run the <code>az acr build</code> command, you need at least to have the <code>Contributor</code> role in Azure.</p>
 <h1 id="using-the-terraform-null_resource-resource-and-docker-commands"><strong>Using the Terraform null_resource resource and Docker commands</strong></h1>

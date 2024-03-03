@@ -338,7 +338,7 @@ Like any NuGet package, you can upload the template pack to a NuGet feed. The <c
 </ul>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>dotnet new -l
 </span></span></code></pre></div><p>The <code>dotnet new -l</code> command will list all the templates you have installed in your machine. If your custom template has been installed successfully it will show up there.</p>
-<p><img src="/img/dotnet-list-installed-templates.png" alt="dotnet-list-templates"></p>
+<p><img alt="dotnet-list-templates" src="/img/dotnet-list-installed-templates.png"></p>
 <h2 id="14-using-your-templates-with-the-net-cli"><strong>1.4. Using your templates with the .NET CLI</strong></h2>
 <p>Once you have installed your templates you can start creating new projects (or new solutions) with them using the <code>dotnet new &lt;TEMPLATE_NAME&gt;</code> command.</p>
 <p>If your template needs some command line parameters you can customize them by adding  a <code>dotnetcli.host.json</code> file inside the <code>.template.config</code> folder.</p>
@@ -421,10 +421,10 @@ To add your own icon you just need to put an  <code>icon.png</code> file inside 
 <p>After you have installed the templates via .NET CLI you need to enable the use of templates within Visual Studio.<br>
 To enable this option visit the <code>Preview Features</code> options in the <code>Tools &gt; Options</code> menu and look for the <code>Show all .NET Core templates in the New Project dialog</code> checkbox.</p>
 <p>After enabling this option if you choose to create a new project you’ll see your custom templates in the list of available templates.
-<img src="/img/dotnet-vs-list-templates.png" alt="list-templates"></p>
+<img alt="list-templates" src="/img/dotnet-vs-list-templates.png"></p>
 <p>If you try to create a new project using your custom template a dialog will show up with all the command line parameters you set previously in the <code>ide.host.json</code> file. <br>
 Here&rsquo;s an example about how it looks:<br>
-<img src="/img/dotnet-api-template-vs-dialog.png" alt="api-vs-dialog"></p>
+<img alt="api-vs-dialog" src="/img/dotnet-api-template-vs-dialog.png"></p>
 <p>I think it&rsquo;s enough theory for now and I have covered the basic concepts you need to know when building a template.</p>
 <p>In the next section I will show you how to convert some apps into .NET templates, but it won&rsquo;t be right now. <strong>See you in part 2</strong></p>
 

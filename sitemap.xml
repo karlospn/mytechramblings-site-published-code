@@ -2,6 +2,12 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://www.mytechramblings.com/</loc>
+    <lastmod>2024-03-01T09:42:30+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/</loc>
+    <lastmod>2024-03-01T09:42:30+01:00</lastmod>
+  </url><url>
     <loc>https://www.mytechramblings.com/tags/azure/</loc>
     <lastmod>2024-02-12T10:20:06+01:00</lastmod>
   </url><url>
@@ -9,12 +15,6 @@
     <lastmod>2024-02-12T10:20:06+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/iac/</loc>
-    <lastmod>2024-02-12T10:20:06+01:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/</loc>
-    <lastmod>2024-02-12T10:20:06+01:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/posts/</loc>
     <lastmod>2024-02-12T10:20:06+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/</loc>

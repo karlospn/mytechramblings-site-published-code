@@ -200,7 +200,7 @@ This is where .NET Aspire has limitations, as, despite its well-implemented natu
 </span></span><span style="display:flex;"><span>    <span style="color:#960050;background-color:#1e0010">...</span>
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>Now, by simply listing the available templates using the <code>dotnet new list</code> command, you can easily identify which versions of the templates you have installed on your computer.</p>
-<p><img src="/img/dotnet-templates-tips-nuget-version.png" alt="dotnet-templates-tips-nuget-version"></p>
+<p><img alt="dotnet-templates-tips-nuget-version" src="/img/dotnet-templates-tips-nuget-version.png"></p>
 <h1 id="centralize-the-nuget-package-versions-using-a-directorypackagesprops-files"><strong>Centralize the NuGet package versions using a Directory.Packages.props files</strong></h1>
 <p>This tip applies if you&rsquo;re building a template that is comprised of multiple projects (e.g., a Clean Architecture template).</p>
 <p>Managing dependencies for multi-project templates in the long run, as new package versions become available, can be challenging. It often leads to spending a significant amount of time dealing with projects using different versions of the same package within a single application.</p>
@@ -290,7 +290,7 @@ This is where .NET Aspire has limitations, as, despite its well-implemented natu
 <p>Adding support for Visual Studio to your .NET templates is a very useful feature for developers utilizing this IDE, and it is remarkably simple to implement.</p>
 <p>Create a file named <code>ide.host.json</code> and place it inside the <code>.template.config</code> folder.</p>
 <p>This file specifies which command-line parameters need to appear within a project dialog in Visual Studio when attempting to create a new project.</p>
-<p><img src="/img/dotnet-templates-tips-visual-studio.png" alt="dotnet-templates-tips-visual-studio"></p>
+<p><img alt="dotnet-templates-tips-visual-studio" src="/img/dotnet-templates-tips-visual-studio.png"></p>
 <p>If you want to know more about setting up the <code>ide.host.json</code> file, I recommend reading one of my posts. Although it&rsquo;s a bit old, the process of creating .NET templates hasn&rsquo;t changed significantly during this time.</p>
 <ul>
 <li><a href="https://www.mytechramblings.com/posts/create-dotnet-templates-for-visual-studio-part-1/">https://www.mytechramblings.com/posts/create-dotnet-templates-for-visual-studio-part-1/</a></li>
@@ -518,7 +518,7 @@ In contrast, the Dockerfile syntax has become an industry standard known by ever
 <p>Since .NET 8, there has been no native method that allows us to analyze security vulnerabilities in the packages used by our applications.</p>
 <p>You could use a external tool or utilize the <code>dotnet list package --vulnerable</code> command to generate a list of packages with known vulnerabilities. However, this required a proactive approach,  involving either manually running the command, integrating it into your CI/CD pipeline, or executing it through a Git webhook.</p>
 <p>With .NET 8, package dependency auditing is integrated by default when <code>dotnet restore</code> is executed. By default, a security audit is performed only for top-level dependencies. You can customize the security auditing according to your company&rsquo;s needs using the <code>NuGetAudit</code>, <code>NuGetAuditMode</code> and <code>NuGetAuditLevel</code> MSBuild properties.</p>
-<p><img src="/img/dotnet-templates-tips-nuget-audit.png" alt="dotnet-templates-tips-nuget-audit"></p>
+<p><img alt="dotnet-templates-tips-nuget-audit" src="/img/dotnet-templates-tips-nuget-audit.png"></p>
 <p>This is a really nice feature available starting from NuGet 6.8, the .NET 8 SDK, and Visual Studio 2022 17.8.</p>
 <p>You can disable it by setting the <code>NuGetAudit</code> property to <code>false</code>, but there is no compelling reason to turn off this feature in your templates.</p>
 <p>Personally, I recommend configuring the <code>NuGetAuditMode</code> in a more restrictive manner, ensuring that it audits not only the direct packages but also their transitive dependencies. However, if you find this level of scrutiny to be excessive for your requirements, it is advisable to, at the very least, maintain the default configuration.</p>

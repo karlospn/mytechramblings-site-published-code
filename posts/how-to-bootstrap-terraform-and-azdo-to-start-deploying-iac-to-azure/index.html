@@ -194,7 +194,7 @@ As always, if you don’t care about the post I have uploaded the source code on
 </ul>
 </li>
 <li>A cannot-delete lock on the Key Vault.</li>
-<li>An <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=azure-devops&amp;tabs=yaml">Azure DevOps variable group</a> that holds the credentials of the Service Principal.
+<li>An <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=azure-devops&tabs=yaml">Azure DevOps variable group</a> that holds the credentials of the Service Principal.
 <ul>
 <li>The bootstrap script links the Azure Key Vault we have created with this variable group and maps the SP credentials to the variable group, so the pipeline can have access to them.</li>
 </ul>
@@ -209,7 +209,7 @@ As always, if you don’t care about the post I have uploaded the source code on
 <p>There are a few options available:</p>
 <ul>
 <li>Create a variable group and store the SP credentials in plain text.</li>
-<li>Create a variable group, <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=azure-devops&amp;tabs=yaml#link-secrets-from-an-azure-key-vault">link it with an existing Key Vault</a> and use the secrets stored on the Vault as variables in the pipeline.</li>
+<li>Create a variable group, <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=azure-devops&tabs=yaml#link-secrets-from-an-azure-key-vault">link it with an existing Key Vault</a> and use the secrets stored on the Vault as variables in the pipeline.</li>
 <li>Use the <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/release/azure-key-vault?view=azure-devops">Azure Key Vault Task</a></li>
 </ul>
 <p>The first option is the easiest to implement but it is the less secure one, so it&rsquo;s discarded.</p>
@@ -917,7 +917,7 @@ On the Powershell part of the script we imported these resources into the Tf sta
 <li><code>variables.tf</code></li>
 </ul>
 <p>And afterwards, just execute the <code>Initialize-AzureBootstrapProcessForTerraform.ps1</code> script.</p>
-<p><img src="/img/tf-bs-azdo-cloudshell.png" alt="tf-bs-azdo-cloudshell"></p>
+<p><img alt="tf-bs-azdo-cloudshell" src="/img/tf-bs-azdo-cloudshell.png"></p>
 <h1 id="permissions-needed-to-execute-the-script">Permissions needed to execute the script</h1>
 <p>To run the script you&rsquo;ll need to have the following permissions:</p>
 <ul>
@@ -929,9 +929,9 @@ On the Powershell part of the script we imported these resources into the Tf sta
 <p>After executing the script we&rsquo;re ready to start deploying infrastructure to Azure using Azure Pipelines.</p>
 <p>I have created an example pipeline to show you how it looks.</p>
 <p>The pipeline has 3 runtime parameters. The Runtime parameters let you have more control over what values can be passed to a pipeline. In our case we are defining which Terraform commands should the pipeline execute.</p>
-<p><img src="/img/tf-bs-azdo-pipelines-run-pipeline.png" alt="tf-bs-azdo-pipelines-run-pipeline"></p>
+<p><img alt="tf-bs-azdo-pipelines-run-pipeline" src="/img/tf-bs-azdo-pipelines-run-pipeline.png"></p>
 <p>The pipeline uses the variable group we have created to obtain the credentials of the SP stored on the Key Vault.</p>
-<p><img src="/img/tf-bs-azdo-variable-group.png" alt="tf-bs-azdo-variable-group"></p>
+<p><img alt="tf-bs-azdo-variable-group" src="/img/tf-bs-azdo-variable-group.png"></p>
 <p>The next code snippet is an example of an IaC pipeline.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">trigger</span>: <span style="color:#ae81ff">none</span>
 </span></span><span style="display:flex;"><span>
@@ -1010,7 +1010,7 @@ On the Powershell part of the script we imported these resources into the Tf sta
 </span></span><span style="display:flex;"><span>      <span style="color:#f92672">ARM_TENANT_ID</span>: <span style="color:#ae81ff">$(sp-bs-tf-iac-tenant-id)</span>
 </span></span><span style="display:flex;"><span>      <span style="color:#f92672">ARM_SUBSCRIPTION_ID</span>: <span style="color:#ae81ff">$(sp-bs-tf-iac-subscription-id)</span>
 </span></span></code></pre></div><p>And here&rsquo;s how the output of the pipeline looks like:</p>
-<p><img src="/img/tf-bs-azdo-pipeline-tf-plan.png" alt="tf-bs-azdo-pipeline-tf-plan"></p>
+<p><img alt="tf-bs-azdo-pipeline-tf-plan" src="/img/tf-bs-azdo-pipeline-tf-plan.png"></p>
 <h1 id="reference-links">Reference links</h1>
 <p>Whenever I use some code that is taken from somewhere else or I draw inspiration from other person work I like to reference it in my posts.</p>
 <p>In this case I haven taken a few ideas from this project, so kudos to him.</p>

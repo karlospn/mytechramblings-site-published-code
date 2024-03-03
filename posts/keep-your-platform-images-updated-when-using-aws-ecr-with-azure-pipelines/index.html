@@ -171,7 +171,7 @@ As always, if you don’t care about the post I have uploaded the source code on
 <p>But first, let&rsquo;s talk a little bit about what&rsquo;s a platform image.</p>
 <h1 id="1-whats-a-platform-image"><strong>1. What&rsquo;s a platform image?</strong></h1>
 <p>When talking about containers security on the enterprise one of the best practices is to use your own platform images, those platform images are the base for your company applications.</p>
-<p><img src="/img/platform-images.png" alt="platform-images-diagram"></p>
+<p><img alt="platform-images-diagram" src="/img/platform-images.png"></p>
 <p>The point of having a platform image instead of directly using a base image is to ensure that the resulting containers are hardened according to any corporate policies before being deployed to production.<br>
 Also if your enterprise applications need some kind of software baked into the images to run properly, it is far better to install it on the platform images, instead of having to install it in each and every one of the application images.</p>
 <p>When working with .NET, there are quite a few official base images available (<a href="https://hub.docker.com/_/microsoft-dotnet/)">https://hub.docker.com/_/microsoft-dotnet/)</a>, but we don&rsquo;t want to use those images directly on our enterprise applications, instead we want to use those official images from Microsoft as a base image to build a platform image that is going to be own by our company.</p>
@@ -196,7 +196,7 @@ Also if your enterprise applications need some kind of software baked into the i
 <p>The following diagram shows the necessary steps we&rsquo;re going to build to automate the creation/update of a .NET platform image.</p>
 <p>The platform image creation/update process is going to be executed on an <strong>Azure DevOps Pipeline</strong>.<br>
 Every platform image will have its own Azure DevOps pipeline.</p>
-<p><img src="/img/update-platform-images-pipeline.png" alt="pipeline-diagram"></p>
+<p><img alt="pipeline-diagram" src="/img/update-platform-images-pipeline.png"></p>
 <p>The pipeline uses a scheduled trigger because we need to periodically poll the Microsoft container registry (<a href="https://mcr.microsoft.com/">https://mcr.microsoft.com/</a>) to check if there is any update available for the base image.</p>
 <p>When trying to update a platform image if there is NO new update available on the base image then the pipeline needs to end there.</p>
 <p>If there is a new updated version of the base image on the Microsoft registry then the pipeline needs to create a new version of the platform image, test it, store it into ECR and notify that an update has ocurred via Teams channel.</p>
@@ -381,7 +381,7 @@ When building a new version of a platform image, we will test that the new image
 <p>If all those steps run without any problem then the integration test step is a success, if any of those steps fails then the integration test fails step and breaks the pipeline execution.</p>
 <h2 id="building-the-pipeline"><strong>Building the pipeline</strong></h2>
 <p>Now it&rsquo;s time to start building the pipeline. Let me remind you again what I&rsquo;ll be building.</p>
-<p><img src="/img/update-platform-images-pipeline.png" alt="pipeline-diagram"></p>
+<p><img alt="pipeline-diagram" src="/img/update-platform-images-pipeline.png"></p>
 <p>I decided to use shell script to implement every step of the pipeline. Let&rsquo;s get to it.</p>
 <h3 id="force-update-process-script"><strong>force-update-process script</strong></h3>
 <p>This particular script runs only if the <code>force_update</code> parameter is set to <code>true</code> in the pipeline.</p>
@@ -1122,23 +1122,23 @@ Also a non-root user cannot run Kestrel on port 80. A new port needs to be speci
 </span></span><span style="display:flex;"><span>      <span style="color:#f92672">teams_webhook_uri</span>: <span style="color:#e6db74">&#39;$(TEAMS_WEBHOOK_URI)&#39;</span>
 </span></span><span style="display:flex;"><span>      <span style="color:#f92672">force_update</span>: <span style="color:#ae81ff">${{ parameters.force_update }}</span>
 </span></span></code></pre></div><p>Now let&rsquo;s run this pipeline a few times to test it out. But first we need to add an &ldquo;Incoming WebHook&rdquo; into a Microsoft Teams channel. This WebHook will be used by the pipeline to notify that a new version of the platform image is available.</p>
-<p><img src="/img/platform-img-incoming-webhook.png" alt="platform-img-incoming-webhook"></p>
+<p><img alt="platform-img-incoming-webhook" src="/img/platform-img-incoming-webhook.png"></p>
 <p>After creating the WebHook we have to add the WebHook URL as a Pipeline variable.</p>
-<p><img src="/img/platform-img-teams-webhook.uri.png" alt="platform-img-teams-webhook.uri"></p>
+<p><img alt="platform-img-teams-webhook.uri" src="/img/platform-img-teams-webhook.uri.png"></p>
 <p>Let&rsquo;s run the pipeline for the first time. Here&rsquo;s the result:</p>
-<p><img src="/img/platform-img-new-pipeline-execution.png" alt="platform-img-new-pipeline-execution"></p>
+<p><img alt="platform-img-new-pipeline-execution" src="/img/platform-img-new-pipeline-execution.png"></p>
 <p>As you can see the step that checks if a new update is available has not been executed because we&rsquo;re creating a platform image for the first time.</p>
 <p>If we take a look at the Microsoft Teams channel where we added the &ldquo;Incoming WebHook&rdquo; a new notification has popped up.</p>
-<p><img src="/img/platform-img-channel-notification.png" alt="platform-img-channel-notification"></p>
+<p><img alt="platform-img-channel-notification" src="/img/platform-img-channel-notification.png"></p>
 <p>Now let&rsquo;s wait for the scheduled trigger to execute the pipeline, here&rsquo;s the result of the pipeline execution:</p>
-<p><img src="/img/platform-img-existing-pipeline-execution.png" alt="platform-img-existing-pipeline-execution"></p>
+<p><img alt="platform-img-existing-pipeline-execution" src="/img/platform-img-existing-pipeline-execution.png"></p>
 <p>As you can see the pipeline was executed successfully, but the execution stopped on the &ldquo;Check if there is a new update&rdquo; step, if we drill-down on this concrete step.</p>
-<p><img src="/img/platform-img-no-new-update.png" alt="platform-img-no-new-update"></p>
+<p><img alt="platform-img-no-new-update" src="/img/platform-img-no-new-update.png"></p>
 <p>In the image above you can see that there were no new updates available on the Microsoft Artifact Registry so the pipeline ended there.</p>
 <p>Now let&rsquo;s force the creation of a new version of the platform image, to do that we need to check the <code>force_update</code> parameter when trying to manually execute the pipeline.</p>
-<p><img src="/img/platform-img-force-update.png" alt="platform-img-force-update"></p>
+<p><img alt="platform-img-force-update" src="/img/platform-img-force-update.png"></p>
 <p>Let&rsquo;s take a look at the AWS ECR repository after creating a couple more versions of this image.</p>
-<p><img src="/img/platform-img-autoincrement-version-tag.png" alt="platform-img-autoincrement-version-tag"></p>
+<p><img alt="platform-img-autoincrement-version-tag" src="/img/platform-img-autoincrement-version-tag.png"></p>
 <p>As you can see in the image above.</p>
 <ul>
 <li>The tag <em>&ldquo;6.0-bullseye-slim&rdquo;</em> has been automatically versioned everytime a new version of the platform image has been pushed into ECR.</li>

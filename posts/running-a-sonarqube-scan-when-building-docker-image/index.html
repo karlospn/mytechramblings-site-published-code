@@ -164,7 +164,7 @@ As always if you don’t care about the post I have upload the source code on my
 <li>The organization continuous integration tool checks out the code, builds, runs the tests and afterwards an integrated SonarQube scanner analyzes the results.</li>
 <li>The SonarQube scanner posts the results to the SonarQube server which provides feedback to developers through the SonarQube UI.</li>
 </ul>
-<p><img src="/img/sonarqube-dev-cycle.png" alt="sonarqube-dev-cycle"></p>
+<p><img alt="sonarqube-dev-cycle" src="/img/sonarqube-dev-cycle.png"></p>
 <p>To analyze your code you need to install and configure a SonarQube scanner. The scanner can either run on your build or as part of your continuous integration pipeline performing a scan whenever your build process is triggered.</p>
 <p>If you&rsquo;re using containers quite probably you&rsquo;re doing the build, test and analysis steps inside the Dockerfile, and setting up the SonarQube scanner when building the image can be a little more cumbersome than usual, and that&rsquo;s why I wanted to write a little bit about it.</p>
 <h1 id="prerequisites">Prerequisites</h1>

@@ -400,21 +400,21 @@ When the async call completes or if a new request comes in at this point, the Th
 <p>A good way to analyze this dump is with Visual Studio, but the dump is inside the docker container, so I&rsquo;m going to copy it from inside the container to my local machine using the command:</p>
 <p><code>docker cp &lt;container-id&gt;:&lt;path-to-the-dump&gt; .</code></p>
 <p>Now we can open it with Visual Studio. To start a debugging session, select &ldquo;Debug with Managed Only&rdquo;.</p>
-<p><img src="/img/vs-dump-debug.png" alt="vs-dump-debug"></p>
+<p><img alt="vs-dump-debug" src="/img/vs-dump-debug.png"></p>
 <p>Keep in mind that a dump it&rsquo;s a snapshot of your application in a concrete point in time, so you can&rsquo;t debug the application, but what we can do is select &ldquo;Debug &gt; Windows &gt; Threads&rdquo; to get a  list of what were the threads doing at the time we captured the dump.</p>
 <p>And as you can see on the next screenshot, it looks suspicious the amount of threads that are on the &ldquo;Sleep&rdquo; state.</p>
-<p><img src="/img/vs-dump-threads-view.png" alt="vs-dump-threads-view"></p>
+<p><img alt="vs-dump-threads-view" src="/img/vs-dump-threads-view.png"></p>
 <p>Another thing we can do is select &ldquo;Debug &gt; Windows &gt; Parallel Stacks&rdquo; and it gives us a more graphical view of what&rsquo;s happening with the active threads.</p>
-<p><img src="/img/vs-dump-parallel-stacks.png" alt="vs-dump-parallel-stacks"></p>
+<p><img alt="vs-dump-parallel-stacks" src="/img/vs-dump-parallel-stacks.png"></p>
 <p>In this case we can see that there are 74 threads grouped on 2 stacks, if we take a deeper look at those stacks we recognize that &ldquo;BlockingThreadsService.Run&rdquo; is a function of our app, if we double click on it, Visual Studio will take us there.</p>
 <blockquote>
 <p><em>To navigate from the Parallel Stacks window to the source code we need to enable the microsoft symbols server and also have access to the application symbols.</em></p>
 </blockquote>
 <p>After double-clicking on the &ldquo;BlockingThreadsService.Run&rdquo; on the Parallel Stacks windows, Visual Studio will show us which command was this thread executing when the dump was created.</p>
-<p><img src="/img/vs-dump-task-waitall.png" alt="vs-dump-task-waitall"></p>
+<p><img alt="vs-dump-task-waitall" src="/img/vs-dump-task-waitall.png"></p>
 <p>And it seems that the thread was stopped in the &ldquo;Task.WaitAll&rdquo; command.</p>
 <p>If we keep diggingg a little bit further and take a look at this thread call stack, we will see that Task1 is blocked on the lock statement</p>
-<p><img src="/img/vs-dump-task-lock.png" alt="vs-dump-task-lock"></p>
+<p><img alt="vs-dump-task-lock" src="/img/vs-dump-task-lock.png"></p>
 <p>It&rsquo;s pretty clear that there is some bad code on the &ldquo;BlockingThreadsService.Run&rdquo; function that is blocking threads, so now we can try to fix it. <br>
 I&rsquo;m not going to fix it in this post, we have found the performance issue and now we can move on to another one.</p>
 <h1 id="profiling-the-_high-cpu_-endpoint">Profiling the <em>/high-cpu</em> endpoint</h1>
@@ -517,18 +517,18 @@ I&rsquo;m not going to fix it in this post, we have found the performance issue 
 <p>We&rsquo;re going to analyze this trace with Visual Studio also, but the trace is inside the docker container, so I&rsquo;m going to copy it from inside the container to my local machine using the command:</p>
 <p><code>docker cp &lt;container-id&gt;:&lt;path-to-the-trace&gt; .</code></p>
 <p>Now we can open the trace with Visual Studio, and right after opening it we are prompted with the top CPU functions.</p>
-<p><img src="/img/vs-trace-top-functions.png" alt="vs-trace-top-functions"></p>
+<p><img alt="vs-trace-top-functions" src="/img/vs-trace-top-functions.png"></p>
 <p>On this list we can see that &ldquo;CalculatePrimeNumber&rdquo; takes the number one spot on the list with more than 60% of CPU time. If we click on the &ldquo;Open details&rdquo; link we can get a more in-depth information.</p>
-<p><img src="/img/vs-trace-open-details.png" alt="vs-trace-open-details"></p>
+<p><img alt="vs-trace-open-details" src="/img/vs-trace-open-details.png"></p>
 <p>This next section lists every function that the .NET trace profiled and shows the total CPU time spent and the self CPU time spent.</p>
 <ul>
 <li>Total CPU time: CPU time spent executing code in this function and in functions called by this function.</li>
 <li>Self CPU time: CPU time spent executing code in this function, excluding time in functions called by this function.</li>
 </ul>
 <p>One way to investigate is ordering by &ldquo;Self CPU&rdquo;, we&rsquo;ll get the functions ordered by how much CPU time they spent without any dependency.</p>
-<p><img src="/img/vs-trace-functions-cpu.png" alt="vs-trace-functions-cpu"></p>
+<p><img alt="vs-trace-functions-cpu" src="/img/vs-trace-functions-cpu.png"></p>
 <p>We can also view the call tree for every function, clicking in the &ldquo;Show Hot Path&rdquo; and &ldquo;Expand Hot Path&rdquo; will take us to the CPU hot path.</p>
-<p><img src="/img/vs-trace-hot-path.png" alt="vs-trace-hot-path.png"></p>
+<p><img alt="vs-trace-hot-path.png" src="/img/vs-trace-hot-path.png"></p>
 <p>After taking a look at the trace, it&rsquo;s pretty clear that the performance issue is the &ldquo;CalculatePrimeNumber&rdquo; function, and therefore we can go now and try to fix it.</p>
 <p>The &ldquo;CalculatePrimeNumber&rdquo; function is spending a huge amount of CPU time, so now we can take a look at the source code and try to determine if the CPU spent by this method is legitimate, it is a bug or maybe the code can be improved to reduce the usage.</p>
 <h1 id="profiling-the-_memory-leak_-endpoint">Profiling the <em>/memory-leak</em> endpoint</h1>
@@ -647,17 +647,17 @@ But there is a catch, to use the &ldquo;Debug Managed Memory&rdquo; from Visual 
 <p>We&rsquo;re going to analyze those dumps with Visual Studio also, but the dumps are inside the docker container, so I&rsquo;m going to copy them from inside the container to my local machine using the command:</p>
 <p><code>docker cp &lt;container-id&gt;:&lt;path-to-the-gcdump&gt; .</code></p>
 <p>Let&rsquo;s open the first dump with Visual Studio, it will show us a screen with all the managed objects that were on the Heap.</p>
-<p><img src="/img/vs-gcdump-managed-objects.png" alt="vs-gcdump-managed-objects"></p>
+<p><img alt="vs-gcdump-managed-objects" src="/img/vs-gcdump-managed-objects.png"></p>
 <p>If we select &ldquo;Compare to &gt; Browse&rdquo; on the menu and select the second dump it will shows us the diff between the 2 dump files.</p>
-<p><img src="/img/vs-gcdump-compare-snapshots.png" alt="vs-gcdump-compare-snapshots"></p>
+<p><img alt="vs-gcdump-compare-snapshots" src="/img/vs-gcdump-compare-snapshots.png"></p>
 <p>If we order the results by &ldquo;Size Diff&rdquo;  (Total size difference between the current snapshot and the baseline) those are the top results:</p>
-<p><img src="/img/vs-gcdump-top-objects.png" alt="vs-gcdump-top-objects"></p>
+<p><img alt="vs-gcdump-top-objects" src="/img/vs-gcdump-top-objects.png"></p>
 <p>Having strings and objects in the top spots is nothing unusual, any app contains hundreds or even thousands of strings and objects.</p>
 <p>The object of type <code>Node&lt;Guid, Object&gt;</code> is far more interesting. First of all, let&rsquo;s take a look at which types are referenced by this <code>Node&lt;Guid, Object&gt;</code></p>
-<p><img src="/img/vs-gcdump-references.png" alt="vs-gcdump-references"></p>
+<p><img alt="vs-gcdump-references" src="/img/vs-gcdump-references.png"></p>
 <p>More than 3800 new strings with a reference to the <code>Node&lt;Guid,Object&gt;</code> object were created in the interval of time between the 2 dumps. Also the size of those new strings is quite big, almost 400Mb.</p>
 <p>That&rsquo;s quite a sizeable amount of new strings referencing this particular object, let&rsquo;s dig deeper and take look at the Roots for this object.</p>
-<p><img src="/img/vs-gcdump-path-root.png" alt="vs-gcdump-path-root"></p>
+<p><img alt="vs-gcdump-path-root" src="/img/vs-gcdump-path-root.png"></p>
 <p>If we take a look at the roots we can see that the <code>Profiling.Api.Service.MemoryLeak.MemoryLeakService</code> (which is a service I have built on our demo app) has a reference to a <code>ConcurrentDictionary&lt;Guid, Object&gt;</code>, and in turn, the <code>ConcurrentDictionary&lt;Guid, Object&gt;</code> has a reference to the <code>Node&lt;Guid,Object&gt;</code>.</p>
 <p>The leakage seems to be coming from the <code>ConcurrentDictionary&lt;Guid, Object&gt;</code> on the <code>Profiling.Api.Service.MemoryLeak.MemoryLeakService</code> namespace.</p>
 <p>The next step would be to dig in the source code and take a look at what this dictionary is used for, because this behaviour might be completely legitimate and this app needs to work with thousands of new strings from time to time, and instead of a memory leak this is just a poor implementation.</p>

@@ -239,7 +239,7 @@ Instead, <strong>I decided that I&rsquo;ll try to migrate an app that has a rath
 </blockquote>
 <p>When talking about containers security, one of the best practices is to use your own platform images, those platform images are the base for your company applications.</p>
 <p>The point of having a platform image instead of directly using a base image is to ensure that the resulting containers are hardened according to any corporate policies before being deployed to production.</p>
-<p><img src="/img/platform-images.png" alt="platform-images"></p>
+<p><img alt="platform-images" src="/img/platform-images.png"></p>
 <p>The BookStore API  <code>Dockerfile</code> uses a multi-stage build to create the container image, but the container support feature works a little bit different, when you execute  the <code>dotnet publish</code> command instead of using a multi-stage approach it creates the application artifact locally (on your machine, outside of Docker) and afterwards the artifact is copied inside an image.</p>
 <p>The BookStore API <code>Dockerfile</code> uses those 2 platform images:</p>
 <ul>
@@ -367,7 +367,7 @@ Instead, <strong>I decided that I&rsquo;ll try to migrate an app that has a rath
 <li>To allow the .NET CLI to restore the private packages from my private <code>Azure DevOps</code> feed, I&rsquo;m going to place a <code>NuGet.Config</code> with the proper credentials on <a href="https://learn.microsoft.com/en-us/nuget/consume-packages/configuring-nuget-behavior">my computer</a>.</li>
 </ul>
 <p>After settings the credentials properly, let&rsquo;s run the <code>dotnet publish</code> command and the BookStore API container image is  created successfully.</p>
-<p><img src="/img/container-tools-sdk-image-size.png" alt="container-tools-sdk-create-image"></p>
+<p><img alt="container-tools-sdk-create-image" src="/img/container-tools-sdk-image-size.png"></p>
 <p>If you take a look at the picture above, you&rsquo;ll see that the image created with the <code>dotnet publish</code> command (bookstore-webapi) is exactly the same size as the one created using the <code>Dockerfile</code> (bookstore.api).</p>
 <h1 id="building-a-container-image-using-azure-pipelines"><strong>Building a container image using Azure Pipelines</strong></h1>
 <p>We know from the previous section that moving from the BookStore API <code>Dockerfile</code> to a &ldquo;dockerfile-less&rdquo; app that uses the built-in container support for .NET is doable on my local machine, but is it feasible on a CI/CD environment?</p>
@@ -425,9 +425,9 @@ Instead, <strong>I decided that I&rsquo;ll try to migrate an app that has a rath
 <p>We have successfully created the BookStore API container image using the container support for .NET SDK, but does it work?</p>
 <p>Let&rsquo;s run it using the  <code>docker run -d -p 5001:8080 bookstore-webapi</code> command and then let&rsquo;s send a request to <code>https:\\localhost:8080\api\orders</code> using cURL, and it doesn&rsquo;t work&hellip;</p>
 <p>The container appears to be running properly, but what it seems weird is that Kestrel is listening on port <code>80</code> instead of port <code>8080</code> that it was the one we defined on our base image using the <code>ASPNETCORE_URLS</code> environment variable.</p>
-<p><img src="/img/container-tools-sdk-starting-port.png" alt="container-tools-sdk-starting-port"></p>
+<p><img alt="container-tools-sdk-starting-port" src="/img/container-tools-sdk-starting-port.png"></p>
 <p>If we open a Shell session inside the container using the <code>docker exec -it &lt;container-id&gt; sh</code> command, it seems that the <code>root</code> user owns the <code>/app</code> folder, but have created a non-root user called <code>devsecops</code> who should own this directory.</p>
-<p><img src="/img/container-tools-sdk-pernissions.png" alt="container-tools-sdk-pernissions"></p>
+<p><img alt="container-tools-sdk-pernissions" src="/img/container-tools-sdk-pernissions.png"></p>
 <p>It seems that the container support for .NET takes a few concessions when creating an image, there are certain values that grt overriden like the running port or the users and permissions, which represents a problem if you&rsquo;re running an app that listens on a non-80 port or uses a non-root user.</p>
 <p>In fact, if we try to run the BookStore API on port 80 using the <code>docker run -d -p 5001:80 bookstore-webapi</code> command, it app works perfectly.</p>
 <ul>

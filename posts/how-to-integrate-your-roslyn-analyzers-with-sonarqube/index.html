@@ -155,7 +155,7 @@ Starting in .NET 5, some Roslyn Analyzers packages are included with the .NET SD
 <p>If you work regularly with .NET you probably heard about them, and if not, then it&rsquo;s quite possible that you have been used them without knowing it.</p>
 <p>Starting in .NET 5, some Roslyn Analyzers packages are included with the .NET SDK, which means that when you create a new .NET app, you&rsquo;ll see that it comes with some of them already preconfigured from the get-go.</p>
 <p>If we use Visual Studio to take a look at which Roslyn Analyzers packages comes with a newly created .NET 7 API, this is what you&rsquo;ll see:</p>
-<p><img src="/img/sonarqube-net7-api-analyzers.png" alt="sonarqube-net7-api-analyzers"></p>
+<p><img alt="sonarqube-net7-api-analyzers" src="/img/sonarqube-net7-api-analyzers.png"></p>
 <p>Currently you don&rsquo;t see much talk about Roslyn Analyzers, but they are still the &ldquo;de facto&rdquo; way when you want to perform any kind of custom static analysis in your source code.</p>
 <p>On the other hand, SonarQube is one of the most well-known tools for performing static code analysis, it comes prepacked with a huge array of <a href="https://rules.sonarsource.com/csharp">csharp rules</a> to try to enforce coding best practices, security, maintainability, etc.</p>
 <p>Now imagine that we&rsquo;ve come up with our own set of coding rules for our application, we&rsquo;ve built a Roslyn Analyzer library that implements those rules and we want to integrate them with SonarQube, so that issues detected by those rules can be reported and managed in SonarQube.</p>
@@ -192,7 +192,7 @@ Starting in .NET 5, some Roslyn Analyzers packages are included with the .NET SD
 <p>The first step is to convert the NuGet package that contains the roslyn rules into a SonarQube plugin, to do that you need to download the <code>RoslynSonarQubePluginGenerator</code> tool from <a href="https://github.com/SonarSource/sonarqube-roslyn-sdk">here</a> and run the following command:</p>
 <p><code>./RoslynSonarQubePluginGenerator.exe /a:MyRoslynAnalyzer /acceptLicenses</code></p>
 <p>The tool will create a .jar file named after the package name and version in the current directory e.g. myroslynanalyzer-plugin-1.0.0.jar</p>
-<p><img src="/img/sonarqube-create-roslyn-plugin.png" alt="sonarqube-create-roslyn-plugin"></p>
+<p><img alt="sonarqube-create-roslyn-plugin" src="/img/sonarqube-create-roslyn-plugin.png"></p>
 <h3 id="step-2-install-the-plugin-in-your-sonarqube-instance"><strong>Step 2: Install the plugin in your SonarQube instance</strong></h3>
 <p>To install the plugin:</p>
 <ul>
@@ -202,11 +202,11 @@ Starting in .NET 5, some Roslyn Analyzers packages are included with the .NET SD
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ae81ff">FROM sonarqube:9.9.0-community</span>
 </span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY * /opt/sonarqube/extensions/plugins/</span>
 </span></span></code></pre></div><p>You can take a look at the plugins installed going to the &ldquo;Administration&rdquo; section of your SonarQube instance, the rules plugin must show up here, if it doesn&rsquo;t then you did something wrong.</p>
-<p><img src="/img/sonarqube-with-plugin-installed.png" alt="sonarqube-with-plugin-installed"></p>
+<p><img alt="sonarqube-with-plugin-installed" src="/img/sonarqube-with-plugin-installed.png"></p>
 <h3 id="step-3-configure-your-quality-gates-to-use-the-roslyn-rules"><strong>Step 3: Configure your Quality Gates to use the Roslyn rules</strong></h3>
 <p>Now that you have installed the plugin on your SonarQube server, it is time to configure the custom rules on SonarQube.</p>
 <p>In the &ldquo;Rules&rdquo; section, if you search by repository name, you&rsquo;ll find your custom rules.</p>
-<p><img src="/img/sonarqube-enable-roslyn-rule-on-quality-gate.png" alt="sonarqube-enable-roslyn-rule-on-quality-gate"></p>
+<p><img alt="sonarqube-enable-roslyn-rule-on-quality-gate" src="/img/sonarqube-enable-roslyn-rule-on-quality-gate.png"></p>
 <p>Now you can associate any of those custom rules with a Quality Profile, just like any other SonarQube rule.</p>
 <h3 id="step-4-run-a-scan"><strong>Step 4: Run a scan</strong></h3>
 <p>The last step will be to analyze a .NET application to test that the custom rules get triggered as expected.</p>
@@ -221,7 +221,7 @@ Starting in .NET 5, some Roslyn Analyzers packages are included with the .NET SD
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>dotnet sonarscanner end /d:sonar.login<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;sqa_4278ef757202aaa56f0b632344a966be85a9383b&#34;</span>
 </span></span></code></pre></div><p>If we inspect the result of the analysis on SonarQube, we&rsquo;ll see that the rules from the plugin where triggered as expected.</p>
-<p><img src="/img/sonarqube-roslyn-plugin-rules-error-blocker.png" alt="sonarqube-roslyn-plugin-rules-error-blocker"></p>
+<p><img alt="sonarqube-roslyn-plugin-rules-error-blocker" src="/img/sonarqube-roslyn-plugin-rules-error-blocker.png"></p>
 <h2 id="pros-and-cons"><strong>Pros and cons</strong></h2>
 <p>Let&rsquo;s discuss what&rsquo;re the pros and cons of using this integration.</p>
 <p><strong>Pros</strong></p>
@@ -276,7 +276,7 @@ Starting in .NET 5, some Roslyn Analyzers packages are included with the .NET SD
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/Project&gt;</span>
 </span></span></code></pre></div><p>Using Visual Studio you can browse which Roslyn Analyzer packages are installed on your target application. After installing the NuGet package on the target application, it will be listed on the &ldquo;Dependencies &gt; Analyzers&rdquo; section.</p>
-<p><img src="/img/sonarqube-net7-api-custom-analyzers.png" alt="sonarqube-net7-api-custom-analyzers"></p>
+<p><img alt="sonarqube-net7-api-custom-analyzers" src="/img/sonarqube-net7-api-custom-analyzers.png"></p>
 <h3 id="step-2-run-a-scan"><strong>Step 2: Run a scan</strong></h3>
 <p>The second and last step is perform a scan on a .NET application to test that the custom rules are imported into sonarQube as expected.</p>
 <ul>
@@ -284,7 +284,7 @@ Starting in .NET 5, some Roslyn Analyzers packages are included with the .NET SD
 <li>To perform a SonarQube scan I will use the <a href="https://github.com/SonarSource/sonar-scanner-cli">SonarScanner CLI</a> tool.</li>
 </ul>
 <p>If we execute a <code>dotnet build</code> command after installing the package containing the rules, we will see the rules result on the MSBuild output.</p>
-<p><img src="/img/sonarqube-dotnet-build-output.png" alt="sonarqube-dotnet-build-output"></p>
+<p><img alt="sonarqube-dotnet-build-output" src="/img/sonarqube-dotnet-build-output.png"></p>
 <p>When a SonarQube scan is executed, the MSBuild output gets imported by default into SonarQube, and as you can see in the above screenshot the MSBuild output contains the output of the Roslyn rules, this is the reason of why this integration works.</p>
 <p>The next code snippet shows an example of how to perform a scan using the SonarScanner command tool and the .NET CLI.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>dotnet sonarscanner begin /k:<span style="color:#e6db74">&#34;MyDemo.WebApi&#34;</span> /d:sonar.login<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;sqa_4278ef757202aaa56f0b632344a966be85a9383b&#34;</span> /d:sonar.host.url<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://localhost:9000&#34;</span>
@@ -293,10 +293,10 @@ Starting in .NET 5, some Roslyn Analyzers packages are included with the .NET SD
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>dotnet sonarscanner end /d:sonar.login<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;sqa_4278ef757202aaa56f0b632344a966be85a9383b&#34;</span>
 </span></span></code></pre></div><p>If we inspect the result of the analysis on SonarQube, we&rsquo;ll see that the rules from the NuGet package where imported succesfully into SonarQube.</p>
-<p><img src="/img/sonarqube-external-issues-error.png" alt="sonarqube-external-issues-error"></p>
+<p><img alt="sonarqube-external-issues-error" src="/img/sonarqube-external-issues-error.png"></p>
 <p>One of the biggest disadvantages when using the previous integration was the fact that it didn&rsquo;t work with SonarCloud. This approach can be used with both: Sonarcloud and SonarQube.</p>
 <p>The next screenshot shows the result of the previous analysis on SonarCloud instead of SonarQube.</p>
-<p><img src="/img/sonarqube-external-issues-error-on-sonarcloud.png" alt="sonarqube-external-issues-error-on-sonarcloud"></p>
+<p><img alt="sonarqube-external-issues-error-on-sonarcloud" src="/img/sonarqube-external-issues-error-on-sonarcloud.png"></p>
 <h2 id="pros-and-cons-1"><strong>Pros and cons</strong></h2>
 <p>Let&rsquo;s discuss what&rsquo;re the pros and cons of using this integration.</p>
 <p><strong>Pros</strong></p>
@@ -359,13 +359,13 @@ Starting in .NET 5, some Roslyn Analyzers packages are included with the .NET SD
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> diagnostic = Diagnostic.Create(Rule, Location.None);
 </span></span><span style="display:flex;"><span>context.ReportDiagnostic(diagnostic);
 </span></span></code></pre></div><p>If we test the above Roslyn rule on a newly created .NET 7 API, here&rsquo;s how the MSBuild output looks like:</p>
-<p><img src="/img/sonarqube-csc-location-none.png" alt="sonarqube-csc-location-none"></p>
+<p><img alt="sonarqube-csc-location-none" src="/img/sonarqube-csc-location-none.png"></p>
 <p>As you can observe from the previous screenshot, the MSBuild output contains 3 warnings, but those warnings had no specific location.</p>
 <p>If we convert the above rule on a SonarQube plugin and then perform a scan, this is what we will see on SonarQube:</p>
-<p><img src="/img/sonarqube-plugin-location-none-wrong-findings.png" alt="sonarqube-plugin-location-none-wrong-findings.png"></p>
+<p><img alt="sonarqube-plugin-location-none-wrong-findings.png" src="/img/sonarqube-plugin-location-none-wrong-findings.png"></p>
 <p>In the above screenshot, only 1 issue is present on SonarQube but the csharp compiler reported 3 warnings.</p>
 <p>If try the second integration (package the above Roslyn rule inside a Nuget package and install it on a target application), the result is even worse, because no issue gets imported into SonarQube.</p>
-<p><img src="/img/sonarqube-location-none-no-findings.png" alt="sonarqube-location-none-no-findings"></p>
+<p><img alt="sonarqube-location-none-no-findings" src="/img/sonarqube-location-none-no-findings.png"></p>
 <p>This seems a bug to me, if someone knows a way to fix this issue DM me on Github or Linkedin, but meanwhile keep this in mind if you want to integrate a Roslyn Analyzer library with SonarQube.</p>
 
     </div>

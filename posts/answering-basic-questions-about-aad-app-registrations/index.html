@@ -173,17 +173,17 @@ These permission scopes need to be granted to client apps via consent grant.</p>
 <blockquote>
 <p>If you take a look at the application manifest the scopes are being called called &ldquo;oauth2permissions&rdquo;,</p>
 </blockquote>
-<p><img src="/img/scopes-ouath2permissions.png" alt="manifest-oauth2permissions"></p>
+<p><img alt="manifest-oauth2permissions" src="/img/scopes-ouath2permissions.png"></p>
 <p>You can add new scopes to an app from the &ldquo;Expose API&rdquo; section</p>
-<p><img src="/img/add-scopes.png" alt="add-scopes"></p>
+<p><img alt="add-scopes" src="/img/add-scopes.png"></p>
 <p>If your app needs to consume another app already registered on AAD it can request which scopes it needs from the &ldquo;API permissions&rdquo; section</p>
-<p><img src="/img/api-permissions.png" alt="api-permissions"></p>
+<p><img alt="api-permissions" src="/img/api-permissions.png"></p>
 <p>When talking about <strong>appRoles</strong> we should first talk about RBAC. Role-based access control or RBAC is a popular mechanism to enforce authorization in applications. When using RBAC, an administrator grants permissions to roles, and not to individual users or groups. The administrator can then assign roles to different users and groups to control who has access to what content and functionality. <br>
 AppRoles are the collection of roles that an app may declare. These roles can be assigned to users, groups, or service principals.</p>
 <p>If you need to add a need AppRole onto your app you need to add it directly into the app manifest, <strong>there is not a UI for it</strong>.</p>
-<p><img src="/img/aad-approles-manifest.png" alt="approles-manifest"></p>
+<p><img alt="approles-manifest" src="/img/aad-approles-manifest.png"></p>
 <p>If you want to assign users or groups onto an AppRole you need to do it from the &ldquo;Enterprise Application&rdquo; blade. You can&rsquo;t do it from the &ldquo;App Registration&rdquo; blade.</p>
-<p><img src="/img/aad-add-users-to-app.png" alt="add-users-to-app"></p>
+<p><img alt="add-users-to-app" src="/img/aad-add-users-to-app.png"></p>
 <h1 id="q3-whats-the-difference-between-delegated-permissions-and-application-permissions">Q3: What&rsquo;s the difference between delegated permissions and application permissions?</h1>
 <p><strong>Delegated permissions</strong> are used when you want to authenticate to a WebAPI or other services with the currently logged-on user.<br>
 This involves a physical user and a user interface.</p>
@@ -196,12 +196,12 @@ For example,  your application might have a section that requires user interacti
 <ul>
 <li>In application permissions the &ldquo;scp&rdquo; claim is not present in the access token. You need to use the &ldquo;roles&rdquo; attribute.
 Meanwhile for delegated permissions if the user logged has a role assigned the token will contains both claims: &ldquo;scp&rdquo; and &ldquo;roles&rdquo;.</li>
-<li>If your working with the Graph API you might need different permissions depending if you&rsquo;re using delegated or application permissions. Take a quick look into the Microsoft documentation before assuming that the same permissions will work in both scenarios. For example: <a href="https://docs.microsoft.com/en-us/graph/api/drive-get?view=graph-rest-beta&amp;tabs=http">https://docs.microsoft.com/en-us/graph/api/drive-get?view=graph-rest-beta&amp;tabs=http</a></li>
+<li>If your working with the Graph API you might need different permissions depending if you&rsquo;re using delegated or application permissions. Take a quick look into the Microsoft documentation before assuming that the same permissions will work in both scenarios. For example: <a href="https://docs.microsoft.com/en-us/graph/api/drive-get?view=graph-rest-beta&tabs=http">https://docs.microsoft.com/en-us/graph/api/drive-get?view=graph-rest-beta&tabs=http</a></li>
 </ul>
 <h1 id="q5-my-application-needs-permission-to-call-microsoft-graph-api-what-i-need-to-do">Q5: My application needs permission to call Microsoft Graph API, what I need to do?</h1>
 <p>That&rsquo;s probably one of the simplest things to do on App Registrations.<br>
 Just register your application and after that navigate to the &ldquo;API permissions&rdquo; section, select &ldquo;Add permission&rdquo; &gt; &ldquo;Microsoft Graph&rdquo; &gt; select between delegated or application permissions &gt;  select which permissions you need from the Microsoft Graph API.</p>
-<p>But be careful and don&rsquo;t get confused between the &ldquo;Microsoft Graph (<a href="https://graph.microsoft.com/)%22">https://graph.microsoft.com/)&quot;</a> Api and the &ldquo;Azure Active Directory Graph&rdquo; Api (<a href="https://graph.windows.net/)">https://graph.windows.net/)</a>. <br>
+<p>But be careful and don&rsquo;t get confused between the &ldquo;Microsoft Graph (<a href="https://graph.microsoft.com/%29%22">https://graph.microsoft.com/)"</a> Api and the &ldquo;Azure Active Directory Graph&rdquo; Api (<a href="https://graph.windows.net/)">https://graph.windows.net/)</a>. <br>
 The AAD Graph is the old version and is currently deprecated, you should always use the Microsoft Graph API.</p>
 <h1 id="q6-whats-the-use-of-the-default-scope">Q6: What&rsquo;s the use of the .default scope?</h1>
 <p>The .default scope is a built-in scope for every application and it refers to the static list of permissions configured on the application registration.
@@ -213,7 +213,7 @@ If we request an access token using the .default scope our users will be asked t
 </li>
 </ul>
 <p>I have register an app with the following permissions:</p>
-<p><img src="/img/default-scope-permissions-1.png" alt="default-scope-permissions-1"></p>
+<p><img alt="default-scope-permissions-1" src="/img/default-scope-permissions-1.png"></p>
 <p>And if I request an access token using the .default scope</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#a6e22e">https</span><span style="color:#f92672">:</span><span style="color:#75715e">//login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/oauth2/v2.0/authorize
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">?</span><span style="color:#a6e22e">client_id</span><span style="color:#f92672">=</span><span style="color:#ae81ff">5833</span><span style="color:#a6e22e">d6c7</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span><span style="color:#a6e22e">ba5</span><span style="color:#f92672">-</span><span style="color:#ae81ff">4184</span><span style="color:#f92672">-</span><span style="color:#ae81ff">9</span><span style="color:#a6e22e">b14</span><span style="color:#f92672">-</span><span style="color:#ae81ff">050</span><span style="color:#a6e22e">a6b5ed212</span>
@@ -234,9 +234,9 @@ If we request an access token using the .default scope our users will be asked t
 </li>
 </ul>
 <p>The payment app exposes these 3 scopes:</p>
-<p><img src="/img/default-scope-permissions-2.png" alt="default-scope-permissions-2"></p>
+<p><img alt="default-scope-permissions-2" src="/img/default-scope-permissions-2.png"></p>
 <p>The Booking app has the following permissions for the payment app:</p>
-<p><img src="/img/default-scope-permissions-3.png" alt="default-scope-permissions-3"></p>
+<p><img alt="default-scope-permissions-3" src="/img/default-scope-permissions-3.png"></p>
 <p>If I request an access token using the .default scope</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#a6e22e">https</span><span style="color:#f92672">:</span><span style="color:#75715e">//login.microsoftonline.com/8a0671e2-3a30-4d30-9cb9-ad709b9c744a/oauth2/v2.0/authorize
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">?</span><span style="color:#a6e22e">client_id</span><span style="color:#f92672">=</span><span style="color:#a6e22e">c3b8b95f</span><span style="color:#f92672">-</span><span style="color:#ae81ff">922</span><span style="color:#a6e22e">b</span><span style="color:#f92672">-</span><span style="color:#ae81ff">4384</span><span style="color:#f92672">-</span><span style="color:#ae81ff">8</span><span style="color:#a6e22e">ab2</span><span style="color:#f92672">-</span><span style="color:#a6e22e">a1215a9fc295</span>
@@ -257,7 +257,7 @@ If we request an access token using the .default scope our users will be asked t
 <h1 id="q7-i-have-built-a-webapi-using-csharp-and-i-want-to-add-authentication-and-authorization-using-aad-what-library-should-i-use-adalnet-msalnet-or-microsoftidentityweb">Q7: I have built a WebApi using csharp and I want to add authentication and authorization using AAD. What library should I use? ADAL.NET, MSAL.NET or Microsoft.Identity.Web?</h1>
 <p>The question between ADAL.NET and MSAL.NET is a pretty common question and to make things worse now we have another new library&hellip;</p>
 <p>The main difference between ADAL and MSAL is that ADAL.NET integrates with the Azure AD for developers (v1.0) endpoint, where MSAL.NET integrates with the Microsoft identity platform (v2.0) endpoint.</p>
-<p><img src="/img/adal-vs-msal.png" alt="adal-vs-msal"></p>
+<p><img alt="adal-vs-msal" src="/img/adal-vs-msal.png"></p>
 <p>If you can choose between ADAL.NET and MSAL.NET just use MSAL.NET.</p>
 <p>MSAL.NET is the newer version of Microsoft authentication libraries and it will allow you to acquire tokens for users signing-in to your application with Azure AD, Microsoft accounts or Azure AD B2C.</p>
 <p>If you have an old app lying around that is using the AAD for authentication probably is using the ADAL.NET library, but if you&rsquo;re creating a new application right now it doesn&rsquo;t make sense to use ADAL.NET.</p>
@@ -265,7 +265,7 @@ If we request an access token using the .default scope our users will be asked t
 <blockquote>
 <p>Microsoft Identity Web provides the glue between the ASP.NET Core middleware and MSAL .NET to bring a clearer, more robust developer experience, which also leverages the power of the Microsoft identity platform (formerly Azure AD v2.0 endpoint), and leverages OpenId Connect middleware, which means developers can develop applications which allow several identity providers, including integration with Azure AD B2C.</p>
 </blockquote>
-<p><img src="/img/microsoft-web-identity-fits.png" alt="microsoft-web-identity-fits"></p>
+<p><img alt="microsoft-web-identity-fits" src="/img/microsoft-web-identity-fits.png"></p>
 <p>That&rsquo;s how Microsoft describes this new library.</p>
 <p>Microsoft.Identity.Web is the most recent library for authentication (version 1.0.0 was released 15 days ago) and from my standpoint it seems that with this library Microsoft is trying to simplify the multiple steps you needed to perform in your application when using MSAL.NET.  <br>
 Nonetheless if you want to use the library there is catch: <strong>it only works with .NET Core 3.1 and .NET 5</strong></p>
@@ -282,7 +282,7 @@ But if you plan to install the library in your app and forget about it, that mig
 The idea is to propagate the delegated user identity and permissions through the request chain.
 The SPA has to make authenticated requests to the WebApi and also the middle-tier API need to make authenticated requests to the downstream services.</p>
 <p>Let me try to build a quick example to see how the OBO Flow works. I&rsquo;m going to build the following example:</p>
-<p><img src="/img/obo-flow.png" alt="obo-flow"></p>
+<p><img alt="obo-flow" src="/img/obo-flow.png"></p>
 <p>1 - The SPA signs a user using MSAL.js and in response acquires an access token for the WebApi 1.<br>
 2 - The SPA calls the WebApi 1 passing the access token.<br>
 3 - The WebApi 1 authorizes the caller and uses the access token that has received to request another access token for WebApi 2.<br>
@@ -374,7 +374,7 @@ The audience attribute (aud) identifies the intended recipient of the token.</p>
 <p>But here comes the catch: <strong>The AAD V2 endpoint is capable of issuing tokens in V1 and V2 format. And by default is issuing tokens in V1 format.</strong></p>
 <p>The parameter that allows you to switch between tokens formats is called <strong>&ldquo;accessTokenAcceptedVersion&rdquo;</strong> and you can find it in the application manifest (<a href="https://docs.microsoft.com/es-es/azure/active-directory/develop/reference-app-manifest">https://docs.microsoft.com/es-es/azure/active-directory/develop/reference-app-manifest</a>)<br>
 The possible values for accesstokenAcceptedVersion are 1, 2, or null. If the value is null, this parameter defaults to 1, which corresponds to the v1.0 endpoint.</p>
-<p><img src="/img/aad-accesstokenacceptedversion-attribute.png" alt="aad-accesstokenacceptedversion-attribute"></p>
+<p><img alt="aad-accesstokenacceptedversion-attribute" src="/img/aad-accesstokenacceptedversion-attribute.png"></p>
 <p>A common issue I&rsquo;m seeing around in a few places is people thinking that they can validate exactly the same way all the access token issued from the V2 endpoint.<br>
 You&rsquo;re going to run in some troubles if you&rsquo;re try to validate the issuer and the audience from an access token <strong>issued</strong> by the AAD V2 endpoint but in the <strong>V1</strong> format.</p>
 <ul>

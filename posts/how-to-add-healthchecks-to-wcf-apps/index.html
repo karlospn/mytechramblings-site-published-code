@@ -447,7 +447,7 @@ You can use the IoC container that best suits your necessities, just look it up 
 <p>Well that&rsquo;s because if you&rsquo;re going to move an existing WCF into Azure hands down the best option is to use Azure App Services. And if you have implemented a healthcheck endpoint in your WCF you can totally put it to good use.</p>
 <p>Azure Web Apps contains a Health Check feature and is used to prevent unhealthy instance(s) from serving requests, thus improving availability. The feature will ping the specified health check path on all instances of your webapp every 2 minutes.<br>
 Just open the Resource Explorer find and element named &ldquo;healthCheckPath&rdquo; and set its value to the health path of your Wcf application: <strong><em>/health.svc/check</em></strong></p>
-<p><img src="/img/healthcheck-web-app.png" alt="healthcheck"></p>
+<p><img alt="healthcheck" src="/img/healthcheck-web-app.png"></p>
 <p>If you want to know more information about the healthcheck feature in Azure Web App Services you can read it from the Project Kudu github page: <a href="https://github.com/projectkudu/kudu/wiki/Health-Check-(Preview)">here</a></p>
 
     </div>

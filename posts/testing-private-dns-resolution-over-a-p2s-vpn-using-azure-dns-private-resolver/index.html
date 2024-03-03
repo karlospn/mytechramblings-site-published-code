@@ -165,7 +165,7 @@ This becomes quite problematic when you&rsquo;re using private endpoints to secu
 <h1 id="what-is-the-problem-when-trying-to-resolve-a-private-resource-over-an-azure-vpn-p2s-connection">What is the problem when trying to resolve a private resource over an Azure VPN P2S connection</h1>
 <p>First of all, let me explain a little more in-depth what this problem is all about.<br>
 I&rsquo;m going to use a simplified example, so you can have a better understanding of what&rsquo;s the issue here.</p>
-<p><img src="/img/vpn-p2s-problem-diagram.png" alt="example-diagram"></p>
+<p><img alt="example-diagram" src="/img/vpn-p2s-problem-diagram.png"></p>
 <p>As you can see this is a pretty basic setup, we have a public app where customers can connect via public internet, this public app uses a few private resources, to be more precise, it makes a call to another app and it also needs a database to persists data.</p>
 <p>It makes no sense from the database and the second app to be accessible from anywhere on the internet, so we&rsquo;re going to make them private. To make both resources private we&rsquo;re going to use Azure Private Endpoints.</p>
 <p>When a private endpoint is created, Azure changes the public name resolution by adding another CNAME record pointing towards the dedicated FQDN of the private endpoint. <br>
@@ -202,7 +202,7 @@ By default, it also creates a private DNS zone, corresponding to the <code>priva
 <li>When the private endpoint was created a private DNS zone was created with the corresponding <code>privatelink</code> subdomain. <br>
 This DNS zone contains an A-record that points the private endpoint address to the private IP that is associated for the resource. Also this private DNS zone has been attached to the VNET.</li>
 </ul>
-<p><img src="/img/private-endpoint-dns-zone.png" alt="private-endpoint-dns-zone"></p>
+<p><img alt="private-endpoint-dns-zone" src="/img/private-endpoint-dns-zone.png"></p>
 <ul>
 <li>Now when you try to resolve it from a client that&rsquo;s inside the VNET, it will response with the private IP address.</li>
 </ul>
@@ -294,7 +294,7 @@ The hosts file ends up having hundreds of private IPs and becomes quite cumberso
 </span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">listen</span><span style="color:#f92672">-</span><span style="color:#a6e22e">on</span> { <span style="color:#a6e22e">any</span>; };
 </span></span><span style="display:flex;"><span>};
 </span></span></code></pre></div><p>If you&rsquo;re using a Windows Virtual Machine, it is also quite straightforward to set it up. Simply add the Azure DNS IP in the Forwarder Tab of the DNS Server.</p>
-<p><img src="/img/windows-dns-manager-forwarders.png" alt="windows-dns-manager"></p>
+<p><img alt="windows-dns-manager" src="/img/windows-dns-manager-forwarders.png"></p>
 <p>Using a DNS Forwarder is the de facto solution nowadays to resolve private DNS zones and it works fine.</p>
 <p>If you want a more in-depth documentation about it, you can go here:</p>
 <ul>
@@ -307,7 +307,7 @@ The hosts file ends up having hundreds of private IPs and becomes quite cumberso
 <p>The Azure DNS Private Resolver resource removes the need to have an additional DNS Forwarder to resolve private DNS zones.</p>
 <p>Let&rsquo;s take a look at the previous example where I had a public app that was using a few private resources.
 Here&rsquo;s how the diagram will look like after deploying an Azure Private DNS Resolver.</p>
-<p><img src="/img/vpn-p2s-private-dns-resolver.png" alt="vpn-p2s-private-dns-resolver"></p>
+<p><img alt="vpn-p2s-private-dns-resolver" src="/img/vpn-p2s-private-dns-resolver.png"></p>
 <p>As you can see, the only difference is that I have deployed a DNS Resolver Inbound endpoint. <br>
 An inbound endpoint enables name resolution from on-premises or other private locations via an IP address that is part of your private virtual network address space.</p>
 <p>The inbound endpoint requires a subnet in the VNet where it’s provisioned. The subnet can only be delegated to <code>Microsoft.Network/dnsResolvers</code> and can&rsquo;t be used for other services.</p>

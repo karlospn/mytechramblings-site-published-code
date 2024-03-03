@@ -283,7 +283,7 @@ If you want to learn more about OpenTelemetry Metrics and how to use it with .NE
 <h1 id="demo-application"><strong>Demo Application</strong></h1>
 <p>In the previous section, we have seen how to enable the built-in Telemetry in Polly and also which metrics will be emitted by it. Now it&rsquo;s time to build an app that generates some of those metrics.</p>
 <p>The following diagram shows what we&rsquo;re going to build from this point forward.</p>
-<p><img src="/img/polly-metrics-components-diagram.png" alt="polly-metrics-components-diagram"></p>
+<p><img alt="polly-metrics-components-diagram" src="/img/polly-metrics-components-diagram.png"></p>
 <ul>
 <li>A .NET WebAPI that makes calls to the <a href="https://jsonplaceholder.typicode.com/">https://jsonplaceholder.typicode.com/</a> API, utilizing various Polly strategies to enhance resiliency during these HTTP requests.</li>
 <li>The WebApi uses the OpenTelemetry OTLP exporter package (<code>OpenTelemetry.Exporter.OpenTelemetryProtocol</code>) to send the Polly Telemetry to an OpenTelemetry Collector.</li>
@@ -524,10 +524,10 @@ Additionally, we are outputting the Telemetry data to the Console using the <cod
 </span></span><span style="display:flex;"><span>      - <span style="color:#f92672">targets</span>: [<span style="color:#e6db74">&#39;otel-collector:8889&#39;</span>]
 </span></span><span style="display:flex;"><span>      - <span style="color:#f92672">targets</span>: [<span style="color:#e6db74">&#39;otel-collector:8888&#39;</span>]
 </span></span></code></pre></div><p>Once we have configured Prometheus, if we access the .NET API and execute it a few times to generate a certain number of metrics, we will be able to see in Prometheus how the Polly metrics start to appear.</p>
-<p><img src="/img/polly-metrics-prometheus-metrics-list.png" alt="polly-metrics-prometheus-metrics-list"></p>
+<p><img alt="polly-metrics-prometheus-metrics-list" src="/img/polly-metrics-prometheus-metrics-list.png"></p>
 <p>When we configured the Circuit Breaker strategy, do you remember that we added an <code>MeteringEnricher</code> to it?</p>
 <p>When the circuit becomes open, this enricher adds a tag that specifies its duration. If we run the .NET API until we force the circuit to open, we can observe in Prometheus how the duration tag is effectively incorporated into the generated metrics.</p>
-<p><img src="/img/polly-metrics-prometheus-metrics-custom-tags.png" alt="polly-metrics-prometheus-metrics-custom-tags"></p>
+<p><img alt="polly-metrics-prometheus-metrics-custom-tags" src="/img/polly-metrics-prometheus-metrics-custom-tags.png"></p>
 <h1 id="grafana"><strong>Grafana</strong></h1>
 <p>Once we have Polly&rsquo;s Telemetry in Prometheus, we can start building a dashboard to put these metrics to work.</p>
 <p>What can we do with Polly&rsquo;s Telemetry in Grafana? Let me show you a few examples.</p>
@@ -535,36 +535,36 @@ Additionally, we are outputting the Telemetry data to the Console using the <cod
 <p>The following Grafana panels are only a few examples of what we can build using the metrics emitted by Polly, we could do more things with them.</p>
 </blockquote>
 <ul>
-<li><em>How many calls to the &ldquo;<a href="https://jsonplaceholder.typicode.com/posts/%7BcommentId%7D/comments%22">https://jsonplaceholder.typicode.com/posts/{commentId}/comments&quot;</a> endpoint were retried within the last hour?</em></li>
+<li><em>How many calls to the &ldquo;<a href="https://jsonplaceholder.typicode.com/posts/%7BcommentId%7D/comments%22">https://jsonplaceholder.typicode.com/posts/{commentId}/comments"</a> endpoint were retried within the last hour?</em></li>
 </ul>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>sum(resilience_polly_strategy_events{pipeline_name=&#34;TypiCodeCommentsRetryPipeline&#34;, event_name=&#34;OnRetry&#34;})
-</span></span></code></pre></div><p><img src="/img/polly-metrics-grafana-panel-1.png" alt="polly-metrics-grafana-panel-1"></p>
+</span></span></code></pre></div><p><img alt="polly-metrics-grafana-panel-1" src="/img/polly-metrics-grafana-panel-1.png"></p>
 <ul>
-<li><em>How many calls to the &ldquo;<a href="https://jsonplaceholder.typicode.com/posts/%7BcommentId%7D/comments%22">https://jsonplaceholder.typicode.com/posts/{commentId}/comments&quot;</a> endpoint were successful? And how many were retried?</em></li>
+<li><em>How many calls to the &ldquo;<a href="https://jsonplaceholder.typicode.com/posts/%7BcommentId%7D/comments%22">https://jsonplaceholder.typicode.com/posts/{commentId}/comments"</a> endpoint were successful? And how many were retried?</em></li>
 </ul>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>sum by(event_name) (resilience_polly_strategy_events{pipeline_name=&#34;TypiCodeCommentsRetryPipeline&#34;})
-</span></span></code></pre></div><p><img src="/img/polly-metrics-grafana-panel-2.png" alt="polly-metrics-grafana-panel-2"></p>
+</span></span></code></pre></div><p><img alt="polly-metrics-grafana-panel-2" src="/img/polly-metrics-grafana-panel-2.png"></p>
 <ul>
-<li><em>What types of exceptions were raised during the calls to &ldquo;<a href="https://jsonplaceholder.typicode.com/posts/%7BcommentId%7D/comments%22">https://jsonplaceholder.typicode.com/posts/{commentId}/comments&quot;</a> in each retry?</em></li>
+<li><em>What types of exceptions were raised during the calls to &ldquo;<a href="https://jsonplaceholder.typicode.com/posts/%7BcommentId%7D/comments%22">https://jsonplaceholder.typicode.com/posts/{commentId}/comments"</a> in each retry?</em></li>
 </ul>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>sum by(exception_type) (resilience_polly_strategy_events{pipeline_name=&#34;TypiCodeCommentsRetryPipeline&#34;, event_name=&#34;OnRetry&#34;})
-</span></span></code></pre></div><p><img src="/img/polly-metrics-grafana-panel-3.png" alt="polly-metrics-grafana-panel-3"></p>
+</span></span></code></pre></div><p><img alt="polly-metrics-grafana-panel-3" src="/img/polly-metrics-grafana-panel-3.png"></p>
 <ul>
-<li><em>What is the average duration of each retry made to &ldquo;<a href="https://jsonplaceholder.typicode.com/posts/%7BcommentId%7D/comments%22">https://jsonplaceholder.typicode.com/posts/{commentId}/comments&quot;</a>?</em></li>
+<li><em>What is the average duration of each retry made to &ldquo;<a href="https://jsonplaceholder.typicode.com/posts/%7BcommentId%7D/comments%22">https://jsonplaceholder.typicode.com/posts/{commentId}/comments"</a>?</em></li>
 </ul>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>sum by(attempt_number) (rate(resilience_polly_strategy_attempt_duration_sum{pipeline_name=&#34;TypiCodeCommentsRetryPipeline&#34;}[30m])) / 
 </span></span><span style="display:flex;"><span>sum by(attempt_number) (rate(resilience_polly_strategy_attempt_duration_count{pipeline_name=&#34;TypiCodeCommentsRetryPipeline&#34;}[30m]))
-</span></span></code></pre></div><p><img src="/img/polly-metrics-grafana-panel-4.png" alt="polly-metrics-grafana-panel-4"></p>
+</span></span></code></pre></div><p><img alt="polly-metrics-grafana-panel-4" src="/img/polly-metrics-grafana-panel-4.png"></p>
 <ul>
-<li><em>How many calls were made to the &ldquo;<a href="https://jsonplaceholder.typicode.com/users/%7BuserId%7D%22">https://jsonplaceholder.typicode.com/users/{userId}&quot;</a> endpoint when the circuit was open, half open, and closed, respectively?</em></li>
+<li><em>How many calls were made to the &ldquo;<a href="https://jsonplaceholder.typicode.com/users/%7BuserId%7D%22">https://jsonplaceholder.typicode.com/users/{userId}"</a> endpoint when the circuit was open, half open, and closed, respectively?</em></li>
 </ul>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>sum by(event_name) (resilience_polly_strategy_events{pipeline_name=&#34;TypiCodeUsersCircuitBreakerPipeline&#34;})
-</span></span></code></pre></div><p><img src="/img/polly-metrics-grafana-panel-5.png" alt="polly-metrics-grafana-panel-5"></p>
+</span></span></code></pre></div><p><img alt="polly-metrics-grafana-panel-5" src="/img/polly-metrics-grafana-panel-5.png"></p>
 <ul>
-<li><em>What is the average response time for each call made to the &ldquo;<a href="https://jsonplaceholder.typicode.com/users/%7BuserId%7D%22">https://jsonplaceholder.typicode.com/users/{userId}&quot;</a> endpoint when the circuit is open, and how does it compare to the response time when an error is thrown and the circuit remains closed?</em></li>
+<li><em>What is the average response time for each call made to the &ldquo;<a href="https://jsonplaceholder.typicode.com/users/%7BuserId%7D%22">https://jsonplaceholder.typicode.com/users/{userId}"</a> endpoint when the circuit is open, and how does it compare to the response time when an error is thrown and the circuit remains closed?</em></li>
 </ul>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>resilience_polly_pipeline_duration_sum{pipeline_name=&#34;TypiCodeUsersCircuitBreakerPipeline&#34;} / resilience_polly_pipeline_duration_count{pipeline_name=&#34;TypiCodeUsersCircuitBreakerPipeline&#34;}
-</span></span></code></pre></div><p><img src="/img/polly-metrics-grafana-panel-6.png" alt="polly-metrics-grafana-panel-6"></p>
+</span></span></code></pre></div><p><img alt="polly-metrics-grafana-panel-6" src="/img/polly-metrics-grafana-panel-6.png"></p>
 <h1 id="how-to-test-the-demo-application"><strong>How to test the Demo Application</strong></h1>
 <blockquote>
 <p><strong>If you wish to try out the app on your own, please read this entire section, as there is a caveat to be aware of before you begin testing it.</strong></p>
@@ -633,9 +633,9 @@ These external components, including Prometheus, Grafana, and OpenTelemetry Coll
 <p><strong>This error is intentional</strong>, we want to ensure that calls to TypiCode API fail so that the Polly strategies are executed. This way, we can generate an entire set of Polly metrics.<br>
 You can fix the typo and run the <code>docker-compose</code> if you wish, but you won&rsquo;t see half of the Polly metrics, because some of the Polly strategies, like retries or circuit breaker, are only triggered when something goes wrong.</p>
 <p>The next image illustrates how the dashboard appears when everything is functioning correctly:</p>
-<p><img src="/img/polly-metrics-dashboard-ok.png" alt="polly-metrics-dashboard-ok"></p>
+<p><img alt="polly-metrics-dashboard-ok" src="/img/polly-metrics-dashboard-ok.png"></p>
 <p>In contrast, this image displays the dashboard&rsquo;s appearance when HTTP calls to the TypiCode API fail, and the Polly strategies come into play:</p>
-<p><img src="/img/polly-metrics-dashboard-bad.png" alt="polly-metrics-dashboard-bad"></p>
+<p><img alt="polly-metrics-dashboard-bad" src="/img/polly-metrics-dashboard-bad.png"></p>
 <p>As you can see, when the HTTP call to TypiCode fails, more metrics are generated, resulting in a more compelling dashboard. This explains the typo in the <code>docker-compose</code> file.</p>
 
     </div>

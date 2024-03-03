@@ -205,7 +205,7 @@ It can perform some container related actions, like building your application im
 </span></span><span style="display:flex;"><span>2022/12/20 15:49:14 Successfully executed container: acb_step_0
 </span></span><span style="display:flex;"><span>2022/12/20 15:49:14 Step ID: acb_step_0 marked as successful <span style="color:#f92672">(</span>elapsed time in seconds: 0.810056<span style="color:#f92672">)</span>
 </span></span></code></pre></div><p>If we take a look in the Azure Portal, you&rsquo;ll see that an ACR Task has been executed inside our ACR.</p>
-<p><img src="/img/acr-task-execution.png" alt="acr-task-execution"></p>
+<p><img alt="acr-task-execution" src="/img/acr-task-execution.png"></p>
 <h2 id="running-an-acr-task-on-schedule"><strong>Running an ACR Task on schedule</strong></h2>
 <p>The previous example ran an ACR Task on-demand, but you can also run it on a regular basis using the <code>az acr task create</code> command and the <code>schedule</code> parameter.</p>
 <p>The next code snippet shows the previous example I ran, but this time using an scheduled ACR Task to execute the <code>acr tag list</code> command every minute:</p>
@@ -215,9 +215,9 @@ It can perform some container related actions, like building your application im
 </span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>        --registry acrtasksdemo <span style="color:#ae81ff">\
 </span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>        --context /dev/null
 </span></span></code></pre></div><p>If we go into the Azure Portal, you&rsquo;ll see that an scheduled ACR Task has been created.</p>
-<p><img src="/img/acr-scheduled-task.png" alt="acr-scheduled-task"></p>
+<p><img alt="acr-scheduled-task" src="/img/acr-scheduled-task.png"></p>
 <p>And if we take a look at the recent ACR Tasks run, we&rsquo;ll see how every minute the &ldquo;scheduledAcrTask&rdquo; gets executed.</p>
-<p><img src="/img/acr-scheduled-task-details.png" alt="acr-scheduled-task-details"></p>
+<p><img alt="acr-scheduled-task-details" src="/img/acr-scheduled-task-details.png"></p>
 <h1 id="using-the-purge-command"><strong>Using the purge command</strong></h1>
 <p>The <code>purge</code> command is one of the available commands on the ACR CLI and it allows us to delete tags and images in a single or in multiple repositories based on:</p>
 <ul>
@@ -374,9 +374,9 @@ But, for this post I&rsquo;m going to create the following ACR Task:</p>
 </span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>      --registry acrtasksdemo <span style="color:#ae81ff">\
 </span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>      --context /dev/null
 </span></span></code></pre></div><p>If we take a look at the Azure portal after the ACR Task ran for the first time, we will see how it has deleted every image and tag older than 30 days except the ones with the &ldquo;prod&rdquo; or &ldquo;dev&rdquo; tags associated.</p>
-<p><img src="/img/acr-purge-scheduled-dev-prod-task.png" alt="acr-purge-scheduled-dev-prod-task"></p>
+<p><img alt="acr-purge-scheduled-dev-prod-task" src="/img/acr-purge-scheduled-dev-prod-task.png"></p>
 <p>If we take a closer look at one of the repositories, the only remaining images are the ones with the &ldquo;prod&rdquo; or &ldquo;dev&rdquo; tags on them.</p>
-<p><img src="/img/acr-purge-scheduled-dev-prod-task-repository.png" alt="acr-purge-scheduled-dev-prod-task-repository"></p>
+<p><img alt="acr-purge-scheduled-dev-prod-task-repository" src="/img/acr-purge-scheduled-dev-prod-task-repository.png"></p>
 <h1 id="terraform-implementation"><strong>Terraform implementation</strong></h1>
 <p>As a bonus section, let me show you how you can create the same scheduled ACR Task using Terraform and the AzureRM provider.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#a6e22e">resource</span> <span style="color:#e6db74">&#34;azurerm_container_registry_task&#34;</span> <span style="color:#e6db74">&#34;acr_purge_task&#34;</span> {

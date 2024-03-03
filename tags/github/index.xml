@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>github on my tech ramblings</title>
+    <title>Github on my tech ramblings</title>
     
     
     
     <link>https://www.mytechramblings.com/tags/github/</link>
-    <description>Recent content in github on my tech ramblings</description>
+    <description>Recent content in Github on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Tue, 24 Nov 2020 10:04:40 +0100</lastBuildDate>

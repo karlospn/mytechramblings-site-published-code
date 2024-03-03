@@ -191,7 +191,7 @@ The hottest topic right now is undoubtedly ChatGPT and  Large Language Models (L
 </ul>
 <h1 id="how-the-app-works"><strong>How the app works</strong></h1>
 <p>The following diagram shows how the API is going to work:</p>
-<p><img src="/img/tweetapi-process-diagram.png" alt="tweetapi-process-diagram"></p>
+<p><img alt="tweetapi-process-diagram" src="/img/tweetapi-process-diagram.png"></p>
 <p>The principle is really simple:</p>
 <ol>
 <li>The API must be called with a parameter called <code>uri</code> in the Http request body, here&rsquo;s an example:</li>
@@ -383,7 +383,7 @@ The <code>UnstructuredURLLoader</code> uses the <code>Unstructured</code> python
 </ul>
 <p>As you can imagine, this technique requires more than one call to the LLM/Azure OpenAI.</p>
 <p>The next diagram shows the <code>map-reduce</code> strategy that we&rsquo;re going to implement:</p>
-<p><img src="/img/tweetapi-map-reduce-diagram.png" alt="tweetapi-map-reduce-diagram"></p>
+<p><img alt="tweetapi-map-reduce-diagram" src="/img/tweetapi-map-reduce-diagram.png"></p>
 <p>The <code>map-reduce</code> strategy might seem quite complex to implement, but LangChain provides a set of implementations for the most well-known LLM interaction strategies, which means that implementing the <code>map-reduce</code> strategy with LangChain becomes a simple one-liner:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>    <span style="color:#f92672">from</span> langchain.chains.summarize <span style="color:#f92672">import</span> load_summarize_chain
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">...</span>
@@ -401,7 +401,7 @@ The <code>UnstructuredURLLoader</code> uses the <code>Unstructured</code> python
 </span></span></code></pre></div><p>Langchain applies a default prompt every time it sends text to the LLM model. In our case, we want to modify the combine prompt that is sent to the LLM model to fit Twitter&rsquo;s constraints.</p>
 <p>We can use the <code>combine_prompt</code> parameter from the <code>load_summarize_chain</code> function to set the prompt that is going to be sent when trying to summarize the compacted chunks.</p>
 <p>We can also customize the prompts used to generate the summary of every single chunk using the <code>map_prompt</code> parameter, but I don&rsquo;t need it, the default summarization prompt is good enough.</p>
-<p><img src="/img/tweetapi-map-reduce-with-prompts-diagram.png" alt="tweetapi-map-reduce-with-prompts-diagram"></p>
+<p><img alt="tweetapi-map-reduce-with-prompts-diagram" src="/img/tweetapi-map-reduce-with-prompts-diagram.png"></p>
 <p>After some prompt engineering and some trial and error, here&rsquo;s how the combine prompt ended up looking like:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>    prompt_template <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;&#34;
 </span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    You are the author of the source text.
@@ -442,13 +442,13 @@ The <code>UnstructuredURLLoader</code> uses the <code>Unstructured</code> python
 </span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     -H <span style="color:#e6db74">&#34;Content-Type: application/json&#34;</span> <span style="color:#ae81ff">\ </span> 
 </span></span><span style="display:flex;"><span>     -d <span style="color:#e6db74">&#39;{&#34;uri&#34;: &#34;https://www.mytechramblings.com/posts/how-to-integrate-your-roslyn-analyzers-with-sonarqube&#34;}&#39;</span>
 </span></span></code></pre></div><p>It takes around 40 to 50 seconds to create the tweet and post it to Twitter. Here&rsquo;s how the end result looks like in Twitter.</p>
-<p><img src="/img/tweetapi-tweet-results-2.png" alt="tweetapi-tweet-results-2"></p>
+<p><img alt="tweetapi-tweet-results-2" src="/img/tweetapi-tweet-results-2.png"></p>
 <p>And a few more tweets:</p>
-<p><img src="/img/tweetapi-tweet-results.png" alt="tweetapi-tweet-results"></p>
+<p><img alt="tweetapi-tweet-results" src="/img/tweetapi-tweet-results.png"></p>
 <p>Do you remember when in the previous section we talked about the <code>map-reduce</code> strategy making multiple calls to the LLM model? <br>
 If we look at the metrics of the total calls made to Azure OpenAI to generate a single tweet, we can clearly see it.</p>
 <p>The following image shows a total of 12 calls made to Azure OpenAI to generate a single tweet</p>
-<p><img src="/img/tweetapi-openai-total-calls-metric.png" alt="tweetapi-openai-total-calls-metric"></p>
+<p><img alt="tweetapi-openai-total-calls-metric" src="/img/tweetapi-openai-total-calls-metric.png"></p>
 
     </div>
     

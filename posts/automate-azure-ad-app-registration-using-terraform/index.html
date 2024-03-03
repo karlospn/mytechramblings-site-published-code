@@ -215,7 +215,7 @@ There are other options available to authenticate against the AAD using the prov
 <p>The first weird thing that you&rsquo;re going to find while creating the &ldquo;master app&rdquo; is the fact that the provider uses the <strong>Legacy Azure Active Directory API (Azure Active Directory Graph)</strong> instead of the newer MS Graph API.<br>
 That&rsquo;s a bad sign to begin with, it means that all the most recent features probably are not doable with the provider.<br>
 But let&rsquo;s going forward, that&rsquo;s the final look after registering in my AAD the master app and giving it the proper permissions:</p>
-<p><img src="/img/tf-aad-master-app.png" alt="master-app-config"></p>
+<p><img alt="master-app-config" src="/img/tf-aad-master-app.png"></p>
 <p>Now we can configure the Terraform provider using the master app client_id and client_secret.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#ae81ff">provider &#34;azuread&#34; {</span>
@@ -342,7 +342,7 @@ There is an example on this page: <a href="https://github.com/terraform-provider
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>Apart from creating the application I&rsquo;m also creating a client secret to test the client credentials flow.</p>
 <p>Be mindful that the Terraform provider <strong>cannot grant consent to use the role in an automatically way</strong>, you need to do it manually or using a script.</p>
-<p><img src="/img/aad-api-grant-admin-consent.png" alt="booking-app-grant-admin-consent"></p>
+<p><img alt="booking-app-grant-admin-consent" src="/img/aad-api-grant-admin-consent.png"></p>
 <p>After doing that, let&rsquo;s test it and see if it works. I&rsquo;m going to request an access token using the Booking API client id and client secret.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>curl -X POST <span style="color:#ae81ff">\
@@ -405,7 +405,7 @@ There is an example on this page: <a href="https://github.com/terraform-provider
 <ul>
 <li>I have the same issue I mention in the step 3: the Terraform provider cannot grant admin content to use the payment API scope in a programmatic way.</li>
 </ul>
-<p><img src="/img/aad-spa-grant-admin-consent.png" alt="frontend-spa-grant-admin-consent"></p>
+<p><img alt="frontend-spa-grant-admin-consent" src="/img/aad-spa-grant-admin-consent.png"></p>
 <ul>
 <li>
 <p>You can specify that the application type is &ldquo;SPA&rdquo; and use the grant type auth code flow with PKCE if you register the app using the portal, but that option is missing here. So I&rsquo;m being forced to instead use an implicit flow.<br>

@@ -225,11 +225,11 @@ Keep in mind that when you read this post, there might be a more recent version 
 <ul>
 <li><strong>The Bookings API uses a Client Credentials Flow to acquire an access token from Microsoft Entra ID, utilizing it to invoke various methods within the Payments API.</strong></li>
 </ul>
-<p><img src="/img/testing-entra-with-terraform-client-credentials.png" alt="testing-entra-with-terraform-client-credentials"></p>
+<p><img alt="testing-entra-with-terraform-client-credentials" src="/img/testing-entra-with-terraform-client-credentials.png"></p>
 <ul>
 <li><strong>The FrontEnd SPA uses an Authorization Code flow with PKCE to acquire a token from Microsoft Entra ID, utilizing it to invoke various methods within the Payments API.</strong></li>
 </ul>
-<p><img src="/img/testing-entra-with-terraform-auth-code-flow.png" alt="testing-entra-with-terraform-auth-code-flow"></p>
+<p><img alt="testing-entra-with-terraform-auth-code-flow" src="/img/testing-entra-with-terraform-auth-code-flow.png"></p>
 <h1 id="1-configure-the-microsoft-entra-id-terraform-provider"><strong>1. Configure the Microsoft Entra ID Terraform provider</strong></h1>
 <blockquote>
 <p><strong><em>As of today (11/18/2023), the Terraform provider for Microsoft Entra ID still has its former name: <code>azuread</code>.</em></strong></p>
@@ -251,9 +251,9 @@ Keep in mind that when you read this post, there might be a more recent version 
 <li><code>AppRoleAssignment.ReadWrite.All</code></li>
 <li><code>User.Read.All</code></li>
 </ul>
-<p><img src="/img/testing-entra-with-terraform-master-app-permissions.png" alt="testing-entra-with-terraform-master-app-permissions"></p>
+<p><img alt="testing-entra-with-terraform-master-app-permissions" src="/img/testing-entra-with-terraform-master-app-permissions.png"></p>
 <p>Additionally, you need to create a new client secret for this app.</p>
-<p><img src="/img/testing-entra-with-terraform-master-app-secret.png" alt="testing-entra-with-terraform-master-app-secret"></p>
+<p><img alt="testing-entra-with-terraform-master-app-secret" src="/img/testing-entra-with-terraform-master-app-secret.png"></p>
 <p>Once we have completed these steps, we are ready to configure the Terraform Provider using the &ldquo;master app&rdquo; client_id, client_secret, and our Microsoft Entra Tenant ID.</p>
 <p>There are a a couple of ways to configure the Provider:</p>
 <ul>
@@ -441,7 +441,7 @@ Keep in mind that when you read this post, there might be a more recent version 
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>In addition to creating the app, we&rsquo;re using the <code>azuread_application_password</code> resource to create a client secret to test the Client Credentials flow.</p>
 <p>Keep in mind, that Entra apps are authorized to call APIs when they are granted permissions by user/admins as part of the consent process. Therefore, it is necessary to manually grant admin consent for the Bookings API to call the Payments API.</p>
-<p><img src="/img/testing-entra-with-terraform-admin-grant-consent.png" alt="testing-entra-with-terraform-admin-grant-consent"></p>
+<p><img alt="testing-entra-with-terraform-admin-grant-consent" src="/img/testing-entra-with-terraform-admin-grant-consent.png"></p>
 <p>There is no native functionality in the <code>azuread</code> Terraform Provider to grant admin consent to an API permission.</p>
 <p>A workaround can be built using the Terraform <code>null_resource</code> resource and the AZ CLI. We can use both to invoke the <code>az ad app permission admin-consent</code> command. However, to successfully run this command, the Service Principal needs to have a <code>Global Administrator</code> role assigned.</p>
 <p>This role is one of the most powerful ones, it is capable of managing all aspects of Microsoft Entra. I am not very comfortable assigning such a powerful role to a Service Principal, I prefer that an Entra Admin manually grants admin consent.</p>
@@ -479,7 +479,7 @@ You must specify the .default scope in a Client Credentials flow, you cannot ask
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>If we examine the received access token, we can verify that it includes the following attributes:</p>
 <ul>
-<li>The <code>iss</code> (issuer) should match your Entra ID tenant, formatted as: <a href="https://login.microsoftonline.com/%7Btenant-id%7D/v2.0%22">https://login.microsoftonline.com/{tenant-id}/v2.0&quot;</a></li>
+<li>The <code>iss</code> (issuer) should match your Entra ID tenant, formatted as: <a href="https://login.microsoftonline.com/%7Btenant-id%7D/v2.0%22">https://login.microsoftonline.com/{tenant-id}/v2.0"</a></li>
 <li>The <code>aud</code> (audience) should match the client ID of the Payments API.</li>
 <li>It must possess a <code>Reader</code> role.</li>
 </ul>
@@ -531,15 +531,15 @@ You must specify the .default scope in a Client Credentials flow, you cannot ask
 <li>We&rsquo;re also using the <code>azuread_application_pre_authorized</code> resource. This resource allows us to pre-authorize the usage of the <code>payment.read</code> scope from the Payments API by the FrontEnd SPA so that it won&rsquo;t require a user consent the first time a user logs in.</li>
 </ul>
 <p>If you don&rsquo;t pre-authorize the FrontEnd SPA to use the <code>payment.read</code> scope from the Payments API, then when the user logs in, it will be asked for its consent. The next screenshot shows what the user will see the first time they log in to the FrontEnd SPA.</p>
-<p><img src="/img/testing-entra-with-terraform-user-grant-permissions.png" alt="testing-entra-with-terraform-user-grant-permissions"></p>
+<p><img alt="testing-entra-with-terraform-user-grant-permissions" src="/img/testing-entra-with-terraform-user-grant-permissions.png"></p>
 <p>This time it is not necessary to manually grant admin consent for the FrontEnd SPA to call the Payments API, because the <code>payment.read</code> scope doesn&rsquo;t require an admin consent.</p>
-<p><img src="/img/testing-entra-with-terraform-user-grant-consent.png" alt="testing-entra-with-terraform-user-grant-consent"></p>
+<p><img alt="testing-entra-with-terraform-user-grant-consent" src="/img/testing-entra-with-terraform-user-grant-consent.png"></p>
 <p>To easily test an Authorization Code flow with PKCE we&rsquo;re going to use this website:</p>
 <ul>
 <li><a href="https://oidcdebugger.com/">https://oidcdebugger.com/</a></li>
 </ul>
 <p>Simply fill out the form with the appropriate fields and select code flow with PKCE.</p>
-<p><img src="/img/testing-entra-with-terraform-oidcdebugger.png" alt="testing-entra-with-terraform-oidcdebugger"></p>
+<p><img alt="testing-entra-with-terraform-oidcdebugger" src="/img/testing-entra-with-terraform-oidcdebugger.png"></p>
 <p>Once you click submit, it will redirect you to Entra, where you&rsquo;ll need to log in. In our case, for example, if we log in as Jane, we will obtain the following access token.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;aud&#34;</span>: <span style="color:#e6db74">&#34;c90ce23f-68ad-4e29-a134-13e40676b5ea&#34;</span>,
@@ -565,7 +565,7 @@ You must specify the .default scope in a Client Credentials flow, you cannot ask
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>If we inspect the received access token from Entra, you can verify that the token includes the following attributes:</p>
 <ul>
-<li>The <code>iss</code> (issuer) should match your Entra ID tenant, formatted as: <a href="https://login.microsoftonline.com/%7Btenant-id%7D/v2.0%22">https://login.microsoftonline.com/{tenant-id}/v2.0&quot;</a></li>
+<li>The <code>iss</code> (issuer) should match your Entra ID tenant, formatted as: <a href="https://login.microsoftonline.com/%7Btenant-id%7D/v2.0%22">https://login.microsoftonline.com/{tenant-id}/v2.0"</a></li>
 <li>The <code>aud</code> (audience) should match the client ID of the Payments API.</li>
 <li>It must have a &ldquo;Reader&rdquo; role, as Jane is assigned the &ldquo;Reader&rdquo; role in the Payments API. If you log in as John, you will possess an &ldquo;Admin&rdquo; role instead of a &ldquo;Reader&rdquo; role.</li>
 </ul>

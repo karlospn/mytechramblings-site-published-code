@@ -166,7 +166,7 @@ As always, if you don’t care about the post I have uploaded the source code on
 As always, if you don’t care about the post I have uploaded the source code on my <a href="https://github.com/karlospn/opentelemetry-metrics-demo">Github</a>.</p>
 <p>In part 1, we discussed some key concepts of OpenTelemetry Metrics. Now, it&rsquo;s time to focus on instrumenting a real application.</p>
 <p>This is what we are going to build.</p>
-<p><img src="/img/otel-metrics-app-diagram.png" alt="otel-metrics-app-diagram"></p>
+<p><img alt="otel-metrics-app-diagram" src="/img/otel-metrics-app-diagram.png"></p>
 <ul>
 <li>The <strong>BookStore WebAPI</strong> will generate some business metrics and use the OTLP exporter package (<code>OpenTelemetry.Exporter.OpenTelemetryProtocol</code>) to send the metric data to the <strong>OpenTelemetry Collector</strong>.</li>
 <li><strong>Prometheus</strong> will obtain the metric data from the OpenTelemetry Collector.</li>
@@ -182,7 +182,7 @@ The API can do the following actions:</p>
 <li>Get, add and update orders.</li>
 </ul>
 <p>For a better understanding, here&rsquo;s how the database diagram looks like:</p>
-<p><img src="/img/otel-metrics-bookstore-database-diagram.png" alt="otel-metrics-bookstore-database-diagram"></p>
+<p><img alt="otel-metrics-bookstore-database-diagram" src="/img/otel-metrics-bookstore-database-diagram.png"></p>
 <h1 id="opentelemetry-metrics"><strong>OpenTelemetry Metrics</strong></h1>
 <p>The first step before writing any code is to decide what we want to measure and what kind of instruments we are going to use.</p>
 <h2 id="bookstore-api-custom-metrics"><strong>BookStore API custom metrics</strong></h2>
@@ -308,7 +308,7 @@ The API can do the following actions:</p>
 With the <code>SetResourceBuilder</code> method we’re configuring the <code>Resource</code> for the application.</p>
 <p>The <code>SetResourceBuilder</code> gives us the possibility to configure attributes like the service name or the application name amongst others.</p>
 <p>Using the <code>AddService(&quot;BookStore.Webapi&quot;)</code> method we can set the service name as an attribute of the metric data. For example, if we take a look at the <code>OrdersCanceledCounter</code> instrument on Prometheus, we will see the following information:</p>
-<p><img src="/img/otel-metrics-prometheus-resource-builder.png" alt="otel-metrics-prometheus-resource-builder"></p>
+<p><img alt="otel-metrics-prometheus-resource-builder" src="/img/otel-metrics-prometheus-resource-builder.png"></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>.AddMeter(builder.Configuration.GetValue&lt;<span style="color:#66d9ef">string</span>&gt;(<span style="color:#e6db74">&#34;BookStoreMeterName&#34;</span>))
 </span></span></code></pre></div><p>Any <code>Instrument</code> that we create in our application needs to be associated with a <code>Meter</code>. The <code>AddMeter()</code> extension method configures OpenTelemetry to transmit all the metrics collected by this concrete <code>Meter</code>.</p>
 <p>As you&rsquo;ll see later, in the BookStore app I have a single <code>Meter</code> with multiple <code>Instruments</code> on it, but you can also have multiple <code>Meters</code> in a single application, in that case you&rsquo;ll need to add multiple calls to the <code>AddMeter()</code>  method.</p>
@@ -774,13 +774,13 @@ Here&rsquo;s how the OTEL Collector config file looks like:</p>
 </span></span><span style="display:flex;"><span>      - <span style="color:#f92672">targets</span>: [<span style="color:#e6db74">&#39;otel-collector:8888&#39;</span>]
 </span></span></code></pre></div><p>After setting up Prometheus, we are going to generate traffic on the BookStore API and afterwards access Prometheus to start analyzing the metrics that the app is sending us.</p>
 <p>The business metrics from the BookStore API are all available in Prometheus.</p>
-<p><img src="/img/otel-metrics-prometheus-metrics-explorer.png" alt="otel-metrics-prometheus-metrics-explorer"></p>
+<p><img alt="otel-metrics-prometheus-metrics-explorer" src="/img/otel-metrics-prometheus-metrics-explorer.png"></p>
 <p>If we take a peek at the &ldquo;orders-price&rdquo; <code>Histogram</code> we can see that the bucket aggregation values are the correct ones that we defined in the <code>MeterProvider</code> using the <code>AddView</code> extension method.</p>
-<p><img src="/img/otel-metrics-prometheus-orders-price-histogram.png" alt="otel-metrics-prometheus-orders-price-histogram.png"></p>
+<p><img alt="otel-metrics-prometheus-orders-price-histogram.png" src="/img/otel-metrics-prometheus-orders-price-histogram.png"></p>
 <p>The metrics built into the .NET Framework are also available on Prometheus.</p>
-<p><img src="/img/otel-metrics-prometheus-builtin-metrics.png" alt="otel-metrics-prometheus-incoming-requests-metrics.png"></p>
+<p><img alt="otel-metrics-prometheus-incoming-requests-metrics.png" src="/img/otel-metrics-prometheus-builtin-metrics.png"></p>
 <p>The metrics generated by the <code>OpenTelemetry.Instrumentation.Runtime</code> and the <code>OpenTelemetry.Instrumentation.Process</code> packages are also being ingested by Prometheus.</p>
-<p><img src="/img/otel-metrics-prometheus-perf-counter-and-process-metrics.png" alt="otel-metrics-prometheus-perf-counter-and-process-metrics"></p>
+<p><img alt="otel-metrics-prometheus-perf-counter-and-process-metrics" src="/img/otel-metrics-prometheus-perf-counter-and-process-metrics.png"></p>
 <h1 id="grafana"><strong>Grafana</strong></h1>
 <p>Having the metric data from the BookStore API in Prometheus is great, but we need to visualize them in a friendly manner. Let&rsquo;s build a few Grafana dashboards.</p>
 <blockquote>
@@ -789,12 +789,12 @@ Here&rsquo;s how the OTEL Collector config file looks like:</p>
 <p>I ended up building 3 dashboards.</p>
 <h2 id="custom-metrics-dashboard"><strong>Custom metrics dashboard</strong></h2>
 <p>This dashboard uses the business metrics instrumented directly on the application using the Metrics API.</p>
-<p><img src="/img/otel-metrics-bookstore-custom-metrics.png" alt="otel-metrics-bookstore-custom-metrics"></p>
+<p><img alt="otel-metrics-bookstore-custom-metrics" src="/img/otel-metrics-bookstore-custom-metrics.png"></p>
 <p>Here&rsquo;s a closer look of how the &ldquo;Orders&rdquo; panel from the dashboard look like:</p>
-<p><img src="/img/otel-metrics-bookstore-custom-orders-metrics.png" alt="otel-metrics-bookstore-custom-orders-metrics"></p>
+<p><img alt="otel-metrics-bookstore-custom-orders-metrics" src="/img/otel-metrics-bookstore-custom-orders-metrics.png"></p>
 <h2 id="performance-counters--process-metrics-dashboard"><strong>Performance counters &amp; process metrics dashboard</strong></h2>
 <p>This dashboard uses metrics generated by the <code>OpenTelemetry.Instrumentation.Runtime</code> and the <code>OpenTelemetry.Instrumentation.Process</code> packages.</p>
-<p><img src="/img/otel-metrics-runtime-perf-counters-and-process-dashboard.png" alt="otel-metrics-runtime-perf-counters-and-process-dashboard"></p>
+<p><img alt="otel-metrics-runtime-perf-counters-and-process-dashboard" src="/img/otel-metrics-runtime-perf-counters-and-process-dashboard.png"></p>
 <h2 id="net-built-in-metrics-dashboard"><strong>.NET built-in metrics dashboard</strong></h2>
 <p>This dashboards were not built by me; they were built by the .NET team. I simply imported them into Grafana.</p>
 <ul>
@@ -806,11 +806,11 @@ Here&rsquo;s how the OTEL Collector config file looks like:</p>
 <li>The second one offers more details for every endpoint available in our app.</li>
 </ul>
 <h3 id="net-general-metrics-dashboard"><strong>.NET general metrics dashboard</strong></h3>
-<p><img src="/img/otel-metrics-aspnet-core-metrics-dashboard.png" alt="aspnet-core-metrics-dashboard"></p>
+<p><img alt="aspnet-core-metrics-dashboard" src="/img/otel-metrics-aspnet-core-metrics-dashboard.png"></p>
 <h3 id="net-apiorders-endpoint-metrics"><strong>.NET /api/orders endpoint metrics</strong></h3>
-<p><img src="/img/otel-metrics-aspnet-core-orders-endpoint-dashboard.png" alt="aspnet-core-orders-endpoint-dashboard"></p>
+<p><img alt="aspnet-core-orders-endpoint-dashboard" src="/img/otel-metrics-aspnet-core-orders-endpoint-dashboard.png"></p>
 <h3 id="net-apibooks-endpoint-metrics"><strong>.NET /api/books endpoint metrics</strong></h3>
-<p><img src="/img/otel-metrics-aspnet-core-books-endpoint-dashboard.png" alt="aspnet-core-books-endpoint-dashboard"></p>
+<p><img alt="aspnet-core-books-endpoint-dashboard" src="/img/otel-metrics-aspnet-core-books-endpoint-dashboard.png"></p>
 <h1 id="how-to-test-the-bookstore-api"><strong>How to test the BookStore Api</strong></h1>
 <p>If you want to take a look at the source code, you can go to my <a href="https://github.com/karlospn/opentelemetry-metrics-demo">GitHub repository</a>.</p>
 <p>If you want to execute the BookStore API for yourselves, I have uploaded a <code>docker-compose</code> file that starts up the app and also the external dependencies.<br>

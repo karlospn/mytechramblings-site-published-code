@@ -182,7 +182,7 @@ It removes the need to run, operate and maintain multiple agents/collectors in o
 <p>The Collector has two different deployment strategies: either running as an agent alongside a service, or as a remote application. <br>
 In general, using both is recommended: the agent would be deployed with your service and run as a sidecar; meanwhile, the remote app would be deployed separately, as its own application running in a container or virtual machine.</p>
 <p>Here&rsquo;s a diagram showing the collector architecture:</p>
-<p><img src="/img/otel-collector-diagram.png" alt="otel-collector-diagram"></p>
+<p><img alt="otel-collector-diagram" src="/img/otel-collector-diagram.png"></p>
 <p>Apart from traces, the AWS OTEL Collector is capable of ingesting metrics and send them to AWS Cloudwatch Metrics, but in this post I&rsquo;ll be focusing solely on tracing data.</p>
 <p>It&rsquo;s worth mentioning that there are 2 Collectors: the &ldquo;official&rdquo; OpenTelemetry Collector and the AWS OpenTelemtry Collector.</p>
 <p>AWS instead of using directly the &ldquo;official&rdquo; OpenTelemetry Collector has decided to implement their own Collector.</p>
@@ -220,7 +220,7 @@ This processor is really useful if you deploy the Collector as a sidecar along y
 </li>
 </ul>
 <p>If you&rsquo;re curious about the logging exporter, here&rsquo;s an example of how the output looks like:</p>
-<p><img src="/img/aws-otel-collector-logging-output.png" alt="otel-collector-logging-output"></p>
+<p><img alt="otel-collector-logging-output" src="/img/aws-otel-collector-logging-output.png"></p>
 <p>And here&rsquo;s how we&rsquo;re going to configure the Collector:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">receivers</span>:
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">otlp</span>:

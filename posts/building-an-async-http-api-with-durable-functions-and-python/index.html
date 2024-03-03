@@ -188,14 +188,14 @@ Each activity function executes one task and can be anything you want.</p>
 <h1 id="2-problem-trying-to-solve-with-azure-durable-functions">2. Problem trying to solve with Azure Durable functions</h1>
 <p>In this section I&rsquo;ll like to talk a little bit about what I was trying to solve using Durable functions and why Durable functions was a good fit.</p>
 <p>One of my clients has an HTTP API that uses an Azure Function as its backend, the function takes a few parameters via querystring, runs a query against an Azure Storage Table and returns a result. It&rsquo;s a really simple setup.</p>
-<p><img src="/img/audit-function-durable.png" alt="audit-api"></p>
+<p><img alt="audit-api" src="/img/audit-function-durable.png"></p>
 <p>The problem with this approach lies in the fact that the query takes between 3 and 7 minutes to complete, so most of the time the HTTP function times out because 230 seconds is the maximum amount of time that an HTTP triggered function can take to respond to a request. This is because of the idle timeout of Azure Load Balancer.</p>
 <p>For longer processing times, I needed to consider using an async pattern or defer the actual work and return an immediate response.<br>
 And Azure Durable Functions provides built-in support for the async http api pattern.</p>
 <h1 id="3-async-http-api-pattern">3. Async HTTP API Pattern</h1>
 <p>The async HTTP API pattern addresses the problem of coordinating the state of long-running operations with external clients.</p>
 <p>A common way to implement this pattern is by having an HTTP endpoint trigger the long-running action. Then, redirect the client to a status endpoint that the client polls to learn when the operation is finished.</p>
-<p><img src="/img/async-http-api-pattern.png" alt="async-http-pattern"></p>
+<p><img alt="async-http-pattern" src="/img/async-http-api-pattern.png"></p>
 <h1 id="4-scenario">4. Scenario</h1>
 <p>The idea behind what we&rsquo;re going to build is the following one:</p>
 <ul>
@@ -205,7 +205,7 @@ And Azure Durable Functions provides built-in support for the async http api pat
 <li>There is going to be an extra Azure Function that queries the orchestrator function and retrieves the status and the result of a given job.</li>
 </ul>
 <p>Here&rsquo;s a diagram:</p>
-<p><img src="/img/durable-function-async-http-api.png" alt="async-http-api"></p>
+<p><img alt="async-http-api" src="/img/durable-function-async-http-api.png"></p>
 <ul>
 <li><code>client-function</code>: submits the job that needs to be executed.</li>
 <li><code>get-status-function</code>: it is used to retrieve the status and the result of a given job.</li>

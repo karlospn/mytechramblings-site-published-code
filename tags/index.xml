@@ -15,7 +15,7 @@
     
     
     <item>
-      <title>azure</title>
+      <title>Azure</title>
       <link>https://www.mytechramblings.com/tags/azure/</link>
       <pubDate>Mon, 12 Feb 2024 10:20:06 +0100</pubDate>
       
@@ -35,7 +35,7 @@
     </item>
     
     <item>
-      <title>iac</title>
+      <title>Iac</title>
       <link>https://www.mytechramblings.com/tags/iac/</link>
       <pubDate>Mon, 12 Feb 2024 10:20:06 +0100</pubDate>
       
@@ -55,7 +55,7 @@
     </item>
     
     <item>
-      <title>terraform</title>
+      <title>Terraform</title>
       <link>https://www.mytechramblings.com/tags/terraform/</link>
       <pubDate>Mon, 12 Feb 2024 10:20:06 +0100</pubDate>
       
@@ -75,7 +75,7 @@
     </item>
     
     <item>
-      <title>csharp</title>
+      <title>Csharp</title>
       <link>https://www.mytechramblings.com/tags/csharp/</link>
       <pubDate>Thu, 28 Dec 2023 12:03:32 +0100</pubDate>
       
@@ -95,7 +95,7 @@
     </item>
     
     <item>
-      <title>dotnet</title>
+      <title>Dotnet</title>
       <link>https://www.mytechramblings.com/tags/dotnet/</link>
       <pubDate>Thu, 28 Dec 2023 12:03:32 +0100</pubDate>
       
@@ -115,7 +115,7 @@
     </item>
     
     <item>
-      <title>templates</title>
+      <title>Templates</title>
       <link>https://www.mytechramblings.com/tags/templates/</link>
       <pubDate>Thu, 28 Dec 2023 12:03:32 +0100</pubDate>
       
@@ -135,7 +135,7 @@
     </item>
     
     <item>
-      <title>grafana</title>
+      <title>Grafana</title>
       <link>https://www.mytechramblings.com/tags/grafana/</link>
       <pubDate>Wed, 29 Nov 2023 10:10:55 +0100</pubDate>
       
@@ -155,7 +155,7 @@
     </item>
     
     <item>
-      <title>metrics</title>
+      <title>Metrics</title>
       <link>https://www.mytechramblings.com/tags/metrics/</link>
       <pubDate>Wed, 29 Nov 2023 10:10:55 +0100</pubDate>
       
@@ -175,7 +175,7 @@
     </item>
     
     <item>
-      <title>opentelemetry</title>
+      <title>Opentelemetry</title>
       <link>https://www.mytechramblings.com/tags/opentelemetry/</link>
       <pubDate>Wed, 29 Nov 2023 10:10:55 +0100</pubDate>
       
@@ -195,7 +195,7 @@
     </item>
     
     <item>
-      <title>prometheus</title>
+      <title>Prometheus</title>
       <link>https://www.mytechramblings.com/tags/prometheus/</link>
       <pubDate>Wed, 29 Nov 2023 10:10:55 +0100</pubDate>
       
@@ -215,7 +215,7 @@
     </item>
     
     <item>
-      <title>auth</title>
+      <title>Auth</title>
       <link>https://www.mytechramblings.com/tags/auth/</link>
       <pubDate>Mon, 20 Nov 2023 10:00:48 +0100</pubDate>
       
@@ -235,7 +235,7 @@
     </item>
     
     <item>
-      <title>entra</title>
+      <title>Entra</title>
       <link>https://www.mytechramblings.com/tags/entra/</link>
       <pubDate>Mon, 20 Nov 2023 10:00:48 +0100</pubDate>
       
@@ -255,7 +255,7 @@
     </item>
     
     <item>
-      <title>ai</title>
+      <title>Ai</title>
       <link>https://www.mytechramblings.com/tags/ai/</link>
       <pubDate>Tue, 03 Oct 2023 10:00:03 +0200</pubDate>
       
@@ -275,7 +275,7 @@
     </item>
     
     <item>
-      <title>aws</title>
+      <title>Aws</title>
       <link>https://www.mytechramblings.com/tags/aws/</link>
       <pubDate>Tue, 03 Oct 2023 10:00:03 +0200</pubDate>
       
@@ -295,7 +295,7 @@
     </item>
     
     <item>
-      <title>genai</title>
+      <title>Genai</title>
       <link>https://www.mytechramblings.com/tags/genai/</link>
       <pubDate>Tue, 03 Oct 2023 10:00:03 +0200</pubDate>
       
@@ -315,7 +315,7 @@
     </item>
     
     <item>
-      <title>llm</title>
+      <title>Llm</title>
       <link>https://www.mytechramblings.com/tags/llm/</link>
       <pubDate>Tue, 03 Oct 2023 10:00:03 +0200</pubDate>
       
@@ -335,7 +335,7 @@
     </item>
     
     <item>
-      <title>openai</title>
+      <title>Openai</title>
       <link>https://www.mytechramblings.com/tags/openai/</link>
       <pubDate>Tue, 03 Oct 2023 10:00:03 +0200</pubDate>
       
@@ -355,7 +355,7 @@
     </item>
     
     <item>
-      <title>python</title>
+      <title>Python</title>
       <link>https://www.mytechramblings.com/tags/python/</link>
       <pubDate>Tue, 03 Oct 2023 10:00:03 +0200</pubDate>
       
@@ -375,7 +375,7 @@
     </item>
     
     <item>
-      <title>jaeger</title>
+      <title>Jaeger</title>
       <link>https://www.mytechramblings.com/tags/jaeger/</link>
       <pubDate>Mon, 25 Sep 2023 12:41:51 +0200</pubDate>
       
@@ -395,7 +395,7 @@
     </item>
     
     <item>
-      <title>tracing</title>
+      <title>Tracing</title>
       <link>https://www.mytechramblings.com/tags/tracing/</link>
       <pubDate>Mon, 25 Sep 2023 12:41:51 +0200</pubDate>
       
@@ -415,7 +415,7 @@
     </item>
     
     <item>
-      <title>basics</title>
+      <title>Basics</title>
       <link>https://www.mytechramblings.com/tags/basics/</link>
       <pubDate>Mon, 18 Sep 2023 10:01:54 +0200</pubDate>
       
@@ -435,7 +435,7 @@
     </item>
     
     <item>
-      <title>patterns</title>
+      <title>Patterns</title>
       <link>https://www.mytechramblings.com/tags/patterns/</link>
       <pubDate>Mon, 18 Sep 2023 10:01:54 +0200</pubDate>
       
@@ -455,7 +455,7 @@
     </item>
     
     <item>
-      <title>http</title>
+      <title>Http</title>
       <link>https://www.mytechramblings.com/tags/http/</link>
       <pubDate>Thu, 03 Aug 2023 10:21:52 +0200</pubDate>
       
@@ -475,7 +475,7 @@
     </item>
     
     <item>
-      <title>netstat</title>
+      <title>Netstat</title>
       <link>https://www.mytechramblings.com/tags/netstat/</link>
       <pubDate>Thu, 03 Aug 2023 10:21:52 +0200</pubDate>
       
@@ -495,7 +495,7 @@
     </item>
     
     <item>
-      <title>networking</title>
+      <title>Networking</title>
       <link>https://www.mytechramblings.com/tags/networking/</link>
       <pubDate>Thu, 03 Aug 2023 10:21:52 +0200</pubDate>
       
@@ -515,7 +515,7 @@
     </item>
     
     <item>
-      <title>containers</title>
+      <title>Containers</title>
       <link>https://www.mytechramblings.com/tags/containers/</link>
       <pubDate>Mon, 12 Jun 2023 10:03:07 +0200</pubDate>
       
@@ -535,7 +535,7 @@
     </item>
     
     <item>
-      <title>debian</title>
+      <title>Debian</title>
       <link>https://www.mytechramblings.com/tags/debian/</link>
       <pubDate>Mon, 12 Jun 2023 10:03:07 +0200</pubDate>
       
@@ -555,7 +555,7 @@
     </item>
     
     <item>
-      <title>docker</title>
+      <title>Docker</title>
       <link>https://www.mytechramblings.com/tags/docker/</link>
       <pubDate>Mon, 12 Jun 2023 10:03:07 +0200</pubDate>
       
@@ -575,7 +575,7 @@
     </item>
     
     <item>
-      <title>ubuntu</title>
+      <title>Ubuntu</title>
       <link>https://www.mytechramblings.com/tags/ubuntu/</link>
       <pubDate>Mon, 12 Jun 2023 10:03:07 +0200</pubDate>
       
@@ -595,7 +595,7 @@
     </item>
     
     <item>
-      <title>embeddings</title>
+      <title>Embeddings</title>
       <link>https://www.mytechramblings.com/tags/embeddings/</link>
       <pubDate>Wed, 10 May 2023 10:03:31 +0200</pubDate>
       
@@ -615,7 +615,7 @@
     </item>
     
     <item>
-      <title>langchain</title>
+      <title>Langchain</title>
       <link>https://www.mytechramblings.com/tags/langchain/</link>
       <pubDate>Tue, 04 Apr 2023 10:01:11 +0200</pubDate>
       
@@ -635,7 +635,7 @@
     </item>
     
     <item>
-      <title>serverless</title>
+      <title>Serverless</title>
       <link>https://www.mytechramblings.com/tags/serverless/</link>
       <pubDate>Tue, 04 Apr 2023 10:01:11 +0200</pubDate>
       
@@ -655,7 +655,7 @@
     </item>
     
     <item>
-      <title>devops</title>
+      <title>Devops</title>
       <link>https://www.mytechramblings.com/tags/devops/</link>
       <pubDate>Tue, 28 Feb 2023 10:55:55 +0100</pubDate>
       
@@ -675,7 +675,7 @@
     </item>
     
     <item>
-      <title>roslyn</title>
+      <title>Roslyn</title>
       <link>https://www.mytechramblings.com/tags/roslyn/</link>
       <pubDate>Tue, 28 Feb 2023 10:55:55 +0100</pubDate>
       
@@ -695,7 +695,7 @@
     </item>
     
     <item>
-      <title>sonarqube</title>
+      <title>Sonarqube</title>
       <link>https://www.mytechramblings.com/tags/sonarqube/</link>
       <pubDate>Tue, 28 Feb 2023 10:55:55 +0100</pubDate>
       
@@ -715,7 +715,7 @@
     </item>
     
     <item>
-      <title>cdk</title>
+      <title>Cdk</title>
       <link>https://www.mytechramblings.com/tags/cdk/</link>
       <pubDate>Wed, 08 Feb 2023 10:01:46 +0200</pubDate>
       
@@ -735,7 +735,7 @@
     </item>
     
     <item>
-      <title>lambda</title>
+      <title>Lambda</title>
       <link>https://www.mytechramblings.com/tags/lambda/</link>
       <pubDate>Wed, 08 Feb 2023 10:01:46 +0200</pubDate>
       
@@ -755,7 +755,7 @@
     </item>
     
     <item>
-      <title>corewcf</title>
+      <title>Corewcf</title>
       <link>https://www.mytechramblings.com/tags/corewcf/</link>
       <pubDate>Mon, 23 Jan 2023 10:01:16 +0100</pubDate>
       
@@ -775,7 +775,7 @@
     </item>
     
     <item>
-      <title>netframework</title>
+      <title>Netframework</title>
       <link>https://www.mytechramblings.com/tags/netframework/</link>
       <pubDate>Mon, 23 Jan 2023 10:01:16 +0100</pubDate>
       
@@ -795,7 +795,7 @@
     </item>
     
     <item>
-      <title>wcf</title>
+      <title>Wcf</title>
       <link>https://www.mytechramblings.com/tags/wcf/</link>
       <pubDate>Mon, 23 Jan 2023 10:01:16 +0100</pubDate>
       
@@ -815,7 +815,7 @@
     </item>
     
     <item>
-      <title>cloud</title>
+      <title>Cloud</title>
       <link>https://www.mytechramblings.com/tags/cloud/</link>
       <pubDate>Thu, 10 Nov 2022 10:30:40 +0100</pubDate>
       
@@ -835,7 +835,7 @@
     </item>
     
     <item>
-      <title>eventbridge</title>
+      <title>Eventbridge</title>
       <link>https://www.mytechramblings.com/tags/eventbridge/</link>
       <pubDate>Tue, 18 Oct 2022 10:01:12 +0200</pubDate>
       
@@ -855,7 +855,7 @@
     </item>
     
     <item>
-      <title>teams</title>
+      <title>Teams</title>
       <link>https://www.mytechramblings.com/tags/teams/</link>
       <pubDate>Tue, 18 Oct 2022 10:01:12 +0200</pubDate>
       
@@ -875,7 +875,7 @@
     </item>
     
     <item>
-      <title>ecr</title>
+      <title>Ecr</title>
       <link>https://www.mytechramblings.com/tags/ecr/</link>
       <pubDate>Thu, 08 Sep 2022 11:06:41 +0200</pubDate>
       
@@ -895,7 +895,7 @@
     </item>
     
     <item>
-      <title>nuget</title>
+      <title>Nuget</title>
       <link>https://www.mytechramblings.com/tags/nuget/</link>
       <pubDate>Tue, 09 Aug 2022 10:01:21 +0200</pubDate>
       
@@ -915,7 +915,7 @@
     </item>
     
     <item>
-      <title>signalr</title>
+      <title>Signalr</title>
       <link>https://www.mytechramblings.com/tags/signalr/</link>
       <pubDate>Tue, 19 Jul 2022 10:00:40 +0200</pubDate>
       
@@ -935,7 +935,7 @@
     </item>
     
     <item>
-      <title>dns</title>
+      <title>Dns</title>
       <link>https://www.mytechramblings.com/tags/dns/</link>
       <pubDate>Tue, 14 Jun 2022 10:10:47 +0200</pubDate>
       
@@ -955,7 +955,7 @@
     </item>
     
     <item>
-      <title>powershell</title>
+      <title>Powershell</title>
       <link>https://www.mytechramblings.com/tags/powershell/</link>
       <pubDate>Tue, 19 Apr 2022 12:30:10 +0200</pubDate>
       
@@ -975,7 +975,7 @@
     </item>
     
     <item>
-      <title>ecs</title>
+      <title>Ecs</title>
       <link>https://www.mytechramblings.com/tags/ecs/</link>
       <pubDate>Wed, 30 Mar 2022 10:25:20 +0200</pubDate>
       
@@ -995,7 +995,7 @@
     </item>
     
     <item>
-      <title>fargate</title>
+      <title>Fargate</title>
       <link>https://www.mytechramblings.com/tags/fargate/</link>
       <pubDate>Wed, 30 Mar 2022 10:25:20 +0200</pubDate>
       
@@ -1015,7 +1015,7 @@
     </item>
     
     <item>
-      <title>performance</title>
+      <title>Performance</title>
       <link>https://www.mytechramblings.com/tags/performance/</link>
       <pubDate>Wed, 30 Mar 2022 10:25:20 +0200</pubDate>
       
@@ -1035,7 +1035,7 @@
     </item>
     
     <item>
-      <title>linux</title>
+      <title>Linux</title>
       <link>https://www.mytechramblings.com/tags/linux/</link>
       <pubDate>Tue, 01 Mar 2022 10:01:37 +0100</pubDate>
       
@@ -1055,7 +1055,7 @@
     </item>
     
     <item>
-      <title>functions</title>
+      <title>Functions</title>
       <link>https://www.mytechramblings.com/tags/functions/</link>
       <pubDate>Wed, 15 Dec 2021 11:20:04 +0100</pubDate>
       
@@ -1075,7 +1075,7 @@
     </item>
     
     <item>
-      <title>security</title>
+      <title>Security</title>
       <link>https://www.mytechramblings.com/tags/security/</link>
       <pubDate>Mon, 25 Oct 2021 10:45:14 +0200</pubDate>
       
@@ -1095,7 +1095,7 @@
     </item>
     
     <item>
-      <title>aad</title>
+      <title>Aad</title>
       <link>https://www.mytechramblings.com/tags/aad/</link>
       <pubDate>Tue, 24 Aug 2021 10:21:33 +0200</pubDate>
       
@@ -1115,7 +1115,7 @@
     </item>
     
     <item>
-      <title>graphql</title>
+      <title>Graphql</title>
       <link>https://www.mytechramblings.com/tags/graphql/</link>
       <pubDate>Tue, 24 Aug 2021 10:21:33 +0200</pubDate>
       
@@ -1135,7 +1135,7 @@
     </item>
     
     <item>
-      <title>grpc</title>
+      <title>Grpc</title>
       <link>https://www.mytechramblings.com/tags/grpc/</link>
       <pubDate>Wed, 21 Jul 2021 10:05:32 +0200</pubDate>
       
@@ -1155,7 +1155,7 @@
     </item>
     
     <item>
-      <title>studio</title>
+      <title>Studio</title>
       <link>https://www.mytechramblings.com/tags/studio/</link>
       <pubDate>Thu, 17 Jun 2021 10:01:29 +0200</pubDate>
       
@@ -1175,7 +1175,7 @@
     </item>
     
     <item>
-      <title>visual</title>
+      <title>Visual</title>
       <link>https://www.mytechramblings.com/tags/visual/</link>
       <pubDate>Thu, 17 Jun 2021 10:01:29 +0200</pubDate>
       
@@ -1195,7 +1195,7 @@
     </item>
     
     <item>
-      <title>vs</title>
+      <title>Vs</title>
       <link>https://www.mytechramblings.com/tags/vs/</link>
       <pubDate>Thu, 17 Jun 2021 10:01:29 +0200</pubDate>
       
@@ -1215,7 +1215,7 @@
     </item>
     
     <item>
-      <title>editorconfig</title>
+      <title>Editorconfig</title>
       <link>https://www.mytechramblings.com/tags/editorconfig/</link>
       <pubDate>Thu, 14 Jan 2021 12:59:43 +0100</pubDate>
       
@@ -1235,7 +1235,7 @@
     </item>
     
     <item>
-      <title>action</title>
+      <title>Action</title>
       <link>https://www.mytechramblings.com/tags/action/</link>
       <pubDate>Tue, 24 Nov 2020 10:04:40 +0100</pubDate>
       
@@ -1255,7 +1255,7 @@
     </item>
     
     <item>
-      <title>github</title>
+      <title>Github</title>
       <link>https://www.mytechramblings.com/tags/github/</link>
       <pubDate>Tue, 24 Nov 2020 10:04:40 +0100</pubDate>
       
@@ -1275,7 +1275,7 @@
     </item>
     
     <item>
-      <title>static</title>
+      <title>Static</title>
       <link>https://www.mytechramblings.com/tags/static/</link>
       <pubDate>Tue, 24 Nov 2020 10:04:40 +0100</pubDate>
       
@@ -1295,7 +1295,7 @@
     </item>
     
     <item>
-      <title>webapps</title>
+      <title>Webapps</title>
       <link>https://www.mytechramblings.com/tags/webapps/</link>
       <pubDate>Tue, 24 Nov 2020 10:04:40 +0100</pubDate>
       
@@ -1315,7 +1315,7 @@
     </item>
     
     <item>
-      <title>adal</title>
+      <title>Adal</title>
       <link>https://www.mytechramblings.com/tags/adal/</link>
       <pubDate>Wed, 14 Oct 2020 10:00:50 +0200</pubDate>
       
@@ -1335,7 +1335,7 @@
     </item>
     
     <item>
-      <title>msal</title>
+      <title>Msal</title>
       <link>https://www.mytechramblings.com/tags/msal/</link>
       <pubDate>Wed, 14 Oct 2020 10:00:50 +0200</pubDate>
       
@@ -1375,7 +1375,7 @@
     </item>
     
     <item>
-      <title>acr</title>
+      <title>Acr</title>
       <link>https://www.mytechramblings.com/tags/acr/</link>
       <pubDate>Wed, 29 Jul 2020 22:10:21 +0200</pubDate>
       
@@ -1395,7 +1395,7 @@
     </item>
     
     <item>
-      <title>gitops</title>
+      <title>Gitops</title>
       <link>https://www.mytechramblings.com/tags/gitops/</link>
       <pubDate>Wed, 29 Jul 2020 22:10:21 +0200</pubDate>
       
@@ -1415,7 +1415,7 @@
     </item>
     
     <item>
-      <title>helm</title>
+      <title>Helm</title>
       <link>https://www.mytechramblings.com/tags/helm/</link>
       <pubDate>Wed, 29 Jul 2020 22:10:21 +0200</pubDate>
       
@@ -1435,7 +1435,7 @@
     </item>
     
     <item>
-      <title>kubernetes</title>
+      <title>Kubernetes</title>
       <link>https://www.mytechramblings.com/tags/kubernetes/</link>
       <pubDate>Wed, 29 Jul 2020 22:10:21 +0200</pubDate>
       
@@ -1455,7 +1455,7 @@
     </item>
     
     <item>
-      <title>graph</title>
+      <title>Graph</title>
       <link>https://www.mytechramblings.com/tags/graph/</link>
       <pubDate>Tue, 21 Jul 2020 21:22:44 +0200</pubDate>
       
@@ -1475,7 +1475,7 @@
     </item>
     
     <item>
-      <title>windows</title>
+      <title>Windows</title>
       <link>https://www.mytechramblings.com/tags/windows/</link>
       <pubDate>Tue, 14 Jul 2020 19:12:41 +0200</pubDate>
       
@@ -1495,7 +1495,7 @@
     </item>
     
     <item>
-      <title>appservices</title>
+      <title>Appservices</title>
       <link>https://www.mytechramblings.com/tags/appservices/</link>
       <pubDate>Sat, 04 Jul 2020 17:30:06 +0200</pubDate>
       
@@ -1515,7 +1515,7 @@
     </item>
     
     <item>
-      <title>legacy</title>
+      <title>Legacy</title>
       <link>https://www.mytechramblings.com/tags/legacy/</link>
       <pubDate>Sat, 04 Jul 2020 17:30:06 +0200</pubDate>
       
@@ -1555,7 +1555,7 @@
     </item>
     
     <item>
-      <title>analyzers</title>
+      <title>Analyzers</title>
       <link>https://www.mytechramblings.com/tags/analyzers/</link>
       <pubDate>Wed, 24 Jun 2020 15:25:42 +0200</pubDate>
       
@@ -1575,7 +1575,7 @@
     </item>
     
     <item>
-      <title>actions</title>
+      <title>Actions</title>
       <link>https://www.mytechramblings.com/tags/actions/</link>
       <pubDate>Sun, 21 Jun 2020 18:28:38 +0200</pubDate>
       
@@ -1595,7 +1595,7 @@
     </item>
     
     <item>
-      <title>go</title>
+      <title>Go</title>
       <link>https://www.mytechramblings.com/tags/go/</link>
       <pubDate>Sun, 21 Jun 2020 18:28:38 +0200</pubDate>
       
@@ -1615,7 +1615,7 @@
     </item>
     
     <item>
-      <title>hugo</title>
+      <title>Hugo</title>
       <link>https://www.mytechramblings.com/tags/hugo/</link>
       <pubDate>Sun, 21 Jun 2020 18:28:38 +0200</pubDate>
       

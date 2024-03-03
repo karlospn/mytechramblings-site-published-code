@@ -227,9 +227,9 @@ The WebSocket API invokes your backend based on the content of the messages it r
 <p>A SignalR application needs to keep track of ALL connected clients, which creates a problem in an environment like AWS where applications can scale out automatically.</p>
 <p>On the diagram below we have 2 instances of a SignalR Core application behind a load balancer. When client A interacts with the application it gets routed to instance A. When client B interacts with the application it gets routed to instance B. <br>
 In this scenario instance A is unaware of the connected clients on instance B, and viceversa, so if a client who is connected to instance A tries to broadcast a message, only the clients connected to instance A will receive the message.</p>
-<p><img src="/img/signalr-lb.png" alt="signalr-core-application-lb"></p>
+<p><img alt="signalr-core-application-lb" src="/img/signalr-lb.png"></p>
 <p>This is where a backplane becomes necessary. When a client makes a connection, the connection information is passed to the backplane. When a server wants to send a message to all clients, it sends it to the backplane. The backplane knows all connected clients and which servers they&rsquo;re on.</p>
-<p><img src="/img/signalr-lb-backplane.png" alt="signalr-core-application-lb-backplane"></p>
+<p><img alt="signalr-core-application-lb-backplane" src="/img/signalr-lb-backplane.png"></p>
 <p>In  this section will review a few AWS services that can be used as a SignalR backplane, those services are the following ones:</p>
 <ul>
 <li><strong>AWS ElastiCache for Redis</strong>.</li>
@@ -332,7 +332,7 @@ More info about this package here:</p>
 </ul>
 <p>Another nice feature this service provides is the &ldquo;Live Trace Tool&rdquo;, it is is a single web application that exposes SignalR traces that went through the service. <br>
 The traces includes: connection connected/disconnected events and message received/left events.</p>
-<p><img src="/img/signalr-trace-live-tool.png" alt="azure-signalr-service-live-trace-tool"></p>
+<p><img alt="azure-signalr-service-live-trace-tool" src="/img/signalr-trace-live-tool.png"></p>
 <p>Probably you&rsquo;re asking yourself why I&rsquo;m talking about an Azure service, that&rsquo;s because you can use the Azure SignalR Service as a backplane with a SignalR Core app hosted in AWS as long as both: application and service are visible.</p>
 <p>The optimal solution when choosing a backplane service is having the backplane as close as possible to the app, having the backplane on another cloud provider seems far from ideal, so if you want to use it be mindful about network latency, throughput and the amount of data that will be transferred outside of AWS.</p>
 <h3 id="how-to-configure-the-application-3"><strong>How to configure the application</strong></h3>
@@ -581,7 +581,7 @@ The traces includes: connection connected/disconnected events and message receiv
 <li>An ElasticCache instance.</li>
 <li>A NAT Gateway.</li>
 </ul>
-<p><img src="/img/signalr_core_application.png" alt="signalr-core-application-diagram"></p>
+<p><img alt="signalr-core-application-diagram" src="/img/signalr_core_application.png"></p>
 
     </div>
     

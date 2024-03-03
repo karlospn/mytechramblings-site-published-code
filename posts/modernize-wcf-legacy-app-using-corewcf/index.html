@@ -210,7 +210,7 @@ Be aware that your modernization experience may vary depending on the overlap be
 </li>
 </ul>
 <p>Here&rsquo;s a look at how it looks in Visual Studio.</p>
-<p><img src="/img/corewcf-project-distribution.png" alt="corewcf-project-distribution"></p>
+<p><img alt="corewcf-project-distribution" src="/img/corewcf-project-distribution.png"></p>
 <blockquote>
 <p>If you want to take a look at the source code, click <a href="https://github.com/karlospn/modernize-wcf-app-using-corewcf/tree/main/before">here</a>.</p>
 </blockquote>
@@ -273,7 +273,7 @@ This tool is able to assists you in the upgrade of a series of projects types. C
 </span></span></code></pre></div><p>After installing the template we can create a new CoreWCF project like this:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>dotnet new corewcf -n BookingMgmt.CoreWCF.WebService
 </span></span></code></pre></div><p>Here&rsquo;s how a new CoreWCF project looks like:</p>
-<p><img src="/img/corewcf-new-corewcf-project.png" alt="corewcf-new-corewcf-project"></p>
+<p><img alt="corewcf-new-corewcf-project" src="/img/corewcf-new-corewcf-project.png"></p>
 <p>The first thing we have to do is delete the demo service:  <code>IService.cs</code> (whatever you do, do not delete the <code>Program.cs</code>).</p>
 <p>Now we&rsquo;re ready to move the source code from the WCF project to the newly created CoreWCF project. <br>
 There are a few files that are not needed in CoreWCF:</p>
@@ -283,7 +283,7 @@ There are a few files that are not needed in CoreWCF:</p>
 <li>The CoreWCF project uses the new csproj-SDK format, which means that there is no need for the <code>packages.config</code> file.</li>
 </ul>
 <p>Here&rsquo;s how the project looks like after moving everything we needed into the CoreWCF project:</p>
-<p><img src="/img/corewcf-wcf-project-files.png" alt="corewcf-wcf-project-files"></p>
+<p><img alt="corewcf-wcf-project-files" src="/img/corewcf-wcf-project-files.png"></p>
 <h2 id="13-setting-up-the-programcs"><strong>1.3. Setting up the Program.cs</strong></h2>
 <p>The WCF app uses a <code>global.asax</code>, which allows us to write code that runs in response to &ldquo;system level&rdquo; events, such as the application starting, a session ending, an application error occuring, without having to try and shoe-horn that code into each and every page of your site.</p>
 <p>CoreWCF doesn&rsquo;t use a <code>global.asax</code> file, instead of that, it uses a <code>Program.cs</code> to set up the host and expose the services bindings. <br>
@@ -363,7 +363,7 @@ This is useful when the machine hostname is different than the hostname that a c
 </ul>
 <p>Those 5 projects need to be migrated from .NET 4.7.2 to .NET Standard, and also from the old csproj SDK-format (with a packages.config) to the new one.</p>
 <p>Doing the migration manually is going to be quite tedious, but thankfully the <code>.NET Upgrade Assistant tool</code> can do it for us, it&rsquo;s really easy, just execute the <code>upgrade-assistant upgrade BookingMgmt.WebService.sln</code> command and follow the on-screen instructions.</p>
-<p><img src="/img/corewcf-net-upgrade-tool-dependencies.png" alt="corewcf-net-upgrade-tool-dependencies"></p>
+<p><img alt="corewcf-net-upgrade-tool-dependencies" src="/img/corewcf-net-upgrade-tool-dependencies.png"></p>
 <p>After running the <code>.NET Upgrade Assistant tool</code>, here&rsquo;s how the <code>BookingMgmt.Domain.csproj</code> looks like:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;Project</span> <span style="color:#a6e22e">Sdk=</span><span style="color:#e6db74">&#34;Microsoft.NET.Sdk&#34;</span><span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;PropertyGroup&gt;</span>
@@ -468,16 +468,16 @@ The next code snippet shows how the WCF app uses the <code>DatabaseConnectionStr
 <h1 id="5-running-the-app-locally"><strong>5. Running the app locally</strong></h1>
 <p>After fixing the NuGet incompatibilities and moving the application settings into the <code>appsettings.json</code>, we&rsquo;re ready to run our CoreWCF app.</p>
 <p>If we open a browser on the following address: <code>http://localhost:5186/BookingCreatorService.svc</code>, we&rsquo;ll be presented with the svc html page.</p>
-<p><img src="/img/corewcf-svc-html.png" alt="corewcf-svc-html"></p>
+<p><img alt="corewcf-svc-html" src="/img/corewcf-svc-html.png"></p>
 <p>If we send a few requests to our app, it responds successfully.</p>
-<p><img src="/img/corewcf-wcftestclient-request.png" alt="corewcf-wcftestclient-request"></p>
+<p><img alt="corewcf-wcftestclient-request" src="/img/corewcf-wcftestclient-request.png"></p>
 <p>We can say that we have successfully migrated the BookingMgmt app to CoreWCF and .NET 7. <br>
 But there are still a few things left to do.</p>
 <h1 id="6-manually-migrating-test-projects"><strong>6. Manually migrating test projects</strong></h1>
 <p>The unit and integration tests are still on .NET 4.7.2 and need to be moved to .NET 7.</p>
 <p>The <code>.NET Upgrade Assistant tool</code> is unable to migrate MSTest project types, which means that the only possible way to migrate those projects is manually.</p>
 <p>For every test project I&rsquo;m going to create a new MSTest project that targets .NET 7 and move over the original source code.</p>
-<p><img src="/img/corewcf-mstest-project-type.png" alt="corewcf-mstest-project-type"></p>
+<p><img alt="corewcf-mstest-project-type" src="/img/corewcf-mstest-project-type.png"></p>
 <blockquote>
 <p>These test projects are using MSTest, not xUnit. Now would be a good time to also move them from MSTest to xUnit, but then a code refactor is needed, so I&rsquo;m not going to do it.</p>
 </blockquote>

@@ -203,7 +203,7 @@ EventBridge has always a <strong>default event bus which receives events from AW
 The combination of the &ldquo;source&rdquo; and &ldquo;detail-type&rdquo; fields serves to identify the fields and values found in the &ldquo;detail&rdquo; field.</p>
 <h1 id="architecture-diagram"><strong>Architecture Diagram</strong></h1>
 <p>The setup to notify an AWS event to Microsoft Teams using AWS EventBridge and Lambda is really simple:</p>
-<p><img src="/img/notify-aws-event-to-teams-diagram.png" alt="notify-aws-event-to-teams-diagram"></p>
+<p><img alt="notify-aws-event-to-teams-diagram" src="/img/notify-aws-event-to-teams-diagram.png"></p>
 <ul>
 <li>An <code>AWS EventBridge Rule</code> matches a specific set of AWS events and sends them to a target.</li>
 <li>The target is a <code>Lambda function</code> that sends the event to a <code>Microsoft Teams Channel</code> using an <code>Incoming HTTP WebHook</code>.</li>
@@ -243,7 +243,7 @@ The combination of the &ldquo;source&rdquo; and &ldquo;detail-type&rdquo; fields
 <li><code>Detail</code>: A JSON object, whose content is at the discretion of the service originating the event.</li>
 </ul>
 <p>The easiest way of knowing which values to use when declaring the <code>DetailType</code> or the <code>Detail</code> attributes is to use the AWS Portal. An <code>EventPattern</code> builder is availaible on the AWS Portal when you try to create an EventBridge Rule.</p>
-<p><img src="/img/aws-eventbridge-eventpattern-builder-portal.png" alt="aws-eventbridge-eventpattern-builder-portal"></p>
+<p><img alt="aws-eventbridge-eventpattern-builder-portal" src="/img/aws-eventbridge-eventpattern-builder-portal.png"></p>
 <p>If you&rsquo;re using IaC to create those <code>EventBridge Rules</code>, the easiest way to know what values to use for the <code>EventPattern</code> attribute is using first the AWS Portal to create the <code>EventPattern</code> expression and then copy it into your IaC files.</p>
 <h1 id="building-the-lambda-function-target"><strong>Building the Lambda function Target</strong></h1>
 <p>A target is a resource or endpoint that EventBridge sends an event to when the event matches the event pattern defined for a rule.</p>
@@ -275,10 +275,10 @@ The combination of the &ldquo;source&rdquo; and &ldquo;detail-type&rdquo; fields
 </span></span><span style="display:flex;"><span>        logger<span style="color:#f92672">.</span>error(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Server connection failed: </span><span style="color:#e6db74">{</span>err<span style="color:#f92672">.</span>reason<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
 </span></span></code></pre></div><p>The source code can be as simple as the above code snippet, just stringify the event and send it to Teams via HTTP WebHook.</p>
 <p>Before start using the function, we need to create an Incoming WebHook on Teams.</p>
-<p><img src="/img/teams-incoming-webhook.png" alt="teams-incoming-webhook"></p>
+<p><img alt="teams-incoming-webhook" src="/img/teams-incoming-webhook.png"></p>
 <p>And store the WebHook Uri value someplace where the Lambda can retrieve it at runtime, probably the best place to put is AWS Secret Manager, but to keep this post as simple as possible I decided to store the value in a Lambda Environment Variable named  <code>teams_webhook_uri</code>.</p>
 <p>If we take a look at how the end result looks on Teams, we&rsquo;ll see this:</p>
-<p><img src="/img/teams-raw-event.png" alt="teams-raw-event"></p>
+<p><img alt="teams-raw-event" src="/img/teams-raw-event.png"></p>
 <p>Sending the AWS Event directly to Teams is probably not the best option because it is hard to really know what has happened, but we can improve the readability using <strong>Adaptative Cards for Microsoft Teams</strong>.</p>
 <h2 id="adaptative-cards-for-microsoft-teams"><strong>Adaptative Cards for Microsoft Teams</strong></h2>
 <p>Adaptive Cards are a platform-agnostic method of displaying blocks of information without the complexity of customizing CSS or HTML to render them.</p>
@@ -347,7 +347,7 @@ The combination of the &ldquo;source&rdquo; and &ldquo;detail-type&rdquo; fields
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">except</span> URLError <span style="color:#66d9ef">as</span> err:
 </span></span><span style="display:flex;"><span>        logger<span style="color:#f92672">.</span>error(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Server connection failed: </span><span style="color:#e6db74">{</span>err<span style="color:#f92672">.</span>reason<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
 </span></span></code></pre></div><p>The Adaptative Card I have built for the Lambda function is quite simple, you can do more complex and interesting stuff if you want, but nonetheless if we take a look at the end result on Teams:</p>
-<p><img src="/img/teams-adaptative-card.png" alt="teams-adaptative-card"></p>
+<p><img alt="teams-adaptative-card" src="/img/teams-adaptative-card.png"></p>
 <p>Now it has a much better readability.</p>
 <h1 id="how-to-try-it-out"><strong>How to try it out</strong></h1>
 <p>If you want to take a look at the source code, you can go to my <a href="https://github.com/karlospn/notify-aws-events-to-microsoft-teams">GitHub repository</a>.</p>
@@ -360,7 +360,7 @@ The combination of the &ldquo;source&rdquo; and &ldquo;detail-type&rdquo; fields
 </ul>
 <h2 id="how-to-deploy-the-cdk-app"><strong>How to deploy the CDK app</strong></h2>
 <p><strong>1 -</strong> Create an <code>Incoming Webhook</code> on one of your Microsoft Teams Channels.</p>
-<p><img src="/img/teams-incoming-webhook.png" alt="teams-incoming-webhook"></p>
+<p><img alt="teams-incoming-webhook" src="/img/teams-incoming-webhook.png"></p>
 <p><strong>2 -</strong> Deploy the <code>CDK app</code>.</p>
 <p>To deploy it, use the command:</p>
 <ul>
@@ -379,11 +379,11 @@ To make the stack deployable to a different target, but to determine the target 
 </ul>
 <h2 id="how-to-test-it"><strong>How to test it</strong></h2>
 <p>Push a new image into an ECR repository, and take a look at your Teams Channel.
-<img src="/img/teams-adaptative-card.png" alt="teams-adaptative-card"></p>
+<img alt="teams-adaptative-card" src="/img/teams-adaptative-card.png"></p>
 <p>Create an S3 bucket, and take a look at your Teams Channel.
-<img src="/img/s3-bucket-create-adaptative-card.png" alt="s3-bucket-create-adaptative-card"></p>
+<img alt="s3-bucket-create-adaptative-card" src="/img/s3-bucket-create-adaptative-card.png"></p>
 <p>Delete an S3 bucket, and take a look at your Teams Channel.
-<img src="/img/s3-bucket-delete-adaptative-card.png" alt="s3-bucket-delete-adaptative-card"></p>
+<img alt="s3-bucket-delete-adaptative-card" src="/img/s3-bucket-delete-adaptative-card.png"></p>
 
     </div>
     

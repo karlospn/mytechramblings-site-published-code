@@ -177,7 +177,7 @@ The next Terraform code snippet shows the simplest way to create an Azure API Ma
 <p>However, this scenario poses a problem.</p>
 <p>If someone makes a change to the downstream API that modifies the OpenApi content, such as exposing a new method or altering the signature of an existing one, running the <code>terraform plan</code> command will reveal that Terraform is unable to detect those changes. <br>
 Consequently, it won&rsquo;t update the API in the Azure API Management to reflect the modifications.</p>
-<p><img src="/img/api-mgmt-api-sync-openapi-no-changes.png" alt="tf-plan"></p>
+<p><img alt="tf-plan" src="/img/api-mgmt-api-sync-openapi-no-changes.png"></p>
 <p>To force the update on the Azure API Management API we have 2 options available:</p>
 <ul>
 <li>Using the API Management API <code>revision</code> property.</li>
@@ -240,7 +240,7 @@ Subsequently, we use the output to configure the Azure API Management API.</p>
 <p>In the first scenario, we had to manually change the <code>revision</code> property to trigger the recreation of the API Management API resource.</p>
 <p>By employing the Terraform data <code>http</code> resource, no modifications are required in our Terraform files. The <code>http</code> resource <strong>ALWAYS</strong> fetchs the content from the remote OpenApi definition whenever a <code>terraform plan</code> command is executed.</p>
 <p>The following image illustrates this concept. We&rsquo;ve introduced a modification to the downstream API, and when the <code>terraform plan</code> command is executed, Terraform seamlessly detects the change and updates the API Management API, thanks to the data <code>http</code> resource.</p>
-<p><img src="/img/api-mgmt-api-sync-openapi-drift.png" alt="data-http-resource-tf-plan-output"></p>
+<p><img alt="data-http-resource-tf-plan-output" src="/img/api-mgmt-api-sync-openapi-drift.png"></p>
 <p>Also, as I have told you in the previous section, the <code>revision</code> property is not exactly built for what we&rsquo;re doing in here.</p>
 <p>The revision property is used to make non-breaking API changes so you can model and test changes safely. When ready, you can make a revision current and replace your current API.</p>
 <p>The correct usage for the <code>revision</code> property is to have multiple <code>azurerm_api_management_api</code> resources at the same time, each one containing a different version of the revision.</p>

@@ -177,7 +177,7 @@ Obviously I&rsquo;m also assuming that the service connection have enough permis
 <li>Every time I want to add a new feature into my CDK app I create a new branch from the master branch.</li>
 <li>The new feature is integrated back onto the master branch doing a Pull Request (PR)</li>
 </ul>
-<p><img src="/img/branching-strategy.png" alt="diagram"></p>
+<p><img alt="diagram" src="/img/branching-strategy.png"></p>
 <ul>
 <li>We are going to build <strong>2 Azure Pipelines</strong>.</li>
 </ul>
@@ -311,7 +311,7 @@ That pipelines is going to do the following steps:</p>
 </span></span><span style="display:flex;"><span>      }
 </span></span></code></pre></div><p>Remember that you need to add the pipeline as a <strong><em>&ldquo;build validation&rdquo;</em></strong> of the master branch.
 A build validation validates code by pre-merging and building pull request changes.</p>
-<p><img src="/img/build-validation.png" alt="build-validation"></p>
+<p><img alt="build-validation" src="/img/build-validation.png"></p>
 <p>Now, let&rsquo;s try to explain step by step what the pipeline is exactly doing.</p>
 <p><strong>1 -</strong> We begin setting up which <em>Node</em> version is going to be used by the aws-cdk and which <em>Ruby</em> version is going to be used by the cfn-nag tool.<br>
 After setting both versions we install the aws-cdk and cfn-nag packages.</p>
@@ -447,26 +447,26 @@ To test the PR pipeline I&rsquo;m going to modify the CDK app by adding, updatin
 <li>I&rsquo;ll start testing the pipeline by adding a new S3 bucket into the CDK app and creating a new PR.<br>
 The PR pipeline finishes successfully, but if we drill inside the task where we ran the cfn-nag scan we can see that we have some security warnings that maybe we should try to fix.</li>
 </ul>
-<p><img src="/img/nag-results.png" alt="nag-scan"></p>
+<p><img alt="nag-scan" src="/img/nag-results.png"></p>
 <p>Also if we take a look at the PR comment section a new comment has been created by the pipeline agent.</p>
-<p><img src="/img/pr-add-comment.png" alt="pr-add"></p>
+<p><img alt="pr-add" src="/img/pr-add-comment.png"></p>
 <ul>
 <li>Next I&rsquo;m going to modify the autoscaling policy and the s3 bucket removal policy.<br>
 After applying the changes in the CDK app I create a new PR.<br>
 The pipeline finishes successfully and if we take a look at the PR section we can see a new comment has been created.</li>
 </ul>
-<p><img src="/img/pr-modification-comment.png" alt="pr-edit"></p>
+<p><img alt="pr-edit" src="/img/pr-modification-comment.png"></p>
 <ul>
 <li>Next I&rsquo;m going to delete the s3 bucket, put the autoscaling policy back to the original value and create a new SNS topic.<br>
 After applying the changes in the CDK app I create a new PR.<br>
 The PR pipeline ends correctly and if we take a look at the PR section we can see a new comment has been created.</li>
 </ul>
-<p><img src="/img/pr-delete-comment.png" alt="pr-delete"></p>
+<p><img alt="pr-delete" src="/img/pr-delete-comment.png"></p>
 <ul>
 <li>Finally I&rsquo;m going to tidy a little bit the CDK app and do some code refactoring but I&rsquo;m <strong>not going to modify any AWS resource</strong>. After applying some code refactor I create a new  PR.<br>
 The PR pipeline ends correctly and if we take a look at the PR section we can see a new comment has been created and is telling us that no resource is going to be modified.</li>
 </ul>
-<p><img src="/img/pr-nochange-comment.png" alt="pr-nochange"></p>
+<p><img alt="pr-nochange" src="/img/pr-nochange-comment.png"></p>
 <h1 id="step-5---building-the-master-branch-integration-pipeline">Step 5 - Building the master branch integration pipeline</h1>
 <p>The pipeline will be triggered when the PR is completed and the code is commited to the master branch.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">trigger</span>:

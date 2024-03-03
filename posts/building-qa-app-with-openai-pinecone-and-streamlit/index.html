@@ -218,7 +218,7 @@ We can think of this database as the external long-term memory of our LLM.</p>
 <li>Streamlit to build a simple user interface.</li>
 </ul>
 <p>The following diagram shows what we are going to build.</p>
-<p><img src="/img/qa-gpt-app-diagram.png" alt="app-diagram"></p>
+<p><img alt="app-diagram" src="/img/qa-gpt-app-diagram.png"></p>
 <p>To simplify the development of the application, we will divide the app functionality into 2 processes:</p>
 <ul>
 <li>An <strong>ingestion process</strong> that will be responsible for:
@@ -251,13 +251,13 @@ We can think of this database as the external long-term memory of our LLM.</p>
 <p>The cosine metric will be used to calculate similarity between vectors.</p>
 </li>
 </ul>
-<p><img src="/img/qa-gpt-app-pinecone-index-creation.png" alt="pinecone-creation"></p>
+<p><img alt="pinecone-creation" src="/img/qa-gpt-app-pinecone-index-creation.png"></p>
 <p>After waiting a little bit the Pinecone Index we&rsquo;ll be ready for use.</p>
-<p><img src="/img/qa-gpt-app-pinecone-index.png" alt="pinecone-ready"></p>
+<p><img alt="pinecone-ready" src="/img/qa-gpt-app-pinecone-index.png"></p>
 <h2 id="2-deploy-a-text-embedding-ada-002-model-on-azure-openai"><strong>2. Deploy a text-embedding-ada-002 model on Azure OpenAI</strong></h2>
 <p>The next step will be to deploy a <code>text-embedding-ada-002</code> model on <code>Azure OpenAI</code>. This model will be used to transform text into vector embeddings.</p>
 <p>Go to Azure OpenAI &gt; Navigate to &ldquo;Model Deployments&rdquo; and deploy a <code>text-embedding-ada-002</code> model.</p>
-<p><img src="/img/qa-gpt-app-openai-deployments.png" alt="model-deployment"></p>
+<p><img alt="model-deployment" src="/img/qa-gpt-app-openai-deployments.png"></p>
 <h2 id="3-build-the-ingest-data-process-using-langchain"><strong>3. Build the ingest data process using LangChain</strong></h2>
 <blockquote>
 <p>If you want to take a closer look at the source code or want to try running it on your machine, you can visit my <a href="https://github.com/karlospn/building-qa-app-with-openai-pinecone-and-streamlit/blob/main/Ingest%20data%20into%20Pinecone.ipynb">Github</a> where you&rsquo;ll find a <code>Jupyter Notebook</code> that runs the ingest process.</p>
@@ -322,7 +322,7 @@ It would not make any sense to store entire documents without splitting them int
 <p>Let&rsquo;s start by deploying a <code>gpt-4</code> LLM model on <code>Azure OpenAI</code>.
 This LLM model will be used to generate the response to the user questions.</p>
 <p>Go to Azure OpenAI &gt; Navigate to &ldquo;Model Deployments&rdquo; and deploy a <code>gpt-4</code> or <code>gpt-4-32k</code> model.</p>
-<p><img src="/img/qa-gpt-app-openai-deployments.png" alt="model-deployment"></p>
+<p><img alt="model-deployment" src="/img/qa-gpt-app-openai-deployments.png"></p>
 <h2 id="2-build-the-querying-app-using-streamlit"><strong>2. Build the querying app using Streamlit</strong></h2>
 <p>We are going to set up a simple form with a text input field where the users can type the question they want to ask and a submit button. <br>
 Once a user types a question in the text input and presses the submit button, the following steps will be executed:</p>
@@ -507,22 +507,22 @@ The <code>top_k</code> parameter is used to specify how many vectors we want to 
 <ul>
 <li>Question 1:</li>
 </ul>
-<p><img src="/img/qa-gpt-app-streamlit-result-1.png" alt="app-result-1"></p>
+<p><img alt="app-result-1" src="/img/qa-gpt-app-streamlit-result-1.png"></p>
 <p>For every question we can also inspect which chunks of text are being retrieved from Pinecone and feed to GPT-4 to build the response.</p>
-<p><img src="/img/qa-gpt-app-streamlit-result-chunks.png" alt="app-result-chunk"></p>
+<p><img alt="app-result-chunk" src="/img/qa-gpt-app-streamlit-result-chunks.png"></p>
 <p>Let&rsquo;s try to make a couple more questions.</p>
 <ul>
 <li>Question 2:</li>
 </ul>
-<p><img src="/img/qa-gpt-app-streamlit-result-2.png" alt="app-result-2"></p>
+<p><img alt="app-result-2" src="/img/qa-gpt-app-streamlit-result-2.png"></p>
 <ul>
 <li>Question 3:</li>
 </ul>
-<p><img src="/img/qa-gpt-app-streamlit-result-3.png" alt="app-result-3"></p>
+<p><img alt="app-result-3" src="/img/qa-gpt-app-streamlit-result-3.png"></p>
 <ul>
 <li>Question 4:</li>
 </ul>
-<p><img src="/img/qa-gpt-app-streamlit-result-4.png" alt="app-result-4"></p>
+<p><img alt="app-result-4" src="/img/qa-gpt-app-streamlit-result-4.png"></p>
 
     </div>
     

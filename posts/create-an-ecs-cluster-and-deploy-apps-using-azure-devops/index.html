@@ -203,7 +203,7 @@ Let me explain a little bit about the purpose of every pipeline and how everythi
 <p>As I have stated before you need an existing image when creating an ECS Task Definition so I decided to create a &ldquo;dummy&rdquo; application.<br>
 That &ldquo;dummy&rdquo; application is going to be used when provisioning the infrastructure, so when all my infrastructure is provisioned I&rsquo;ll have an ECS cluster running a &ldquo;dummy&rdquo; / &ldquo;hello-world&rdquo; application. And afterwards when the application CI/CD pipeline kicks in is going to swap the dummy application with the real one.</p>
 <p>So that&rsquo;s the first pipeline:</p>
-<p><img src="/img/push-dummy-image-to-ecr.png" alt="push-dummy-image-to-ecr"></p>
+<p><img alt="push-dummy-image-to-ecr" src="/img/push-dummy-image-to-ecr.png"></p>
 <p>It&rsquo;s a very simple pipeline: build the container image and push it into an ECR repository.</p>
 <ul>
 <li>That pipeline will only run <strong>ONCE</strong> and that&rsquo;s it.</li>
@@ -300,12 +300,12 @@ I&rsquo;m not going to show the CDK app that I have developed because it&rsquo;s
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> task;
 </span></span><span style="display:flex;"><span>    }
 </span></span></code></pre></div><p>The pipeline is quite simple as I&rsquo;m just executing the CDK app.</p>
-<p><img src="/img/cdk-deploy.png" alt="cdk-deploy"></p>
+<p><img alt="cdk-deploy" src="/img/cdk-deploy.png"></p>
 <p>I&rsquo;m not going to show you the pipeline to deploy a CDK app because I already talked about it in a previous post.<br>
 If you want to know how to build an Azure DevOps pipeline that deploys an AWS CDK app you can read my previous post: <a href="https://www.mytechramblings.com/posts/provisioning-aws-resources-using-cdk-azure-devops/">https://www.mytechramblings.com/posts/provisioning-aws-resources-using-cdk-azure-devops/</a></p>
 <h1 id="3-deploy-the-application">3. Deploy the application</h1>
 <p>The last pipeline is the one in charge of building and deploying the application.</p>
-<p><img src="/img/ecs-update.png" alt="ecs-update"></p>
+<p><img alt="ecs-update" src="/img/ecs-update.png"></p>
 <ul>
 <li>The &ldquo;Continuous Integration&rdquo; (CI) creates the docker image, uses the Build Id variable to tag it and finally pushes the image into an ECR repository.</li>
 <li>The &ldquo;Continous Deployment&rdquo; (CD) creates a new revision of the ECS Task Definition that points to the image we have just uploaded and updates the ECS Service to use the newly created revision.</li>

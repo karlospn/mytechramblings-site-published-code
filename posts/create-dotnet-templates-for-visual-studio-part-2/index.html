@@ -1214,7 +1214,7 @@ For example, this command: <code>dotnet new mtr-api --github true --azure-pipeli
 <h2 id="23-create-the-idehostjson-file">2.3. <strong>Create the ide.host.json file</strong></h2>
 <p>If your template needs some command line parameters and you want to use it within Visual Studio you need to add an <code>ide.host.json</code> file inside the <code>.template.config</code> folder.</p>
 <p>This file will be used to show the command line parameters inside a project dialog when you try to create a new project.</p>
-<p><img src="/img/dotnet-api-template-vs-dialog.png" alt="api-vs-dialog"></p>
+<p><img alt="api-vs-dialog" src="/img/dotnet-api-template-vs-dialog.png"></p>
 <p>Also you can customize your templates appearance in the Visual Studio template list with an icon. If it is not provided, a default icon will be associated with your project template.</p>
 <p>Here&rsquo;s how the <code>ide.host.json</code> for the api looks like:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span>{
@@ -1503,7 +1503,7 @@ Instead of that, I have created a <code>Powershell</code> script that fetches th
 <li><code>dotnet new -i .\MyTechRamblings.Templates.0.5.0.nupkg</code></li>
 </ul>
 <p>After installing the templates pack you should run the <code>dotnet new -l</code> command and verify that the 3 templates appear on the list (<code>mtr-api</code>, <code>mtr-rabbit-worker</code>, <code>mtr-az-func-timer</code>).</p>
-<p><img src="/img/dotnet-list-installed-templates.png" alt="dotnet-list-templates"></p>
+<p><img alt="dotnet-list-templates" src="/img/dotnet-list-installed-templates.png"></p>
 <p>Now you can create a new solution running any of these commands:</p>
 <ul>
 <li><code>dotnet new mtr-api</code></li>
@@ -1521,20 +1521,20 @@ And remember:</p>
 </blockquote>
 <p>Try to create a new project withing Visual Studio and the new templates should appear in the <code>Create a new project</code> dialog.<br>
 If the templates doesn&rsquo;t show up, just search for them in the search box.</p>
-<p><img src="/img/dotnet-vs-list-templates.png" alt="list-templates"></p>
+<p><img alt="list-templates" src="/img/dotnet-vs-list-templates.png"></p>
 <p>If you select any of the templates a dialog will show up and it will contain every parameter that you have specified in the <code>ide.host.json</code>.</p>
 <ul>
 <li>WebAPI Visual Studio dialog:</li>
 </ul>
-<p><img src="/img/dotnet-api-template-vs-dialog.png" alt="api-vs-dialog"></p>
+<p><img alt="api-vs-dialog" src="/img/dotnet-api-template-vs-dialog.png"></p>
 <ul>
 <li>Worker Service Visual Studio dialog:</li>
 </ul>
-<p><img src="/img/dotnet-worker-template-vs-dialog.png" alt="worker-vs-dialog"></p>
+<p><img alt="worker-vs-dialog" src="/img/dotnet-worker-template-vs-dialog.png"></p>
 <ul>
 <li>Azure function Visual Studio dialog:</li>
 </ul>
-<p><img src="/img/dotnet-function-template-vs-dialog.png" alt="function-vs-dialog"></p>
+<p><img alt="function-vs-dialog" src="/img/dotnet-function-template-vs-dialog.png"></p>
 <h1 id="some-useful-links"><strong>Some useful links</strong></h1>
 <ul>
 <li><a href="https://github.com/dotnet/templating/wiki">https://github.com/dotnet/templating/wiki</a></li>

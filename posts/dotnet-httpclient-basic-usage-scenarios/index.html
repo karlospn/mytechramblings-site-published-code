@@ -168,7 +168,7 @@ However, the truth is, even with so many resources available, I still come acros
 <p><code>HttpClient</code> is used to make HTTP requests to web servers and APIs, and it relies on underlying network connections to perform these tasks. By leveraging the <code>netstat</code> command, we can gain insights into the active TCP connections created by <code>HttpClient</code>, helping us identify potential issues.</p>
 <p>To investigate the active TCP connections that <code>HttpClient</code> creates using <code>netstat</code>, you can open a command prompt or terminal and enter <code>netstat -ano</code> (the &lsquo;-a&rsquo; flag shows all connections, the &lsquo;-n&rsquo; flag displays IP addresses and port numbers, and the &lsquo;-o&rsquo; flag displays the associated process ID (PID) ).<br>
 The output will provide a list of all active connections, along with their status, local and remote IP addresses, and associated PID process.</p>
-<p><img src="/img/httpclient-scenarios-netstat-output.png" alt="httpclient-scenarios-netstat-output"></p>
+<p><img alt="httpclient-scenarios-netstat-output" src="/img/httpclient-scenarios-netstat-output.png"></p>
 <p>Monitoring HttpClient connections using <code>netstat</code> can help you identify if your application is properly closing connections after use or if there are lingering connections that may lead to resource leaks. It can also reveal if there are connection failures, such as connections in a <code>TIME_WAIT</code> state, which might indicate issues with connection pooling or DNS resolution.</p>
 <p>The next list shows the <code>netstat</code> states and their meanings:</p>
 <ul>
