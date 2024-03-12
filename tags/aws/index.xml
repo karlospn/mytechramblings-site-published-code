@@ -9,10 +9,30 @@
     <description>Recent content in Aws on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 03 Oct 2023 10:00:03 +0200</lastBuildDate>
+    <lastBuildDate>Tue, 12 Mar 2024 22:00:30 +0100</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/aws/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Building and deploying a .NET 8 App on an ARM64 processor using Azure Pipelines and AWS ECS Fargate. Part 1: How to build multi-platform images</title>
+      <link>https://www.mytechramblings.com/posts/building-and-deploying-a-dotnet-app-on-arm64-part1-cross-compilation/</link>
+      <pubDate>Tue, 12 Mar 2024 22:00:30 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/building-and-deploying-a-dotnet-app-on-arm64-part1-cross-compilation/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          In this two-part series, I’m going to show you how to build and deploy a .NET 8 app container image that targets an ARM64 processor. In part 1, I’ll be discussing some key concepts that you should know about how to build .NET multi-platform images.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>Building a Q&amp;A app capable of answering questions related to your enterprise documents using AWS Bedrock, AWS Kendra, AWS S3 and Streamlit</title>

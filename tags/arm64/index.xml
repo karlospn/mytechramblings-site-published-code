@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Arm64 on my tech ramblings</title>
+    
+    
+    
+    <link>https://www.mytechramblings.com/tags/arm64/</link>
+    <description>Recent content in Arm64 on my tech ramblings</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Tue, 12 Mar 2024 22:00:30 +0100</lastBuildDate>
+    
+	<atom:link href="https://www.mytechramblings.com/tags/arm64/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Building and deploying a .NET 8 App on an ARM64 processor using Azure Pipelines and AWS ECS Fargate. Part 1: How to build multi-platform images</title>
+      <link>https://www.mytechramblings.com/posts/building-and-deploying-a-dotnet-app-on-arm64-part1-cross-compilation/</link>
+      <pubDate>Tue, 12 Mar 2024 22:00:30 +0100</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/building-and-deploying-a-dotnet-app-on-arm64-part1-cross-compilation/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          In this two-part series, I’m going to show you how to build and deploy a .NET 8 app container image that targets an ARM64 processor. In part 1, I’ll be discussing some key concepts that you should know about how to build .NET multi-platform images.
+          
+        
+        </description>
+    </item>
+    
+  </channel>
+</rss>

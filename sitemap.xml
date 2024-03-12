@@ -2,22 +2,40 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://www.mytechramblings.com/</loc>
-    <lastmod>2024-03-01T09:42:30+01:00</lastmod>
+    <loc>https://www.mytechramblings.com/tags/arm64/</loc>
+    <lastmod>2024-03-12T22:00:30+01:00</lastmod>
   </url><url>
-    <loc>https://www.mytechramblings.com/posts/</loc>
-    <lastmod>2024-03-01T09:42:30+01:00</lastmod>
+    <loc>https://www.mytechramblings.com/tags/aws/</loc>
+    <lastmod>2024-03-12T22:00:30+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/azure/</loc>
-    <lastmod>2024-02-12T10:20:06+01:00</lastmod>
+    <lastmod>2024-03-12T22:00:30+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/building-and-deploying-a-dotnet-app-on-arm64-part1-cross-compilation/</loc>
+    <lastmod>2024-03-12T22:00:30+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/containers/</loc>
+    <lastmod>2024-03-12T22:00:30+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/devops/</loc>
+    <lastmod>2024-03-12T22:00:30+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/dotnet/</loc>
+    <lastmod>2024-03-12T22:00:30+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/</loc>
+    <lastmod>2024-03-12T22:00:30+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/</loc>
+    <lastmod>2024-03-12T22:00:30+01:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/</loc>
+    <lastmod>2024-03-12T22:00:30+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/posts/how-to-update-an-azure-api-mgmt-api-that-uses-a-remote-openapi-using-terraform/</loc>
     <lastmod>2024-02-12T10:20:06+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/iac/</loc>
-    <lastmod>2024-02-12T10:20:06+01:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/</loc>
     <lastmod>2024-02-12T10:20:06+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/terraform/</loc>
@@ -30,9 +48,6 @@
     <lastmod>2023-12-28T12:03:32+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/csharp/</loc>
-    <lastmod>2023-12-28T12:03:32+01:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/dotnet/</loc>
     <lastmod>2023-12-28T12:03:32+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/templates/</loc>
@@ -69,9 +84,6 @@
     <lastmod>2023-10-30T10:00:43+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/ai/</loc>
-    <lastmod>2023-10-03T10:00:03+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/aws/</loc>
     <lastmod>2023-10-03T10:00:03+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/posts/building-qa-app-with-aws-bedrock-kendra-s3-and-streamlit/</loc>
@@ -122,9 +134,6 @@
     <loc>https://www.mytechramblings.com/posts/building-a-csharp-enhancing-app-using-openai-gpt4-and-streamlit/</loc>
     <lastmod>2023-07-10T10:00:01+02:00</lastmod>
   </url><url>
-    <loc>https://www.mytechramblings.com/tags/containers/</loc>
-    <lastmod>2023-06-12T10:03:07+02:00</lastmod>
-  </url><url>
     <loc>https://www.mytechramblings.com/tags/debian/</loc>
     <lastmod>2023-06-12T10:03:07+02:00</lastmod>
   </url><url>
@@ -151,9 +160,6 @@
   </url><url>
     <loc>https://www.mytechramblings.com/tags/serverless/</loc>
     <lastmod>2023-04-04T10:01:11+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/devops/</loc>
-    <lastmod>2023-02-28T10:55:55+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/posts/how-to-integrate-your-roslyn-analyzers-with-sonarqube/</loc>
     <lastmod>2023-02-28T10:55:55+01:00</lastmod>
