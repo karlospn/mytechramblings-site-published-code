@@ -2,34 +2,37 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://www.mytechramblings.com/</loc>
-    <lastmod>2024-04-02T09:42:30+01:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/posts/</loc>
-    <lastmod>2024-04-02T09:42:30+01:00</lastmod>
-  </url><url>
     <loc>https://www.mytechramblings.com/tags/arm64/</loc>
-    <lastmod>2024-03-12T22:00:30+01:00</lastmod>
+    <lastmod>2024-04-02T22:19:30+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/aws/</loc>
-    <lastmod>2024-03-12T22:00:30+01:00</lastmod>
+    <lastmod>2024-04-02T22:19:30+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/azure/</loc>
-    <lastmod>2024-03-12T22:00:30+01:00</lastmod>
+    <lastmod>2024-04-02T22:19:30+02:00</lastmod>
   </url><url>
-    <loc>https://www.mytechramblings.com/posts/building-and-deploying-a-dotnet-app-on-arm64-part1-cross-compilation/</loc>
-    <lastmod>2024-03-12T22:00:30+01:00</lastmod>
+    <loc>https://www.mytechramblings.com/posts/building-and-deploying-a-dotnet-app-on-arm64-part2-demo/</loc>
+    <lastmod>2024-04-02T22:19:30+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/containers/</loc>
-    <lastmod>2024-03-12T22:00:30+01:00</lastmod>
+    <lastmod>2024-04-02T22:19:30+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/devops/</loc>
-    <lastmod>2024-03-12T22:00:30+01:00</lastmod>
+    <lastmod>2024-04-02T22:19:30+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/dotnet/</loc>
-    <lastmod>2024-03-12T22:00:30+01:00</lastmod>
+    <lastmod>2024-04-02T22:19:30+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/</loc>
+    <lastmod>2024-04-02T22:19:30+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/</loc>
+    <lastmod>2024-04-02T22:19:30+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/</loc>
+    <lastmod>2024-04-02T22:19:30+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/building-and-deploying-a-dotnet-app-on-arm64-part1-cross-compilation/</loc>
     <lastmod>2024-03-12T22:00:30+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/posts/how-to-update-an-azure-api-mgmt-api-that-uses-a-remote-openapi-using-terraform/</loc>

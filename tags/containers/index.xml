@@ -9,10 +9,30 @@
     <description>Recent content in Containers on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 12 Mar 2024 22:00:30 +0100</lastBuildDate>
+    <lastBuildDate>Tue, 02 Apr 2024 22:19:30 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/containers/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Building and deploying a .NET 8 App on an ARM64 processor using Azure Pipelines and AWS ECS Fargate. Part 2: Demo</title>
+      <link>https://www.mytechramblings.com/posts/building-and-deploying-a-dotnet-app-on-arm64-part2-demo/</link>
+      <pubDate>Tue, 02 Apr 2024 22:19:30 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/building-and-deploying-a-dotnet-app-on-arm64-part2-demo/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          In this two-part series, I’m going to show you how to build and deploy a .NET 8 app container image that targets an ARM64 processor. In part 2, we will attempt to perform an end-to-end process. This will involve building a .NET 8 API, containerizing the app targeting an ARM64 processor using Azure Pipelines, and deploying it on AWS ECS Fargate. Furthermore, a benchmark will also be conducted to compare the performance of the application running on an ARM64 Fargate container versus an AMD64 Fargate container.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>Building and deploying a .NET 8 App on an ARM64 processor using Azure Pipelines and AWS ECS Fargate. Part 1: How to build multi-platform images</title>

@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>Building and deploying a .NET 8 App on an ARM64 processor using Azure Pipelines and AWS ECS Fargate. Part 2: Demo :: my tech ramblings — A blog for writing about my techie ramblings</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="This is a two-part series post.
+Part 1: Key concepts about how to build multi-platform images. Part 2: A practical example of how to build a container image targeting an ARM64 processor using Azure Pipelines and how to deploy it on AWS ECS Fargate. It will also include a quick benchmark to compare the performance of the application running on an ARM64 Fargate container against the same app using an AMD64 Fargate container."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://www.mytechramblings.com/posts/building-and-deploying-a-dotnet-app-on-arm64-part2-demo/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/assets/style.css">
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.mytechramblings.com/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://www.mytechramblings.com/img/favicon.png">
+
+
+<meta name="twitter:card" content="summary"/><meta name="twitter:title" content="Building and deploying a .NET 8 App on an ARM64 processor using Azure Pipelines and AWS ECS Fargate. Part 2: Demo"/>
+<meta name="twitter:description" content="In this two-part series, I’m going to show you how to build and deploy a .NET 8 app container image that targets an ARM64 processor. In part 2, we will attempt to perform an end-to-end process. This will involve building a .NET 8 API, containerizing the app targeting an ARM64 processor using Azure Pipelines, and deploying it on AWS ECS Fargate. Furthermore, a benchmark will also be conducted to compare the performance of the application running on an ARM64 Fargate container versus an AMD64 Fargate container."/>
+
+
+
+<meta property="og:title" content="Building and deploying a .NET 8 App on an ARM64 processor using Azure Pipelines and AWS ECS Fargate. Part 2: Demo" />
+<meta property="og:description" content="In this two-part series, I’m going to show you how to build and deploy a .NET 8 app container image that targets an ARM64 processor. In part 2, we will attempt to perform an end-to-end process. This will involve building a .NET 8 API, containerizing the app targeting an ARM64 processor using Azure Pipelines, and deploying it on AWS ECS Fargate. Furthermore, a benchmark will also be conducted to compare the performance of the application running on an ARM64 Fargate container versus an AMD64 Fargate container." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.mytechramblings.com/posts/building-and-deploying-a-dotnet-app-on-arm64-part2-demo/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-04-02T22:19:30+02:00" />
+<meta property="article:modified_time" content="2024-04-02T22:19:30+02:00" />
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://www.mytechramblings.com/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">my tech ramblings</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="https://www.dotnetramblings.com">.NET News</a></li>
+        
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="https://www.dotnetramblings.com">.NET News</a></li>
+      
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/building-and-deploying-a-dotnet-app-on-arm64-part2-demo/">Building and deploying a .NET 8 App on an ARM64 processor using Azure Pipelines and AWS ECS Fargate. Part 2: Demo</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2024-04-02
+        </span>
+
+        
+          
+            
+
+
+
+          
+        
+      
+
+      
+      
+        <span class="post-read-time">— 15 min read</span>
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          #<a href="https://www.mytechramblings.com/tags/dotnet/">dotnet</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/containers/">containers</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/azure/">azure</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/aws/">aws</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/devops/">devops</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/arm64/">arm64</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <blockquote>
+<p>This is a two-part series post.</p>
+<ul>
+<li><strong>Part 1</strong>: Key concepts about how to build multi-platform images.</li>
+<li><strong>Part 2</strong>: A practical example of how to build a container image targeting an ARM64 processor using Azure Pipelines and how to deploy it on AWS ECS Fargate. <br>
+It will also include a quick benchmark to compare the performance of the application running on an ARM64 Fargate container against the same app using an AMD64 Fargate container.</li>
+</ul>
+</blockquote>
+<p>In the first part of this blog post, we explored the creation of a multi-platform image, the workings of .NET multi-platform images, and the options at our disposal for building a multi-platform image, such as emulation, cross-compilation, or utilizing a host with the target architecture.</p>
+<p>Now, it&rsquo;s time to build an end-to-end process. We&rsquo;ll aim to build a container image targeting ARM64 using a CI runner, deploy the application onto an ARM64 machine host, and verify its proper functioning.</p>
+<p>Currently, I don&rsquo;t possess an ARM64 machine, so to construct this end-to-end process, I&rsquo;ve opted to utilize the following cloud services:</p>
+<ul>
+<li><strong>AWS ECR</strong> for storing the container image.</li>
+<li><strong>AWS ECS Fargate</strong> for running the API.</li>
+<li><strong>Azure Pipelines</strong> for building and publishing the image into the AWS ECR.</li>
+<li><strong>Artillery</strong> for testing the API.</li>
+</ul>
+<p>Why choose AWS over Azure? There&rsquo;s no specific reason. In my recent posts, I&rsquo;ve been using Azure, so switching to AWS might provide a refreshing change of pace.</p>
+<h1 id="application"><strong>Application</strong></h1>
+<ul>
+<li>You can find the app source code in <a href="https://github.com/karlospn/opentelemetry-metrics-demo">here</a>.</li>
+</ul>
+<p>The application we’re going to use is a BookStore API built using .NET 8.</p>
+<p>This API is capable of executing the following operations:</p>
+<ul>
+<li>Retrieve, add, modify, and remove book categories.</li>
+<li>Retrieve, add, modify, and remove books.</li>
+<li>Retrieve, add, modify, and remove inventory.</li>
+<li>Retrieve, add, and modify orders.</li>
+</ul>
+<p>This application requires a SQL Server database. However, to simplify matters, we&rsquo;ll employ <strong>Entity Framework (EF) with an in-memory database</strong>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>services.AddDbContext&lt;BookStoreDbContext&gt;(options =&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    options.UseInMemoryDatabase(<span style="color:#e6db74">&#34;BookStoreDb&#34;</span>);
+</span></span><span style="display:flex;"><span>});
+</span></span></code></pre></div><h1 id="constructing-the-dockerfile"><strong>Constructing the Dockerfile</strong></h1>
+<p>Instead of building a single multi-platform Dockerfile, let&rsquo;s make the effort to construct two: one employing emulation and another utilizing Cross-Compilation.</p>
+<h2 id="using-emulation"><strong>Using emulation</strong></h2>
+<p>To create a Dockerfile that uses emulation, we don&rsquo;t need to do any extra step; just a simple run-of-the-mill Dockerfile will suffice.</p>
+<p>Emulation is the easiest option of the three available, because it requires no changes at all to your Dockerfile. The BuildKit automatically detects the secondary architectures that are available and when BuildKit needs to run a binary for a different architecture, it automatically loads it.</p>
+<p>The following code snippet shows the Dockerfile with the following features:</p>
+<ul>
+<li>It&rsquo;s a multi-stage Dockerfile: it uses Ubuntu 22.04 as a base image for the build stage and an Ubuntu Chiseled image for the runtime stage.</li>
+<li>The application is published as self-contained, resulting in an application bundle that encompasses the .NET runtime, libraries, as well as the application itself and its dependencies.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#ae81ff">FROM mcr.microsoft.com/dotnet/sdk:8.0-jammy AS build-env</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">WORKDIR /app</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Copy everything</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY . ./</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Restore packages</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet restore -s &#34;https://api.nuget.org/v3/index.json&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Build project</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet build &#34;./src/BookStore.WebApi/BookStore.WebApi.csproj&#34; \ </span>
+</span></span><span style="display:flex;"><span>    -<span style="color:#ae81ff">c Release \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#ae81ff">self-contained true</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Publish app</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet publish &#34;./src/BookStore.WebApi/BookStore.WebApi.csproj&#34; \</span>
+</span></span><span style="display:flex;"><span>	-<span style="color:#ae81ff">c Release \</span>
+</span></span><span style="display:flex;"><span>	-<span style="color:#ae81ff">o /app/publish \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#66d9ef">no</span>-<span style="color:#ae81ff">restore \ </span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#66d9ef">no</span>-<span style="color:#ae81ff">build \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#ae81ff">self-contained true</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Build runtime image</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">FROM mcr.microsoft.com/dotnet/runtime-deps:8.0.0-jammy-chiseled-extra</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Copy artifact</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">WORKDIR /app</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY --from=build-env /app/publish .</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Starts on port 8080</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">ENV ASPNETCORE_URLS=http://+:8080</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Set Entrypoint</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">ENTRYPOINT [&#34;./BookStore.WebApi&#34;]</span>
+</span></span></code></pre></div><p>Now, let&rsquo;s try to build the container image on my AMD64 machine. <br>
+Remember that we&rsquo;re running the <code>dotnet build</code> command on an AMD64 host machine while targeting an ARM64 processor. This means that it will employ the <a href="https://www.qemu.org/">QEMU</a> emulator for building the resulting container image.</p>
+<pre tabindex="0"><code class="language-script" data-lang="script">docker build --platform=linux/arm64 -t bookstore-api:arm64-emulation -f src/BookStore.WebApi/Dockerfile .
+[+] Building 132.1s (15/15) FINISHED
+</code></pre><p>It takes quite some time (and consumes a significant amount of CPU and memory resources), but we eventually end up with a functional ARM64 container image.</p>
+<h2 id="using-cross-compilation"><strong>Using Cross-Compilation</strong></h2>
+<p>The idea behind Cross-Compilation is to utilize a multi-stage build Dockerfile. In the build stage, you compile your code for the target architecture, and in the run stage, you configure the runtime to be exported to the final image.</p>
+<p>Using the Dockerfile from the previous section as a starting point, there are several modifications needed to make it compatible with Cross-Compilation.</p>
+<ol>
+<li>
+<p>Use the pre-defined build argument <code>BUILDPLATFORM</code> to pin the builder to use the host&rsquo;s native architecture as the build platform. This is necesarry to prevent emulation.<br>
+In simpler terms, we need to add the <code>--platform=$BUILDPLATFORM</code> attribute into the <code>FROM</code> instruction of the build stage.</p>
+</li>
+<li>
+<p>Add the <code>ARG TARGETARCH</code> instructions for the build stage, making the <code>TARGETARCH</code> build arguments available to the commands in this stage.</p>
+</li>
+<li>
+<p>Modify the <code>dotnet restore</code>, <code>dotnet build</code> and <code>dotnet publish</code> commands so they generate the application binaries for the target architecture (in our case <code>arm64</code>). <br>
+To accomplish this, we&rsquo;re going to use the <code>--arch</code> attribute along with the <code>TARGETARCH</code> argument.</p>
+</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#ae81ff">FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0-jammy AS build-env</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">WORKDIR /app</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">ARG TARGETARCH</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Copy everything</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY . ./</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Restore packages</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet restore -s &#34;https://api.nuget.org/v3/index.json&#34; \</span>
+</span></span><span style="display:flex;"><span>	-<span style="color:#ae81ff">a $TARGETARCH</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Build project</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet build &#34;./src/BookStore.WebApi/BookStore.WebApi.csproj&#34; \ </span>
+</span></span><span style="display:flex;"><span>    -<span style="color:#ae81ff">c Release \</span>
+</span></span><span style="display:flex;"><span>	-<span style="color:#ae81ff">a $TARGETARCH \ </span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#ae81ff">self-contained true</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Publish app</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet publish &#34;./src/BookStore.WebApi/BookStore.WebApi.csproj&#34; \</span>
+</span></span><span style="display:flex;"><span>	-<span style="color:#ae81ff">c Release \</span>
+</span></span><span style="display:flex;"><span>	-<span style="color:#ae81ff">o /app/publish \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#66d9ef">no</span>-<span style="color:#ae81ff">restore \ </span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#66d9ef">no</span>-<span style="color:#ae81ff">build \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#ae81ff">self-contained true \</span>
+</span></span><span style="display:flex;"><span>	-<span style="color:#ae81ff">a $TARGETARCH</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Build runtime image</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">FROM mcr.microsoft.com/dotnet/runtime-deps:8.0.0-jammy-chiseled-extra</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Copy artifact</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">WORKDIR /app</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY --from=build-env /app/publish .</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Starts on port 8080</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">ENV ASPNETCORE_URLS=http://+:8080</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Set Entrypoint</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">ENTRYPOINT [&#34;./BookStore.WebApi&#34;]</span>
+</span></span></code></pre></div><p>Now, let&rsquo;s attempt to build the container image targeting an ARM64 processor.</p>
+<pre tabindex="0"><code class="language-script" data-lang="script">$ docker build --platform=linux/arm64 -t bookstore-api:arm64-cc -f src/BookStore.WebApi/Dockerfile .
+[+] Building 16.2s (15/15) FINISHED
+</code></pre><p>Using Cross-Compilation, we&rsquo;ve reduced the build time from 130 seconds to 17 seconds, and the CPU usage went from nearly 90% to no more than 20%.</p>
+<h1 id="constructing-the-container-image-using-azure-pipelines-and-pushing-it-into-ecr"><strong>Constructing the container image using Azure Pipelines (and pushing it into ECR)</strong></h1>
+<p>In the previous section, we created a pair of Dockerfiles (one employing emulation to build the container image and another utilizing Cross-Compilation) and tested both on my local machine. <br>
+However, this isn&rsquo;t a very realistic scenario. Now, instead of using my personal computer, let&rsquo;s try building them using an Azure Pipelines Hosted Agent.</p>
+<h2 id="using-emulation-1"><strong>Using emulation</strong></h2>
+<p>This process is quite straightforward. We&rsquo;re using an Ubuntu hosted agent and the Dockerfile from the previous section. In the pipeline, we&rsquo;re simply executing a <code>docker build</code> command using the <code>--platform </code> attribute.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">trigger</span>: <span style="color:#ae81ff">none</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">pool</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">vmImage</span>: <span style="color:#ae81ff">ubuntu-latest</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">steps</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">script</span>: <span style="color:#ae81ff">|  </span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ae81ff">docker build --platform=linux/arm64 -t bookstore-api:arm64-emu -f src/BookStore.WebApi/Dockerfile .</span>
+</span></span></code></pre></div><p>And it throws an error.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>#11 [build-env 4/6] RUN dotnet restore -s &#34;https://api.nuget.org/v3/index.json&#34;
+</span></span><span style="display:flex;"><span>#11 0.229 exec /bin/sh: exec format error
+</span></span><span style="display:flex;"><span>#11 ERROR: process &#34;/bin/sh -c dotnet restore -s \&#34;https://api.nuget.org/v3/index.json\&#34;&#34; did not complete successfully: exit code: 1
+</span></span><span style="display:flex;"><span>------
+</span></span><span style="display:flex;"><span> &gt; [build-env 4/6] RUN dotnet restore -s &#34;https://api.nuget.org/v3/index.json&#34;:
+</span></span><span style="display:flex;"><span>0.229 exec /bin/sh: exec format error
+</span></span><span style="display:flex;"><span>------
+</span></span><span style="display:flex;"><span>Dockerfile:8
+</span></span><span style="display:flex;"><span>--------------------
+</span></span><span style="display:flex;"><span>   6 |     
+</span></span><span style="display:flex;"><span>   7 |     # Restore packages
+</span></span><span style="display:flex;"><span>   8 | &gt;&gt;&gt; RUN dotnet restore -s &#34;https://api.nuget.org/v3/index.json&#34;
+</span></span><span style="display:flex;"><span>   9 |     
+</span></span><span style="display:flex;"><span>  10 |     # Build project
+</span></span><span style="display:flex;"><span>--------------------
+</span></span><span style="display:flex;"><span>ERROR: failed to solve: process &#34;/bin/sh -c dotnet restore -s \&#34;https://api.nuget.org/v3/index.json\&#34;&#34; did not complete successfully: exit code: 1
+</span></span></code></pre></div><p>This is because the Azure Pipelines Linux hosting agent doesn&rsquo;t come with QEMU preinstalled. QEMU is only preinstalled with Docker Desktop. If you&rsquo;re using Docker Engine, you&rsquo;ll need to install it separately.</p>
+<p>To install it, we&rsquo;ll use the <a href="https://github.com/multiarch/qemu-user-static">qemu-user-static</a> image. This image installs everything necessary to run QEMU.</p>
+<p>Let&rsquo;s attempt the process again, but this time, we&rsquo;ll install QEMU first.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">trigger</span>: <span style="color:#ae81ff">none</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">pool</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">vmImage</span>: <span style="color:#ae81ff">ubuntu-latest</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">steps</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">script</span>: <span style="color:#ae81ff">|  </span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ae81ff">docker run --rm --privileged multiarch/qemu-user-static --reset -p yes</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ae81ff">docker build --platform=linux/arm64 -t bookstore-api:arm64-emu -f src/BookStore.WebApi/Dockerfile .</span>
+</span></span></code></pre></div><p>And it throws another error. This time is a segmentation fault error.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>#11 [build-env 4/6] RUN dotnet restore -s &#34;https://api.nuget.org/v3/index.json&#34;
+</span></span><span style="display:flex;"><span>#11 22.03   Determining projects to restore...
+</span></span><span style="display:flex;"><span>#11 26.85 Segmentation fault (core dumped)
+</span></span><span style="display:flex;"><span>#11 ERROR: process &#34;/bin/sh -c dotnet restore -s \&#34;https://api.nuget.org/v3/index.json\&#34;&#34; did not complete successfully: exit code: 139
+</span></span><span style="display:flex;"><span>------
+</span></span><span style="display:flex;"><span> &gt; [build-env 4/6] RUN dotnet restore -s &#34;https://api.nuget.org/v3/index.json&#34;:
+</span></span><span style="display:flex;"><span>22.03   Determining projects to restore...
+</span></span><span style="display:flex;"><span>26.85 Segmentation fault (core dumped)
+</span></span><span style="display:flex;"><span>------
+</span></span><span style="display:flex;"><span>Dockerfile:8
+</span></span><span style="display:flex;"><span>--------------------
+</span></span><span style="display:flex;"><span>   6 |     
+</span></span><span style="display:flex;"><span>   7 |     # Restore packages
+</span></span><span style="display:flex;"><span>   8 | &gt;&gt;&gt; RUN dotnet restore -s &#34;https://api.nuget.org/v3/index.json&#34;
+</span></span><span style="display:flex;"><span>   9 |     
+</span></span><span style="display:flex;"><span>  10 |     # Build project
+</span></span><span style="display:flex;"><span>--------------------
+</span></span><span style="display:flex;"><span>ERROR: failed to solve: process &#34;/bin/sh -c dotnet restore -s \&#34;https://api.nuget.org/v3/index.json\&#34;&#34; did not complete successfully: exit code: 139
+</span></span></code></pre></div><p>As I mentioned in part 1 of this blog post, the combination of Docker Engine, QEMU, and .NET doesn&rsquo;t work well together.</p>
+<p>I&rsquo;m going to abandon the idea of trying to build an image using emulation. It&rsquo;s not worth dealing with the emulator inconsistencies when working with .NET. <br>
+Besides, using cross-compilation is the preferred method here. We were merely experimenting with emulation to determine if it was a viable option or not. And the answer to that question is that it&rsquo;s not a viable option.</p>
+<h2 id="using-cross-compilation-1"><strong>Using cross-compilation</strong></h2>
+<p>This process is identical to the last section. We&rsquo;re using an Ubuntu hosted agent and the Dockerfile from the previous section. In the pipeline, we&rsquo;re executing a <code>docker build</code> command using the <code>--platform</code> attribute.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">trigger</span>: <span style="color:#ae81ff">none</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">pool</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">vmImage</span>: <span style="color:#ae81ff">ubuntu-latest</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">steps</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">script</span>: <span style="color:#ae81ff">|  </span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ae81ff">docker build --platform=linux/arm64 -t bookstore-api:arm64-cc -f src/BookStore.WebApi/Dockerfile .</span>
+</span></span></code></pre></div><p>This time, the process works flawlessly. Now, let&rsquo;s push it into AWS ECR and in the next section, we&rsquo;ll try to deploy it on AWS ECS Fargate.</p>
+<p>To push it into AWS ECR, let&rsquo;s keep things straightforward. I&rsquo;m going to use the Azure DevOps <a href="https://docs.aws.amazon.com/vsts/latest/userguide/awsshell.html">AWSShellScript</a> task. This task executes a shell script using bash with AWS credentials. The script will perform the following steps:</p>
+<ul>
+<li>Retrieve an authentication token and authenticate the Docker client with my ECR registry.</li>
+<li>Create a new ECR repository.</li>
+<li>Tag the container image so I can push it into the repository.</li>
+<li>Push the image to my newly created ECR repository.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">trigger</span>: <span style="color:#ae81ff">none</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">pool</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">vmImage</span>: <span style="color:#ae81ff">ubuntu-latest</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">steps</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">script</span>: <span style="color:#ae81ff">|  </span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ae81ff">docker build --platform=linux/arm64 -t bookstore-api:arm64-cc -f src/BookStore.WebApi/Dockerfile .</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">AWSShellScript@1</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">awsCredentials</span>: <span style="color:#e6db74">&#39;aws-dev&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">regionName</span>: <span style="color:#e6db74">&#39;eu-west-1&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">scriptType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">inlineScript</span>: |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 156267164149.dkr.ecr.eu-west-1.amazonaws.com
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      aws ecr create-repository --repository-name arm64-bookstore-api
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      docker tag bookstore-api:arm64-cc 156267164149.dkr.ecr.eu-west-1.amazonaws.com/arm64-bookstore-api:cc
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      docker push 156267164149.dkr.ecr.eu-west-1.amazonaws.com/arm64-bookstore-api:cc</span>      
+</span></span></code></pre></div><h1 id="creating-the-aws-infrastructure"><strong>Creating the AWS infrastructure</strong></h1>
+<p>I&rsquo;m going to need the following resources:</p>
+<ul>
+<li>A Virtual Private Cloud (VPC).</li>
+<li>An Application Load Balancer (ALB).</li>
+<li>An Elastic Container Service (ECS) Cluster.</li>
+<li>An ECS Task Definition + An ECS Service.</li>
+</ul>
+<p>To create these resources, I&rsquo;ll be using <a href="https://aws.amazon.com/cdk/">AWS CDK</a>.</p>
+<p>The only aspect worth highlighting here is the creation of an ECS Task Definition that targets an ARM64 processor. This can be achieved simply by setting the <code>CpuArchitecture</code> attribute to <code>ARM64</code>.</p>
+<p>The rest of the resources are indifferent to whether you&rsquo;re deploying an app that targets an ARM64 processor or an AMD one.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">private</span> FargateTaskDefinition CreateTaskDefinition()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> repository = Repository.FromRepositoryName(<span style="color:#66d9ef">this</span>, <span style="color:#e6db74">&#34;arm64-bookstore-repository&#34;</span>, <span style="color:#e6db74">&#34;arm64-bookstore-api&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> task = <span style="color:#66d9ef">new</span> FargateTaskDefinition(<span style="color:#66d9ef">this</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;task-definition-bookstore-api&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">new</span> FargateTaskDefinitionProps
+</span></span><span style="display:flex;"><span>      {
+</span></span><span style="display:flex;"><span>          Cpu = <span style="color:#ae81ff">512</span>,
+</span></span><span style="display:flex;"><span>          Family = <span style="color:#e6db74">&#34;task-definition-bookstore-api&#34;</span>,
+</span></span><span style="display:flex;"><span>          MemoryLimitMiB = <span style="color:#ae81ff">1024</span>,
+</span></span><span style="display:flex;"><span>          RuntimePlatform = <span style="color:#66d9ef">new</span> RuntimePlatform
+</span></span><span style="display:flex;"><span>          {
+</span></span><span style="display:flex;"><span>              CpuArchitecture = CpuArchitecture.ARM64,
+</span></span><span style="display:flex;"><span>              OperatingSystemFamily = OperatingSystemFamily.LINUX
+</span></span><span style="display:flex;"><span>          }
+</span></span><span style="display:flex;"><span>      });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  task.AddContainer(<span style="color:#e6db74">&#34;bookstore-api&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">new</span> ContainerDefinitionOptions
+</span></span><span style="display:flex;"><span>      {
+</span></span><span style="display:flex;"><span>          Cpu = <span style="color:#ae81ff">512</span>,
+</span></span><span style="display:flex;"><span>          MemoryLimitMiB = <span style="color:#ae81ff">1024</span>,
+</span></span><span style="display:flex;"><span>          Image = ContainerImage.FromEcrRepository(repository, <span style="color:#e6db74">&#34;cc&#34;</span>),
+</span></span><span style="display:flex;"><span>          Logging = LogDriver.AwsLogs(<span style="color:#66d9ef">new</span> AwsLogDriverProps
+</span></span><span style="display:flex;"><span>          {
+</span></span><span style="display:flex;"><span>              StreamPrefix = <span style="color:#e6db74">&#34;ecs&#34;</span>
+</span></span><span style="display:flex;"><span>          }),
+</span></span><span style="display:flex;"><span>          PortMappings = <span style="color:#66d9ef">new</span> IPortMapping[]
+</span></span><span style="display:flex;"><span>          {
+</span></span><span style="display:flex;"><span>              <span style="color:#66d9ef">new</span> PortMapping
+</span></span><span style="display:flex;"><span>              {
+</span></span><span style="display:flex;"><span>                  ContainerPort = <span style="color:#ae81ff">8080</span>
+</span></span><span style="display:flex;"><span>              }
+</span></span><span style="display:flex;"><span>          }
+</span></span><span style="display:flex;"><span>      });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> task;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="benchmark"><strong>Benchmark</strong></h1>
+<p>Now, let&rsquo;s run a little benchmark. I&rsquo;m going to use <a href="https://www.artillery.io/">Artillery</a> as the load generator.</p>
+<p>After deploying the Bookstore API on AWS Fargate, I want to conduct a small benchmark to compare the app&rsquo;s performance when running on an ARM64 processor versus an AMD64 processor. To do this, I have deployed a second Bookstore API, but this one targets an AMD64 processor.</p>
+<p>Now, let&rsquo;s conduct a small benchmark. I&rsquo;m going to use <a href="https://www.artillery.io/">Artillery</a> as the load generator.</p>
+<h2 id="test-1">Test 1:</h2>
+<ul>
+<li>Duration: 180 seconds.</li>
+<li>Rate: 50 req/sec.</li>
+<li>Endpoint: GET <code>/api/books</code></li>
+</ul>
+<h3 id="requests"><strong>Requests</strong></h3>
+<ul>
+<li>ARM64 BookStore API</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>http.codes.200: ................................................................ 9000
+</span></span><span style="display:flex;"><span>http.downloaded_bytes: ......................................................... 45000000
+</span></span><span style="display:flex;"><span>http.request_rate: ............................................................. 50/sec
+</span></span><span style="display:flex;"><span>http.requests: ................................................................. 9000
+</span></span><span style="display:flex;"><span>http.response_time:
+</span></span><span style="display:flex;"><span>  min: ......................................................................... 43
+</span></span><span style="display:flex;"><span>  max: ......................................................................... 1447
+</span></span><span style="display:flex;"><span>  mean: ........................................................................ 61.3
+</span></span><span style="display:flex;"><span>  median: ...................................................................... 56.3
+</span></span><span style="display:flex;"><span>  p95: ......................................................................... 80.6
+</span></span><span style="display:flex;"><span>  p99: ......................................................................... 113.3
+</span></span><span style="display:flex;"><span>http.responses: ................................................................ 9000
+</span></span><span style="display:flex;"><span>vusers.completed: .............................................................. 9000
+</span></span><span style="display:flex;"><span>vusers.created: ................................................................ 9000
+</span></span><span style="display:flex;"><span>vusers.created_by_name.0: ...................................................... 9000
+</span></span><span style="display:flex;"><span>vusers.failed: ................................................................. 0
+</span></span><span style="display:flex;"><span>vusers.session_length:
+</span></span><span style="display:flex;"><span>  min: ......................................................................... 86.3
+</span></span><span style="display:flex;"><span>  max: ......................................................................... 1771.6
+</span></span><span style="display:flex;"><span>  mean: ........................................................................ 125.2
+</span></span><span style="display:flex;"><span>  median: ...................................................................... 113.3
+</span></span><span style="display:flex;"><span>  p95: ......................................................................... 149.9
+</span></span><span style="display:flex;"><span>  p99: ......................................................................... 284.3
+</span></span></code></pre></div><ul>
+<li>AMD64 BookStore API</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>http.codes.200: ................................................................ 9000
+</span></span><span style="display:flex;"><span>http.downloaded_bytes: ......................................................... 45000000
+</span></span><span style="display:flex;"><span>http.request_rate: ............................................................. 50/sec
+</span></span><span style="display:flex;"><span>http.requests: ................................................................. 9000
+</span></span><span style="display:flex;"><span>http.response_time:
+</span></span><span style="display:flex;"><span>  min: ......................................................................... 44
+</span></span><span style="display:flex;"><span>  max: ......................................................................... 5347
+</span></span><span style="display:flex;"><span>  mean: ........................................................................ 62.8
+</span></span><span style="display:flex;"><span>  median: ...................................................................... 56.3
+</span></span><span style="display:flex;"><span>  p95: ......................................................................... 82.3
+</span></span><span style="display:flex;"><span>  p99: ......................................................................... 111.1
+</span></span><span style="display:flex;"><span>http.responses: ................................................................ 9000
+</span></span><span style="display:flex;"><span>vusers.completed: .............................................................. 9000
+</span></span><span style="display:flex;"><span>vusers.created: ................................................................ 9000
+</span></span><span style="display:flex;"><span>vusers.created_by_name.0: ...................................................... 9000
+</span></span><span style="display:flex;"><span>vusers.failed: ................................................................. 0
+</span></span><span style="display:flex;"><span>vusers.session_length:
+</span></span><span style="display:flex;"><span>  min: ......................................................................... 88.1
+</span></span><span style="display:flex;"><span>  max: ......................................................................... 7209.7
+</span></span><span style="display:flex;"><span>  mean: ........................................................................ 238.6
+</span></span><span style="display:flex;"><span>  median: ...................................................................... 113.3
+</span></span><span style="display:flex;"><span>  p95: ......................................................................... 162.4
+</span></span><span style="display:flex;"><span>  p99: ......................................................................... 5378.9
+</span></span></code></pre></div><h3 id="cpu-usage"><strong>CPU usage</strong></h3>
+<p><img alt="arm64-test1-cpu-comparison" src="/img/arm64-test1-cpu-comparison.png"></p>
+<h3 id="memory-usage"><strong>Memory usage</strong></h3>
+<p><img alt="arm64-test1-mem-comparison" src="/img/arm64-test1-mem-comparison.png"></p>
+<h2 id="test-2">Test 2:</h2>
+<ul>
+<li>Duration: 60 seconds.</li>
+<li>Rate: 100 req/sec.</li>
+<li>Endpoint: GET <code>/api/categories</code></li>
+</ul>
+<h3 id="requests-1"><strong>Requests</strong></h3>
+<ul>
+<li>ARM64 BookStore API</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>http.codes.200: ................................................................ 6000
+</span></span><span style="display:flex;"><span>http.downloaded_bytes: ......................................................... 990000
+</span></span><span style="display:flex;"><span>http.request_rate: ............................................................. 100/sec
+</span></span><span style="display:flex;"><span>http.requests: ................................................................. 6000
+</span></span><span style="display:flex;"><span>http.response_time:
+</span></span><span style="display:flex;"><span>  min: ......................................................................... 43
+</span></span><span style="display:flex;"><span>  max: ......................................................................... 540
+</span></span><span style="display:flex;"><span>  mean: ........................................................................ 63.2
+</span></span><span style="display:flex;"><span>  median: ...................................................................... 58.6
+</span></span><span style="display:flex;"><span>  p95: ......................................................................... 96.6
+</span></span><span style="display:flex;"><span>  p99: ......................................................................... 117.9
+</span></span><span style="display:flex;"><span>http.responses: ................................................................ 6000
+</span></span><span style="display:flex;"><span>vusers.completed: .............................................................. 6000
+</span></span><span style="display:flex;"><span>vusers.created: ................................................................ 6000
+</span></span><span style="display:flex;"><span>vusers.created_by_name.0: ...................................................... 6000
+</span></span><span style="display:flex;"><span>vusers.failed: ................................................................. 0
+</span></span><span style="display:flex;"><span>vusers.session_length:
+</span></span><span style="display:flex;"><span>  min: ......................................................................... 87.8
+</span></span><span style="display:flex;"><span>  max: ......................................................................... 1343.7
+</span></span><span style="display:flex;"><span>  mean: ........................................................................ 127.6
+</span></span><span style="display:flex;"><span>  median: ...................................................................... 117.9
+</span></span><span style="display:flex;"><span>  p95: ......................................................................... 172.5
+</span></span><span style="display:flex;"><span>  p99: ......................................................................... 219.2
+</span></span></code></pre></div><ul>
+<li>AMD64 BookStore API</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>http.codes.200: ................................................................ 6000
+</span></span><span style="display:flex;"><span>http.downloaded_bytes: ......................................................... 990000
+</span></span><span style="display:flex;"><span>http.request_rate: ............................................................. 100/sec
+</span></span><span style="display:flex;"><span>http.requests: ................................................................. 6000
+</span></span><span style="display:flex;"><span>http.response_time:
+</span></span><span style="display:flex;"><span>  min: ......................................................................... 44
+</span></span><span style="display:flex;"><span>  max: ......................................................................... 168
+</span></span><span style="display:flex;"><span>  mean: ........................................................................ 62
+</span></span><span style="display:flex;"><span>  median: ...................................................................... 58.6
+</span></span><span style="display:flex;"><span>  p95: ......................................................................... 87.4
+</span></span><span style="display:flex;"><span>  p99: ......................................................................... 113.3
+</span></span><span style="display:flex;"><span>http.responses: ................................................................ 6000
+</span></span><span style="display:flex;"><span>vusers.completed: .............................................................. 6000
+</span></span><span style="display:flex;"><span>vusers.created: ................................................................ 6000
+</span></span><span style="display:flex;"><span>vusers.created_by_name.0: ...................................................... 6000
+</span></span><span style="display:flex;"><span>vusers.failed: ................................................................. 0
+</span></span><span style="display:flex;"><span>vusers.session_length:
+</span></span><span style="display:flex;"><span>  min: ......................................................................... 87.7
+</span></span><span style="display:flex;"><span>  max: ......................................................................... 279.4
+</span></span><span style="display:flex;"><span>  mean: ........................................................................ 122.4
+</span></span><span style="display:flex;"><span>  median: ...................................................................... 115.6
+</span></span><span style="display:flex;"><span>  p95: ......................................................................... 165.7
+</span></span><span style="display:flex;"><span>  p99: ......................................................................... 194.4
+</span></span></code></pre></div><h3 id="cpu-usage-1"><strong>CPU usage</strong></h3>
+<p><img alt="arm64-test2-cpu-comparison" src="/img/arm64-test2-cpu-comparison.png"></p>
+<h3 id="memory-usage-1"><strong>Memory usage</strong></h3>
+<p><img alt="arm64-test2-mem-comparison" src="/img/arm64-test2-mem-comparison.png"></p>
+<h2 id="test-3">Test 3:</h2>
+<ul>
+<li>Duration: 120 seconds.</li>
+<li>Rate: 80 req/sec.</li>
+<li>Endpoint: GET <code>/api/orders</code></li>
+</ul>
+<h3 id="requests-2"><strong>Requests</strong></h3>
+<ul>
+<li>ARM64 BookStore API</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>http.codes.200: ................................................................ 9600
+</span></span><span style="display:flex;"><span>http.downloaded_bytes: ......................................................... 18124800
+</span></span><span style="display:flex;"><span>http.request_rate: ............................................................. 80/sec
+</span></span><span style="display:flex;"><span>http.requests: ................................................................. 9600
+</span></span><span style="display:flex;"><span>http.response_time:
+</span></span><span style="display:flex;"><span>  min: ......................................................................... 44
+</span></span><span style="display:flex;"><span>  max: ......................................................................... 159
+</span></span><span style="display:flex;"><span>  mean: ........................................................................ 64
+</span></span><span style="display:flex;"><span>  median: ...................................................................... 61
+</span></span><span style="display:flex;"><span>  p95: ......................................................................... 87.4
+</span></span><span style="display:flex;"><span>  p99: ......................................................................... 108.9
+</span></span><span style="display:flex;"><span>http.responses: ................................................................ 9600
+</span></span><span style="display:flex;"><span>vusers.completed: .............................................................. 9600
+</span></span><span style="display:flex;"><span>vusers.created: ................................................................ 9600
+</span></span><span style="display:flex;"><span>vusers.created_by_name.0: ...................................................... 9600
+</span></span><span style="display:flex;"><span>vusers.failed: ................................................................. 0
+</span></span><span style="display:flex;"><span>vusers.session_length:
+</span></span><span style="display:flex;"><span>  min: ......................................................................... 87.6
+</span></span><span style="display:flex;"><span>  max: ......................................................................... 233.1
+</span></span><span style="display:flex;"><span>  mean: ........................................................................ 123.5
+</span></span><span style="display:flex;"><span>  median: ...................................................................... 122.7
+</span></span><span style="display:flex;"><span>  p95: ......................................................................... 153
+</span></span><span style="display:flex;"><span>  p99: ......................................................................... 186.8
+</span></span></code></pre></div><ul>
+<li>AMD64 BookStore API</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>http.codes.200: ................................................................ 9600
+</span></span><span style="display:flex;"><span>http.downloaded_bytes: ......................................................... 18124800
+</span></span><span style="display:flex;"><span>http.request_rate: ............................................................. 80/sec
+</span></span><span style="display:flex;"><span>http.requests: ................................................................. 9600
+</span></span><span style="display:flex;"><span>http.response_time:
+</span></span><span style="display:flex;"><span>  min: ......................................................................... 44
+</span></span><span style="display:flex;"><span>  max: ......................................................................... 304
+</span></span><span style="display:flex;"><span>  mean: ........................................................................ 63.9
+</span></span><span style="display:flex;"><span>  median: ...................................................................... 61
+</span></span><span style="display:flex;"><span>  p95: ......................................................................... 87.4
+</span></span><span style="display:flex;"><span>  p99: ......................................................................... 104.6
+</span></span><span style="display:flex;"><span>http.responses: ................................................................ 9600
+</span></span><span style="display:flex;"><span>vusers.completed: .............................................................. 9600
+</span></span><span style="display:flex;"><span>vusers.created: ................................................................ 9600
+</span></span><span style="display:flex;"><span>vusers.created_by_name.0: ...................................................... 9600
+</span></span><span style="display:flex;"><span>vusers.failed: ................................................................. 0
+</span></span><span style="display:flex;"><span>vusers.session_length:
+</span></span><span style="display:flex;"><span>  min: ......................................................................... 88.3
+</span></span><span style="display:flex;"><span>  max: ......................................................................... 409.9
+</span></span><span style="display:flex;"><span>  mean: ........................................................................ 124.8
+</span></span><span style="display:flex;"><span>  median: ...................................................................... 122.7
+</span></span><span style="display:flex;"><span>  p95: ......................................................................... 153
+</span></span><span style="display:flex;"><span>  p99: ......................................................................... 183.1
+</span></span></code></pre></div><h3 id="cpu-usage-2"><strong>CPU usage</strong></h3>
+<p><img alt="arm64-test3-cpu-comparison" src="/img/arm64-test3-cpu-comparison.png"></p>
+<h3 id="memory-usage-2"><strong>Memory usage</strong></h3>
+<p><img alt="arm64-test3-mem-comparison" src="/img/arm64-test3-mem-comparison.png"></p>
+<p>If you analyze the results of the above tests, you&rsquo;ll find that the differences between running the Bookstore API on an ARM64 or an AMD64 processor are practically indistinguishable.</p>
+<p>To be fair, the Bookstore API is probably not the best choice for comparing how a .NET 8 app runs on Fargate when targeting an ARM64 processor versus an AMD64 processor.</p>
+<p>I have written another .NET 8 API. This one implements a version of the Sieve of Eratosthenes algorithm to find all prime numbers up to a given number. This API is more CPU-intensive. The following code snippet will show exactly what the API does.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Microsoft.AspNetCore.Mvc;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.Collections;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> Arm64Testing.WebApi.Controllers
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [ApiController]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PrimeController</span> : ControllerBase
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [HttpGet]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Get()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> n = <span style="color:#ae81ff">10000000</span>;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> CountPrimes(n);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> CountPrimes(<span style="color:#66d9ef">int</span> n)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> segmentSize = <span style="color:#ae81ff">10000</span>;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">bool</span>[] isPrime = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">bool</span>[segmentSize];
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> count = <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> low = <span style="color:#ae81ff">2</span>; low &lt;= n; low += segmentSize)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">int</span> high = Math.Min(low + segmentSize - <span style="color:#ae81ff">1</span>, n);
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; segmentSize; i++)
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    isPrime[i] = <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">int</span> sqrtHigh = (<span style="color:#66d9ef">int</span>)Math.Sqrt(high);
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> p = <span style="color:#ae81ff">2</span>; p &lt;= sqrtHigh; p++)
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">if</span> (IsPrime(p))
+</span></span><span style="display:flex;"><span>                    {
+</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">int</span> start = Math.Max(p * p,
+</span></span><span style="display:flex;"><span>                            (low + p - <span style="color:#ae81ff">1</span>) / p * p);
+</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> j = start; j &lt;= high; j += p)
+</span></span><span style="display:flex;"><span>                        {
+</span></span><span style="display:flex;"><span>                            isPrime[j - low] = <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>                        }
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = Math.Max(<span style="color:#ae81ff">2</span>, low); i &lt;= high; i++)
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">if</span> (isPrime[i - low])
+</span></span><span style="display:flex;"><span>                    {
+</span></span><span style="display:flex;"><span>                        count++;
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> count;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">bool</span> IsPrime(<span style="color:#66d9ef">int</span> num)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (num &lt; <span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">2</span>; i * i &lt;= num; i++)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (num % i == <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Let&rsquo;s run a test with Artillery for 240 seconds at a rate of 3 requests per second (if we increase the rate, most of the requests will likely time out due to the significant amount of time required to calculate the results).</p>
+<h3 id="requests-3"><strong>Requests</strong></h3>
+<ul>
+<li>ARM64 BookStore API</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>http.codes.200: ................................................................ 720
+</span></span><span style="display:flex;"><span>http.downloaded_bytes: ......................................................... 4320
+</span></span><span style="display:flex;"><span>http.request_rate: ............................................................. 3/sec
+</span></span><span style="display:flex;"><span>http.requests: ................................................................. 720
+</span></span><span style="display:flex;"><span>http.response_time:
+</span></span><span style="display:flex;"><span>  min: ......................................................................... 182
+</span></span><span style="display:flex;"><span>  max: ......................................................................... 622
+</span></span><span style="display:flex;"><span>  mean: ........................................................................ 405.5
+</span></span><span style="display:flex;"><span>  median: ...................................................................... 441.5
+</span></span><span style="display:flex;"><span>  p95: ......................................................................... 528.6
+</span></span><span style="display:flex;"><span>  p99: ......................................................................... 561.2
+</span></span><span style="display:flex;"><span>http.responses: ................................................................ 720
+</span></span><span style="display:flex;"><span>vusers.completed: .............................................................. 720
+</span></span><span style="display:flex;"><span>vusers.created: ................................................................ 720
+</span></span><span style="display:flex;"><span>vusers.created_by_name.0: ...................................................... 720
+</span></span><span style="display:flex;"><span>vusers.failed: ................................................................. 0
+</span></span><span style="display:flex;"><span>vusers.session_length:
+</span></span><span style="display:flex;"><span>  min: ......................................................................... 229.6
+</span></span><span style="display:flex;"><span>  max: ......................................................................... 682.8
+</span></span><span style="display:flex;"><span>  mean: ........................................................................ 467.7
+</span></span><span style="display:flex;"><span>  median: ...................................................................... 507.8
+</span></span><span style="display:flex;"><span>  p95: ......................................................................... 584.2
+</span></span><span style="display:flex;"><span>  p99: ......................................................................... 632.8
+</span></span></code></pre></div><ul>
+<li>AMD64 BookStore API</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>http.codes.200: ................................................................ 720
+</span></span><span style="display:flex;"><span>http.downloaded_bytes: ......................................................... 4320
+</span></span><span style="display:flex;"><span>http.request_rate: ............................................................. 2/sec
+</span></span><span style="display:flex;"><span>http.requests: ................................................................. 720
+</span></span><span style="display:flex;"><span>http.response_time:
+</span></span><span style="display:flex;"><span>  min: ......................................................................... 193
+</span></span><span style="display:flex;"><span>  max: ......................................................................... 1355
+</span></span><span style="display:flex;"><span>  mean: ........................................................................ 573.5
+</span></span><span style="display:flex;"><span>  median: ...................................................................... 596
+</span></span><span style="display:flex;"><span>  p95: ......................................................................... 820.7
+</span></span><span style="display:flex;"><span>  p99: ......................................................................... 944
+</span></span><span style="display:flex;"><span>http.responses: ................................................................ 720
+</span></span><span style="display:flex;"><span>vusers.completed: .............................................................. 720
+</span></span><span style="display:flex;"><span>vusers.created: ................................................................ 720
+</span></span><span style="display:flex;"><span>vusers.created_by_name.0: ...................................................... 720
+</span></span><span style="display:flex;"><span>vusers.failed: ................................................................. 0
+</span></span><span style="display:flex;"><span>vusers.session_length:
+</span></span><span style="display:flex;"><span>  min: ......................................................................... 245.4
+</span></span><span style="display:flex;"><span>  max: ......................................................................... 2172.2
+</span></span><span style="display:flex;"><span>  mean: ........................................................................ 641.4
+</span></span><span style="display:flex;"><span>  median: ...................................................................... 658.6
+</span></span><span style="display:flex;"><span>  p95: ......................................................................... 907
+</span></span><span style="display:flex;"><span>  p99: ......................................................................... 1107.9
+</span></span></code></pre></div><h3 id="cpu-usage-3"><strong>CPU usage</strong></h3>
+<p><img alt="arm64-prime-test-cpu-comparison" src="/img/arm64-prime-test-cpu-comparison.png"></p>
+<p>In this case, the ARM64 version performs significantly better.</p>
+<ul>
+<li>The average response time is faster (467.7 vs 573.5).</li>
+<li>The CPU usage is lower.</li>
+</ul>
+<h1 id="conclusion"><strong>Conclusion</strong></h1>
+<p>After running these series of tests, it appears that choosing ARM64 is the better option. In most of the tests, it performs on par with an AMD64 processor, and in a more CPU-intensive test, it performs even better.</p>
+<p>Moreover, if we consider the pricing listed on the AWS website, we see the following:</p>
+<p>AWS Fargate price when using a Linux AMD64 processor</p>
+<ul>
+<li>per vCPU per hour: $0.04048</li>
+<li>per GB per hour: $0.004445</li>
+</ul>
+<p>AWS Fargate price when using a Linux ARM64 processor</p>
+<ul>
+<li>per vCPU per hour: $0.03238</li>
+<li>per GB per hour: $0.00356</li>
+</ul>
+<p>Using an ARM64 processor for hosting your .NET 8 APIs seems to be the way to go. It not only performs the same, if not better, but it is also cheaper.</p>
+<p>When building your container images, avoid emulation and stick with Cross Compilation. This way, you can build the images wherever you want, whether it&rsquo;s on any of your local machines, a GitHub Action Runner, an Azure DevOps hosted Agent. <br>
+The only issue you might encounter is if you try to build for more than one architecture at the same time (using something like <code>--platform=linux/amd64,linux/arm64</code>).</p>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://www.mytechramblings.com/posts/building-and-deploying-a-dotnet-app-on-arm64-part1-cross-compilation/">
+                  <span class="button__text">Building and deploying a .NET 8 App on an ARM64 processor using Azure Pipelines and AWS ECS Fargate. Part 1: How to build multi-platform images</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2024 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>Theme created by <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://www.mytechramblings.com/assets/main.js"></script>
+<script src="https://www.mytechramblings.com/assets/prism.js"></script>
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('carlospons', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Donate',
+    'floating-chat.donateButton.background-color': '#ff5f5f',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
+
+      
+    </div>
+
+    
+      
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-170300931-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+    
+  </body>
+</html>
