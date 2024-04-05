@@ -9,10 +9,30 @@
     <description>Recent content in Devops on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 02 Apr 2024 22:19:30 +0200</lastBuildDate>
+    <lastBuildDate>Fri, 05 Apr 2024 17:15:12 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/devops/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Announcing dotnetramblings.com or how to build a .NET news aggregator site.</title>
+      <link>https://www.mytechramblings.com/posts/building-a-dotnet-news-aggregator-site/</link>
+      <pubDate>Fri, 05 Apr 2024 17:15:12 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/building-a-dotnet-news-aggregator-site/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          Let&#39;s check how I build my new site www.dotnetramblings.com. This site is a .NET news aggregator that updates its content every three hours. The main technologies employed to build it include Hugo, Python and Github Actions.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>Building and deploying a .NET 8 App on an ARM64 processor using Azure Pipelines and AWS ECS Fargate. Part 2: Demo</title>

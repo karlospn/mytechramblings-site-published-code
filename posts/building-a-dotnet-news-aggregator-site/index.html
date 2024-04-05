@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>Announcing dotnetramblings.com or how to build a .NET news aggregator site. :: my tech ramblings — A blog for writing about my techie ramblings</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="I frequently visit numerous news aggregator pages, which are fantastic because they allow me to find the latest .NET articles from various sites on a single page.
+However, how challenging could it be to construct one of these sites? It turns out it&amp;rsquo;s pretty easy. I managed to build one of them in a couple of free afternoons.
+You can visit it by going to:
+www.dotnetramblings.com The site is fully automated; I don&amp;rsquo;t need to lift a finger to update the content on it."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://www.mytechramblings.com/posts/building-a-dotnet-news-aggregator-site/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/assets/style.css">
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.mytechramblings.com/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://www.mytechramblings.com/img/favicon.png">
+
+
+<meta name="twitter:card" content="summary"/><meta name="twitter:title" content="Announcing dotnetramblings.com or how to build a .NET news aggregator site."/>
+<meta name="twitter:description" content="Let&#39;s check how I build my new site www.dotnetramblings.com. This site is a .NET news aggregator that updates its content every three hours. The main technologies employed to build it include Hugo, Python and Github Actions."/>
+
+
+
+<meta property="og:title" content="Announcing dotnetramblings.com or how to build a .NET news aggregator site." />
+<meta property="og:description" content="Let&#39;s check how I build my new site www.dotnetramblings.com. This site is a .NET news aggregator that updates its content every three hours. The main technologies employed to build it include Hugo, Python and Github Actions." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.mytechramblings.com/posts/building-a-dotnet-news-aggregator-site/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-04-05T17:15:12+02:00" />
+<meta property="article:modified_time" content="2024-04-05T17:15:12+02:00" />
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://www.mytechramblings.com/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">my tech ramblings</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="https://www.dotnetramblings.com">.NET News</a></li>
+        
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="https://www.dotnetramblings.com">.NET News</a></li>
+      
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/building-a-dotnet-news-aggregator-site/">Announcing dotnetramblings.com or how to build a .NET news aggregator site.</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2024-04-05
+        </span>
+
+        
+          
+            
+
+
+
+          
+        
+      
+
+      
+      
+        <span class="post-read-time">— 3 min read</span>
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          #<a href="https://www.mytechramblings.com/tags/dotnet/">dotnet</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/github/">github</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/cloud/">cloud</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/microsoft/">microsoft</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/azure/">azure</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/python/">python</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/devops/">devops</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <p>I frequently visit numerous news aggregator pages, which are fantastic because they allow me to find the latest .NET articles from various sites on a single page.</p>
+<p>However, how challenging could it be to construct one of these sites? It turns out it&rsquo;s pretty easy. I managed to build one of them in a couple of free afternoons.</p>
+<p>You can visit it by going to:</p>
+<ul>
+<li><a href="https://www.dotnetramblings.com">www.dotnetramblings.com</a></li>
+</ul>
+<p>The site is fully automated; I don&rsquo;t need to lift a finger to update the content on it. Every few hours, it fetches the latest news from a series of RSS feeds and updates the site autonomously.</p>
+<p>In this post, I will show you how I built it.</p>
+<h1 id="what-i-have-built"><strong>What I have built?</strong></h1>
+<p>The site utilizes the following technologies:</p>
+<ul>
+<li>The site is built using <a href="https://gohugo.io/">Hugo</a>. Hugo is one of the most popular open-source static site generators.</li>
+<li>A Python script that fetches the latest news from a series of RSS feeds and programmatically updates the site content.</li>
+<li>A GitHub Action that runs the Python script.</li>
+</ul>
+<p>Below is a diagram illustrating the entire process.</p>
+<p><img alt="dotnetramblings-diagram" src="/img/dotnetramblings-diagram.png"></p>
+<p>As you can see, the process is incredibly simple, but there are a couple more components worth mentioning:</p>
+<ul>
+<li>Another Python script removes news older than one week from the site, preventing uncontrolled growth of the site. This script is called by the same GitHub Action.</li>
+<li>A second GitHub Action is responsible for publishing the Hugo site. The first GitHub Action (as shown in the diagram above) fetches the latest news and updates the site content, but after updating it, it needs to be deployed somewhere. In this case, we&rsquo;re deploying it to another GitHub repository with GitHub Pages enabled, utilizing this secondary GitHub Action.</li>
+</ul>
+<h1 id="do-you-want-to-contribute"><strong>Do you want to contribute?</strong></h1>
+<p>If anyone wishes to contribute by adding an RSS feed from their own site or a site they favor. Here&rsquo;s how to do it.</p>
+<h2 id="how-to-add-your-site"><strong>How to add your site</strong></h2>
+<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+<li>A functioning RSS feed that can be accessed via the Internet.</li>
+</ul>
+<h3 id="enrollment-process">Enrollment Process</h3>
+<p>1 - Visit my Github repository: <a href="https://github.com/karlospn/building-a-dotnet-news-aggregator-site">https://github.com/karlospn/building-a-dotnet-news-aggregator-site</a></p>
+<p>2 - The <code>/data</code> folder contain the current feeds utilized by this site.</p>
+<p>3 - Create a new <code>yml</code> file with the following attributes:</p>
+<ul>
+<li><code>Feed (required)</code>: The URL of the RSS feed.</li>
+<li><code>Title (required)</code>: The name of your site.</li>
+<li><code>Website (required)</code>: The URL of your site.</li>
+<li><code>Description (optional)</code>:  A brief description of your site&rsquo;s content.</li>
+<li><code>Author (optional)</code>: The name of the site&rsquo;s author.</li>
+<li><code>Language (optional)</code>: The language of the site.</li>
+</ul>
+<p>Here&rsquo;s an example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">Feed</span>: <span style="color:#ae81ff">https://www.mytechramblings.com/index.xml</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">Title</span>: <span style="color:#ae81ff">My technical ramblings</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">Website</span>: <span style="color:#ae81ff">https://www.mytechramblings.com</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">Description</span>: <span style="color:#ae81ff">Technical ramblings from a software engineer</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">Author</span>: <span style="color:#ae81ff">Carlos Pons</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">Language</span>: <span style="color:#ae81ff">English</span>
+</span></span></code></pre></div><p>4 - Open a Pull Request and await my approval.</p>
+<p>5 - Your posts will then begin to appear on our site.</p>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://www.mytechramblings.com/posts/building-and-deploying-a-dotnet-app-on-arm64-part2-demo/">
+                  <span class="button__text">Building and deploying a .NET 8 App on an ARM64 processor using Azure Pipelines and AWS ECS Fargate. Part 2: Demo</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2024 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>Theme created by <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://www.mytechramblings.com/assets/main.js"></script>
+<script src="https://www.mytechramblings.com/assets/prism.js"></script>
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('carlospons', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Donate',
+    'floating-chat.donateButton.background-color': '#ff5f5f',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
+
+      
+    </div>
+
+    
+      
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-170300931-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+    
+  </body>
+</html>
