@@ -9,7 +9,7 @@
     <description>Recent content in Jaeger on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Mon, 25 Sep 2023 12:41:51 +0200</lastBuildDate>
+    <lastBuildDate>Tue, 16 Apr 2024 09:30:51 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/jaeger/index.xml" rel="self" type="application/rss+xml" />
     
@@ -17,7 +17,7 @@
     <item>
       <title>Getting started with OpenTelemetry and distributed tracing in .NET</title>
       <link>https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-and-dotnet-core/</link>
-      <pubDate>Mon, 25 Sep 2023 12:41:51 +0200</pubDate>
+      <pubDate>Tue, 16 Apr 2024 09:30:51 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-and-dotnet-core/</guid>
       <description>
@@ -28,7 +28,7 @@
         
         
         
-          OpenTelemetry is a set of APIs, SDKs, tooling and integrations that are designed for the creation and management of telemetry data such as traces, metrics, and logs. On today&#39;s post I&#39;m going to show you how you can start using OTEL and distributed tracing with .NET.
+          OpenTelemetry is a collection of APIs, SDKs, tools, and integrations designed for the creation and management of telemetry data, including traces, metrics, and logs. In today&#39;s post, I&#39;m going to demonstrate how you can begin using OpenTelemetry (OTEL) and distributed tracing with .NET.
           
         
         </description>

@@ -9,10 +9,110 @@
     <description>Recent content in Tags on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Fri, 05 Apr 2024 17:15:12 +0200</lastBuildDate>
+    <lastBuildDate>Tue, 16 Apr 2024 09:30:51 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Csharp</title>
+      <link>https://www.mytechramblings.com/tags/csharp/</link>
+      <pubDate>Tue, 16 Apr 2024 09:30:51 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/csharp/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>Dotnet</title>
+      <link>https://www.mytechramblings.com/tags/dotnet/</link>
+      <pubDate>Tue, 16 Apr 2024 09:30:51 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/dotnet/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>Jaeger</title>
+      <link>https://www.mytechramblings.com/tags/jaeger/</link>
+      <pubDate>Tue, 16 Apr 2024 09:30:51 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/jaeger/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>Opentelemetry</title>
+      <link>https://www.mytechramblings.com/tags/opentelemetry/</link>
+      <pubDate>Tue, 16 Apr 2024 09:30:51 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/opentelemetry/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>Tracing</title>
+      <link>https://www.mytechramblings.com/tags/tracing/</link>
+      <pubDate>Tue, 16 Apr 2024 09:30:51 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/tracing/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>Azure</title>
@@ -60,26 +160,6 @@
       <pubDate>Fri, 05 Apr 2024 17:15:12 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/devops/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>Dotnet</title>
-      <link>https://www.mytechramblings.com/tags/dotnet/</link>
-      <pubDate>Fri, 05 Apr 2024 17:15:12 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/dotnet/</guid>
       <description>
         
           
@@ -255,26 +335,6 @@
     </item>
     
     <item>
-      <title>Csharp</title>
-      <link>https://www.mytechramblings.com/tags/csharp/</link>
-      <pubDate>Thu, 28 Dec 2023 12:03:32 +0100</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/csharp/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
       <title>Templates</title>
       <link>https://www.mytechramblings.com/tags/templates/</link>
       <pubDate>Thu, 28 Dec 2023 12:03:32 +0100</pubDate>
@@ -320,26 +380,6 @@
       <pubDate>Wed, 29 Nov 2023 10:10:55 +0100</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/metrics/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>Opentelemetry</title>
-      <link>https://www.mytechramblings.com/tags/opentelemetry/</link>
-      <pubDate>Wed, 29 Nov 2023 10:10:55 +0100</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/opentelemetry/</guid>
       <description>
         
           
@@ -480,46 +520,6 @@
       <pubDate>Tue, 03 Oct 2023 10:00:03 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/openai/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>Jaeger</title>
-      <link>https://www.mytechramblings.com/tags/jaeger/</link>
-      <pubDate>Mon, 25 Sep 2023 12:41:51 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/jaeger/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>Tracing</title>
-      <link>https://www.mytechramblings.com/tags/tracing/</link>
-      <pubDate>Mon, 25 Sep 2023 12:41:51 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/tracing/</guid>
       <description>
         
           

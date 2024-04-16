@@ -8,8 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 <meta name="description" content="Just show me the code
 As always, if you don’t care about the post I have upload the source code on my Github
-This post was written over a year and a half ago, and since then, there have been several breaking changes in the OpenTelemetry .NET SDK. It&amp;rsquo;s time to update it to reflect the current state of OpenTelemetry.
-OpenTelemetry is a set of APIs, SDKs, tooling and integrations that are designed for the creation and management of telemetry data such as traces, metrics, and logs."/>
+This post was written over a year and a half ago, and since then, there have been several updates to the OpenTelemetry .NET SDK. Additionally, a new version of the .NET framework has been released. It&amp;rsquo;s time to update this post to reflect the current state of OpenTelemetry."/>
 <meta name="keywords" content=""/>
 <meta name="robots" content="noodp"/>
 <link rel="canonical" href="https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-and-dotnet-core/" />
@@ -29,16 +28,16 @@ OpenTelemetry is a set of APIs, SDKs, tooling and integrations that are designed
 
 
 <meta name="twitter:card" content="summary"/><meta name="twitter:title" content="Getting started with OpenTelemetry and distributed tracing in .NET"/>
-<meta name="twitter:description" content="OpenTelemetry is a set of APIs, SDKs, tooling and integrations that are designed for the creation and management of telemetry data such as traces, metrics, and logs. On today&#39;s post I&#39;m going to show you how you can start using OTEL and distributed tracing with .NET."/>
+<meta name="twitter:description" content="OpenTelemetry is a collection of APIs, SDKs, tools, and integrations designed for the creation and management of telemetry data, including traces, metrics, and logs. In today&#39;s post, I&#39;m going to demonstrate how you can begin using OpenTelemetry (OTEL) and distributed tracing with .NET."/>
 
 
 
 <meta property="og:title" content="Getting started with OpenTelemetry and distributed tracing in .NET" />
-<meta property="og:description" content="OpenTelemetry is a set of APIs, SDKs, tooling and integrations that are designed for the creation and management of telemetry data such as traces, metrics, and logs. On today&#39;s post I&#39;m going to show you how you can start using OTEL and distributed tracing with .NET." />
+<meta property="og:description" content="OpenTelemetry is a collection of APIs, SDKs, tools, and integrations designed for the creation and management of telemetry data, including traces, metrics, and logs. In today&#39;s post, I&#39;m going to demonstrate how you can begin using OpenTelemetry (OTEL) and distributed tracing with .NET." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-and-dotnet-core/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2023-09-25T12:41:51+02:00" />
-<meta property="article:modified_time" content="2023-09-25T12:41:51+02:00" />
+<meta property="article:published_time" content="2024-04-16T09:30:51+02:00" />
+<meta property="article:modified_time" content="2024-04-16T09:30:51+02:00" />
 
 
 
@@ -122,7 +121,7 @@ OpenTelemetry is a set of APIs, SDKs, tooling and integrations that are designed
     <div class="post-meta">
       
         <span class="post-date">
-          2023-09-25
+          2024-04-16
         </span>
 
         
@@ -165,9 +164,9 @@ OpenTelemetry is a set of APIs, SDKs, tooling and integrations that are designed
 <p><strong>Just show me the code</strong><br>
 As always, if you don’t care about the post I have upload the source code on my <a href="https://github.com/karlospn/opentelemetry-tracing-demo">Github</a></p>
 </blockquote>
-<p>This post was written over a year and a half ago, and since then, there have been several breaking changes in the OpenTelemetry .NET SDK. It&rsquo;s time to update it to reflect the current state of OpenTelemetry.</p>
-<p>OpenTelemetry is a set of APIs, SDKs, tooling and integrations that are designed for the creation and management of telemetry data such as traces, metrics, and logs. This post will solely focus on tracing. <br>
-From my standpoint, there are at least <strong>four main concepts</strong> about tracing and OpenTelemetry that you need to know.</p>
+<p>This post was written over a year and a half ago, and since then, there have been several updates to the OpenTelemetry .NET SDK. Additionally, a new version of the .NET framework has been released. It&rsquo;s time to update this post to reflect the current state of OpenTelemetry.</p>
+<p>OpenTelemetry is a collection of APIs, SDKs, tools, and integrations designed for the creation and management of telemetry data, such as traces, metrics, and logs. This post will focus exclusively on tracing.
+From my perspective, there are at least <strong>four main concepts</strong> about tracing and OpenTelemetry that you need to understand.</p>
 <h1 id="span-and-activities"><strong>Span and Activities</strong></h1>
 <p>A span is the building block that forms a trace, it has a unique identifier and represents a piece of the workflow in the distributed system.<br>
 Multiple spans are pieced together to create a trace. Traces are often viewed as a &ldquo;tree&rdquo; of spans that reflects the time that each span started and completed.</p>
@@ -191,11 +190,11 @@ In such cases, context extraction and propagation is the responsibility of the l
 <p>If a value can not be parsed from the carrier, for a cross-cutting concern, the implementation should not throw an exception and should not store a new value in the Context, in order to preserve any previously existing valid value.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span> <span style="color:#66d9ef">var</span> parentContext = Propagator.Extract(<span style="color:#66d9ef">default</span>, ea.BasicProperties, ExtractTraceContextFromBasicProperties);
 </span></span></code></pre></div><h1 id="exporters"><strong>Exporters</strong></h1>
-<p>Let’s be honest emiting metrics is kind of pointless if you don’t have a backend capable of aggregating the metrics and displaying them in a friendly manner.</p>
-<p>There are 2 ways to exporting data on OpenTelemetry:</p>
+<p>Let&rsquo;s be honest, emitting metrics is somewhat pointless if you don&rsquo;t have a backend capable of aggregating these metrics and presenting them in a user-friendly manner.</p>
+<p>There are two methods for exporting data on OpenTelemetry:</p>
 <ul>
-<li>Using the OpenTelemetry Collector.</li>
-<li>Exporting the data directly into a back-end (like Prometheus, Jaeger, Zipkin, Elastic APM, Azure Monitor, etc).</li>
+<li>Utilizing the OpenTelemetry Collector.</li>
+<li>Directly exporting the data into a backend (such as Prometheus, Jaeger, Zipkin, Elastic APM, Azure Monitor, etc).</li>
 </ul>
 <h2 id="using-the-opentelemetry-collector"><strong>Using the OpenTelemetry Collector</strong></h2>
 <p>The OpenTelemetry Collector is a standalone process designed to receive, process and export telemetry data.</p>
@@ -218,70 +217,70 @@ In such cases, context extraction and propagation is the responsibility of the l
 <hr>
 <p>I&rsquo;m going to stop discussing OpenTelemetry theory because I could end up writing an entire post about it. <br>
 And to be honest, I would essentially be paraphrasing the official documentation. So, instead of that, I&rsquo;ll direct you to the official documentation: <a href="https://opentelemetry.io/docs/concepts/">https://opentelemetry.io/docs/concepts/</a></p>
-<p>After briefly discussing OpenTelemetry, let&rsquo;s refocus on the actual purpose of this post: <strong>To provide you with a practical example of how you can start using OpenTelemetry when you have a series of .NET services that communicate with each other.</strong></p>
+<p>After a brief discussion on OpenTelemetry, let&rsquo;s redirect our attention to the primary objective of this post: <strong>To offer a practical example of how to begin using OpenTelemetry when you have a series of .NET services interacting with each other.</strong></p>
 <h1 id="demo"><strong>Demo</strong></h1>
-<p>I have previously built four apps. These apps do not perform any business logic operations because that&rsquo;s not the objective here. <br>
-The crucial aspect is that all the apps communicate with each other and also interact with other external services such as Redis, MSSQL, or RabbitMQ.</p>
+<p>I have previously constructed four applications. These applications do not execute any business logic operations, as that&rsquo;s not the focus here. <br>
+The critical aspect is that all the applications communicate with each other and also interact with other external services such as Redis, MSSQL, or RabbitMQ.</p>
 <p>Here&rsquo;s the diagram:</p>
 <p><img alt="otel-diagram" src="/img/otel-components-diagram.png"></p>
 <ul>
 <li>
-<p><strong>App1.WebApi</strong> is a <strong>NET 7 Web API</strong> with 2 endpoints.</p>
+<p><strong>App1.WebApi</strong> is a <strong>.NET 8 API</strong> with 2 endpoints.</p>
 <ul>
 <li>The <strong>/http</strong> endpoint makes an HTTP request to the App2 <em>&quot;/dummy&quot;</em> endpoint.</li>
 <li>The <strong>/publish-message</strong> endpoint queues a message into a Rabbit queue named <em>&ldquo;sample&rdquo;</em>.</li>
 </ul>
 </li>
 <li>
-<p><strong>App2.RabbitConsumer.Console</strong> is a <strong>NET 7 console</strong> application.</p>
+<p><strong>App2.RabbitConsumer.Console</strong> is a <strong>.NET 8 Console</strong> application.</p>
 <ul>
-<li>Dequeues messages from the Rabbit <em>&ldquo;sample&rdquo;</em> queue and makes a HTTP request to the <strong>App3</strong> <em>&quot;/sql-to-event&quot;</em> endpoint with the content of the message.</li>
+<li>It dequeues messages from the Rabbit <em>&ldquo;sample&rdquo;</em> queue and makes an HTTP request to the <strong>App3</strong> <em>&quot;/sql-to-event&quot;</em> endpoint with the content of the message.</li>
 </ul>
 </li>
 <li>
-<p><strong>App3.WebApi</strong> is a <strong>NET 7 Web API</strong> with 2 endpoints</p>
+<p><strong>App3.WebApi</strong> is a <strong>.NET 8 Minimal API</strong> with 2 endpoints</p>
 <ul>
 <li>The <strong>/dummy</strong> endpoint returns a fixed <em>&ldquo;Ok&rdquo;</em> response.</li>
-<li>The <strong>/sql-to-event</strong> endpoint receives a message via HTTP POST, stores it in a MSSQL Server and afterwards publishes the message as an event into a RabbitMq queue named <em>&ldquo;sample_2&rdquo;</em>.</li>
+<li>The <strong>/sql-to-event</strong> endpoint receives a message via HTTP POST, stores it in a MSSQL Server, and afterwards publishes the message as an event into a RabbitMq queue named <em>&ldquo;sample_2&rdquo;</em>.</li>
 </ul>
 </li>
 <li>
-<p><strong>App4.RabbitConsumer.HostedService</strong> is a <strong>NET 7 Worker Service</strong>.</p>
+<p><strong>App4.RabbitConsumer.HostedService</strong> is a <strong>.NET 8 Worker Service</strong>.</p>
 <ul>
-<li>A Hosted Service reads the messages from the Rabbitmq <em>&ldquo;sample_2&rdquo;</em> queue and stores it into a Redis cache database.</li>
+<li>A Hosted Service reads the messages from the Rabbitmq <em>&ldquo;sample_2&rdquo;</em> queue and stores them into a Redis cache database.</li>
 </ul>
 </li>
 </ul>
-<p>Those apps are not currently utilizing OpenTelemetry. Therefore, in the following sections, we will provide a step-by-step guide on how to set up and use the OpenTelemetry client.</p>
-<h1 id="opentelemetry-net-client">OpenTelemetry .NET Client</h1>
+<p>These applications are not currently utilizing OpenTelemetry. Therefore, in the following sections, we will provide a step-by-step guide on how to set up and use the OpenTelemetry client.</p>
+<h1 id="opentelemetry-net-client"><strong>OpenTelemetry .NET Client</strong></h1>
 <p>To get started with OpenTelemetry we&rsquo;re going to need the following packages.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;OpenTelemetry&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.6.0&#34;</span> <span style="color:#f92672">/&gt;</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;OpenTelemetry.Exporter.OpenTelemetryProtocol&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.6.0&#34;</span> <span style="color:#f92672">/&gt;</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;OpenTelemetry.Extensions.Hosting&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.6.0&#34;</span> <span style="color:#f92672">/&gt;</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;OpenTelemetry.Instrumentation.AspNetCore&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.5.1-beta.1&#34;</span> <span style="color:#f92672">/&gt;</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;OpenTelemetry.Instrumentation.Http&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.5.1-beta.1&#34;</span> <span style="color:#f92672">/&gt;</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;OpenTelemetry.Instrumentation.SqlClient&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.5.1-beta.1&#34;</span> <span style="color:#f92672">/&gt;</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;OpenTelemetry.Instrumentation.StackExchangeRedis&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.0.0-rc9.10&#34;</span> <span style="color:#f92672">/&gt;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>  <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;OpenTelemetry&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.8.0&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;OpenTelemetry.Instrumentation.AspNetCore&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.8.1&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;OpenTelemetry.Exporter.OpenTelemetryProtocol&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.8.0&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;OpenTelemetry.Extensions.Hosting&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.8.0&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;OpenTelemetry.Instrumentation.Http&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.8.1&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;OpenTelemetry.Instrumentation.SqlClient&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.8.0-beta.1&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;ZiggyCreatures.FusionCache.OpenTelemetry&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;1.0.0&#34;</span> <span style="color:#f92672">/&gt;</span>
 </span></span></code></pre></div><ul>
 <li>The <em><strong>OpenTelemetry</strong></em> package is the core library.</li>
-<li>The <em><strong>OpenTelemetry.Exporter.OpenTelemetryProtocol</strong></em> package allows us to send traces to a compatible OTLP endpoint. For this demo, the traces will be send to Jaeger.
+<li>The <em><strong>OpenTelemetry.Exporter.OpenTelemetryProtocol</strong></em> package enables us to send traces to a compatible OTLP endpoint. For this demo, the traces will be send to Jaeger.
 <ul>
-<li><em>In previous versions of OpenTelemetry, to send traces to Jaeger, the NuGet package used was <code>OpenTelemetry.Exporter.Jaeger</code>. This package is deprecated in favor of this one: <code>OpenTelemetry.Exporter.OpenTelemetryProtocol</code>.</em></li>
+<li><em>In previous versions of OpenTelemetry, the NuGet package <code>OpenTelemetry.Exporter.Jaeger</code> was used to send traces to Jaeger. This package is now deprecated in favor of <code>OpenTelemetry.Exporter.OpenTelemetryProtocol</code>.</em></li>
 </ul>
 </li>
-<li>The <em><strong>OpenTelemetry.Extensions.Hosting</strong></em>  package contains some extensions that allows us to configure the TraceProvider.</li>
+<li>The <em><strong>OpenTelemetry.Extensions.Hosting</strong></em>  package contains extensions that allows us to configure the TraceProvider.</li>
 <li>The <em><strong>OpenTelemetry.Instrumentation.</strong>*</em> packages are instrumentation libraries. These packages instrument common libraries, functionalities, and classes, reducing the need for manual implementation. In our demo, we&rsquo;re using the following ones:
 <ul>
 <li>The <em><strong>OpenTelemetry.Instrumentation.AspNetCore</strong></em> instruments <em>ASP.NET Core</em> and collects telemetry about incoming web requests. This instrumentation also collects incoming gRPC requests using <em>Grpc.AspNetCore</em>.</li>
 <li>The <em><strong>OpenTelemetry.Instrumentation.Http</strong></em> instruments the <em>System.Net.Http.HttpClient</em> and <em>System.Net.HttpWebRequest</em> types and collects telemetry about outgoing HTTP requests.</li>
 <li>The <em><strong>OpenTelemetry.Instrumentation.SqlClient</strong></em> instruments the <em>Microsoft.Data.SqlClient</em> and <em>System.Data.SqlClient</em> types and collects telemetry about database operations.</li>
-<li>The <em><strong>OpenTelemetry.Instrumentation.StackExchangeRedis</strong></em> instruments the <em>StackExchange.Redis</em> type and collects telemetry about outgoing calls to Redis.</li>
 </ul>
 </li>
+<li>To interact with Redis, we&rsquo;re going to use the <a href="https://github.com/ZiggyCreatures/FusionCache">FusionCache</a> library. It is an easy-to-use library with quite a few advanced features. To instrument the FusionCache library, we&rsquo;re using the <code>ZiggyCreatures.FusionCache.OpenTelemetry</code> library. This library collects telemetry about outgoing calls to the cache.</li>
 </ul>
-<p>In the near future, I expect to see more and more instrumentation libraries like these ones. This will allow us to effortlessly instrument the most commonly used dependencies. Simply install a NuGet package, add some configuration lines on your app, and you&rsquo;re good to go.</p>
-<h1 id="adding-opentelemetry-on-app1">Adding OpenTelemetry on App1</h1>
-<p><strong>1 . Setup the OpenTelemetry library</strong></p>
+<p>In the near future, I anticipate seeing more and more instrumentation libraries like these. This will allow us to effortlessly instrument the most commonly used dependencies. Simply install a NuGet package, add some configuration lines to your app, and you&rsquo;re all set.</p>
+<h1 id="adding-opentelemetry-on-app1"><strong>Adding OpenTelemetry on App1</strong></h1>
+<h2 id="1-setup-the-opentelemetry-library"><strong>1. Setup the OpenTelemetry library</strong></h2>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>services.AddOpenTelemetry().WithTracing(builder =&gt;
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>    builder.AddAspNetCoreInstrumentation()
@@ -294,46 +293,38 @@ The crucial aspect is that all the apps communicate with each other and also int
 </span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">$&#34;{Config[&#34;</span>Jaeger:Protocol<span style="color:#e6db74">&#34;]}://{Config[&#34;</span>Jaeger:Host<span style="color:#e6db74">&#34;]}:{Config[&#34;</span>Jaeger:Port<span style="color:#e6db74">&#34;]}&#34;</span>);
 </span></span><span style="display:flex;"><span>        });
 </span></span><span style="display:flex;"><span>});
-</span></span></code></pre></div><p>This is the first app we&rsquo;re instrumenting, so I&rsquo;m going to explain what we&rsquo;re doing line by line.</p>
+</span></span></code></pre></div><p>This is the first app we&rsquo;re instrumenting, so I&rsquo;ll explain what we&rsquo;re doing line by line.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>AddAspNetCoreInstrumentation()
-</span></span></code></pre></div><p>Enables NET Core instrumentation.</p>
+</span></span></code></pre></div><p>This enables .NET Core instrumentation.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>AddHttpClientInstrumentation()
-</span></span></code></pre></div><p>Enables HTTP Instrumentation. App1 makes an HTTP request to App2, if we want to trace the HTTP call between these 2 apps we can do it simply by adding this extension method.</p>
+</span></span></code></pre></div><p>This enables HTTP Instrumentation. App1 makes an HTTP request to App2. If we want to trace the HTTP call between these two apps, we can do it simply by adding this extension method.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>.AddSource(nameof(PublishMessageController))
-</span></span></code></pre></div><p>The <code>AddSource</code> method can be used to add a ActivitySource to the provider. Multiple AddSource can be called to add more than one span.</p>
-<p>Why we need this? App1 queues a message into a rabbit queue and we want to record this trace.<br>
-OpenTelemetry has many instrumentation libraries, but there is none available for RabbitMQ. To create a distributed transaction between two applications that communicate using RabbitMQ, we must implement it ourselves, using an Activity.</p>
+</span></span></code></pre></div><p>The <code>AddSource</code> method can be used to add an <code>ActivitySource</code> to the provider. Multiple <code>AddSource</code> methods can be called to add more than one span.</p>
+<p>Why do we need this? App1 queues a message into a rabbit queue and we want to record this trace.<br>
+OpenTelemetry has many instrumentation libraries, but none are available for RabbitMQ. To create a distributed transaction between two applications that communicate using RabbitMQ, we must implement it ourselves, using an Activity.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(<span style="color:#e6db74">&#34;App1&#34;</span>))
 </span></span></code></pre></div><p>A Resource is the immutable representation of the entity producing the telemetry.<br>
-With the <code>SetResourceBuilder</code> method we&rsquo;re configuring the Resource for the application.</p>
+With the <code>SetResourceBuilder</code> method, we&rsquo;re configuring the Resource for the application.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>AddOtlpExporter(opts =&gt;
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>    opts.Endpoint =
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">$&#34;{Config[&#34;</span>Jaeger:Protocol<span style="color:#e6db74">&#34;]}://{Config[&#34;</span>Jaeger:Host<span style="color:#e6db74">&#34;]}:{Config[&#34;</span>Jaeger:Port<span style="color:#e6db74">&#34;]}&#34;</span>);
 </span></span><span style="display:flex;"><span>});
-</span></span></code></pre></div><p>This method is utilized to specify the endpoint to which the traces will be sent. Every trace in this demo will be transmitted directly to a Jaeger instance.</p>
-<p><strong>2 . Instrument dependency calls</strong></p>
+</span></span></code></pre></div><p>This method is used to specify the endpoint to which the traces will be sent. Every trace in this demo will be transmitted directly to a Jaeger instance.</p>
+<h2 id="2-instrument-dependency-calls"><strong>2. Instrument dependency calls</strong></h2>
 <p>Unlike the HTTP request, OpenTelemetry does not yet have support for automatic RabbitMq trace correlation.</p>
 <p>The code below demonstrates how the <em>&ldquo;publish message&rdquo;</em> trace can be created. The code snippet adds the trace information to the enqueued message header, which will later be used to link both operations.</p>
-<p>Specifically we are using a Propagator to inject the activity into the message header that is going to be queued to Rabbit, afterwards the consumer application will use another Propagator to extract the Activity and link the producer activity with the consumer activity.</p>
-<p>Also we are also using the Tags attribute to store relevant metadata into the Activity.</p>
+<p>Specifically, we are using a Propagator to inject the activity into the message header that is going to be queued to Rabbit. Subsequently, the consumer application will use another Propagator to extract the Activity and link the producer activity with the consumer activity.</p>
+<p>We are also using the Tags attribute to store relevant metadata into the Activity.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[ApiController]</span>
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Route(&#34;publish-message&#34;)]</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PublishMessageController</span> : ControllerBase
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PublishMessageController</span>(
+</span></span><span style="display:flex;"><span>    ILogger&lt;PublishMessageController&gt; logger,
+</span></span><span style="display:flex;"><span>    IConfiguration configuration)
+</span></span><span style="display:flex;"><span>    : ControllerBase
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> ActivitySource Activity = <span style="color:#66d9ef">new</span>(nameof(PublishMessageController));
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> TextMapPropagator Propagator = Propagators.DefaultTextMapPropagator;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger&lt;PublishMessageController&gt; _logger;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IConfiguration _configuration;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> PublishMessageController(
-</span></span><span style="display:flex;"><span>        ILogger&lt;PublishMessageController&gt; logger,
-</span></span><span style="display:flex;"><span>        IConfiguration configuration)
-</span></span><span style="display:flex;"><span>    {
-</span></span><span style="display:flex;"><span>        _logger = logger;
-</span></span><span style="display:flex;"><span>        _configuration = configuration;
-</span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">
 </span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [HttpGet]</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Get()
@@ -342,7 +333,7 @@ With the <code>SetResourceBuilder</code> method we&rsquo;re configuring the Reso
 </span></span><span style="display:flex;"><span>        {
 </span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> activity = Activity.StartActivity(<span style="color:#e6db74">&#34;RabbitMq Publish&#34;</span>, ActivityKind.Producer))
 </span></span><span style="display:flex;"><span>            {
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">var</span> factory = <span style="color:#66d9ef">new</span> ConnectionFactory { HostName = _configuration[<span style="color:#e6db74">&#34;RabbitMq:Host&#34;</span>] };
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">var</span> factory = <span style="color:#66d9ef">new</span> ConnectionFactory { HostName = configuration[<span style="color:#e6db74">&#34;RabbitMq:Host&#34;</span>] };
 </span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> connection = factory.CreateConnection())
 </span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> channel = connection.CreateModel())
 </span></span><span style="display:flex;"><span>                {
@@ -358,6 +349,8 @@ With the <code>SetResourceBuilder</code> method we&rsquo;re configuring the Reso
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">var</span> body = Encoding.UTF8.GetBytes(<span style="color:#e6db74">&#34;I am app1&#34;</span>);
 </span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                    logger.LogInformation(<span style="color:#e6db74">&#34;Publishing message to queue&#34;</span>);
+</span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>                    channel.BasicPublish(exchange: <span style="color:#e6db74">&#34;&#34;</span>,
 </span></span><span style="display:flex;"><span>                        routingKey: <span style="color:#e6db74">&#34;sample&#34;</span>,
 </span></span><span style="display:flex;"><span>                        basicProperties: props,
@@ -367,7 +360,7 @@ With the <code>SetResourceBuilder</code> method we&rsquo;re configuring the Reso
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">catch</span> (Exception e)
 </span></span><span style="display:flex;"><span>        {
-</span></span><span style="display:flex;"><span>            _logger.LogError(<span style="color:#e6db74">&#34;Error trying to publish a message&#34;</span>, e);
+</span></span><span style="display:flex;"><span>            logger.LogError(e, <span style="color:#e6db74">&#34;Error trying to publish a message&#34;</span>);
 </span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">throw</span>;
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    }
@@ -389,13 +382,13 @@ With the <code>SetResourceBuilder</code> method we&rsquo;re configuring the Reso
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">catch</span> (Exception ex)
 </span></span><span style="display:flex;"><span>        {
-</span></span><span style="display:flex;"><span>            _logger.LogError(ex, <span style="color:#e6db74">&#34;Failed to inject trace context.&#34;</span>);
+</span></span><span style="display:flex;"><span>            logger.LogError(ex, <span style="color:#e6db74">&#34;Failed to inject trace context.&#34;</span>);
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h1 id="adding-opentelemetry-on-app2">Adding OpenTelemetry on App2</h1>
-<p><strong>1 . Setup the OpenTelemetry library</strong></p>
-<p>App2 is a console app so we have to setup the library in a different way, instead of using an IServiceCollection extension we&rsquo;re creating directly a TraceProvider. Apart from that, the setup looks pretty much the same.</p>
+</span></span></code></pre></div><h1 id="adding-opentelemetry-on-app2"><strong>Adding OpenTelemetry on App2</strong></h1>
+<h2 id="1-set-up-the-opentelemetry-library"><strong>1. Set up the OpenTelemetry library</strong></h2>
+<p>App2 is a console app, so we have to set up the library in a different way. IInstead of using an <code>IServiceCollection</code> extension, we&rsquo;re directly creating a <code>TraceProvider</code>. Apart from that, the setup looks pretty much the same.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>Sdk.CreateTracerProviderBuilder()
 </span></span><span style="display:flex;"><span>  .AddHttpClientInstrumentation()
 </span></span><span style="display:flex;"><span>  .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(<span style="color:#e6db74">&#34;App2&#34;</span>))
@@ -406,7 +399,7 @@ With the <code>SetResourceBuilder</code> method we&rsquo;re configuring the Reso
 </span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">$&#34;{_config[&#34;</span>Jaeger:Protocol<span style="color:#e6db74">&#34;]}://{_config[&#34;</span>Jaeger:Host<span style="color:#e6db74">&#34;]}:{_config[&#34;</span>Jaeger:Port<span style="color:#e6db74">&#34;]}&#34;</span>);
 </span></span><span style="display:flex;"><span>  })
 </span></span><span style="display:flex;"><span>  .Build();
-</span></span></code></pre></div><p><strong>2 . Instrument dependency calls</strong></p>
+</span></span></code></pre></div><h2 id="2-instrument-dependency-calls-1"><strong>2. Instrument dependency calls</strong></h2>
 <p>The HTTP call is being instrumented automatically thanks to the <code>AddHttpClientInstrumentation</code> extension method, but this app also dequeues a message from Rabbit, so we want to instrument that part.<br>
 The code is pretty much the same as the one we have created for the Rabbit producer on App1, the only difference is that instead of injecting the activity we are to extracting it from the message header.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">async</span> Task ProcessMessage(BasicDeliverEventArgs ea,
@@ -472,8 +465,8 @@ The code is pretty much the same as the one we have created for the Rabbit produ
 </span></span><span style="display:flex;"><span>    activity?.SetTag(<span style="color:#e6db74">&#34;messaging.destination_kind&#34;</span>, <span style="color:#e6db74">&#34;queue&#34;</span>);
 </span></span><span style="display:flex;"><span>    activity?.SetTag(<span style="color:#e6db74">&#34;messaging.rabbitmq.queue&#34;</span>, <span style="color:#e6db74">&#34;sample&#34;</span>);
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h1 id="adding-opentelemetry-on-app3">Adding OpenTelemetry on App3</h1>
-<p><strong>1 . Setup the OpenTelemetry library</strong></p>
+</span></span></code></pre></div><h1 id="adding-opentelemetry-on-app3"><strong>Adding OpenTelemetry on App3</strong></h1>
+<h2 id="1-setup-the-opentelemetry-library-1"><strong>1. Setup the OpenTelemetry library</strong></h2>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>services.AddOpenTelemetry().WithTracing(builder =&gt;
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>    builder.AddAspNetCoreInstrumentation()
@@ -486,125 +479,106 @@ The code is pretty much the same as the one we have created for the Rabbit produ
 </span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">$&#34;{Config[&#34;</span>Jaeger:Protocol<span style="color:#e6db74">&#34;]}://{Config[&#34;</span>Jaeger:Host<span style="color:#e6db74">&#34;]}:{Config[&#34;</span>Jaeger:Port<span style="color:#e6db74">&#34;]}&#34;</span>);
 </span></span><span style="display:flex;"><span>        });
 </span></span><span style="display:flex;"><span>});
-</span></span></code></pre></div><p>The setup looks almost identical as the ones on App1 and App2. There is only one thing worth mentioning here:</p>
+</span></span></code></pre></div><p>The setup looks almost identical to those on App1 and App2. However, there is one notable difference:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>AddSqlClientInstrumentation()
-</span></span></code></pre></div><p>This app does not make any HTTP requests. Instead, it queries a database. Therefore, we&rsquo;re using the SQL extension method to enable SQL instrumentation. We&rsquo;re simply swapping the <code>OpenTelemetry.Instrumentation.Http</code> library for the <code>OpenTelemetry.Instrumentation.SqlClient</code> library.</p>
-<p>This app is also enqueueing a message into a RabbitMQ queue, but the code is exactly the same as the one I have shown for the App1 section.</p>
-<h2 id="adding-opentelemetry-on-app4">Adding OpenTelemetry on App4</h2>
-<p><strong>1 . Setup the OpenTelemetry library</strong></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>services.AddOpenTelemetry().WithTracing(builder =&gt;
-</span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> provider = services.BuildServiceProvider();
-</span></span><span style="display:flex;"><span>    IConfiguration config = provider
-</span></span><span style="display:flex;"><span>            .GetRequiredService&lt;IConfiguration&gt;();
+</span></span></code></pre></div><p>This application does not make any HTTP requests. Instead, it queries a database. Therefore, we&rsquo;re using the SQL extension method to enable SQL instrumentation. We&rsquo;re essentially replacing the <code>OpenTelemetry.Instrumentation.Http</code> library with the <code>OpenTelemetry.Instrumentation.SqlClient</code> library.</p>
+<p>This application also enqueues a message into a RabbitMQ queue, but the code is exactly the same as the one I have shown you in the App1 section.</p>
+<h1 id="adding-opentelemetry-on-app4"><strong>Adding OpenTelemetry on App4</strong></h1>
+<h2 id="1-setup-the-opentelemetry-library-2"><strong>1. Setup the OpenTelemetry library</strong></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>builder.Services.AddFusionCache()
+</span></span><span style="display:flex;"><span>    .WithSerializer(<span style="color:#66d9ef">new</span> FusionCacheSystemTextJsonSerializer())
+</span></span><span style="display:flex;"><span>    .WithBackplane(
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">new</span> RedisBackplane(<span style="color:#66d9ef">new</span> RedisBackplaneOptions { Configuration = <span style="color:#e6db74">$&#34;{builder.Configuration[&#34;</span>Redis:Host<span style="color:#e6db74">&#34;]}:{builder.Configuration[&#34;</span>Redis:Port<span style="color:#e6db74">&#34;]}&#34;</span> })
+</span></span><span style="display:flex;"><span>    );
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    builder.AddAspNetCoreInstrumentation()
+</span></span><span style="display:flex;"><span>builder.Services.AddOpenTelemetry().WithTracing(b =&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    b.AddAspNetCoreInstrumentation()
 </span></span><span style="display:flex;"><span>        .AddHttpClientInstrumentation()
-</span></span><span style="display:flex;"><span>        .AddRedisInstrumentation()
-</span></span><span style="display:flex;"><span>        .ConfigureRedisInstrumentation((sp, i) =&gt;
-</span></span><span style="display:flex;"><span>        {
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> cache = (RedisCache)sp.GetRequiredService&lt;IDistributedCache&gt;();
-</span></span><span style="display:flex;"><span>            i.AddConnection(cache.GetConnection());
-</span></span><span style="display:flex;"><span>        })
+</span></span><span style="display:flex;"><span>        .AddFusionCacheInstrumentation()
 </span></span><span style="display:flex;"><span>        .AddSource(nameof(Worker))
 </span></span><span style="display:flex;"><span>        .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(<span style="color:#e6db74">&#34;App4&#34;</span>))
 </span></span><span style="display:flex;"><span>        .AddOtlpExporter(opts =&gt;
 </span></span><span style="display:flex;"><span>        {
 </span></span><span style="display:flex;"><span>            opts.Endpoint =
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">$&#34;{config[&#34;</span>Jaeger:Protocol<span style="color:#e6db74">&#34;]}://{config[&#34;</span>Jaeger:Host<span style="color:#e6db74">&#34;]}:{config[&#34;</span>Jaeger:Port<span style="color:#e6db74">&#34;]}&#34;</span>);
-</span></span><span style="display:flex;"><span>        }); ;
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">new</span> Uri(
+</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">$&#34;{builder.Configuration[&#34;</span>Jaeger:Protocol<span style="color:#e6db74">&#34;]}://{builder.Configuration[&#34;</span>Jaeger:Host<span style="color:#e6db74">&#34;]}:{builder.Configuration[&#34;</span>Jaeger:Port<span style="color:#e6db74">&#34;]}&#34;</span>);
+</span></span><span style="display:flex;"><span>        });
 </span></span><span style="display:flex;"><span>});
-</span></span></code></pre></div><p>This app dequeues a message from a RabbitMQ queue and stores the message content in a Redis cache database.</p>
-<p>The instrumentation for dequeuing the message from RabbitMQ is identical to the snippet I provided in the App2 section, so I&rsquo;ll skip that part.</p>
-<p>The instrumentation for Redis is a little more troublesome.</p>
-<p>The issue when trying to instrument Redis using the <code>AddRedisInstrumentation()</code> extension method is that you need an instance of the Redis <code>ConnectionMultiplexer</code>. However, in the case of App4, Redis is set up using the <code>IDistributedCache</code> interface, as you can see in the code snippet below.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>services.AddStackExchangeRedisCache(options =&gt;
-</span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> connString =
-</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">$&#34;{hostContext.Configuration[&#34;</span>Redis:Host<span style="color:#e6db74">&#34;]}:{hostContext.Configuration[&#34;</span>Redis:Port<span style="color:#e6db74">&#34;]}&#34;</span>;
-</span></span><span style="display:flex;"><span>    options.Configuration = connString;
-</span></span><span style="display:flex;"><span>});
-</span></span></code></pre></div><p>Which means that you won&rsquo;t be able to access the <code>ConnectionMultiplexer</code> property from the <code>IDistributedCache</code> implementation because it is not publicly accessible.</p>
-<p>To circumvent this issue, I have created an extension method that employs Reflection to acquire an instance of the <code>ConnectionMultiplexer</code>.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">RedisCacheExtensions</span>
-</span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> ConnectionMultiplexer GetConnection(<span style="color:#66d9ef">this</span> RedisCache cache)
-</span></span><span style="display:flex;"><span>    {
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//ensure connection is established</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">typeof</span>(RedisCache).InvokeMember(<span style="color:#e6db74">&#34;Connect&#34;</span>, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.InvokeMethod, <span style="color:#66d9ef">null</span>, cache, <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">object</span>[] { });
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//get connection multiplexer</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> fi = <span style="color:#66d9ef">typeof</span>(RedisCache).GetField(<span style="color:#e6db74">&#34;_connection&#34;</span>, BindingFlags.Instance | BindingFlags.NonPublic);
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> connection = (ConnectionMultiplexer)fi.GetValue(cache);
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> connection;
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>Now we can utilize the <code>ConfigureRedisInstrumentation</code> extension method alongside the extension I have built in the previous code snippet to successfully instrument Redis.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>...
-</span></span><span style="display:flex;"><span>.AddRedisInstrumentation()
-</span></span><span style="display:flex;"><span>.ConfigureRedisInstrumentation((sp, i) =&gt;
-</span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> cache = (RedisCache)sp.GetRequiredService&lt;IDistributedCache&gt;();
-</span></span><span style="display:flex;"><span>    i.AddConnection(cache.GetConnection());
-</span></span><span style="display:flex;"><span>})
-</span></span><span style="display:flex;"><span>...
-</span></span></code></pre></div><h1 id="jaeger">Jaeger</h1>
-<p>After adding the OpenTelemetry library to these four apps, we will generate some traffic and then access Jaeger to begin analyzing the traces that the apps are sending.</p>
-<p>If we examine an entire trace, here is how it looks:</p>
+</span></span></code></pre></div><p>This application dequeues a message from a RabbitMQ queue and stores the message content in a Redis cache database.</p>
+<p>The instrumentation for dequeuing the message from RabbitMQ is identical to the snippet I provided in the App2 section, so I won&rsquo;t repeat that here.</p>
+<p>To start using OpenTelemetry with FusionCache, we simply need to utilize the <code>AddFusionCacheInstrumentation</code> method from the <code>ZiggyCreatures.FusionCache.OpenTelemetry</code> NuGet package when configuring the <code>TraceProvider</code>.</p>
+<p>Also, before setting up OpenTelemetry, we need to configure FusionCache to use Redis as a backplane.</p>
+<h1 id="jaeger"><strong>Jaeger</strong></h1>
+<p>After integrating the OpenTelemetry library into these four applications, we will generate some traffic and then access Jaeger to start analyzing the traces that the applications are sending.</p>
+<p>If we examine an entire trace, here is how it appears:</p>
 <p><img alt="otel-jaeger" src="/img/otel-jaeger.png"></p>
-<p>Let me break it up a little bit for you. That&rsquo;s a zoomed image of the spans we have created in our trace</p>
+<p>Let me simplify it a bit for you. That&rsquo;s a magnified image of the spans we have created in our trace.</p>
 <p><img alt="otel-jaeger-span" src="/img/otel-jaeger-span.png"></p>
 <ul>
 <li>
-<p>The first span (publish-message) corresponds to the App1 api endpoint, that span is created automatically when the api controller is executed thanks to the <code>AddAspNetCoreInstrumentation()</code> extension method.</p>
+<p>The first span (publish-message) corresponds to the App1 API endpoint. This span is automatically created when the API controller is executed, thanks to the <code>AddAspNetCoreInstrumentation()</code> extension method.</p>
 </li>
 <li>
-<p>The second span (RabbitMq publish) is an Activity that we have created manually on the App1. You can see the code snippet on the &ldquo;Adding OpenTelemetry on App1&rdquo; section.</p>
+<p>The second span (RabbitMq publish) is an Activity that we have manually created in App1. You can see the code snippet on the &ldquo;Adding OpenTelemetry on App1&rdquo; section.</p>
 </li>
 <li>
-<p>The third span (Process Message) is an Activity that we have created manually on the App2, also you can see the code snippet on the &ldquo;Adding OpenTelemetry on App2&rdquo; section.</p>
+<p>The third span (Process Message) is an Activity that we have manually created in App2. You can also see the code snippet in the &ldquo;Adding OpenTelemetry on App2&rdquo; section.</p>
 </li>
 <li>
-<p>The fourth span (HTTP POST) corresponds to the HTTP request that the App2 is making to the App3. That span is created automatically thanks to the <code>AddHttpClientInstrumentation()</code> extension method found on the App2 setup.</p>
+<p>The fourth span (HTTP POST) corresponds to the HTTP request that the App2 is making to App3. This span is automatically created thanks to the <code>AddHttpClientInstrumentation()</code> extension method found in the App2 setup.</p>
 </li>
 <li>
-<p>The fifth span (sql-to-event) corresponds to the App3 sql-to-event api endpoint, that span is created automatically when the api controller is executed thanks to the <code>AddAspNetCoreInstrumentation()</code> extension method.</p>
+<p>The fifth span (sql-to-event) corresponds to the App3 /sql-to-event API endpoint. This span is automatically created when the API controller is executed, thanks to the <code>AddAspNetCoreInstrumentation()</code> extension method.</p>
 </li>
 <li>
-<p>The sixth span (sqlserver) corresponds to the SQL query that the App3 is doing, that span is created automatically thanks to the <code>AddSqlClientInstrumentation()</code> extension method.</p>
+<p>The sixth span (sqlserver) corresponds to the SQL query that App3 is executing. This span is automatically created thanks to the <code>AddSqlClientInstrumentation()</code> extension method.</p>
 </li>
 <li>
-<p>The seventh span (RabbitMq publish) is an Activity that we have created manually on the App3.</p>
+<p>The seventh span (RabbitMq publish) is an Activity that we have manually created in App3.</p>
 </li>
 <li>
-<p>The eigth span (Process Message) is an Activity that we have created manually on the App4.</p>
+<p>The eigth span (Process Message) is an Activity that we have manually created in App4.</p>
 </li>
 <li>
-<p>The last 2 spans correspond to the Redis instructions that we are doing on the App4, both spans are created automatically thanks to the <code>AddRedisInstrumentation()</code> extension method.</p>
+<p>The last three spans correspond to the Redis instructions that we are executing in App4. These three spans are  automatically created thanks to the <code>AddFusionCacheInstrumentation()</code> extension method.</p>
 </li>
 </ul>
-<p>If we want more info on any span we can drill-down and inspect the metadata. For example if we inspect the &ldquo;HTTP POST&rdquo; span we can see more info about it.</p>
+<p>If we want more information on any span, we can drill down and inspect the metadata. For example, if we inspect the &ldquo;HTTP POST&rdquo; span, we can see more details about it.</p>
 <p><img alt="otel-jaeger-http-instrumentation" src="/img/otel-jaeger-http-instrumentation.png"></p>
 <p>Also, do you remember that in the App1 we added some extra Tags on the Activity?</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>activity?.SetTag(<span style="color:#e6db74">&#34;messaging.system&#34;</span>, <span style="color:#e6db74">&#34;rabbitmq&#34;</span>);
 </span></span><span style="display:flex;"><span>activity?.SetTag(<span style="color:#e6db74">&#34;messaging.destination_kind&#34;</span>, <span style="color:#e6db74">&#34;queue&#34;</span>);
 </span></span><span style="display:flex;"><span>activity?.SetTag(<span style="color:#e6db74">&#34;messaging.rabbitmq.queue&#34;</span>, <span style="color:#e6db74">&#34;sample&#34;</span>);
-</span></span></code></pre></div><p>Here is the result:</p>
+</span></span></code></pre></div><p>Here is the how it look on Jaeger.</p>
 <p><img alt="otel-jaeger-rabbit-tags" src="/img/otel-jaeger-rabbit-tags.png"></p>
-<p>Jaeger is capable of building a dependency-graph after looking at the traces.</p>
+<p>Jaeger is also capable giving you a dependency-graph after looking at the traces.</p>
 <p><img alt="otel-jaeger-dag" src="/img/otel-jaeger-dag.png"></p>
-<p>Also is capable of giving performance statistics.</p>
+<p>Also it is capable of giving quite a few of performance statistics.</p>
+<ul>
+<li>Trace Statistics</li>
+</ul>
 <p><img alt="otel-jaeger-statistics" src="/img/otel-jaeger-statistics.png"></p>
-<p>And compare traces.</p>
+<ul>
+<li>Span Statistics</li>
+</ul>
+<p><img alt="otel-jaeger-statistics-span" src="/img/otel-jaeger-statistics-by-span.png"></p>
+<ul>
+<li>Flamegraph Statistics</li>
+</ul>
+<p><img alt="otel-jaeger-statistics-fg" src="/img/otel-jaeger-statistics-flamegraph.png"></p>
+<p>A comparison of traces is also possible.</p>
 <p><img alt="otel-jaeger-compare-traces" src="/img/otel-jaeger-compare-traces.png"></p>
+<p>If we examine the comparison more closely, we can see that the Redis spans are not present in the second trace because we have implemented a read-through cache pattern.</p>
+<p><img alt="otel-jaeger-compare-traces-zoom" src="/img/otel-jaeger-compare-traces-zoom.png"></p>
 <h1 id="how-to-test-the-example-apps">How to test the example apps</h1>
-<p>If you want to take a look at the 4 apps, I have uploaded everything on my <a href="https://github.com/karlospn/opentelemetry-tracing-demo">GitHub repository</a></p>
-<p>If you want to try for yourselves to execute this example, I have uploaded also a <strong>docker-compose</strong> file with everything you need, so you can run a compose up and you&rsquo;re good to go.</p>
-<p>But there is little caveat I wanted to mention in the docker-compose file.</p>
-<p>With docker-compose you can control the order of the services startup and shutdown with the depends_on option, but it does not wait until a container is “ready”, it only waits until is running.</p>
-<p>In my case that&rsquo;s a problem because App2 and App4 need to wait for the rabbitMq container to be ready, to avoid this problem the compose file is overwriting the &ldquo;entrypoint&rdquo; for both apps and executing a shell script that makes both apps sleep 30 seconds before starting up.</p>
+<p>If you want to take a closer look at the four applications, I have uploaded everything on my <a href="https://github.com/karlospn/opentelemetry-tracing-demo">GitHub repository</a></p>
+<p>If you want to try executing this example yourself, I have also uploaded a <code>docker-compose</code> file with everything you need. You can simply run a <code>docker compose up</code>, and you&rsquo;re all set.</p>
+<p>However, there&rsquo;s a small caveat I wanted to mention regarding the <code>docker-compose</code> file.</p>
+<p>With <code>docker-compose</code>, ou can control the order of service startup and shutdown using the <code>depends_on</code> option, but it doesn&rsquo;t wait until a container is &ldquo;ready&rdquo; - it only waits until it&rsquo;s running.</p>
+<p>In my case, this is a problem because App2 and App4 need to wait for the RabbitMQ container to be ready. To circumvent this issue, the compose file overwrites the &ldquo;entrypoint&rdquo; for both apps and executes a shell script that makes both apps sleep for 30 seconds before starting up.</p>
 <p>Here&rsquo;s the docker-compose file:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">ersion</span>: <span style="color:#e6db74">&#39;3.4&#39;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">version</span>: <span style="color:#e6db74">&#39;3.4&#39;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#f92672">networks</span>:
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">tracing</span>:
@@ -612,7 +586,7 @@ The code is pretty much the same as the one we have created for the Rabbit produ
 </span></span><span style="display:flex;"><span>    
 </span></span><span style="display:flex;"><span><span style="color:#f92672">services</span>:
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">rabbitmq</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">rabbitmq:3.12-management</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">rabbitmq:3.13.1-management</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
 </span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">15672</span>:<span style="color:#ae81ff">15672</span>
 </span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">5672</span>
@@ -630,14 +604,14 @@ The code is pretty much the same as the one we have created for the Rabbit produ
 </span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">tracing</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">redis</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">redis:7.2.1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">redis:7.2.4</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
 </span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">6379</span>:<span style="color:#ae81ff">6379</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">networks</span>:
 </span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">tracing</span>
 </span></span><span style="display:flex;"><span>    
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">jaeger</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">jaegertracing/all-in-one</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">jaegertracing/all-in-one:1.56.0</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">container_name</span>: <span style="color:#ae81ff">jaeger</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">restart</span>: <span style="color:#ae81ff">unless-stopped</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
@@ -661,7 +635,7 @@ The code is pretty much the same as the one we have created for the Rabbit produ
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">build</span>:
 </span></span><span style="display:flex;"><span>      <span style="color:#f92672">context</span>: <span style="color:#ae81ff">./App1.WebApi</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
-</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;5000:80&#34;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;5000:8080&#34;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">networks</span>:
 </span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">tracing</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">depends_on</span>: 
@@ -673,7 +647,7 @@ The code is pretty much the same as the one we have created for the Rabbit produ
 </span></span><span style="display:flex;"><span>      <span style="color:#f92672">Jaeger__Port</span>: <span style="color:#ae81ff">4317</span>
 </span></span><span style="display:flex;"><span>      <span style="color:#f92672">Jaeger__Host</span>: <span style="color:#ae81ff">jaeger</span>
 </span></span><span style="display:flex;"><span>      <span style="color:#f92672">RabbitMq__Host</span>: <span style="color:#ae81ff">rabbitmq</span>
-</span></span><span style="display:flex;"><span>      <span style="color:#f92672">App3Endpoint</span>: <span style="color:#ae81ff">http://app3/dummy</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">App3Endpoint</span>: <span style="color:#ae81ff">http://app3:8080</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">app2</span>:
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">stdin_open</span>: <span style="color:#66d9ef">true</span>
@@ -692,13 +666,13 @@ The code is pretty much the same as the one we have created for the Rabbit produ
 </span></span><span style="display:flex;"><span>      <span style="color:#f92672">Jaeger__Port</span>: <span style="color:#ae81ff">4317</span>
 </span></span><span style="display:flex;"><span>      <span style="color:#f92672">Jaeger__Host</span>: <span style="color:#ae81ff">jaeger</span>
 </span></span><span style="display:flex;"><span>      <span style="color:#f92672">RabbitMq__Host</span>: <span style="color:#ae81ff">rabbitmq</span>
-</span></span><span style="display:flex;"><span>      <span style="color:#f92672">App3UriEndpoint</span>: <span style="color:#ae81ff">http://app3</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">App3UriEndpoint</span>: <span style="color:#ae81ff">http://app3:8080</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">app3</span>:
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">build</span>:
 </span></span><span style="display:flex;"><span>      <span style="color:#f92672">context</span>: <span style="color:#ae81ff">./App3.WebApi</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
-</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;5001:80&#34;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;5001:8080&#34;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">networks</span>:
 </span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">tracing</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">depends_on</span>: 
@@ -740,17 +714,10 @@ The code is pretty much the same as the one we have created for the Rabbit produ
           </div>
           <div class="pagination__buttons">
             
-              <span class="button previous">
-                <a href="https://www.mytechramblings.com/posts/building-qa-app-with-aws-bedrock-kendra-s3-and-streamlit/">
-                  <span class="button__icon">←</span>
-                  <span class="button__text">Building a Q&amp;A app capable of answering questions related to your enterprise documents using AWS Bedrock, AWS Kendra, AWS S3 and Streamlit</span>
-                </a>
-              </span>
-            
             
               <span class="button next">
-                <a href="https://www.mytechramblings.com/posts/dotnet-strategy-pattern-using-dependency-injection/">
-                  <span class="button__text">Back to .NET basics: How to easily build a Strategy pattern using dependency injection</span>
+                <a href="https://www.mytechramblings.com/posts/building-a-dotnet-news-aggregator-site/">
+                  <span class="button__text">Announcing dotnetramblings.com or how to build a .NET news aggregator site.</span>
                   <span class="button__icon">→</span>
                 </a>
               </span>
