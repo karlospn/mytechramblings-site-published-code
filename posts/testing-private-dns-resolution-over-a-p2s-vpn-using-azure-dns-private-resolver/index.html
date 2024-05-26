@@ -28,17 +28,26 @@ This problem happens because a private DNS zone will not work over an Azure P2S 
 <link rel="shortcut icon" href="https://www.mytechramblings.com/img/favicon.png">
 
 
-<meta name="twitter:card" content="summary"/><meta name="twitter:title" content="Testing Azure Private Endpoints DNS resolution over an Azure P2S VPN connection"/>
-<meta name="twitter:description" content="The purpose of this post is to try out the new Azure DNS Private Resolver resource. To test it, we&#39;re going to try to solve one of the current issues that Azure VPN has right now: when connected over an Azure P2S VPN the private DNS zone resolution does not work. This becomes quite problematic when you&#39;re using private endpoints to secure some private resources, because there is no easy way to resolve the private endpoint DNS when connected to a P2S VPN."/>
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Testing Azure Private Endpoints DNS resolution over an Azure P2S VPN connection">
+  <meta name="twitter:description" content="The purpose of this post is to try out the new Azure DNS Private Resolver resource. To test it, we&#39;re going to try to solve one of the current issues that Azure VPN has right now: when connected over an Azure P2S VPN the private DNS zone resolution does not work. This becomes quite problematic when you&#39;re using private endpoints to secure some private resources, because there is no easy way to resolve the private endpoint DNS when connected to a P2S VPN.">
 
 
 
-<meta property="og:title" content="Testing Azure Private Endpoints DNS resolution over an Azure P2S VPN connection" />
-<meta property="og:description" content="The purpose of this post is to try out the new Azure DNS Private Resolver resource. To test it, we&#39;re going to try to solve one of the current issues that Azure VPN has right now: when connected over an Azure P2S VPN the private DNS zone resolution does not work. This becomes quite problematic when you&#39;re using private endpoints to secure some private resources, because there is no easy way to resolve the private endpoint DNS when connected to a P2S VPN." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://www.mytechramblings.com/posts/testing-private-dns-resolution-over-a-p2s-vpn-using-azure-dns-private-resolver/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2022-06-14T10:10:47+02:00" />
-<meta property="article:modified_time" content="2022-06-14T10:10:47+02:00" />
+<meta property="og:url" content="https://www.mytechramblings.com/posts/testing-private-dns-resolution-over-a-p2s-vpn-using-azure-dns-private-resolver/">
+  <meta property="og:site_name" content="my tech ramblings">
+  <meta property="og:title" content="Testing Azure Private Endpoints DNS resolution over an Azure P2S VPN connection">
+  <meta property="og:description" content="The purpose of this post is to try out the new Azure DNS Private Resolver resource. To test it, we&#39;re going to try to solve one of the current issues that Azure VPN has right now: when connected over an Azure P2S VPN the private DNS zone resolution does not work. This becomes quite problematic when you&#39;re using private endpoints to secure some private resources, because there is no easy way to resolve the private endpoint DNS when connected to a P2S VPN.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2022-06-14T10:10:47+02:00">
+    <meta property="article:modified_time" content="2022-06-14T10:10:47+02:00">
+    <meta property="article:tag" content="Azure">
+    <meta property="article:tag" content="Cloud">
+    <meta property="article:tag" content="Terraform">
+    <meta property="article:tag" content="Dns">
 
 
 
@@ -450,18 +459,13 @@ An inbound endpoint enables name resolution from on-premises or other private lo
 
     
       
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-	ga('create', 'UA-170300931-1', 'auto');
-	
-	ga('send', 'pageview');
-}
-</script>
+  
+    
+      
+    
+  
+
+
     
   </body>
 </html>
