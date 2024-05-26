@@ -2,6 +2,12 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://www.mytechramblings.com/</loc>
+    <lastmod>2024-05-26T18:02:37+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/posts/</loc>
+    <lastmod>2024-05-26T18:02:37+02:00</lastmod>
+  </url><url>
     <loc>https://www.mytechramblings.com/tags/csharp/</loc>
     <lastmod>2024-04-16T09:30:51+02:00</lastmod>
   </url><url>
@@ -14,13 +20,7 @@
     <loc>https://www.mytechramblings.com/tags/jaeger/</loc>
     <lastmod>2024-04-16T09:30:51+02:00</lastmod>
   </url><url>
-    <loc>https://www.mytechramblings.com/</loc>
-    <lastmod>2024-04-16T09:30:51+02:00</lastmod>
-  </url><url>
     <loc>https://www.mytechramblings.com/tags/opentelemetry/</loc>
-    <lastmod>2024-04-16T09:30:51+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/posts/</loc>
     <lastmod>2024-04-16T09:30:51+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/</loc>
