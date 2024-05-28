@@ -9,10 +9,30 @@
     <description>Recent content on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 26 May 2024 18:02:37 +0200</lastBuildDate>
+    <lastBuildDate>Tue, 28 May 2024 09:35:37 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Building an Azure DevOps Copilot using .NET 8, Semantic Kernel and Azure OpenAI GPT-4o</title>
+      <link>https://www.mytechramblings.com/posts/building-an-azure-devops-copilot-using-semantic-kernel-and-azure-openai/</link>
+      <pubDate>Tue, 28 May 2024 09:35:37 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/building-an-azure-devops-copilot-using-semantic-kernel-and-azure-openai/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          This post demonstrates how to create an Azure DevOps Copilot that utilizes a small subset of the Azure DevOps REST API. To achieve this, we will be using Semantic Kernel along with .NET 8 and Azure OpenAI.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>Getting started with OpenTelemetry and distributed tracing in .NET</title>

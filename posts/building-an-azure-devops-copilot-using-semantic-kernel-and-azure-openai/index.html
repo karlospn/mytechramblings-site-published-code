@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>Building an Azure DevOps Copilot using .NET 8, Semantic Kernel and Azure OpenAI GPT-4o :: my tech ramblings — A blog for writing about my techie ramblings</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Just show me the code
+As always, if you don’t care about the post I have upload the source code on my Github.
+First and foremost, let me clarify that I don&amp;rsquo;t intend to build a complete Azure DevOps Copilot, as the Azure DevOps REST API is too big and my spare time is quite limited.
+Instead, I plan to create an Azure DevOps Copilot that uses a small subset of the Azure DevOps API."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://www.mytechramblings.com/posts/building-an-azure-devops-copilot-using-semantic-kernel-and-azure-openai/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/assets/style.css">
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.mytechramblings.com/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://www.mytechramblings.com/img/favicon.png">
+
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Building an Azure DevOps Copilot using .NET 8, Semantic Kernel and Azure OpenAI GPT-4o">
+  <meta name="twitter:description" content="This post demonstrates how to create an Azure DevOps Copilot that utilizes a small subset of the Azure DevOps REST API. To achieve this, we will be using Semantic Kernel along with .NET 8 and Azure OpenAI.">
+
+
+
+<meta property="og:url" content="https://www.mytechramblings.com/posts/building-an-azure-devops-copilot-using-semantic-kernel-and-azure-openai/">
+  <meta property="og:site_name" content="my tech ramblings">
+  <meta property="og:title" content="Building an Azure DevOps Copilot using .NET 8, Semantic Kernel and Azure OpenAI GPT-4o">
+  <meta property="og:description" content="This post demonstrates how to create an Azure DevOps Copilot that utilizes a small subset of the Azure DevOps REST API. To achieve this, we will be using Semantic Kernel along with .NET 8 and Azure OpenAI.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-05-28T09:35:37+02:00">
+    <meta property="article:modified_time" content="2024-05-28T09:35:37+02:00">
+    <meta property="article:tag" content="Genai">
+    <meta property="article:tag" content="Azure">
+    <meta property="article:tag" content="Openai">
+    <meta property="article:tag" content="Dotnet">
+    <meta property="article:tag" content="Devops">
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://www.mytechramblings.com/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">my tech ramblings</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="https://www.dotnetramblings.com">.NET News</a></li>
+        
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="https://www.dotnetramblings.com">.NET News</a></li>
+      
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/building-an-azure-devops-copilot-using-semantic-kernel-and-azure-openai/">Building an Azure DevOps Copilot using .NET 8, Semantic Kernel and Azure OpenAI GPT-4o</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2024-05-28
+        </span>
+
+        
+          
+            
+
+
+
+          
+        
+      
+
+      
+      
+        <span class="post-read-time">— 23 min read</span>
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          #<a href="https://www.mytechramblings.com/tags/genai/">genai</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/azure/">azure</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/openai/">openai</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/dotnet/">dotnet</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/devops/">devops</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <blockquote>
+<p><strong>Just show me the code</strong><br>
+As always, if you don’t care about the post I have upload the source code on my <a href="https://github.com/karlospn/building-an-azure-devops-copilot-using-semantic-kernel-and-dotnet">Github</a>.</p>
+</blockquote>
+<p>First and foremost, let me clarify that <strong>I don&rsquo;t intend to build a complete Azure DevOps Copilot</strong>, as the Azure DevOps REST API is too big and my spare time is quite limited.</p>
+<p>Instead, I plan to create an Azure DevOps Copilot that uses a small subset of the Azure DevOps API.<br>
+My primary goal here is to demonstrate how simple it can be to build your own custom Copilot using Semantic Kernel Plugins when you have a third party API to interact with it.</p>
+<p>But what exactly is a Copilot? A Microsoft Copilot is a suite of AI-powered tools integrated into various Microsoft products to assist users in their tasks. It aims to enhance user productivity by providing intelligent, context-aware assistance across a wide range of applications and tasks.</p>
+<p>There are already several examples, such as Microsoft 365 Copilot, GitHub Copilot, and Power Apps Copilot. However, you can also build your own Copilot, and that&rsquo;s exactly what I plan to demonstrate in this post.</p>
+<p>In simple terms, we&rsquo;re going to build a chat interface with an AI assistant powered by Azure OpenAI GPT-4o. This assistant will leverage the capabilities of Semantic Kernel plugins to provide answers and perform actions on my Azure DevOps instance, such as managing Team Projects, Git Repositories, Branches, Builds, and more.</p>
+<p>But before we start writing code, let&rsquo;s quickly discuss what Semantic Kernel and Semantic Kernel Plugins are.</p>
+<h1 id="what-is-semantic-kernel"><strong>What is Semantic Kernel?</strong></h1>
+<p>Semantic Kernel is an open-source SDK designed to facilitate the development of intelligent applications.</p>
+<p>It provides a set of tools and libraries that enable developers to build applications capable of understanding, processing, and reasoning about data in a more human-like manner.</p>
+<p>Are you familiar with LangChain? Semantic Kernel is an alternative to LangChain. One of its biggest advantages is that, while LangChain is only available in Python and JavaScript, Semantic Kernel is available in .NET.</p>
+<p>The fastest way to learn how to use Semantic Kernel is with this C# Notebooks. These notebooks demonstrate how to use Semantic Kernel with code snippets that you can run with a push of a button.</p>
+<ul>
+<li><a href="https://github.com/microsoft/semantic-kernel/blob/main/dotnet/notebooks/README.md">https://github.com/microsoft/semantic-kernel/blob/main/dotnet/notebooks/README.md</a></li>
+</ul>
+<h1 id="semantic-kernel-plugins"><strong>Semantic Kernel Plugins</strong></h1>
+<p>Imagine you build a chat application that uses Semantic Kernel and GPT. If you try to ask a question related to your specific Azure DevOps instance, what do you think it will respond with?</p>
+<p>Nothing. It won&rsquo;t be able to answer properly because GPT-4o (or any other large language model) doesn&rsquo;t have any knowledge about your Azure DevOps instance.</p>
+<p>You can ask general-purpose questions about Azure DevOps, but if you try to ask specific questions about your instance, such as <em>&ldquo;How many Team Projects do I have?&rdquo;</em>, it will either hallucinate and provide incorrect information or be unable to answer at all.</p>
+<p>Semantic Kernel Plugins are a way to add functionality and capabilities to your Copilot. With plugins, you can encapsulate capabilities into a single unit of functionality that can then be run by Semantic Kernel.</p>
+<p>They are based on the OpenAI plugin specification and contain both code and prompts. You can use plugins to access data, perform operations or augment your Copilot with any external service.</p>
+<p><img alt="sk-plugins" src="/img/azdo-copilot-sk-plugins.png"></p>
+<p>In this post, we&rsquo;re going to build a Semantic Kernel (SK) plugin that interacts with the Azure DevOps REST API.<br>
+This way, every time we ask a question related to our Azure DevOps instance, Semantic Kernel will use the plugin to interact with Azure DevOps. The result will be sent to GPT-4o, which will then generate a response.</p>
+<h2 id="what-does-a-sk-plugin-look-like"><strong>What does a SK plugin look like?</strong></h2>
+<p>At a high-level, a plugin is a function that can be exposed to SK. The functions within plugins can then be orchestrated by an AI application to accomplish user requests.</p>
+<p>The following code is an example of a plugin capable of reading the text of a given document.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[KernelFunction, Description(&#34;Read all text from a document&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[return: Description(&#34;Document content&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;<span style="color:#66d9ef">string</span>&gt; ReadTextAsync(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">   [Description(&#34;Path to the file to read&#34;)]</span> <span style="color:#66d9ef">string</span> filePath)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">using</span> var stream = <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">this</span>._fileSystemConnector.GetFileContentStreamAsync(filePath).ConfigureAwait(<span style="color:#66d9ef">false</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>._documentConnector.ReadText(stream);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Forget for a moment about the implementation of the function. What is interesting here is how we&rsquo;re describing everything the function does:</p>
+<ul>
+<li>The purpose of the function: <code>[KernelFunction, Description(&quot;Read all text from a document&quot;)]</code></li>
+<li>What it returns: <code>[return: Description(&quot;Document content&quot;)]</code></li>
+<li>What are the parameters used for: <code>[Description(&quot;Path to the file to read&quot;)]</code></li>
+</ul>
+<p>Describing the function and its parameters accurately and precisely is paramount because these description fields are used by Semantic Kernel (SK) when orchestrating functions.</p>
+<p>How would SK know that it needs to run the <code>ReadTextAsync</code> function when the user asks a question related to its purpose? There are two ways to handle this challenge.</p>
+<ul>
+<li>Invoke the function manually.</li>
+<li>Use the &ldquo;Auto Function Invocation&rdquo; feature of Semantic Kernel. This is the approach we want to use. We don&rsquo;t want to run the plugins manually; we want SK to choose the appropriate function for us based on the response from GPT-4.</li>
+</ul>
+<p>The auto function invocation feature allows SK to automatically determine which function to invoke based on the context of the user&rsquo;s query and the response from GPT-4. This ensures a seamless and efficient interaction with the Azure DevOps REST API through the SK plugin.</p>
+<p>That&rsquo;s enough theory, let&rsquo;s dive into some code.</p>
+<h1 id="building-the-application"><strong>Building the application</strong></h1>
+<p>The application we&rsquo;re going to build is a .NET 8 console app that functions as a basic chat client.</p>
+<p>Users will be able to ask questions related to their Azure DevOps instance, and the Copilot will utilize Semantic Kernel with our custom Plugin to fetch data from the Azure DevOps instance and respond accordingly.</p>
+<p>There are a <strong>few prerequisites</strong> we need before start coding.</p>
+<ul>
+<li>An Azure DevOps instance.</li>
+<li>An Azure OpenAI instance with whatever model you prefer already deployed (I&rsquo;ll be using GPT-4o).</li>
+</ul>
+<h2 id="1-building-the-chat-application"><strong>1. Building the Chat application</strong></h2>
+<p>The first step is to set up Semantic Kernel and build a chat interface, allowing us to ask questions to GPT-4o. Let me show you the complete source code, and then I&rsquo;ll highlight and comment on the most interesting parts.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">using</span> CustomCopilot.AzureDevOpsPlugin;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Microsoft.SemanticKernel;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Microsoft.SemanticKernel.ChatCompletion;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Microsoft.SemanticKernel.Connectors.OpenAI;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Microsoft.SemanticKernel.Plugins.Core;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> CustomCopilot
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">internal</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Program</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">async</span> Task Main(<span style="color:#66d9ef">string</span>[] args)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// Create a kernel with the Azure OpenAI chat completion service</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> builder = Kernel.CreateBuilder();
+</span></span><span style="display:flex;"><span>            builder.AddAzureOpenAIChatCompletion(Environment.GetEnvironmentVariable(<span style="color:#e6db74">&#34;OAI_MODEL_NAME&#34;</span>)!,
+</span></span><span style="display:flex;"><span>                Environment.GetEnvironmentVariable(<span style="color:#e6db74">&#34;OAI_ENDPOINT&#34;</span>)!,
+</span></span><span style="display:flex;"><span>                Environment.GetEnvironmentVariable(<span style="color:#e6db74">&#34;OAI_APIKEY&#34;</span>)!);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// Load the plugins</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">#pragma</span> warning disable SKEXP0050
+</span></span><span style="display:flex;"><span>            builder.Plugins.AddFromType&lt;TimePlugin&gt;();
+</span></span><span style="display:flex;"><span>            builder.Plugins.AddFromObject(<span style="color:#66d9ef">new</span> AzureDevOpsProjectsPlugin(), nameof(AzureDevOpsProjectsPlugin));
+</span></span><span style="display:flex;"><span>            builder.Plugins.AddFromObject(<span style="color:#66d9ef">new</span> AzureDevOpsRepositoriesPlugin(), nameof(AzureDevOpsRepositoriesPlugin));
+</span></span><span style="display:flex;"><span>            builder.Plugins.AddFromObject(<span style="color:#66d9ef">new</span> AzureDevOpsBranchesPlugin(), nameof(AzureDevOpsBranchesPlugin));
+</span></span><span style="display:flex;"><span>            builder.Plugins.AddFromObject(<span style="color:#66d9ef">new</span> AzureDevOpsCodeSearchPlugin(), nameof(AzureDevOpsCodeSearchPlugin));
+</span></span><span style="display:flex;"><span>            builder.Plugins.AddFromObject(<span style="color:#66d9ef">new</span> AzureDevOpsBuildsPlugin(), nameof(AzureDevOpsBuildsPlugin));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// Build the kernel</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> kernel = builder.Build();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// Create chat history</span>
+</span></span><span style="display:flex;"><span>            ChatHistory history = [];
+</span></span><span style="display:flex;"><span>            history.AddSystemMessage(<span style="color:#e6db74">@&#34;You are a virtual assistant specifically designed to manage an Azure DevOps instance. Your scope of conversation is strictly limited to this domain. Your responses should be concise, accurate, and directly related to the query at hand.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">In order to provide the most accurate responses, you require precise inputs. 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">If a function calling involves parameters that you do not have sufficient information about it, it is crucial that you do not attempt to guess or infer their values. Instead, your primary action should always be to ask the user to provide more detailed information about these parameters. This is a non-negotiable aspect of your function. Guessing or inferring values is not an acceptable course of action. Your goal is to avoid any potential misunderstandings and to provide the most accurate and helpful response possible.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Remember, when in doubt, always ask for more information. Never guess the values of a function parameter.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">If a function call fails to produce any valid data, the response must always be: &#39;I&#39;m sorry, but I wasn&#39;t able to retrieve any data.If the problem persists, you may want to contact your Azure DevOps administrator or support for further assistance&#39;. 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Never fabricate a response if the function calling fails or returns invalid data.&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// Get chat completion service</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> chatCompletionService = kernel.GetRequiredService&lt;IChatCompletionService&gt;();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// Start the conversation</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">while</span> (<span style="color:#66d9ef">true</span>)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// Trim chat history</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (history.Count &gt; <span style="color:#ae81ff">20</span>)
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    history.RemoveRange(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">4</span>);
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// Get user input</span>
+</span></span><span style="display:flex;"><span>                Console.Title = <span style="color:#e6db74">&#34;Azure DevOps Copilot&#34;</span>;
+</span></span><span style="display:flex;"><span>                Console.ForegroundColor = ConsoleColor.White;
+</span></span><span style="display:flex;"><span>                Console.Write(<span style="color:#e6db74">&#34;\nUser &gt; &#34;</span>);
+</span></span><span style="display:flex;"><span>                history.AddUserMessage(Console.ReadLine()!);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// Enable auto function calling</span>
+</span></span><span style="display:flex;"><span>                OpenAIPromptExecutionSettings openAiPromptExecutionSettings = <span style="color:#66d9ef">new</span>()
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions,
+</span></span><span style="display:flex;"><span>                };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// Get the response from the AI</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">var</span> response = chatCompletionService.GetStreamingChatMessageContentsAsync(
+</span></span><span style="display:flex;"><span>                               history,
+</span></span><span style="display:flex;"><span>                               executionSettings: openAiPromptExecutionSettings,
+</span></span><span style="display:flex;"><span>                               kernel: kernel);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                Console.ForegroundColor = ConsoleColor.Green;
+</span></span><span style="display:flex;"><span>                Console.Write(<span style="color:#e6db74">&#34;\nAssistant &gt; &#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">string</span> combinedResponse = <span style="color:#66d9ef">string</span>.Empty;
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> message <span style="color:#66d9ef">in</span> response)
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">//Write the response to the console</span>
+</span></span><span style="display:flex;"><span>                    Console.Write(message);
+</span></span><span style="display:flex;"><span>                    combinedResponse += message;
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                Console.WriteLine();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// Add the message from the agent to the chat history</span>
+</span></span><span style="display:flex;"><span>                history.AddAssistantMessage(combinedResponse);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The first step is create and setup Semantic Kernel.</p>
+<p>To add an Azure OpenAI chat completion service to SK, you will need to use the <code>AddAzureOpenAIChatCompletion</code> method.<br>
+Within the <code>AddAzureOpenAIChatCompletion</code> method, we&rsquo;re specifing which LLM model we want to use, the Azure OpenAI endpoint, and an Azure OpenAI API Key.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// Create a kernel with the Azure OpenAI chat completion service</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> builder = Kernel.CreateBuilder();
+</span></span><span style="display:flex;"><span>builder.AddAzureOpenAIChatCompletion(Environment.GetEnvironmentVariable(<span style="color:#e6db74">&#34;OAI_MODEL_NAME&#34;</span>)!,
+</span></span><span style="display:flex;"><span>    Environment.GetEnvironmentVariable(<span style="color:#e6db74">&#34;OAI_ENDPOINT&#34;</span>)!,
+</span></span><span style="display:flex;"><span>    Environment.GetEnvironmentVariable(<span style="color:#e6db74">&#34;OAI_APIKEY&#34;</span>)!);
+</span></span></code></pre></div><p>Once we have set up Semantic Kernel (SK) with our Azure OpenAI instance, it&rsquo;s time to add the plugins we want to work with.</p>
+<p>In the next section, we will see how to implement those plugins; for now, let&rsquo;s simply add them to SK.</p>
+<p>From the code snippet below, you can see that I&rsquo;m not going to create a single Azure DevOps plugin. Instead, I&rsquo;ll be creating multiple plugins, each targeting a specific API surface: projects, repositories, branches, builds, etc.<br>
+You can put everything into a single plugin if you prefer; it doesn&rsquo;t change anything functionally. However, I find that segregating the plugins into multiple smaller plugins makes them easier to maintain and update.</p>
+<p>Apart from adding our custom Azure DevOps plugins, you can see that we&rsquo;re also adding the <code>TimePlugin</code>. The <code>TimePlugin</code> comes with Semantic Kernel, so you don&rsquo;t need to implement it. This plugin is used to get time and date information. But why do we need it?</p>
+<p>Let me show you an example, and you&rsquo;ll understand it quickly. Imagine we want to ask our Azure DevOps Copilot a time-related question. Let&rsquo;s try it out:</p>
+<p><img alt="sk-timeplugin" src="/img/azdo-copilot-time-plugin-2.png"></p>
+<p>From the screen above, you can see that our Copilot, thanks to the <code>TimePlugin</code>, is capable of knowing the current date and can successfully respond to our time-related question.</p>
+<p>Now, let&rsquo;s make the same example, but this time, let&rsquo;s NOT add the <code>TimePlugin</code> to Semantic Kernel.</p>
+<p><img alt="sk-no-timeplugin" src="/img/azdo-copilot-time-plugin-1.png"></p>
+<p>Without the <code>TimePlugin</code>, our LLM is incapable of knowing the current date, and therefore its response is incorrect.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// Load the plugins</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#pragma</span> warning disable SKEXP0050
+</span></span><span style="display:flex;"><span>builder.Plugins.AddFromType&lt;TimePlugin&gt;();
+</span></span><span style="display:flex;"><span>builder.Plugins.AddFromObject(<span style="color:#66d9ef">new</span> AzureDevOpsProjectsPlugin(), nameof(AzureDevOpsProjectsPlugin));
+</span></span><span style="display:flex;"><span>builder.Plugins.AddFromObject(<span style="color:#66d9ef">new</span> AzureDevOpsRepositoriesPlugin(), nameof(AzureDevOpsRepositoriesPlugin));
+</span></span><span style="display:flex;"><span>builder.Plugins.AddFromObject(<span style="color:#66d9ef">new</span> AzureDevOpsBranchesPlugin(), nameof(AzureDevOpsBranchesPlugin));
+</span></span><span style="display:flex;"><span>builder.Plugins.AddFromObject(<span style="color:#66d9ef">new</span> AzureDevOpsCodeSearchPlugin(), nameof(AzureDevOpsCodeSearchPlugin));
+</span></span><span style="display:flex;"><span>builder.Plugins.AddFromObject(<span style="color:#66d9ef">new</span> AzureDevOpsBuildsPlugin(), nameof(AzureDevOpsBuildsPlugin));
+</span></span></code></pre></div><p>Once we have setup everything in SK, it&rsquo;s time to build it.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// Build the kernel</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> kernel = builder.Build();
+</span></span></code></pre></div><p>Next step is to construct the system prompt for our LLM (GPT-4o).</p>
+<p>This is one of the most important parts of the application. It is crucial to properly ground the LLM and prevent it from attempting to guess or infer values when calling our Azure DevOps custom plugin, as it might guess incorrectly. A much better approach is to instruct the LLM to ask the user for the necessary values when in doubt.</p>
+<p>Additionally, if the plugin fails to make the call to the Azure DevOps REST API, it is better to instruct the LLM to show an error message instead of attempting to generate a valid response.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>ChatHistory history = [];
+</span></span><span style="display:flex;"><span>history.AddSystemMessage(<span style="color:#e6db74">@&#34;You are a virtual assistant specifically designed to manage an Azure DevOps instance. Your scope of conversation is strictly limited to this domain. Your responses should be concise, accurate, and directly related to the query at hand.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">In order to provide the most accurate responses, you require precise inputs. 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">If a function calling involves parameters that you do not have sufficient information about it, it is crucial that you do not attempt to guess or infer their values. Instead, your primary action should always be to ask the user to provide more detailed information about these parameters. This is a non-negotiable aspect of your function. Guessing or inferring values is not an acceptable course of action. Your goal is to avoid any potential misunderstandings and to provide the most accurate and helpful response possible.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Remember, when in doubt, always ask for more information. Never guess the values of a function parameter.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">If a function call fails to produce any valid data, the response must always be: &#39;I&#39;m sorry, but I wasn&#39;t able to retrieve any data.If the problem persists, you may want to contact your Azure DevOps administrator or support for further assistance&#39;. 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Never fabricate a response if the function calling fails or returns invalid data.&#34;</span>);
+</span></span></code></pre></div><p>The final part of the chat application might seem complex, but in reality, we&rsquo;re following the same steps we would take anytime we build a chat with an LLM:</p>
+<ul>
+<li>Get the user&rsquo;s question.</li>
+<li>Send the question to GPT-4o. SK will automatically call our Azure DevOps plugins if the user&rsquo;s question requires it.</li>
+<li>Get the response back and display it.</li>
+<li>Store the response in the chat history.</li>
+</ul>
+<p>There are only a couple of things worth mentioning in the code snippet below:</p>
+<ul>
+<li>The chat history is being trimmed to prevent it from growing out of control. There are more sophisticated techniques to manage the ever-growing chat history. The one I&rsquo;m using is a bit rudimentary (if there are more than 20 messages in the chat history, remove the oldest 4). Nonetheless, it works.</li>
+<li>For SK to automatically call our Azure DevOps plugins when the user&rsquo;s question requires it, we need to set the <code>ToolCallBehavior</code> property to <code>ToolCallBehavior.AutoInvokeKernelFunctions</code>.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// Get chat completion service</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> chatCompletionService = kernel.GetRequiredService&lt;IChatCompletionService&gt;();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Start the conversation</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">while</span> (<span style="color:#66d9ef">true</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Trim chat history</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (history.Count &gt; <span style="color:#ae81ff">20</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        history.RemoveRange(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">4</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Get user input</span>
+</span></span><span style="display:flex;"><span>    Console.Title = <span style="color:#e6db74">&#34;Azure DevOps Copilot&#34;</span>;
+</span></span><span style="display:flex;"><span>    Console.ForegroundColor = ConsoleColor.White;
+</span></span><span style="display:flex;"><span>    Console.Write(<span style="color:#e6db74">&#34;\nUser &gt; &#34;</span>);
+</span></span><span style="display:flex;"><span>    history.AddUserMessage(Console.ReadLine()!);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Enable auto function calling</span>
+</span></span><span style="display:flex;"><span>    OpenAIPromptExecutionSettings openAiPromptExecutionSettings = <span style="color:#66d9ef">new</span>()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions,
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Get the response from the AI</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> response = chatCompletionService.GetStreamingChatMessageContentsAsync(
+</span></span><span style="display:flex;"><span>                    history,
+</span></span><span style="display:flex;"><span>                    executionSettings: openAiPromptExecutionSettings,
+</span></span><span style="display:flex;"><span>                    kernel: kernel);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Console.ForegroundColor = ConsoleColor.Green;
+</span></span><span style="display:flex;"><span>    Console.Write(<span style="color:#e6db74">&#34;\nAssistant &gt; &#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">string</span> combinedResponse = <span style="color:#66d9ef">string</span>.Empty;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> message <span style="color:#66d9ef">in</span> response)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//Write the response to the console</span>
+</span></span><span style="display:flex;"><span>        Console.Write(message);
+</span></span><span style="display:flex;"><span>        combinedResponse += message;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Console.WriteLine();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Add the message from the agent to the chat history</span>
+</span></span><span style="display:flex;"><span>    history.AddAssistantMessage(combinedResponse);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="2-building-the-azure-devops-sk-plugins"><strong>2. Building the Azure DevOps SK Plugins</strong></h2>
+<p>In the previous section, we built the Chat Application. Now, it&rsquo;s time to build the Azure DevOps SK Plugins.</p>
+<p>This might sound like a daunting task, but it&rsquo;s actually quite simple:</p>
+<ul>
+<li>Build a C# function that calls the desired endpoint of the Azure DevOps REST API and returns the result.</li>
+<li>Describe the function&rsquo;s purpose using the <code>[KernelFunction, Description(&quot;...&quot;)]</code> decorator.</li>
+<li>Describe what the function returns using the <code>[return: Description(&quot;...&quot;)]</code> decorator.</li>
+<li>If the function has any parameters, describe what those parameters are for using the <code>[Description(&quot;...&quot;)]</code> decorator.</li>
+</ul>
+<p>Describing the function and its parameters accurately is paramount because these description fields are used by Semantic Kernel (SK) when deciding if there is any SK Plugin functions that needs to call.</p>
+<p>The next code snippet shows an example of a function responsible for creating a new Azure DevOps Team Project.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[KernelFunction, Description(&#34;Creates a new Azure DevOps team project if it doesn&#39;t exists&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[return: Description(&#34;If the Azure DevOps Team Project creation was succesful or not&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;<span style="color:#66d9ef">bool</span>&gt; CreateTeamsProject(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Description(&#34;Name of the new team project&#34;)]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">string</span> name,
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Description(&#34;Description of the new team project&#34;)]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">string</span> description)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">using</span> HttpClient client = <span style="color:#66d9ef">new</span> HttpClient();
+</span></span><span style="display:flex;"><span>        client.DefaultRequestHeaders.Accept.Add(
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">new</span> System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(<span style="color:#e6db74">&#34;application/json&#34;</span>));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        client.DefaultRequestHeaders.Authorization = <span style="color:#66d9ef">new</span> System.Net.Http.Headers.AuthenticationHeaderValue(<span style="color:#e6db74">&#34;Basic&#34;</span>,
+</span></span><span style="display:flex;"><span>            Convert.ToBase64String(
+</span></span><span style="display:flex;"><span>                Encoding.ASCII.GetBytes(
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">string</span>.Format(<span style="color:#e6db74">&#34;{0}:{1}&#34;</span>, <span style="color:#e6db74">&#34;&#34;</span>, Environment.GetEnvironmentVariable(<span style="color:#e6db74">&#34;AZURE_DEVOPS_PAT&#34;</span>)))));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        HttpResponseMessage response = <span style="color:#66d9ef">await</span> client.GetAsync(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">$&#34;{Environment.GetEnvironmentVariable(&#34;</span>AZURE_DEVOPS_ORG_URI<span style="color:#e6db74">&#34;)}/_apis/projects?api-version=6.0&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (response.IsSuccessStatusCode)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> responseBody = <span style="color:#66d9ef">await</span> response.Content.ReadAsStringAsync();
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">dynamic</span> result = JsonConvert.DeserializeObject(responseBody) ?? <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Exception();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> project <span style="color:#66d9ef">in</span> result.<span style="color:#66d9ef">value</span>)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (project.name == name)
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> projectToCreate = <span style="color:#66d9ef">new</span>
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            name,
+</span></span><span style="display:flex;"><span>            description,
+</span></span><span style="display:flex;"><span>            capabilities = <span style="color:#66d9ef">new</span>
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                versioncontrol = <span style="color:#66d9ef">new</span> { sourceControlType = <span style="color:#e6db74">&#34;Git&#34;</span> },
+</span></span><span style="display:flex;"><span>                processTemplate = <span style="color:#66d9ef">new</span> { templateTypeId = <span style="color:#e6db74">&#34;6b724908-ef14-45cf-84f8-768b5384da45&#34;</span> } 
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        response = <span style="color:#66d9ef">await</span> client.PostAsync(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">$&#34;{Environment.GetEnvironmentVariable(&#34;</span>AZURE_DEVOPS_ORG_URI<span style="color:#e6db74">&#34;)}/_apis/projects?api-version=6.0&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">new</span> StringContent(JsonConvert.SerializeObject(projectToCreate), Encoding.UTF8, <span style="color:#e6db74">&#34;application/json&#34;</span>));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> response.IsSuccessStatusCode;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">catch</span> (Exception ex)
+</span></span><span style="display:flex;"><span>    { 
+</span></span><span style="display:flex;"><span>        Console.WriteLine(ex.Message);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>As you can see from the code snippet above, there is nothing overly complex (the code could be further improved, but I find that it is easier to understand this way).</p>
+<p>The function uses an <code>HttpClient</code> to fetch the existing Team Projects in my Azure DevOps instance. If the Team Project we want to create already exists, it returns false; otherwise, it makes a second HTTP call to create it and returns 200 Ok.</p>
+<p>From this point forward, every functionality we build into our Azure DevOps SK Plugin will follow the same pattern as the one above:</p>
+<ul>
+<li>Describe the function.</li>
+<li>Make some HTTP calls to the Azure DevOps REST API, and return the result.</li>
+</ul>
+<p>Therefore, I won&rsquo;t provide extensive commentary from now on. Instead, I&rsquo;ll simply show the code I have implemented and some live examples, so you can see the Copilot in action.</p>
+<h3 id="base-class"><strong>Base Class</strong></h3>
+<p>As I stated in the previous section, every functionality built into our Azure DevOps SK Plugin follows the same pattern: describe the function, make some HTTP calls to the Azure DevOps REST API, and return the values.</p>
+<p>So, I have build a &ldquo;Base Class&rdquo; to reduce the duplicated code.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">static</span> HttpClient CreateHttpClient()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> client = <span style="color:#66d9ef">new</span> HttpClient();
+</span></span><span style="display:flex;"><span>    client.DefaultRequestHeaders.Accept.Add(<span style="color:#66d9ef">new</span> System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(<span style="color:#e6db74">&#34;application/json&#34;</span>));
+</span></span><span style="display:flex;"><span>    client.DefaultRequestHeaders.Authorization = <span style="color:#66d9ef">new</span> System.Net.Http.Headers.AuthenticationHeaderValue(
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;Basic&#34;</span>,
+</span></span><span style="display:flex;"><span>        Convert.ToBase64String(Encoding.ASCII.GetBytes(<span style="color:#e6db74">$&#34;{string.Empty}:{Environment.GetEnvironmentVariable(&#34;</span>AZURE_DEVOPS_PAT<span style="color:#e6db74">&#34;)}&#34;</span>))
+</span></span><span style="display:flex;"><span>    );
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> client;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">async</span> Task&lt;<span style="color:#66d9ef">dynamic?</span>&gt; GetApiResponse(<span style="color:#66d9ef">string</span> requestUri)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">using</span> var client = CreateHttpClient();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> response = <span style="color:#66d9ef">await</span> client.GetAsync(requestUri);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (response.IsSuccessStatusCode)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> responseBody = <span style="color:#66d9ef">await</span> response.Content.ReadAsStringAsync();
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> JsonConvert.DeserializeObject(responseBody) ?? <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Exception();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">async</span> Task&lt;<span style="color:#66d9ef">dynamic?</span>&gt; PostApiResponse(<span style="color:#66d9ef">string</span> requestUri, HttpContent content)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">using</span> var client = CreateHttpClient();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> response = <span style="color:#66d9ef">await</span> client.PostAsync(requestUri, content);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (response.IsSuccessStatusCode)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> responseBody = <span style="color:#66d9ef">await</span> response.Content.ReadAsStringAsync();
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> JsonConvert.DeserializeObject(responseBody) ?? <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Exception();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="azure-devops-team-project-plugin"><strong>Azure DevOps Team Project Plugin</strong></h3>
+<p>This plugin is responsible for managing the Team Projects on your Azure DevOps instance.</p>
+<ul>
+<li><strong>Create a new Team Project</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[KernelFunction, Description(&#34;Creates a new Azure DevOps team project if it doesn&#39;t exist&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[return: Description(&#34;If the Azure DevOps Team Project creation was successful or not&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;<span style="color:#66d9ef">bool</span>&gt; CreateTeamsProject(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Description(&#34;Name of the new team project&#34;)]</span> <span style="color:#66d9ef">string</span> name,
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Description(&#34;Description of the new team project&#34;)]</span> <span style="color:#66d9ef">string</span> description)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">await</span> GetApiResponse(<span style="color:#e6db74">$&#34;{Environment.GetEnvironmentVariable(&#34;</span>AZURE_DEVOPS_ORG_URI<span style="color:#e6db74">&#34;)}/_apis/projects?api-version=6.0&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (result != <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> project <span style="color:#66d9ef">in</span> result.<span style="color:#66d9ef">value</span>)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (project.name == name)
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> projectToCreate = <span style="color:#66d9ef">new</span>
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            name,
+</span></span><span style="display:flex;"><span>            description,
+</span></span><span style="display:flex;"><span>            capabilities = <span style="color:#66d9ef">new</span>
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                versioncontrol = <span style="color:#66d9ef">new</span> { sourceControlType = <span style="color:#e6db74">&#34;Git&#34;</span> },
+</span></span><span style="display:flex;"><span>                processTemplate = <span style="color:#66d9ef">new</span> { templateTypeId = <span style="color:#e6db74">&#34;6b724908-ef14-45cf-84f8-768b5384da45&#34;</span> }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">using</span> var client = CreateHttpClient();
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> response = <span style="color:#66d9ef">await</span> client.PostAsync(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">$&#34;{Environment.GetEnvironmentVariable(&#34;</span>AZURE_DEVOPS_ORG_URI<span style="color:#e6db74">&#34;)}/_apis/projects?api-version=6.0&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">new</span> StringContent(JsonConvert.SerializeObject(projectToCreate), Encoding.UTF8, <span style="color:#e6db74">&#34;application/json&#34;</span>)
+</span></span><span style="display:flex;"><span>        );
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> response.IsSuccessStatusCode;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">catch</span> (Exception ex)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(ex.Message);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li><strong>List all Team Projects</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[KernelFunction, Description(&#34;Get all existing Azure DevOps team projects&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[return: Description(&#34;A list of names of existing Azure DevOps Team Projects&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;List&lt;<span style="color:#66d9ef">string</span>&gt;&gt; GetTeamsProject()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> connection = <span style="color:#66d9ef">new</span> VssConnection(
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">new</span> Uri(Environment.GetEnvironmentVariable(<span style="color:#e6db74">&#34;AZURE_DEVOPS_ORG_URI&#34;</span>)!), <span style="color:#66d9ef">new</span> VssBasicCredential(<span style="color:#66d9ef">string</span>.Empty, Environment.GetEnvironmentVariable(<span style="color:#e6db74">&#34;AZURE_DEVOPS_PAT&#34;</span>)));
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> projectHttpClient = connection.GetClient&lt;ProjectHttpClient&gt;();
+</span></span><span style="display:flex;"><span>        IPagedList&lt;TeamProjectReference&gt; projects = <span style="color:#66d9ef">await</span> projectHttpClient.GetProjects();
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> projectNames = projects.Select(project =&gt; project.Name).ToList();
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> projectNames;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">catch</span> (Exception ex)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(ex.Message);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> [];
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li><strong>Delete a Team Project</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[KernelFunction, Description(&#34;Deletes an existing Azure DevOps team project&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[return: Description(&#34;If the Azure DevOps Team Project deletion was successful or not&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;<span style="color:#66d9ef">bool</span>&gt; DeleteProject(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Description(&#34;Name of the team project to delete&#34;)]</span> <span style="color:#66d9ef">string</span> name)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">await</span> GetApiResponse(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">$&#34;{Environment.GetEnvironmentVariable(&#34;</span>AZURE_DEVOPS_ORG_URI<span style="color:#e6db74">&#34;)}/_apis/projects?api-version=6.0&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (result != <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> project <span style="color:#66d9ef">in</span> result.<span style="color:#66d9ef">value</span>)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (project.name == name)
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">using</span> var client = CreateHttpClient();
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">var</span> response = <span style="color:#66d9ef">await</span> client.DeleteAsync(
+</span></span><span style="display:flex;"><span>                        <span style="color:#e6db74">$&#34;{Environment.GetEnvironmentVariable(&#34;</span>AZURE_DEVOPS_ORG_URI<span style="color:#e6db74">&#34;)}/_apis/projects/{project.id}?api-version=6.0&#34;</span>
+</span></span><span style="display:flex;"><span>                    );
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">return</span> response.IsSuccessStatusCode;
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">catch</span> (Exception ex)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(ex.Message);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li><strong>Demo: Using our Copilot to manage the Team Projects</strong></li>
+</ul>
+<p><img alt="sk-plugin-projects" src="/img/azdo-copilot-projects.png"></p>
+<h3 id="azure-devops-git-repositories-plugin"><strong>Azure DevOps Git repositories plugin</strong></h3>
+<p>This plugin is responsible for managing the Git repositories on your Azure DevOps instance. <br>
+It is also capable of explaining the purpose of a given Git repository by using the contents of the README file. Additionally, it can provide a list of all the files contained in a repository.</p>
+<ul>
+<li><strong>List all git repos on a given Team Project</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[KernelFunction, Description(&#34;Get all existing git repositories on a given team project&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[return: Description(&#34;A list of names of existing git repositories on a given Azure DevOps Team Project&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;List&lt;<span style="color:#66d9ef">string</span>&gt;&gt; ListGitRepositoriesInProject(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Description(&#34;Name of the team project&#34;)]</span> <span style="color:#66d9ef">string</span> projectName)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">await</span> GetApiResponse(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">$&#34;{Environment.GetEnvironmentVariable(&#34;</span>AZURE_DEVOPS_ORG_URI<span style="color:#e6db74">&#34;)}/{projectName}/_apis/git/repositories?api-version=6.0&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (result != <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> repositories = <span style="color:#66d9ef">new</span> List&lt;<span style="color:#66d9ef">string</span>&gt;();
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> repo <span style="color:#66d9ef">in</span> result.<span style="color:#66d9ef">value</span>)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                repositories.Add((<span style="color:#66d9ef">string</span>)repo.name);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> repositories;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> [];
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">catch</span> (Exception ex)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(ex.Message);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> [];
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li><strong>Create a new git repo</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[KernelFunction, Description(&#34;Creates a new Git repository, if it doesn&#39;t exists, on a given Azure DevOps team project&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[return: Description(&#34;If the git repository creation was successful or not&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;<span style="color:#66d9ef">bool</span>&gt; CreateGitRepositoryInProject(<span style="color:#66d9ef">string</span> projectName, <span style="color:#66d9ef">string</span> repositoryName)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">using</span> var client = CreateHttpClient();
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> projectResponse = <span style="color:#66d9ef">await</span> client.GetAsync(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">$&#34;{Environment.GetEnvironmentVariable(&#34;</span>AZURE_DEVOPS_ORG_URI<span style="color:#e6db74">&#34;)}/_apis/projects/{projectName}?api-version=6.0&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (projectResponse.IsSuccessStatusCode)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> responseBody = <span style="color:#66d9ef">await</span> projectResponse.Content.ReadAsStringAsync();
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> projectDetails = JObject.Parse(responseBody);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> projectId = projectDetails[<span style="color:#e6db74">&#34;id&#34;</span>]?.ToString();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> repositoryToCreate = <span style="color:#66d9ef">new</span>
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                name = repositoryName,
+</span></span><span style="display:flex;"><span>                project = <span style="color:#66d9ef">new</span> { id = projectId}
+</span></span><span style="display:flex;"><span>            };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> response = <span style="color:#66d9ef">await</span> client.PostAsync(
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">$&#34;{Environment.GetEnvironmentVariable(&#34;</span>AZURE_DEVOPS_ORG_URI<span style="color:#e6db74">&#34;)}/_apis/git/repositories?api-version=7.1&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">new</span> StringContent(JsonConvert.SerializeObject(repositoryToCreate), Encoding.UTF8, <span style="color:#e6db74">&#34;application/json&#34;</span>)
+</span></span><span style="display:flex;"><span>            );
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> response.IsSuccessStatusCode;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">catch</span> (Exception ex)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(ex.Message);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li><strong>Delete a git repo</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[KernelFunction, Description(&#34;Deletes an existing git repository from a given Azure DevOps team project&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[return: Description(&#34;If the git repository deletion was successful or not&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;<span style="color:#66d9ef">bool</span>&gt; DeleteGitRepositoryInProject(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Description(&#34;Name of the team project to delete&#34;)]</span> <span style="color:#66d9ef">string</span> projectName,
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Description(&#34;Name of the git repository to delete&#34;)]</span> <span style="color:#66d9ef">string</span> repositoryName)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">await</span> GetApiResponse(<span style="color:#e6db74">$&#34;{Environment.GetEnvironmentVariable(&#34;</span>AZURE_DEVOPS_ORG_URI<span style="color:#e6db74">&#34;)}/{projectName}/_apis/git/repositories?api-version=6.0&#34;</span>);
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (result != <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> repo <span style="color:#66d9ef">in</span> result.<span style="color:#66d9ef">value</span>)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (repo.name == repositoryName)
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">using</span> var client = CreateHttpClient();
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">var</span> response = <span style="color:#66d9ef">await</span> client.DeleteAsync(
+</span></span><span style="display:flex;"><span>                        <span style="color:#e6db74">$&#34;{Environment.GetEnvironmentVariable(&#34;</span>AZURE_DEVOPS_ORG_URI<span style="color:#e6db74">&#34;)}/_apis/git/repositories/{repo.id}?api-version=6.0&#34;</span>
+</span></span><span style="display:flex;"><span>                    );
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">return</span> response.IsSuccessStatusCode;
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">catch</span> (Exception ex)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(ex.Message);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li><strong>List all files of a git repo</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[KernelFunction, Description(&#34;Get all files from an existing git repositories on a given team project&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[return: Description(&#34;A list of all files from an existing git repositories on a given Azure DevOps Team Project&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;List&lt;<span style="color:#66d9ef">string</span>&gt;&gt; ListFilesInGitRepository(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Description(&#34;Name of the team project&#34;)]</span> <span style="color:#66d9ef">string</span> projectName,
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Description(&#34;Name of the git repository&#34;)]</span> <span style="color:#66d9ef">string</span> repositoryName)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">await</span> GetApiResponse(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">$&#34;{Environment.GetEnvironmentVariable(&#34;</span>AZURE_DEVOPS_ORG_URI<span style="color:#e6db74">&#34;)}/{projectName}/_apis/git/repositories/{repositoryName}/items?scopePath=/&amp;recursionLevel=full&amp;api-version=6.0&#34;</span>);
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (result != <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> files = <span style="color:#66d9ef">new</span> List&lt;<span style="color:#66d9ef">string</span>&gt;();
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> item <span style="color:#66d9ef">in</span> result.<span style="color:#66d9ef">value</span>)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                files.Add((<span style="color:#66d9ef">string</span>)item.path);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> files;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> [];
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">catch</span> (Exception ex)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(ex.Message);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> [];
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li><strong>Explain a git repo</strong></li>
+</ul>
+<p>It fetches the README file from the main branch and passes it to the LLM, so it can explain the purpose of this Git repository.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[KernelFunction, Description(&#34;Explain the content of an existing git repositories on a given team project&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[return: Description(&#34;An explanation of what an existing git repositories on a given Azure DevOps Team Project is for&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;<span style="color:#66d9ef">string</span>&gt; GetReadmeContentInGitRepository(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Description(&#34;Name of the team project&#34;)]</span> <span style="color:#66d9ef">string</span> projectName,
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Description(&#34;Name of the git repository&#34;)]</span> <span style="color:#66d9ef">string</span> repositoryName)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> client = CreateHttpClient();
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> response = <span style="color:#66d9ef">await</span> client.GetAsync(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">$&#34;{
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                Environment.GetEnvironmentVariable(&#34;</span>AZURE_DEVOPS_ORG_URI<span style="color:#e6db74">&#34;)}/{projectName}/_apis/sourceProviders/tfsGit/fileContents?commitOrBranch=main&amp;repository={repositoryName}&amp;path=/README.md&amp;api-version=6.0-preview.1&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (response.IsSuccessStatusCode)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">await</span> response.Content.ReadAsStringAsync();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">string</span>.Empty;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">catch</span> (Exception ex)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(ex.Message);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">string</span>.Empty;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li><strong>Demo: Using our Copilot to manage the Git repositories</strong></li>
+</ul>
+<p><strong>Demo 1</strong><br>
+<img alt="sk-plugin-repos-1" src="/img/azdo-copilot-repos-1.png"></p>
+<p><strong>Demo 2</strong><br>
+<img alt="sk-plugin-repos-2" src="/img/azdo-copilot-repos-2.png"></p>
+<p><strong>Demo 3</strong>
+<img alt="sk-plugin-repos-3" src="/img/azdo-copilot-repos-3.png"></p>
+<h3 id="azure-devops-branches-plugin"><strong>Azure DevOps branches plugin</strong></h3>
+<p>This plugin is responsible for managing the branches of a Git repository. It is also capable of providing detailed information about a specific branch.</p>
+<ul>
+<li><strong>List branches of a git repo</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[KernelFunction, Description(&#34;Get all branches from a given git repository on a given Azure DevOps team project&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[return: Description(&#34;A list of all branches from an existing git repositories on a given Azure DevOps Team Project&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;List&lt;<span style="color:#66d9ef">string</span>&gt;&gt; ListBranchesInGitRepository(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Description(&#34;Name of the team project&#34;)]</span> <span style="color:#66d9ef">string</span> projectName,
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Description(&#34;Name of the git repository&#34;)]</span> <span style="color:#66d9ef">string</span> repositoryName)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">await</span> GetApiResponse(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">$&#34;{Environment.GetEnvironmentVariable(&#34;</span>AZURE_DEVOPS_ORG_URI<span style="color:#e6db74">&#34;)}/{projectName}/_apis/git/repositories/{repositoryName}/refs?filter=heads&amp;api-version=6.0&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (result != <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> branches = <span style="color:#66d9ef">new</span> List&lt;<span style="color:#66d9ef">string</span>&gt;();
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> branch <span style="color:#66d9ef">in</span> result.<span style="color:#66d9ef">value</span>)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                branches.Add((<span style="color:#66d9ef">string</span>)branch.name);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> branches;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> [];
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">catch</span> (Exception ex)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(ex.Message);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> [];
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li><strong>Get detailed branch info</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[KernelFunction, Description(&#34;Get branch info from a given branch from a given git repository on a given Azure DevOps team project&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[return: Description(&#34;Branch details&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;<span style="color:#66d9ef">string</span>&gt; GetBranchInfoInGitRepository(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Description(&#34;Name of the team project&#34;)]</span> <span style="color:#66d9ef">string</span> projectName,
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Description(&#34;Name of the git repository&#34;)]</span> <span style="color:#66d9ef">string</span> repositoryName,
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Description(&#34;Name of branch&#34;)]</span> <span style="color:#66d9ef">string</span> branchName)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">await</span> GetApiResponse(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">$&#34;{Environment.GetEnvironmentVariable(&#34;</span>AZURE_DEVOPS_ORG_URI<span style="color:#e6db74">&#34;)}/{projectName}/_apis/git/repositories/{repositoryName}/refs?filter=heads/{branchName}&amp;api-version=6.0&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (result != <span style="color:#66d9ef">null</span> &amp;&amp; result?.count &gt; <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> JsonConvert.SerializeObject(result!.<span style="color:#66d9ef">value</span>[<span style="color:#ae81ff">0</span>]);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">string</span>.Empty;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">catch</span> (Exception ex)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(ex.Message);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">string</span>.Empty;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li><strong>Create a new branch on a given git repo</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[KernelFunction, Description(&#34;Creates a new branch from a given git repository on a given Azure DevOps team project&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[return: Description(&#34;If the branch creation process was successful or not&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;<span style="color:#66d9ef">bool</span>&gt; CreateBranchInGitRepository(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Description(&#34;Name of the team project&#34;)]</span> <span style="color:#66d9ef">string</span> projectName,
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Description(&#34;Name of the git repository&#34;)]</span> <span style="color:#66d9ef">string</span> repositoryName,
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Description(&#34;Name of the source branch that will be used to create a new one&#34;)]</span> <span style="color:#66d9ef">string</span> sourceBranchName,
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Description(&#34;Name of the new branch that will be created&#34;)]</span> <span style="color:#66d9ef">string</span> newBranchName)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">await</span> GetApiResponse(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">$&#34;{Environment.GetEnvironmentVariable(&#34;</span>AZURE_DEVOPS_ORG_URI<span style="color:#e6db74">&#34;)}/{projectName}/_apis/git/repositories/{repositoryName}/refs?filter=heads/{sourceBranchName}&amp;api-version=6.0&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (result != <span style="color:#66d9ef">null</span> &amp;&amp; result?.count &gt; <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">string</span> oldObjectId = result!.<span style="color:#66d9ef">value</span>[<span style="color:#ae81ff">0</span>].objectId;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> content = <span style="color:#66d9ef">new</span>[]
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">new</span>
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    name = <span style="color:#e6db74">$&#34;refs/heads/{newBranchName}&#34;</span>,
+</span></span><span style="display:flex;"><span>                    oldObjectId = <span style="color:#e6db74">&#34;0000000000000000000000000000000000000000&#34;</span>,
+</span></span><span style="display:flex;"><span>                    newObjectId = oldObjectId
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            };
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">using</span> var client = CreateHttpClient();
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> httpContent = <span style="color:#66d9ef">new</span> StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, <span style="color:#e6db74">&#34;application/json&#34;</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> response = <span style="color:#66d9ef">await</span> client.PostAsync(<span style="color:#e6db74">$&#34;{Environment.GetEnvironmentVariable(&#34;</span>AZURE_DEVOPS_ORG_URI<span style="color:#e6db74">&#34;)}/{projectName}/_apis/git/repositories/{repositoryName}/refs?api-version=6.0&#34;</span>, httpContent);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> response.IsSuccessStatusCode;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">catch</span> (Exception ex)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(ex.Message);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li><strong>Delete a branch</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[KernelFunction, Description(&#34;Deletes a branch from a given git repository on a given Azure DevOps team project&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[return: Description(&#34;If the branch deletion process was successful or not&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;<span style="color:#66d9ef">bool</span>&gt; DeleteBranchInGitRepository(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Description(&#34;Name of the team project&#34;)]</span> <span style="color:#66d9ef">string</span> projectName,
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Description(&#34;Name of the git repository&#34;)]</span> <span style="color:#66d9ef">string</span> repositoryName,
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Description(&#34;Name of the branch that will be deleted&#34;)]</span> <span style="color:#66d9ef">string</span> branchName)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">await</span> GetApiResponse(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">$&#34;{Environment.GetEnvironmentVariable(&#34;</span>AZURE_DEVOPS_ORG_URI<span style="color:#e6db74">&#34;)}/{projectName}/_apis/git/repositories/{repositoryName}/refs?filter=heads/{branchName}&amp;api-version=6.0&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (result != <span style="color:#66d9ef">null</span> &amp;&amp; result?.count &gt; <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">string</span> oldObjectId = result!.<span style="color:#66d9ef">value</span>[<span style="color:#ae81ff">0</span>].objectId;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> content = <span style="color:#66d9ef">new</span>[]
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">new</span>
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    name = <span style="color:#e6db74">$&#34;refs/heads/{branchName}&#34;</span>,
+</span></span><span style="display:flex;"><span>                    oldObjectId = oldObjectId,
+</span></span><span style="display:flex;"><span>                    newObjectId = <span style="color:#e6db74">&#34;0000000000000000000000000000000000000000&#34;</span>
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            };
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">using</span> var client = CreateHttpClient();
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> httpContent = <span style="color:#66d9ef">new</span> StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, <span style="color:#e6db74">&#34;application/json&#34;</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> request = <span style="color:#66d9ef">new</span> HttpRequestMessage
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                Method = HttpMethod.Post,
+</span></span><span style="display:flex;"><span>                RequestUri = <span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">$&#34;{Environment.GetEnvironmentVariable(&#34;</span>AZURE_DEVOPS_ORG_URI<span style="color:#e6db74">&#34;)}/{projectName}/_apis/git/repositories/{repositoryName}/refs?api-version=6.0&#34;</span>),
+</span></span><span style="display:flex;"><span>                Content = httpContent
+</span></span><span style="display:flex;"><span>            };
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> response = <span style="color:#66d9ef">await</span> client.SendAsync(request);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> response.IsSuccessStatusCode;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">catch</span> (Exception ex)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(ex.Message);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li><strong>Demo: Using our Copilot to manage branches</strong></li>
+</ul>
+<p><img alt="sk-plugin-branches" src="/img/azdo-copilot-branches.png"></p>
+<h3 id="azure-devops-builds-plugin"><strong>Azure DevOps Builds plugin</strong></h3>
+<p>This plugin is responsible for querying builds.</p>
+<ul>
+<li><strong>Search for builds from a given git repo</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[KernelFunction, Description(&#34;Search for builds of a given repository on a team project&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[return: Description(&#34;Builds details&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;<span style="color:#66d9ef">string</span>&gt; GetBuildsInProject(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Description(&#34;Azure DevOps Team Project&#34;)]</span> <span style="color:#66d9ef">string</span> projectName,
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Description(&#34;Azure DevOps Git repository&#34;)]</span> <span style="color:#66d9ef">string</span> repositoryName)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> repoResult = <span style="color:#66d9ef">await</span> GetApiResponse(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">$&#34;{Environment.GetEnvironmentVariable(&#34;</span>AZURE_DEVOPS_ORG_URI<span style="color:#e6db74">&#34;)}/{projectName}/_apis/git/repositories/{repositoryName}?api-version=6.0&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (repoResult == <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">&#34;Failed to get repository ID&#34;</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">string</span>.Empty;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">string</span> repositoryId = repoResult.id;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">await</span> GetApiResponse(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">$&#34;{Environment.GetEnvironmentVariable(&#34;</span>AZURE_DEVOPS_ORG_URI<span style="color:#e6db74">&#34;)}/{projectName}/_apis/build/builds?repositoryId={repositoryId}&amp;repositoryType=TfsGit&amp;api-version=7.2-preview.7&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (result != <span style="color:#66d9ef">null</span> &amp;&amp; result?.count &gt; <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> builds = <span style="color:#66d9ef">new</span> List&lt;<span style="color:#66d9ef">object</span>&gt;();
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> build <span style="color:#66d9ef">in</span> result!.<span style="color:#66d9ef">value</span>)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                builds.Add(<span style="color:#66d9ef">new</span>
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    build.id,
+</span></span><span style="display:flex;"><span>                    build.buildNumber,
+</span></span><span style="display:flex;"><span>                    build.status,
+</span></span><span style="display:flex;"><span>                    build.result,
+</span></span><span style="display:flex;"><span>                    build.queueTime,
+</span></span><span style="display:flex;"><span>                    build.startTime,
+</span></span><span style="display:flex;"><span>                    build.finishTime,
+</span></span><span style="display:flex;"><span>                    build.sourceBranch,
+</span></span><span style="display:flex;"><span>                    build.sourceVersion,
+</span></span><span style="display:flex;"><span>                    build.url,
+</span></span><span style="display:flex;"><span>                    requestedFor = build.requestedFor.displayName
+</span></span><span style="display:flex;"><span>                });
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> JsonConvert.SerializeObject(builds);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">string</span>.Empty;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">catch</span> (Exception ex)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(ex.Message);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">string</span>.Empty;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li><strong>Demo: Using our Copilot to query builds</strong></li>
+</ul>
+<p><img alt="sk-plugin-builds" src="/img/azdo-copilot-builds.png"></p>
+<h3 id="azure-devops-codesearch-plugin"><strong>Azure DevOps CodeSearch plugin</strong></h3>
+<p>This plugin is responsible for searching code in a given Team Project.</p>
+<ul>
+<li><strong>Search text in a given team project</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[KernelFunction, Description(&#34;Search text in a given team project&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[return: Description(&#34;List of text coincidences&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;<span style="color:#66d9ef">string</span>&gt; GetCodeSearchInProject(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Description(&#34;Azure DevOps Team Project&#34;)]</span> <span style="color:#66d9ef">string</span> projectName,
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Description(&#34;Text Code that must be searched&#34;)]</span> <span style="color:#66d9ef">string</span> searchText)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> payload = <span style="color:#66d9ef">new</span> JObject
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">            [&#34;searchText&#34;]</span> = searchText,
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">            [&#34;$skip&#34;]</span> = <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">            [&#34;$top&#34;]</span> = <span style="color:#ae81ff">50</span>,
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">            [&#34;filters&#34;]</span> = <span style="color:#66d9ef">new</span> JObject
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">                [&#34;Project&#34;]</span> = <span style="color:#66d9ef">new</span> JArray { projectName },
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> content = <span style="color:#66d9ef">new</span> StringContent(payload.ToString(), Encoding.UTF8, <span style="color:#e6db74">&#34;application/json&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">await</span> PostApiResponse(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">$&#34;{Environment.GetEnvironmentVariable(&#34;</span>AZURE_DEVOPS_ORG_ALM_URI<span style="color:#e6db74">&#34;)}/{projectName}/_apis/search/codesearchresults?api-version=7.0&#34;</span>, content);
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (result != <span style="color:#66d9ef">null</span> &amp;&amp; result?.count &gt; <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> JsonConvert.SerializeObject(result);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">string</span>.Empty;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">catch</span> (Exception ex)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(ex.Message);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">string</span>.Empty;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li><strong>Demo: Using our Copilot to search code</strong></li>
+</ul>
+<p><strong>Demo 1</strong><br>
+<img alt="sk-plugin-cs-1" src="/img/azdo-copilot-code-search-1.png"></p>
+<p><strong>Demo 2</strong><br>
+<img alt="sk-plugin-cs-2" src="/img/azdo-copilot-code-search-2.png"></p>
+<h1 id="how-to-test-it"><strong>How to test it</strong></h1>
+<p>If you want to test this custom Copilot yourself, you can find the source in my <a href="https://github.com/karlospn/building-an-azure-devops-copilot-using-semantic-kernel-and-dotnet">Github repo</a>.</p>
+<p>To run it, you need the following environment variables:</p>
+<ul>
+<li><code>AZURE_DEVOPS_PAT</code>: A personal access token from your Azure DevOps instance. It is easier if it has full access permissions because we are going to make use of multiple endpoints of the REST API.</li>
+<li><code>AZURE_DEVOPS_ORG_URI</code>: The URI of your Azure DevOps REST API. The format must be:<code> https://dev.azure.com/{your-org}</code></li>
+<li><code>AZURE_DEVOPS_ORG_ALT_URI</code>: The URI of your VSSPS Azure DevOps REST API. The format must be: <code>https://vssps.dev.azure.com/{your-org}</code></li>
+<li><code>AZURE_DEVOPS_ORG_ALM_URI</code>: The URI of your ALMSEARCH Azure DevOps REST API. The format must be: <code>https://almsearch.dev.azure.com/{your-org}</code></li>
+<li><code>OAI_MODEL_NAME</code>: The LLM name you&rsquo;re going to use. In my case, I&rsquo;m using <code>gpt-4o</code>. You can use another one of the multiple available models in Azure OpenAI.</li>
+<li><code>OAI_ENDPOINT</code>: The endpoint of your Azure OpenAI instance. It always has the same format: <code>https://{service-name}.openai.azure.com/</code></li>
+<li><code>OAI_APIKEY</code>: An Azure OpenAI Api Key.</li>
+</ul>
+<p>Here&rsquo;s an example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;AZURE_DEVOPS_PAT&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#e6db74">&#34;j093j4194ada123czxsaspdjapsijasfhpi213&#34;</span><span style="color:#960050;background-color:#1e0010">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;AZURE_DEVOPS_ORG_URI&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#e6db74">&#34;https://dev.azure.com/cpn&#34;</span><span style="color:#960050;background-color:#1e0010">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;AZURE_DEVOPS_ORG_ALT_URI&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#e6db74">&#34;https://vssps.dev.azure.com/cpn&#34;</span><span style="color:#960050;background-color:#1e0010">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;AZURE_DEVOPS_ORG_ALM_URI&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#e6db74">&#34;https://almsearch.dev.azure.com/cpn&#34;</span><span style="color:#960050;background-color:#1e0010">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;OAI_MODEL_NAME&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#e6db74">&#34;gpt-4o&#34;</span><span style="color:#960050;background-color:#1e0010">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;OAI_ENDPOINT&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#e6db74">&#34;https://mytechramblings.openai.azure.com/&#34;</span><span style="color:#960050;background-color:#1e0010">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;OAI_APIKEY&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#e6db74">&#34;123123012h032940h213123asdasd&#34;</span>
+</span></span></code></pre></div>
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-and-dotnet-core/">
+                  <span class="button__text">Getting started with OpenTelemetry and distributed tracing in .NET</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2024 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>Theme created by <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://www.mytechramblings.com/assets/main.js"></script>
+<script src="https://www.mytechramblings.com/assets/prism.js"></script>
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('carlospons', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Donate',
+    'floating-chat.donateButton.background-color': '#ff5f5f',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
+
+      
+    </div>
+
+    
+      
+  
+    
+      
+    
+  
+
+
+    
+  </body>
+</html>

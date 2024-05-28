@@ -9,17 +9,37 @@
     <description>Recent content in Tags on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 16 Apr 2024 09:30:51 +0200</lastBuildDate>
+    <lastBuildDate>Tue, 28 May 2024 09:35:37 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Csharp</title>
-      <link>https://www.mytechramblings.com/tags/csharp/</link>
-      <pubDate>Tue, 16 Apr 2024 09:30:51 +0200</pubDate>
+      <title>Azure</title>
+      <link>https://www.mytechramblings.com/tags/azure/</link>
+      <pubDate>Tue, 28 May 2024 09:35:37 +0200</pubDate>
       
-      <guid>https://www.mytechramblings.com/tags/csharp/</guid>
+      <guid>https://www.mytechramblings.com/tags/azure/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>Devops</title>
+      <link>https://www.mytechramblings.com/tags/devops/</link>
+      <pubDate>Tue, 28 May 2024 09:35:37 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/devops/</guid>
       <description>
         
           
@@ -37,9 +57,69 @@
     <item>
       <title>Dotnet</title>
       <link>https://www.mytechramblings.com/tags/dotnet/</link>
-      <pubDate>Tue, 16 Apr 2024 09:30:51 +0200</pubDate>
+      <pubDate>Tue, 28 May 2024 09:35:37 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/dotnet/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>Genai</title>
+      <link>https://www.mytechramblings.com/tags/genai/</link>
+      <pubDate>Tue, 28 May 2024 09:35:37 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/genai/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>Openai</title>
+      <link>https://www.mytechramblings.com/tags/openai/</link>
+      <pubDate>Tue, 28 May 2024 09:35:37 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/openai/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>Csharp</title>
+      <link>https://www.mytechramblings.com/tags/csharp/</link>
+      <pubDate>Tue, 16 Apr 2024 09:30:51 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/csharp/</guid>
       <description>
         
           
@@ -115,51 +195,11 @@
     </item>
     
     <item>
-      <title>Azure</title>
-      <link>https://www.mytechramblings.com/tags/azure/</link>
-      <pubDate>Fri, 05 Apr 2024 17:15:12 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/azure/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
       <title>Cloud</title>
       <link>https://www.mytechramblings.com/tags/cloud/</link>
       <pubDate>Fri, 05 Apr 2024 17:15:12 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/cloud/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>Devops</title>
-      <link>https://www.mytechramblings.com/tags/devops/</link>
-      <pubDate>Fri, 05 Apr 2024 17:15:12 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/devops/</guid>
       <description>
         
           
@@ -475,51 +515,11 @@
     </item>
     
     <item>
-      <title>Genai</title>
-      <link>https://www.mytechramblings.com/tags/genai/</link>
-      <pubDate>Tue, 03 Oct 2023 10:00:03 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/genai/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
       <title>Llm</title>
       <link>https://www.mytechramblings.com/tags/llm/</link>
       <pubDate>Tue, 03 Oct 2023 10:00:03 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/llm/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>Openai</title>
-      <link>https://www.mytechramblings.com/tags/openai/</link>
-      <pubDate>Tue, 03 Oct 2023 10:00:03 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/openai/</guid>
       <description>
         
           
