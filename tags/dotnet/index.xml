@@ -9,10 +9,30 @@
     <description>Recent content in Dotnet on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 28 May 2024 09:35:37 +0200</lastBuildDate>
+    <lastBuildDate>Wed, 10 Jul 2024 10:00:57 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/dotnet/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Code Coverage in .NET</title>
+      <link>https://www.mytechramblings.com/posts/code-coverage-in-dotnet/</link>
+      <pubDate>Wed, 10 Jul 2024 10:00:57 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/posts/code-coverage-in-dotnet/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          This post delves into the current .NET landscape when we aim to collect Code Coverage. We examine the most frequently used tools such as Coverlet, dotCover, and dotnet-coverage, among others. We discuss how to upload a Code Coverage report to a SaaS product like SonarQube. Lastly, we explain how to publish a Code Coverage report into an Azure Pipeline run or a GitHub Action.
+          
+        
+        </description>
+    </item>
     
     <item>
       <title>Building an Azure DevOps Copilot using .NET 8, Semantic Kernel and Azure OpenAI GPT-4o</title>

@@ -2,11 +2,26 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://www.mytechramblings.com/posts/code-coverage-in-dotnet/</loc>
+    <lastmod>2024-07-10T10:00:57+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/devops/</loc>
+    <lastmod>2024-07-10T10:00:57+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/dotnet/</loc>
+    <lastmod>2024-07-10T10:00:57+02:00</lastmod>
+  </url><url>
     <loc>https://www.mytechramblings.com/</loc>
-    <lastmod>2024-07-09T10:01:57+02:00</lastmod>
+    <lastmod>2024-07-10T10:00:57+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/posts/</loc>
-    <lastmod>2024-07-09T10:01:57+02:00</lastmod>
+    <lastmod>2024-07-10T10:00:57+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/sonarqube/</loc>
+    <lastmod>2024-07-10T10:00:57+02:00</lastmod>
+  </url><url>
+    <loc>https://www.mytechramblings.com/tags/</loc>
+    <lastmod>2024-07-10T10:00:57+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/azure/</loc>
     <lastmod>2024-05-28T09:35:37+02:00</lastmod>
@@ -14,19 +29,10 @@
     <loc>https://www.mytechramblings.com/posts/building-an-azure-devops-copilot-using-semantic-kernel-and-azure-openai/</loc>
     <lastmod>2024-05-28T09:35:37+02:00</lastmod>
   </url><url>
-    <loc>https://www.mytechramblings.com/tags/devops/</loc>
-    <lastmod>2024-05-28T09:35:37+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/dotnet/</loc>
-    <lastmod>2024-05-28T09:35:37+02:00</lastmod>
-  </url><url>
     <loc>https://www.mytechramblings.com/tags/genai/</loc>
     <lastmod>2024-05-28T09:35:37+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/openai/</loc>
-    <lastmod>2024-05-28T09:35:37+02:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/</loc>
     <lastmod>2024-05-28T09:35:37+02:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/csharp/</loc>
@@ -183,9 +189,6 @@
     <lastmod>2023-02-28T10:55:55+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/tags/roslyn/</loc>
-    <lastmod>2023-02-28T10:55:55+01:00</lastmod>
-  </url><url>
-    <loc>https://www.mytechramblings.com/tags/sonarqube/</loc>
     <lastmod>2023-02-28T10:55:55+01:00</lastmod>
   </url><url>
     <loc>https://www.mytechramblings.com/posts/deploy-dotnet-lambdas-with-aws-cdk/</loc>

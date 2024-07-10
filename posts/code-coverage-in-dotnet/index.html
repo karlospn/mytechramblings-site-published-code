@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>Code Coverage in .NET :: my tech ramblings — A blog for writing about my techie ramblings</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Nowadays, if we want to collect Code Coverage in our .NET applications, tools like Coverlet, Report Generator, dotnet-coverage, dotCover, OpenCover or even Visual Studio will surely sound familiar to you.
+If we want to track how our application&amp;rsquo;s Code Coverage evolves over time, there are excellent SaaS products like SonarQube or CodeCov.
+For those using CI runners like Azure Pipelines or GitHub Actions, you can even upload a Code Coverage report into a pipeline summary, which is useful for quickly checking the Code Coverage value of a specific run."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://www.mytechramblings.com/posts/code-coverage-in-dotnet/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/assets/style.css">
+
+
+<link rel="stylesheet" href="https://www.mytechramblings.com/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.mytechramblings.com/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://www.mytechramblings.com/img/favicon.png">
+
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Code Coverage in .NET">
+  <meta name="twitter:description" content="This post delves into the current .NET landscape when we aim to collect Code Coverage. We examine the most frequently used tools such as Coverlet, dotCover, and dotnet-coverage, among others. We discuss how to upload a Code Coverage report to a SaaS product like SonarQube. Lastly, we explain how to publish a Code Coverage report into an Azure Pipeline run or a GitHub Action.">
+
+
+
+<meta property="og:url" content="https://www.mytechramblings.com/posts/code-coverage-in-dotnet/">
+  <meta property="og:site_name" content="my tech ramblings">
+  <meta property="og:title" content="Code Coverage in .NET">
+  <meta property="og:description" content="This post delves into the current .NET landscape when we aim to collect Code Coverage. We examine the most frequently used tools such as Coverlet, dotCover, and dotnet-coverage, among others. We discuss how to upload a Code Coverage report to a SaaS product like SonarQube. Lastly, we explain how to publish a Code Coverage report into an Azure Pipeline run or a GitHub Action.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-07-10T10:00:57+02:00">
+    <meta property="article:modified_time" content="2024-07-10T10:00:57+02:00">
+    <meta property="article:tag" content="Dotnet">
+    <meta property="article:tag" content="Devops">
+    <meta property="article:tag" content="Sonarqube">
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://www.mytechramblings.com/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">my tech ramblings</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="https://www.dotnetramblings.com">.NET News</a></li>
+        
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="https://www.dotnetramblings.com">.NET News</a></li>
+      
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://www.mytechramblings.com/posts/code-coverage-in-dotnet/">Code Coverage in .NET</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2024-07-10
+        </span>
+
+        
+          
+            
+
+
+
+          
+        
+      
+
+      
+      
+        <span class="post-read-time">— 15 min read</span>
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          #<a href="https://www.mytechramblings.com/tags/dotnet/">dotnet</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/devops/">devops</a>&nbsp;
+        
+          #<a href="https://www.mytechramblings.com/tags/sonarqube/">sonarqube</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <p>Nowadays, if we want to collect Code Coverage in our .NET applications, tools like <code>Coverlet</code>, <code>Report Generator</code>, <code>dotnet-coverage</code>, <code>dotCover</code>, <code>OpenCover</code> or even <code>Visual Studio</code> will surely sound familiar to you.</p>
+<p>If we want to track how our application&rsquo;s Code Coverage evolves over time, there are excellent SaaS products like <code>SonarQube</code> or <code>CodeCov</code>.</p>
+<p>For those using CI runners like <code>Azure Pipelines</code> or <code>GitHub Actions</code>, you can even upload a Code Coverage report into a pipeline summary, which is useful for quickly checking the Code Coverage value of a specific run.</p>
+<p>I believe it would be useful to briefly explore all the tools and services mentioned above, as they can provide us with a clearer understanding of the current landscape for collecting Code Coverage in .NET.</p>
+<p>But before we delve into that, allow me to briefly explain what Code Coverage is.</p>
+<h1 id="what-is-code-coverage"><strong>What is Code Coverage?</strong></h1>
+<p>Code Coverage is a metric that can help you understand how much of your source code is tested. It&rsquo;s a metric that can help you assess the quality of your test suite.</p>
+<p>Code Coverage is primarily performed at the unit testing level. Code Coverage tools usually express the metric as a percentage, showing you the percentage of successfully validated lines of code in your test procedures, helping you to understand how thoroughly you’re testing your code.</p>
+<p>The importance of code coverage lies in its ability to identify uncovered code that has not been tested and could contain bugs or potential issues not addressed by the test suite.</p>
+<p>It&rsquo;s important to note that while code coverage is a valuable metric, achieving 100% coverage does <strong>NOT</strong> guarantee a bug-free application. <br>
+It is just one of many tools and practices in a developer&rsquo;s toolkit for ensuring software and code quality.</p>
+<h1 id="code-coverage-tools"><strong>Code Coverage Tools</strong></h1>
+<p>There are two types of Code Coverage tools:</p>
+<ul>
+<li><strong>Data Collectors</strong>: These tools monitor test executions and gather information about test runs. They report the collected data in various output formats, such as XML and JSON.</li>
+<li><strong>Report generators</strong>: These tools utilize the data collected by the Data Collectors to generate comprehensive reports.</li>
+</ul>
+<p>Let&rsquo;s first take a look at the most well-known DataCollectors, and then we&rsquo;ll delve into the Report Generators.</p>
+<p>The Data Collector tools we&rsquo;re going to discuss include:</p>
+<ul>
+<li><strong>.NET native Code Collector</strong></li>
+<li><strong>Coverlet</strong></li>
+<li><strong>dotCover</strong></li>
+<li><strong>dotnet-coverage</strong></li>
+<li><strong>openCover</strong></li>
+</ul>
+<p>The Report Generator tool we&rsquo;re going to explore in this post is:</p>
+<ul>
+<li><strong>ReportGenerator</strong></li>
+</ul>
+<h1 id="net-built-in-data-collector"><strong>.NET built-in Data Collector</strong></h1>
+<p>.NET includes a built-in Code Coverage data collector.  To use it, you can use the .NET CLI and run <code>dotnet test --collect:&quot;Code Coverage&quot;</code> command.</p>
+<p><img alt="code-coverage-native-datacollector" src="/img/code-coverage-native-datacollector.png"></p>
+<p>Collecting Code Coverage in this manner is a common error, as by default, this Data Collector analyzes all solution assemblies loaded during unit tests. This means that the Unit Test projects will be included in the report, thereby skewing the average Code Coverage percentage.</p>
+<p>To generate an accurate Code Coverage report, it&rsquo;s necessary to exclude test projects from the code coverage results and only include application code. You have two options to achieve this:</p>
+<ul>
+<li><strong>Option 1</strong>: Add the <code>ExcludeFromCodeCoverageAttribute</code> attribute on your tests projects, as shown below:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;ItemGroup&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;AssemblyAttribute</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/ItemGroup&gt;</span>
+</span></span></code></pre></div><ul>
+<li><strong>Option 2</strong>: Create a <code>.runsettings</code> file that excludes the Unit Test projects from Code Coverage and run the<code>dotnet test</code> command using the <code>--settings</code> attribute. <br>
+Here&rsquo;s an example:<code>dotnet test --collect:&quot;Code Coverage&quot; --settings codeCoverage.runsettings</code></li>
+</ul>
+<p>The following code snippet shows a <code>.runsettings</code> file where all the projects named <code>*Tests</code> are excluded from the Code Coverage report.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#75715e">&lt;?xml version=&#34;1.0&#34; encoding=&#34;utf-8&#34; ?&gt;</span>  
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;RunSettings&gt;</span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;DataCollectionRunSettings&gt;</span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;DataCollectors&gt;</span>  
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;DataCollector</span> <span style="color:#a6e22e">friendlyName=</span><span style="color:#e6db74">&#34;Code Coverage&#34;</span> <span style="color:#a6e22e">uri=</span><span style="color:#e6db74">&#34;datacollector://Microsoft/CodeCoverage/2.0&#34;</span> <span style="color:#a6e22e">assemblyQualifiedName=</span><span style="color:#e6db74">&#34;Microsoft.VisualStudio.Coverage.DynamicCoverageDataCollector, Microsoft.VisualStudio.TraceCollector, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;Configuration&gt;</span>  
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">&lt;CodeCoverage&gt;</span>  
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;ModulePaths&gt;</span>  
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">&lt;Exclude&gt;</span>  
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&lt;ModulePath&gt;</span>.*Tests.dll<span style="color:#f92672">&lt;/ModulePath&gt;</span>  
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">&lt;/Exclude&gt;</span>  
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;/ModulePaths&gt;</span>  
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;UseVerifiableInstrumentation&gt;</span>True<span style="color:#f92672">&lt;/UseVerifiableInstrumentation&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;AllowLowIntegrityProcesses&gt;</span>True<span style="color:#f92672">&lt;/AllowLowIntegrityProcesses&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;CollectFromChildProcesses&gt;</span>True<span style="color:#f92672">&lt;/CollectFromChildProcesses&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;CollectAspDotNet&gt;</span>False<span style="color:#f92672">&lt;/CollectAspDotNet&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;EnableStaticNativeInstrumentation&gt;</span>True<span style="color:#f92672">&lt;/EnableStaticNativeInstrumentation&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;EnableDynamicNativeInstrumentation&gt;</span>True<span style="color:#f92672">&lt;/EnableDynamicNativeInstrumentation&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;EnableStaticNativeInstrumentationRestore&gt;</span>True<span style="color:#f92672">&lt;/EnableStaticNativeInstrumentationRestore&gt;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">&lt;/CodeCoverage&gt;</span>  
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/Configuration&gt;</span>  
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;/DataCollector&gt;</span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/DataCollectors&gt;</span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/DataCollectionRunSettings&gt;</span>  
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/RunSettings&gt;</span>  
+</span></span></code></pre></div><p>Once the Data Collector has completed its data collection, it generates a report in a binary <code>.coverage</code> file. This file is not human-readable. So, what can we do with it? It can be utilized to generate reports in Visual Studio.</p>
+<p>Here&rsquo;s how it appears when we open the resulting <code>.coverage</code> file with Visual Studio.</p>
+<blockquote>
+<p>To open the <code>.coverage</code> files with Visual Studio, you will need <strong>Visual Studio Enterprise Edition.</strong></p>
+</blockquote>
+<p><img alt="code-coverage-vs-coverage" src="/img/code-coverage-vs-coverage.png"></p>
+<p>Another option to collect Code Coverage using the .NET built-in collector, apart from the .NET CLI, is to directly use Visual Studio.</p>
+<p>To collect Code Coverage using Visual Studio, you will also need <strong>Visual Studio Enterprise edition</strong>.</p>
+<p>Simply select the <code>Test &gt; Analyze Code Coverage for All Tests</code> option.</p>
+<p><img alt="code-coverage-vs-test" src="/img/code-coverage-vs-test.png"></p>
+<h1 id="coverlet"><strong>Coverlet</strong></h1>
+<p>Coverlet is an alternative to the built-in Data Collector we discussed earlier. It generates test results in the form of Cobertura XML files, which can then be used to create HTML reports.</p>
+<p>In fact, it is the most widely used and well-known Code Coverage Data Collector. Evidence of this is that the official .NET xUnit test project template comes with <code>Coverlet</code> already integrated.</p>
+<p>Give it a try. Create a new xUnit project using the .NET CLI command: <code>dotnet new xunit</code>, and then inspect the resulting <code>.csproj</code>. You&rsquo;ll see that the <a href="https://www.nuget.org/packages/coverlet.collector">Coverlet NuGet package</a> is already installed in the project.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;Project</span> <span style="color:#a6e22e">Sdk=</span><span style="color:#e6db74">&#34;Microsoft.NET.Sdk&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;PropertyGroup&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;TargetFramework&gt;</span>net8.0<span style="color:#f92672">&lt;/TargetFramework&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;ImplicitUsings&gt;</span>enable<span style="color:#f92672">&lt;/ImplicitUsings&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;Nullable&gt;</span>enable<span style="color:#f92672">&lt;/Nullable&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;IsPackable&gt;</span>false<span style="color:#f92672">&lt;/IsPackable&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;IsTestProject&gt;</span>true<span style="color:#f92672">&lt;/IsTestProject&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/PropertyGroup&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;ItemGroup&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;Microsoft.NET.Test.Sdk&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;17.6.0&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;xunit&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;2.4.2&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;xunit.runner.visualstudio&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;2.4.5&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;IncludeAssets&gt;</span>runtime; build; native; contentfiles; analyzers; buildtransitive<span style="color:#f92672">&lt;/IncludeAssets&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;PrivateAssets&gt;</span>all<span style="color:#f92672">&lt;/PrivateAssets&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/PackageReference&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PackageReference</span> <span style="color:#a6e22e">Include=</span><span style="color:#e6db74">&#34;coverlet.collector&#34;</span> <span style="color:#a6e22e">Version=</span><span style="color:#e6db74">&#34;6.0.0&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;IncludeAssets&gt;</span>runtime; build; native; contentfiles; analyzers; buildtransitive<span style="color:#f92672">&lt;/IncludeAssets&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;PrivateAssets&gt;</span>all<span style="color:#f92672">&lt;/PrivateAssets&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/PackageReference&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/ItemGroup&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/Project&gt;</span>
+</span></span></code></pre></div><p>Once the Coverlet package is installed in the Unit Test project, you can start collecting Code Coverage using the <code>dotnet test --collect:&quot;XPlat Code Coverage&quot;</code> command.</p>
+<p>The Data Collector will generate a Cobertura XML file. <strong>The XML Cobertura format is frequently used as a standard format for Code Coverage reports.</strong></p>
+<p>If you attempt to run the <code>dotnet test --collect:&quot;XPlat Code Coverage&quot;</code> command without having the <code>Coverlet.Collector</code> package installed on your Unit Tests projects, no Code Coverage will be collected and you&rsquo;ll receive a warning.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Data collection : Unable to find a datacollector with friendly name <span style="color:#e6db74">&#39;XPlat Code Coverage&#39;</span>.
+</span></span><span style="display:flex;"><span>Data collection : Could not find data collector <span style="color:#e6db74">&#39;XPlat Code Coverage&#39;</span>
+</span></span></code></pre></div><p>The output format of the Code Coverage report can be changed using the <code>Format</code> parameter. The supported formats are <code>lcov</code>, <code>opencover</code>, <code>cobertura</code>, <code>teamcity</code> and <code>json</code>.</p>
+<p>Here&rsquo;s an example:</p>
+<p><code>dotnet test --collect:&quot;XPlat Code Coverage;Format=json&quot;</code></p>
+<p>Moreover, it&rsquo;s even possible to specify the coverage output in multiple formats.</p>
+<p><code>dotnet test --collect:&quot;XPlat Code Coverage;Format=json,cobertura&quot;</code></p>
+<h1 id="dotcover"><strong>dotCover</strong></h1>
+<p>dotCover is a .NET Code Coverage tool (among other features) developed by Jetbrains. It integrates with Visual Studio (if you have a JetBrains license), but it is also available as a free <a href="https://www.nuget.org/packages/JetBrains.dotCover.CommandLineTools">.NET CLI global tool</a>.</p>
+<p>You can install it using the following .NET CLI command:</p>
+<ul>
+<li><code>dotnet tool install --global JetBrains.dotCover.CommandLineTools</code></li>
+</ul>
+<p>One advantage of <code>dotCover</code> over the previously discussed Data Collectors is its ability to generate a human-readable report right away. <br>
+With Coverlet or the .NET native collector, you initially get a Code Coverage report in Cobertura XML format, JSON or Coverage file, and you need a secondary tool to make it human-readable (Visual Studio, report generator tool, etc).</p>
+<p>To collect Code Coverage with dotCover, run the following command:</p>
+<ul>
+<li><code>dotnet dotcover cover-dotnet --output=coverage.html --reporttype=HTML -- test ./test/StrategyPatternWithDIExamples.Tests/StrategyPatternWithDIExamples.Tests.csproj</code></li>
+</ul>
+<p><img alt="code-coverage-dotcover-run" src="/img/code-coverage-dotcover-run.png"></p>
+<p>With the <code>reporttype</code> option, we set the Code Coverage report to HTML. So, once the command has finished, a comprehensive HTML coverage report will be created for us.</p>
+<p><code>dotCover</code> is capable of creating the coverage report in other formats apart from HTML, such as JSON, XML, DetailedXML, NDependXML, SummaryXML, FileCoverageXML, and FileCoverageJson.</p>
+<p>The following screenshot shows an example of the generated Code Coverage HTML report.</p>
+<p><img alt="code-coverage-dotcover-report" src="/img/code-coverage-dotcover-report.png"></p>
+<h1 id="dotnet-coverage"><strong>dotnet-coverage</strong></h1>
+<p>The <code>dotnet-coverage</code> tool is a cross-platform tool capable of collecting Code Coverage data.</p>
+<p>To install it, use  the <code>dotnet tool install</code> command:</p>
+<ul>
+<li><code>dotnet tool install --global dotnet-coverage</code></li>
+</ul>
+<p>To collect Code Coverage from your tests, simply run the command:</p>
+<ul>
+<li><code>dotnet-coverage collect dotnet test -f cobertura -o coverage.xml</code>.</li>
+</ul>
+<p>The <code>-o</code> option sets the Code Coverage report output file and the <code>-f</code> option sets the output file format. Supported formats include <code>coverage</code>, <code>xml</code>, and <code>cobertura</code>.</p>
+<p>Another useful feature of this tool is its ability to convert from one coverage report format to another. <br>
+For example, you can convert a <code>.coverage</code> file to a <code>cobertura</code> XML file simply by running the command:
+<code>dotnet-coverage merge -f cobertura -o cobertura.xml 61935778-bdd8-4758-959c-94fdd6a8a376.coverage</code></p>
+<p>This can be handy if you have some Code Coverage reports collected using Visual Studio and want to convert them into a more standard format.</p>
+<h1 id="opencover"><strong>OpenCover</strong></h1>
+<p><a href="https://github.com/OpenCover/opencover">OpenCover</a> is yet another Code Coverage tool for the .NET Framework.</p>
+<p>However, development for this tool has ceased, and it is no longer maintained. Therefore, I will skip its analysis, as it is advisable to use one of the other tools we have discussed in this post.</p>
+<h1 id="generate-reports"><strong>Generate reports</strong></h1>
+<p>In the previous sections, we have covered several Code Coverage Data Collectors that can gather Code Coverage data from unit test runs.</p>
+<p>With the exception of <code>dotCover</code>, which is capable of generating an HTML report from the get-go, the collected Code Coverage data is not human-friendly.</p>
+<p>Now, it is time to convert the Code Coverage reports into a human-readable format. For this purpose, we will use the <a href="https://github.com/danielpalme/ReportGenerator">ReportGenerator</a> tool. This tool can convert multiple Code Coverage formats (Coverlet, OpenCover, dotCover, Visual Studio, NCover, Cobertura, gcov, lcov, among others) into a readable report.</p>
+<p>To install the <code>ReportGenerator</code> as a .NET global tool, use the following command:</p>
+<ul>
+<li><code>dotnet tool install -g dotnet-reportgenerator-globaltool</code></li>
+</ul>
+<p>Now, let&rsquo;s try to generate a report using the Code Coverage data collected with the tools we&rsquo;ve covered in the previous sections.</p>
+<h3 id="generate-a-report-from-a-coverage-file"><strong>Generate a report from a <code>.coverage</code> file</strong></h3>
+<p>If we try to generate a report from a <code>.coverage</code> file using <code>ReportGenerator</code>, it won&rsquo;t work.</p>
+<p><img alt="code-coverage-rg-coverage" src="/img/code-coverage-rg-coverage.png"></p>
+<p>We need to convert the <code>.coverage</code> file to another format first. If you follow the <a href="https://github.com/danielpalme/ReportGenerator/wiki/Visual-Studio-Coverage-Tools#codecoverageexe">help link</a> shown in the error, it suggest converting it using the <code>vstest.console.exe</code> application, which comes with Visual Studio. <br>
+However, this process is not very user-friendly. You&rsquo;ll need to locate the executable in your Visual Studio installation folder, and it only works on Windows, making it a less-than-ideal solution.</p>
+<p>A much easier way to convert it is to use the <code>merge</code> command from the <code>dotnet-coverage</code> tool, like this:</p>
+<ul>
+<li><code>dotnet-coverage merge -f xml -o coverage.xml test/StrategyPatternWithDIExamples.Tests/TestResults/da55597e-25e5-4272-a01f-4ce1ef0f84da/108ca3fa-2cc0-4550-a50e-00d9090ab200.coverage</code></li>
+</ul>
+<p>Now, we can generate the report without any problems using <code>ReportGenerator</code>.</p>
+<p><img alt="code-coverage-rg-coverage-xml" src="/img/code-coverage-rg-coverage-xml.png"></p>
+<p>The next snapshot shows the result.</p>
+<p><img alt="code-coverage-rg-coverage-report" src="/img/code-coverage-rg-coverage-report.png"></p>
+<h3 id="generate-a-report-from-a-cobertura-xml-file"><strong>Generate a report from a Cobertura XML file</strong></h3>
+<p>Generating a report from a Cobertura XML file is simpler than trying to create one from a <code>.coverage</code> file.</p>
+<p>Simply run the following <code>reportgeenerator</code> commmand:</p>
+<ul>
+<li><code>reportgenerator -reports:test/StrategyPatternWithDIExamples.Tests/TestResults/coverage.cobertura.xml -reportTypes:Html -targetdir:reports/cobertura/</code></li>
+</ul>
+<p>You can see the generated report in the next screenshot.</p>
+<p><img alt="code-coverage-rg-cobertura-report" src="/img/code-coverage-rg-cobertura-report.png"></p>
+<h1 id="create-a-code-coverage-report-when-building-a-container-image"><strong>Create a Code Coverage report when building a container image</strong></h1>
+<p>In this section, I want to explore whether it is feasible to create a Code Coverage report inside a container using the various Data Collector we have discussed in the previous sections.</p>
+<p>For this purpose, I have created the following Dockerfile, which collects Code Coverage metrics using the four Data Collector at the same time (<code>coverlet</code>, <code>dotCover</code>, <code>dotnet-coverage</code> and the native .NET collector).</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#ae81ff">FROM mcr.microsoft.com/dotnet/sdk:8.0-jammy AS build-env</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">WORKDIR /app</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Install dependencies for dotnet-coverage</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN apt-get update &amp;&amp; apt-get -y install \</span>
+</span></span><span style="display:flex;"><span>     <span style="color:#ae81ff">build-essential libxml2</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Install dotcover and dotnet-coverage</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet tool install --global JetBrains.dotCover.CommandLineTools \</span>
+</span></span><span style="display:flex;"><span> <span style="color:#75715e">&amp;&amp;</span> <span style="color:#ae81ff">dotnet tool install --global dotnet-coverage</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Set the dotnet tools folder in the PATH env variable</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">ENV PATH=&#34;${PATH}:/root/.dotnet/tools&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Copy everything</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY . ./</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Restore packages</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet restore -s &#34;https://api.nuget.org/v3/index.json&#34; \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#ae81ff">arch x64</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Build project</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet build &#34;./src/StrategyPatternWithDIExamples.csproj&#34; \ </span>
+</span></span><span style="display:flex;"><span>    --<span style="color:#ae81ff">configuration Release \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#ae81ff">self-contained true \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#ae81ff">arch x64</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Create code coverage report with dotcover</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet-dotCover cover-dotnet \</span>
+</span></span><span style="display:flex;"><span>  --<span style="color:#ae81ff">output=/app/coverage/dotcover/coverage.html \</span>
+</span></span><span style="display:flex;"><span>  --<span style="color:#ae81ff">reporttype=HTML -- test &#34;./test/StrategyPatternWithDIExamples.Tests/StrategyPatternWithDIExamples.Tests.csproj&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Create code coverage report with dotnet-coverage</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet-coverage collect &#34;dotnet test ./test/StrategyPatternWithDIExamples.Tests/StrategyPatternWithDIExamples.Tests.csproj&#34; \</span>
+</span></span><span style="display:flex;"><span>  -<span style="color:#ae81ff">f xml \</span>
+</span></span><span style="display:flex;"><span>  -<span style="color:#ae81ff">o &#34;/app/coverage/dotnetcoverage/coverage.xml&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Create  code coverage report with native collector</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet test &#34;./test/StrategyPatternWithDIExamples.Tests/StrategyPatternWithDIExamples.Tests.csproj&#34; \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#66d9ef">no</span>-<span style="color:#ae81ff">restore \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#ae81ff">collect:&#34;Code Coverage&#34; \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#ae81ff">results-directory /app/coverage/native</span>
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Create code coverage report with coverlet</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet test &#34;./test/StrategyPatternWithDIExamples.Tests/StrategyPatternWithDIExamples.Tests.csproj&#34; \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#66d9ef">no</span>-<span style="color:#ae81ff">restore \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#ae81ff">collect:&#34;XPlat Code Coverage&#34; \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#ae81ff">results-directory /app/coverage/coverlet  </span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Publish app</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">RUN dotnet publish &#34;./src/StrategyPatternWithDIExamples.csproj&#34; \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#ae81ff">configuration Release \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#ae81ff">output /app/publish \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#ae81ff">self-contained true \</span>
+</span></span><span style="display:flex;"><span>	--<span style="color:#ae81ff">arch x64</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Build runtime image</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">FROM mcr.microsoft.com/dotnet/runtime-deps:8.0.0-jammy</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Copy artifact</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">WORKDIR /app</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY --from=build-env /app/publish .</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">COPY --from=build-env /app/coverage /app/coverage</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Starts on port 8080</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">ENV ASPNETCORE_URLS=http://+:8080</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Set Entrypoint</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">ENTRYPOINT [&#34;./StrategyPatternWithDIExamples&#34;]</span>
+</span></span></code></pre></div><p>There are some important points to mention from this experiment:</p>
+<ul>
+<li>The <code>dotnet-coverage</code> tool doesn&rsquo;t work right out of the box.  If we look at the Dockerfile logs, we can see the following message when trying to collect Code Coverage with the <code>dotnet-coverage</code> tool.</li>
+</ul>
+<p><img alt="code-coverage-dotnet-coverage-deps" src="/img/code-coverage-dotnet-coverage-deps.png"></p>
+<p>To fix this, we must install the following dependencies:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#ae81ff">RUN apt-get update &amp;&amp; apt-get -y install build-essential libxml2</span>
+</span></span></code></pre></div><ul>
+<li>The <code>dotCover</code> also gave me some problems when running it using the <code>dotnet dotcover cover-dotnet</code> command. To fix this, I switch to the <code>dotnet-dotCover cover-dotnet</code> command.</li>
+</ul>
+<p>After addressing the issues mentioned above, all four Data Collector (<code>coverlet</code>, <code>dotCover</code>, <code>dotnet-coverage</code> and native .NET collector)  successfully created a Code Coverage report inside the container image.&quot;</p>
+<h1 id="view-code-coverage-reports-on-sonarqube"><strong>View Code Coverage reports on SonarQube</strong></h1>
+<p>Having a centralized place to track the Code Coverage metric of your application provides several benefits, such as offering a detailed view of your code quality and helping you identify areas of your code that need improvement.</p>
+<p>By uploading your Code Coverage metric, you can easily track which parts of your code are not covered by tests. This can help you improve your test coverage and, consequently, the reliability of your application.</p>
+<p>There are quite a few products capable of tracking your .NET application Code Coverage metric, such as <code>CodeCov</code> and <code>Codacy</code>. However, I will focus on probably the most well-known of all: <code>SonarQube</code>.</p>
+<p>SonarQube does not generate the Code Coverage report itself. Instead, you must set up a third-party tool (SonarScanner) to produce the report as part of your build process. SonarQube supports the following Data Collectors:</p>
+<ul>
+<li>Visual Studio Code Coverage</li>
+<li>dotnet-coverage Code Coverage</li>
+<li>dotCover</li>
+<li>OpenCover</li>
+<li>Coverlet</li>
+</ul>
+<p>You then need to configure your analysis to tell the SonarScanner where the report is located so that it can pick it up and send it to SonarQube, where it will be displayed on your project dashboard along with other analysis metrics.</p>
+<p>The process to send Code Coverage to SonarQube is quite simple:</p>
+<ul>
+<li>Generate the Code Coverage report using one of the Data Collectors we discussed in the previous sections</li>
+<li>Use the SonarScanner tool to upload it to SonarQube.</li>
+</ul>
+<p>The SonarScanner for .NET comes in four major variants: .NET Framework, .NET Core, .NET Global Tool, and the Azure Pipelines extension.</p>
+<p>For a quick test, I&rsquo;m going to spin up a SonarQube instance in a local container and use the SonarScanner .NET Global tool.</p>
+<p>To install the SonarScanner global tool, just run the following command:</p>
+<ul>
+<li><code>dotnet tool install --global dotnet-sonarscanner</code></li>
+</ul>
+<p>To generate the Code Coverage report, I have decided to use <code>dotCover</code> (but you could use any of the others Data Collectors, and it will work exactly the same).</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>dotnet sonarscanner begin /k:&#34;code-coverage-test&#34; 
+</span></span><span style="display:flex;"><span>    /d:sonar.host.url=&#34;http://localhost:9000&#34;  
+</span></span><span style="display:flex;"><span>    /d:sonar.token=&#34;sqp_f040a45634b38c269223852b47d6500d3650c33d&#34; 
+</span></span><span style="display:flex;"><span>    /d:sonar.cs.dotcover.reportsPaths=coverage.html 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>dotnet dotcover cover-dotnet --output=coverage.html --reporttype=HTML -- test ./test/StrategyPatternWithDIExamples.Tests/StrategyPatternWithDIExamples.Tests.csproj
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>dotnet sonarscanner end /d:sonar.login=&#34;sqp_f040a45634b38c269223852b47d6500d3650c33d&#34;
+</span></span></code></pre></div><p>The process to send Code Coverage to SonarQube is pretty simple:</p>
+<ul>
+<li>Start the SonarScanner, setting the <code>sonar.cs.dotcover.reportsPaths</code> property to where the Code Coverage report will be.</li>
+<li>Run <code>dotCover</code>.</li>
+<li>Stop the SonarScanner.</li>
+</ul>
+<p>If you browse your instance of SonarQube, you will find  that the Code Coverage has been successfully uploaded.</p>
+<p><img alt="code-coverage-sq-report" src="/img/code-coverage-sq-report.png"></p>
+<p>From there, we can drill down and get more detailed information about the Code Coverage metrics.</p>
+<p><img alt="code-coverage-sq-measures.png" src="/img/code-coverage-sq-measures.png"></p>
+<h1 id="publish-code-coverage-reports-to-an-azure-pipelines-or-an-github-action"><strong>Publish Code Coverage reports to an Azure Pipelines or an Github Action</strong></h1>
+<p>If you&rsquo;re running your code on a CI runner like <code>Azure Pipelines</code> or <code>GitHub Actions</code>, you can use a tool like SonarQube to control the Code Coverage metric.<br>
+On your CI/CD pipeline, you can execute the SonarScanner, generate the Code Coverage report of your app, upload it into SonarQube (or any other SaaS that supports it), and, for example, break the pipeline if the Code Coverage percentage has decreased.</p>
+<p>That&rsquo;s a common scenario in a CI/CD project, but another possibility is to directly upload the Code Coverage report into the pipeline summary. <br>
+While having the report on the pipeline is not as useful as having a SaaS like SonarQube that can keep track of the Code Coverage for every branch, it can still be useful information if you want to quickly check the Code Coverage value of a specific run of the pipeline.</p>
+<p>In this section, I&rsquo;m going to show you how to upload the Code Coverage report into an <code>Azure Pipeline</code> and also into a <code>GitHub Action</code>.</p>
+<h2 id="publish-a-code-coverage-report-into-a-github-action-job"><strong>Publish a Code Coverage report into a GitHub Action job</strong></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">name</span>: <span style="color:#ae81ff">Upload Code Coverage report to github action summary</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#f92672">on</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">push</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">branches</span>: [ <span style="color:#ae81ff">main ]</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">workflow_dispatch</span>:
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#f92672">jobs</span>:  
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">build</span>:  
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">runs-on</span>: <span style="color:#ae81ff">ubuntu-latest  </span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">steps</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">actions/checkout@v2</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">with</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">submodules</span>: <span style="color:#66d9ef">true</span> 
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">fetch-depth</span>: <span style="color:#ae81ff">1</span>   
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Test</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">run</span>: <span style="color:#ae81ff">dotnet test --collect:&#34;XPlat Code Coverage&#34; --results-directory coverage</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Code Coverage Summary Report</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">irongut/CodeCoverageSummary@v1.3.0</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">with</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">filename</span>: <span style="color:#e6db74">&#39;coverage/*/coverage.cobertura.xml&#39;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">badge</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">format</span>: <span style="color:#e6db74">&#39;markdown&#39;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">output</span>: <span style="color:#e6db74">&#39;both&#39;</span>
+</span></span><span style="display:flex;"><span>      
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Write to Job Summary</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">run</span>: <span style="color:#ae81ff">cat code-coverage-results.md &gt;&gt; $GITHUB_STEP_SUMMARY</span>
+</span></span></code></pre></div><p>As you can see, the steps to collect Code Coverage are always exactly the same. First, run <code>dotnet test</code> with a Data Collector; in this case, we&rsquo;re using <code>Coverlet</code>.</p>
+<p>Then, use another tool to generate a human-readable report. In this case, we&rsquo;re using this <a href="https://github.com/irongut/CodeCoverageSummary">open-source github action</a> to generate a summary of the Code Coverage report.</p>
+<p>Here&rsquo;s how it looks.</p>
+<p><img alt="code-coverage-github-action" src="/img/code-coverage-github-action.png"></p>
+<p>Obviously, if you prefer to use the <code>ReportGenerator</code> tool, as discussed previously in the post, to generate the summary, you can absolutely do so. <code>ReportGenerator</code> even has a type of report built for Github called <code>MarkdownSummaryGithub</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">name</span>: <span style="color:#ae81ff">Upload Code Coverage report to github action summary</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#f92672">on</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">push</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">branches</span>: [ <span style="color:#ae81ff">main ]</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">workflow_dispatch</span>:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">jobs</span>:  
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">build</span>:  
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">runs-on</span>: <span style="color:#ae81ff">ubuntu-latest  </span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">steps</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">actions/checkout@v2</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">with</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">submodules</span>: <span style="color:#66d9ef">true</span> 
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">fetch-depth</span>: <span style="color:#ae81ff">1</span>   
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Test</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">run</span>: <span style="color:#ae81ff">dotnet test --collect:&#34;XPlat Code Coverage&#34; --results-directory coverage</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Code coverage report generator</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">run</span>: |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          dotnet tool install -g dotnet-reportgenerator-globaltool
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          reportgenerator -reports:coverage/*/coverage.cobertura.xml -targetdir:report -reporttypes:&#39;MarkdownSummaryGithub&#39;</span>          
+</span></span><span style="display:flex;"><span>      
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Write to Job Summary</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">run</span>: <span style="color:#ae81ff">cat report/SummaryGithub.md &gt;&gt; $GITHUB_STEP_SUMMARY</span>
+</span></span></code></pre></div><p>Here&rsquo;s how it looks if we use <code>ReportGenerator</code> to create the Code Coverage report:</p>
+<p><img alt="code-coverage-gh-rg" src="/img/code-coverage-gh-rg.png"></p>
+<h2 id="publish-a-code-coverage-report-into-an-azure-devops-pipeline"><strong>Publish a Code Coverage report into an Azure DevOps Pipeline</strong></h2>
+<p>The steps are the same as those we followed for the <code>Github Action</code>. First, run <code>dotnet test</code> with a Code Coverage DataCollector, in this case, we&rsquo;re using <code>Coverlet</code>.</p>
+<p>This time, instead of using the <code>ReportGenerator</code> .NET global tool, we&rsquo;re using the official <code>ReportGenerator</code> Azure DevOps Task. Note that this task is not pre-installed in Azure DevOps; you need to install it from the Marketplace:</p>
+<ul>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=Palmmedia.reportgenerator">https://marketplace.visualstudio.com/items?itemName=Palmmedia.reportgenerator</a></li>
+</ul>
+<p>Once we&rsquo;ve generated the report, we simply need to publish it into the running pipeline.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">trigger</span>: <span style="color:#ae81ff">none</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">pool</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">vmImage</span>: <span style="color:#ae81ff">ubuntu-latest</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">steps</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">Bash@3</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">displayName</span>: <span style="color:#e6db74">&#39;Collect code coverage&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">targetType</span>: <span style="color:#e6db74">&#39;inline&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">script</span>: <span style="color:#e6db74">&#39;dotnet test --collect:&#34;XPlat Code Coverage&#34; --results-directory coverage&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">workingDirectory</span>: <span style="color:#e6db74">&#39;$(System.DefaultWorkingDirectory)&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">reportgenerator@5</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">reports</span>: <span style="color:#e6db74">&#39;$(System.DefaultWorkingDirectory)/**/coverage.cobertura.xml&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">targetdir</span>: <span style="color:#e6db74">&#39;$(System.DefaultWorkingDirectory)/report&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">task</span>: <span style="color:#ae81ff">PublishCodeCoverageResults@2</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">inputs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">summaryFileLocation</span>: <span style="color:#e6db74">&#39;$(System.DefaultWorkingDirectory)/report/Cobertura.xml&#39;</span>
+</span></span></code></pre></div><p>Here&rsquo;s the end result:</p>
+<p><img alt="code-coverage-azdo-rg" src="/img/code-coverage-azdo.png"></p>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">Read other posts</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://www.mytechramblings.com/posts/building-an-azure-devops-copilot-using-semantic-kernel-and-azure-openai/">
+                  <span class="button__text">Building an Azure DevOps Copilot using .NET 8, Semantic Kernel and Azure OpenAI GPT-4o</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2024 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>Theme created by <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://www.mytechramblings.com/assets/main.js"></script>
+<script src="https://www.mytechramblings.com/assets/prism.js"></script>
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('carlospons', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Donate',
+    'floating-chat.donateButton.background-color': '#ff5f5f',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
+
+      
+    </div>
+
+    
+      
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-C5HMQCEWM1"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-C5HMQCEWM1');
+        }
+      </script>
+    
+  
+
+
+    
+  </body>
+</html>

@@ -9,35 +9,15 @@
     <description>Recent content in Tags on my tech ramblings</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 28 May 2024 09:35:37 +0200</lastBuildDate>
+    <lastBuildDate>Wed, 10 Jul 2024 10:00:57 +0200</lastBuildDate>
     
 	<atom:link href="https://www.mytechramblings.com/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Azure</title>
-      <link>https://www.mytechramblings.com/tags/azure/</link>
-      <pubDate>Tue, 28 May 2024 09:35:37 +0200</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/azure/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
       <title>Devops</title>
       <link>https://www.mytechramblings.com/tags/devops/</link>
-      <pubDate>Tue, 28 May 2024 09:35:37 +0200</pubDate>
+      <pubDate>Wed, 10 Jul 2024 10:00:57 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/devops/</guid>
       <description>
@@ -57,9 +37,49 @@
     <item>
       <title>Dotnet</title>
       <link>https://www.mytechramblings.com/tags/dotnet/</link>
-      <pubDate>Tue, 28 May 2024 09:35:37 +0200</pubDate>
+      <pubDate>Wed, 10 Jul 2024 10:00:57 +0200</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/dotnet/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>Sonarqube</title>
+      <link>https://www.mytechramblings.com/tags/sonarqube/</link>
+      <pubDate>Wed, 10 Jul 2024 10:00:57 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/sonarqube/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>Azure</title>
+      <link>https://www.mytechramblings.com/tags/azure/</link>
+      <pubDate>Tue, 28 May 2024 09:35:37 +0200</pubDate>
+      
+      <guid>https://www.mytechramblings.com/tags/azure/</guid>
       <description>
         
           
@@ -760,26 +780,6 @@
       <pubDate>Tue, 28 Feb 2023 10:55:55 +0100</pubDate>
       
       <guid>https://www.mytechramblings.com/tags/roslyn/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>Sonarqube</title>
-      <link>https://www.mytechramblings.com/tags/sonarqube/</link>
-      <pubDate>Tue, 28 Feb 2023 10:55:55 +0100</pubDate>
-      
-      <guid>https://www.mytechramblings.com/tags/sonarqube/</guid>
       <description>
         
           
